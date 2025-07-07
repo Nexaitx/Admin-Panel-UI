@@ -1,0 +1,43 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>Vitoxyz CRM</span>
+    <div class="logout">
+        <span>@if(currentLanguage === 'en'){
+            English
+            }
+            @else if(currentLanguage === 'hi'){
+            हिंदी
+            }
+        </span>
+        <button mat-icon-button [matMenuTriggerFor]="langMenu" matTooltip="Language" matTooltipPosition="below">
+            <mat-icon>language</mat-icon>
+        </button>
+        <mat-menu #langMenu="matMenu">
+            <button mat-menu-item (click)="setLanguage('en')">
+                <mat-icon *ngIf="currentLanguage === 'en'">check</mat-icon>
+                <span>English</span>
+            </button>
+            <button mat-menu-item (click)="setLanguage('hi')">
+                <mat-icon *ngIf="currentLanguage === 'hi'">check</mat-icon>
+                <span>Hindi</span>
+            </button>
+        </mat-menu>
+        <button mat-icon-button (click)="logout()" class="logout" matTooltip="Logout" matTooltipPosition="below">
+            <mat-icon>logout</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
+
+<mat-drawer-container autosize class="main-layout">
+    <mat-drawer #sidenav mode="side" opened class="sidebar">
+        <app-sidebar></app-sidebar>
+    </mat-drawer>
+
+    <mat-drawer-content>
+        <div class="content">
+            <router-outlet />
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

@@ -1,0 +1,29 @@
+mat-toolbar {
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-surface);
+
+    button {
+        color: var(--mat-sys-surface);
+    }
+
+    .logout {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.main-layout {
+    min-height: calc(100vh - 64px);
+
+    .content {
+        padding: 16px;
+    }
+
+    .sidebar {
+        width: auto;
+        background-color: var(--mat-sys-surface);
+        padding: 16px;
+        border-right: 1px solid var(--mat-sys-primary);
+    }
+}
