@@ -6,5 +6,11 @@
 
 .material-icons {
   margin-right: 8px;
-  color: rgb(66, 66, 66);
+  color: rgb(255, 255, 255);
+}
+
+.active-link, .active-link .material-icons{
+    background: white;
+    border-radius: 20px !important;
+    color: #14bbc1;
 }

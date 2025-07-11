@@ -31,11 +31,6 @@ export class MainLayout {
   private auth = inject(Auth);
   private router = inject(Router);
 
-  currentLanguage = 'en';
-
-  setLanguage(lang: 'en' | 'hi') {
-    this.currentLanguage = lang;
-  }
 
   logout() {
     this.auth.logout();

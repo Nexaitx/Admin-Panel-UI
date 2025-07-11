@@ -1,0 +1,70 @@
+    .tab-content {
+    /* padding: 20px; */
+    text-align: end;
+    color: #333;
+  }
+
+  .tab-content h2 {
+    /* margin-bottom: 15px; */
+    color: #3f51b5; /* Example: Material primary color */
+  }
+
+  .tab-content p {
+    line-height: 1.6;
+    /* margin-bottom: 10px; */
+  }
+
+  /* Customization for mat-tab-group appearance using Angular Material theming or custom CSS */
+  /* Ensure your custom palette is correctly defined and applied in your global theme file (e.g., app_theme-colors.scss) */
+  .mat-tab-group.mat-primary .mat-tab-label-active {
+    color: #0BBBC1; /* Active tab label color */
+  }
+  .mat-tab-group.mat-primary .mat-tab-link {
+    /* color: rgba(0, 0, 0, 0.6); Inactive tab label color */
+  }
+  .mat-tab-group.mat-primary .mat-ink-bar {
+    background-color: #0BBBC1; /* Ink bar color */
+  }
+
+  /* Table specific styles */
+  .table-container {
+    overflow-x: auto; /* Enable horizontal scrolling for small screens */
+    /* margin-top: 20px; */
+    border-radius: 8px; /* Rounded corners for the table container */
+  }
+
+  table {
+    width: 100%;
+    /* min-width: 700px; Ensure table is wide enough for content */
+  }
+
+  .mat-form-field {
+    width: 100%;
+    /* margin-bottom: 20px; */
+  }
+
+  .mat-header-cell {
+    font-weight: bold;
+    background-color: #f5f5f5; /* Light background for header */
+    color: #333;
+  }
+
+  .mat-row:hover {
+    background-color: #f0f0f0; /* Hover effect on rows */
+  }
+
+  .mat-cell {
+    padding: 8px 16px;
+  }
+
+  /* Style for action buttons */
+  .mat-icon-button {
+    margin: 0 4px;
+  }
+
+  /* No data row style */
+  .mat-no-data-row {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+  }
