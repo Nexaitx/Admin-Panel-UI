@@ -1,4 +1,4 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, QueryList, ViewChildren } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'; // For mat-table
@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field'; // For input 
 import { MatInputModule } from '@angular/material/input';     // For input fields
 import { MatIconModule } from '@angular/material/icon';     // For icons (e.g., edit, delete)
 import { MatButtonModule } from '@angular/material/button';   // For buttons
+import { API_URL, ENDPOINTS } from '../../core/const';
+import { HttpClient } from '@angular/common/http';
 
 export interface PeriodicElement {
   name: string;
@@ -50,7 +52,7 @@ const FUTURE_DATA: PeriodicElement[] = [
   imports: [
     MatCardModule,
     MatTabsModule,
-     MatTableModule,
+    MatTableModule,
     MatSortModule,
     MatPaginatorModule,
     MatFormFieldModule,
@@ -62,7 +64,8 @@ const FUTURE_DATA: PeriodicElement[] = [
   styleUrls: ['./client.css']
 })
 export class Client {
-title = 'Material Tabs with Tables';
+  title = 'Material Tabs with Tables';
+  http = inject(HttpClient);
 
   // Define columns for all tables
   displayedColumns: string[] = ['stafftype', 'name', 'address', 'contact', 'aadhaar', 'status', 'date', 'actions'];
@@ -84,6 +87,7 @@ title = 'Material Tabs with Tables';
   }
 
   ngOnInit(): void {
+    this.getUsers();
     // Custom filter predicate for all data sources
     const customFilterPredicate = (data: PeriodicElement, filter: string): boolean => {
       const dataStr = Object.values(data).join('').toLowerCase();
@@ -129,5 +133,20 @@ title = 'Material Tabs with Tables';
     console.log(`Delete ${element.name} from ${tab} tab`);
     // Implement your delete logic here (e.g., show confirmation, remove from data source)
     alert(`Deleting: ${element.name} (Tab: ${tab})`);
+  }
+
+  getUsers() {
+    this.http.get(API_URL + ENDPOINTS.GET_USERS, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).subscribe({
+      next: (data) => {
+        console.log('Users:', data);
+      },
+      error: (error) => {
+        console.error('Error fetching users:', error);
+      }
+    });
   }
 }
