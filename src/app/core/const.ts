@@ -1,8 +1,8 @@
-export const API_URL = 'http://localhost:3000/api';
+export const API_URL = 'https://vitoxyzbackend.onrender.com';
 export const ENDPOINTS = {
-    LOGIN: '/login',
-    SIGNUP: '/signup',
+    LOGIN: '/loginWithPasswordAdmin',
+    SIGNUP: '/createAdmin',
     RESET_PASSWORD: '/auth/reset-password',
-    GET_USERS: '/users',
-    GET_STAFFS: '/staffs',
+    GET_USERS: '/api/user/alluser',
+    GET_STAFFS: '/getAllStaff',
 }

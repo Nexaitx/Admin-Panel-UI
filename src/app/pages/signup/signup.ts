@@ -38,8 +38,10 @@ export class Signup {
   constructor() {
     this.signupForm = this.fb.group({
       name: [''],
+      phoneNumber: [''],
       email: [''],
-      password: ['']
+      password: [''],
+      roleType: ['Admin'],
     });
   }
 

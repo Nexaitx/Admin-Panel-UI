@@ -10,16 +10,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common'; // DatePipe still imported but not used for these columns
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 
 // Define the interface for your table's data, reflecting the new columns
 interface TableStaff {
-  staff_id: number;
+  staffId: number;
   name: string;
   category: string;
   experience: number;
   price: number | null; // Price can be null in your API response
   gender: string;
-  shift_type: string;
+  shiftType: string;
   profession: string;
   phone_number: string; // Directly using phone_number from API
   originalStaff: any; // Keep a reference to the original staff object
@@ -38,25 +40,28 @@ interface TableStaff {
     MatInputModule,
     MatIconModule,
     MatButtonModule,
+    MatMenuModule,
+    MatSidenavModule
   ],
   templateUrl: './staff.html',
   styleUrl: './staff.scss',
-  providers: [DatePipe] // DatePipe is still provided but not actively used for these columns
+  providers: [DatePipe]
 })
 export class Staff {
   title = 'Staff List';
   http = inject(HttpClient);
   staffs: any[] = [];
+  isDrawerOpen = false;
+  selectedStaff: any = null;
 
-  // Updated displayedColumns
   displayedColumns: string[] = [
-    'staff_id',
+    'staffId',
     'name',
     'category',
     'experience',
     'price',
     'gender',
-    'shift_type',
+    'shiftType',
     'profession',
     'phone_number',
     'actions'
@@ -67,7 +72,7 @@ export class Staff {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private datePipe: DatePipe) { // DatePipe is not used with current columns, but kept for consistency
+  constructor() {
     this.dataSource = new MatTableDataSource<TableStaff>([]);
   }
 
@@ -75,7 +80,7 @@ export class Staff {
     this.getStaffs();
     this.dataSource.filterPredicate = (data: TableStaff, filter: string): boolean => {
       // Concatenate all relevant string/number properties for searching
-      const dataStr = `${data.staff_id} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shift_type} ${data.profession} ${data.phone_number}`.toLowerCase();
+      const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.phone_number}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -95,14 +100,24 @@ export class Staff {
   }
 
   editElement(element: TableStaff) {
-    console.log(`Edit ${element.name} (ID: ${element.staff_id})`);
-    alert(`Editing: ${element.name} (Staff ID: ${element.staff_id})`);
+    console.log(`Edit ${element.name} (ID: ${element.staffId})`);
+    alert(`Editing: ${element.name} (Staff ID: ${element.staffId})`);
     // Implement your edit logic here
+  }
+  
+  openStaffDrawer(element: TableStaff) {
+    // You can use a boolean flag and a selectedStaff property to control the drawer
+    this.selectedStaff = element;
+    this.isDrawerOpen = true;
+  }
+
+  closeStaffDrawer() {
+    this.isDrawerOpen = false;
   }
 
   deleteElement(element: TableStaff) {
-    console.log(`Delete ${element.name} (ID: ${element.staff_id})`);
-    alert(`Deleting: ${element.name} (Staff ID: ${element.staff_id})`);
+    console.log(`Delete ${element.name} (ID: ${element.staffId})`);
+    alert(`Deleting: ${element.name} (Staff ID: ${element.staffId})`);
     // Implement your delete logic here
   }
 
@@ -122,13 +137,13 @@ export class Staff {
 
   mapAndSetDataSource(staffs: any[]): void {
     const mappedStaffs: TableStaff[] = staffs.map(staff => ({
-      staff_id: staff.staff_id,
+      staffId: staff.staffId,
       name: staff.name,
       category: staff.category,
       experience: staff.experience,
       price: staff.price, // Directly using price
       gender: staff.gender,
-      shift_type: staff.shift_type,
+      shiftType: staff.shiftType,
       profession: staff.profession,
       phone_number: staff.phone_number, // Directly using phone_number
       originalStaff: staff // Keep the original object

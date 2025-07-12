@@ -41,17 +41,17 @@ export class Login {
 
   constructor() {
     this.loginForm = this.fb.group({
-      email: [''],
+      username: [''],
       password: ['']
     });
   }
 
   // Method for login submission
   onLoginSubmit(): void {
-    this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
+    // this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
       this.auth.login('Test token set', 'Admin');
       this.router.navigate(['/dashboard']);
-    })
+    // })
   }
 
   navigateToSignup(): void {

@@ -9,22 +9,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { DatePipe } from '@angular/common'; // Import DatePipe for formatting
+import { CommonModule, DatePipe } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
-// 1. Define an interface for the data that will be displayed in the table,
-// matching the new displayedColumns.
 interface TableUser {
-  name: string;      // maps to user_name
-  email: string;     // maps to email
-  phone: string;     // maps to phone_number
-  contact: string;   // Keeping it for the column, but it might be redundant with 'phone'.
-  aadhaar: string;   // No direct mapping, setting to 'N/A' or specific logic.
-  address: string;   // maps to address
-  city: string;      // maps to city
-  date: string;      // maps to last_location_update, formatted
+  userName: string;
+  email: string;
+  phone: string;
+  contact: string;
+  aadhaar: string;
+  address: string;
+  city: string;
+  date: string;
   user_id: number;
-  originalUser: any; // Keep a reference to the original user object
+  aadhaarUrl?: string;
+  originalUser: any;
 }
 
 @Component({
@@ -40,25 +40,28 @@ interface TableUser {
     MatIconModule,
     MatButtonModule,
     CommonModule,
+    MatMenuModule,
+    MatSidenavModule
   ],
   templateUrl: './client.html',
   styleUrls: ['./client.css'],
-  providers: [DatePipe] // Provide DatePipe here if you want to use it in TS
+  providers: [DatePipe]
 })
 export class Client {
-  title = 'Client List'; // Updated title
+  title = 'Client List';
   http = inject(HttpClient);
   users: any[] = [];
 
-  // Updated displayedColumns
-  displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'date', 'actions'];
+  isDrawerOpen: boolean = false;
+  selectedUser: TableUser | null = null;
+
+  displayedColumns: string[] = ['userName', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'date', 'actions'];
 
   dataSource: MatTableDataSource<TableUser>;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  // Inject DatePipe if you plan to use it in TypeScript for formatting dates
   constructor(private datePipe: DatePipe) {
     this.dataSource = new MatTableDataSource<TableUser>([]);
   }
@@ -67,15 +70,12 @@ export class Client {
     this.getUsers();
 
     this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      // Concatenate all relevant string properties for searching
-      const dataStr = `${data.name} ${data.email} ${data.phone} ${data.contact} ${data.aadhaar} ${data.address} ${data.city} ${data.date}`.toLowerCase();
+      const dataStr = `${data.userName} ${data.email} ${data.phone} ${data.contact} ${data.aadhaar} ${data.address} ${data.city} ${data.date}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
 
   ngAfterViewInit(): void {
-    // These are assigned after the view is initialized.
-    // The actual data assignment and re-application of sort/paginator happens in mapAndSetDataSource.
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
@@ -90,37 +90,41 @@ export class Client {
   }
 
   editElement(element: TableUser) {
-    console.log(`Edit ${element.name} (ID: ${element.user_id})`);
-    alert(`Editing: ${element.name} (User ID: ${element.user_id})`);
-    // Your edit logic here, e.g., open a dialog with element.originalUser
+    alert(`Editing: ${element.userName} (User ID: ${element.user_id})`);
   }
 
   deleteElement(element: TableUser) {
-    console.log(`Delete ${element.name} (ID: ${element.user_id})`);
-    alert(`Deleting: ${element.name} (User ID: ${element.user_id})`);
-    // Your delete logic here
+    console.log(`Delete ${element.userName} (ID: ${element.user_id})`);
+    alert(`Deleting: ${element.userName} (User ID: ${element.user_id})`);
   }
 
-  
+  openUserDrawer(element: TableUser) {
+    this.selectedUser = element;
+    this.isDrawerOpen = true;
+  }
+
+  closeUserDrawer() {
+    this.isDrawerOpen = false;
+    this.selectedUser = null;
+  }
 
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: TableUser[] = users.map(user => ({
       user_id: user.user_id,
-      name: user.user_name,
+      userName: user.userName,
       email: user.email,
       phone: user.phone_number,
-      contact: user.email, // Mapping 'contact' to 'email' as per your new columns. Adjust if different.
-      aadhaar: 'Not Verified', // Assuming a default or derive from actual data if available
+      contact: user.email,
+      aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
       address: user.address,
       city: user.city,
-      // Using DatePipe to format the date
       date: this.datePipe.transform(user.last_location_update, 'mediumDate') || '',
+      aadhaarUrl: user.aadhaar_card_attachment || null,
       originalUser: user
     }));
 
     this.dataSource.data = mappedUsers;
 
-    // Re-apply sort and paginator after data is loaded and assigned
     if (this.sort) {
       this.dataSource.sort = this.sort;
     }
@@ -137,11 +141,7 @@ export class Client {
       },
       error: (err) => {
         console.error('Error fetching users:', err);
-        // Handle error, e.g., show a toast message to the user
       }
     });
   }
-
-  // Removed getRoleTypeName as 'stafftype' is no longer in displayedColumns.
-  // If you still need this for internal logic or categorization, keep it.
 }

@@ -1,1 +1,19 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+    <h1>Dashboard</h1>
+    <p>Hi, Name! <br> Welcome to the Admin Dashboard!</p>
+</div>
+<div class="dashboard-content">
+    <p>Here you can manage your application settings, view statistics, and more.</p>
+    <div class="dashboard-actions">
+        <button mat-button color="primary" [routerLink]="['/staff']">Manage Staff</button>
+        <button mat-button color="accent" [routerLink]="['/client']">View Clients/Users</button>
+    </div>
+    <div class="dashboard-stats">
+        <h2>Statistics</h2>
+        <p>Here you can view important statistics about your application.</p>
+    </div>
+    <div class="dashboard-reports">
+        <h2>Reports</h2>
+        <p>Generate and view reports related to your application data.</p>
+    </div>
+</div>
