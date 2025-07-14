@@ -5,4 +5,5 @@ export const ENDPOINTS = {
     RESET_PASSWORD: '/auth/reset-password',
     GET_USERS: '/api/user/alluser',
     GET_STAFFS: '/getAllStaff',
+    GET_DOCTORS: '/getAllDoctor'
 }

@@ -26,12 +26,9 @@ interface TableUser {
   aadhaarUrl?: string;
   originalUser: any;
 }
-
 @Component({
-  selector: 'app-client',
-  standalone: true,
-  imports: [
-    MatCardModule,
+  selector: 'app-doctor',
+  imports: [MatCardModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -41,13 +38,12 @@ interface TableUser {
     MatButtonModule,
     CommonModule,
     MatMenuModule,
-    MatSidenavModule
-  ],
-  templateUrl: './client.html',
-  styleUrls: ['./client.css'],
+    MatSidenavModule],
+  templateUrl: './doctor.html',
+  styleUrl: './doctor.scss',
   providers: [DatePipe]
 })
-export class Client {
+export class Doctor {
   http = inject(HttpClient);
   users: any[] = [];
 
@@ -133,7 +129,7 @@ export class Client {
   }
 
   getUsers() {
-    this.http.get(API_URL + ENDPOINTS.GET_USERS).subscribe({
+    this.http.get(API_URL + ENDPOINTS.GET_DOCTORS).subscribe({
       next: (res: any) => {
         this.users = res;
         this.mapAndSetDataSource(this.users);
