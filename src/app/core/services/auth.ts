@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Auth {
+  private isLoading = new BehaviorSubject<boolean>(false);
+  public loading$ = this.isLoading.asObservable();
 
   constructor() { }
 
@@ -19,5 +22,13 @@ export class Auth {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+  }
+
+   show() {
+    this.isLoading.next(true);
+  }
+
+  hide() {
+    this.isLoading.next(false);
   }
 }

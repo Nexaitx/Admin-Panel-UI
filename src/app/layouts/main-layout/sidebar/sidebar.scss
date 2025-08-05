@@ -6,17 +6,23 @@
 
 .material-icons {
   margin-right: 8px;
-  color: rgb(255, 255, 255);
+  color: #6b6d6d;
 }
 
-.active-link, .active-link .material-icons{
-    background: white;
-    border-radius: 20px !important;
-    color: #14bbc1;
+a span{
+  color: #6b6d6d !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
 }
-.sidebar-item-content span{
-  color: #fff;
+
+.active-link,
+.active-link .material-icons , a:hover .material-icons {
+  background: #edf8f7 !important;
+  border-radius: 50px !important;
+  color: #0BBBC1 !important;
 }
-.active-link span{
-  color: #14bbc1;
+
+.active-link span, a:hover span{
+  color: #0BBBC1 !important;
+  font-weight: 500 !important;
 }

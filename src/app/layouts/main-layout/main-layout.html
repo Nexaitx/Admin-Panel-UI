@@ -15,7 +15,7 @@
         <app-sidebar></app-sidebar>
     </mat-drawer>
 
-    <mat-drawer-content>
+    <mat-drawer-content [style.margin-left]="sidenav.opened ? '245px' : '0'">
         <div class="content">
             <router-outlet />
         </div>

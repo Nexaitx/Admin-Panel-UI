@@ -17,3 +17,26 @@ html {
   position: sticky;
   bottom: 0;
 }
+
+mat-card-content{
+    height: 72vh !important;
+}
+mat-drawer-container, mat-drawer, table, mat-paginator {
+  background: white !important;
+}
+mat-drawer-container{
+  overflow-x: hidden !important;
+}
+mat-drawer-content{
+  overflow: hidden !important;
+}
+
+.btn-primary{
+  background: #14bbc1 !important;
+  border: none !important
+}
+
+.tableScroll-container {
+  height: 400px;
+  overflow-y: auto;
+}

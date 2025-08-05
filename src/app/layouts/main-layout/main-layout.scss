@@ -14,64 +14,17 @@ mat-toolbar {
 }
 
 .main-layout {
-    min-height: calc(100vh - 64px);
-
-    .content {
-        padding: 16px;
-    }
+    min-height: calc(100vh - 64px);    
 
     .sidebar {
         width: auto;
-        background-color: #14bbc1;
-        padding: 16px 0 16px 16px;
-        border-right: 1px solid #14bbc1;
-        color: white;
-        // Make sure the sidebar has a defined height and overflow property
-        height: 100%; // Or a specific height like 400px;
-        overflow-y: hidden; // Hide the scrollbar by default
-        transition: overflow-y 0.3s ease-in-out; // Optional: Smooth transition for scrollbar appearance
-
-        &:hover {
-            overflow-y: auto; // Show scrollbar on hover
-        }
-
-        /* Custom Scrollbar Styles (Webkit browsers - Chrome, Safari, Edge) */
-        &::-webkit-scrollbar {
-            width: 2px !important; // Set the width of the scrollbar
-            background-color: transparent; // Make the track transparent by default
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.2); // Light grey thumb, semi-transparent
-            border-radius: 1px; // Make it slightly rounded if desired
-        }
-
-        // Optional: Hover state for the thumb itself for better visibility
-        &:hover::-webkit-scrollbar-thumb {
-            width: 2px !important;
-            background-color: rgba(0, 0, 0, 0.4); // Darker on hover
-        }
-
-        // Optional: On active state for the thumb itself
-        &::-webkit-scrollbar-thumb:active {
-            width: 2px !important;
-            background-color: #14bbc1; // Even darker when clicked
-        }
-
-        // Hide the track by default, show on hover of the sidebar
-        &:not(:hover)::-webkit-scrollbar-track {
-            background-color: transparent;
-            width: 2px !important;
-
-        }
-
-        &:hover::-webkit-scrollbar-track {
-            width: 2px !important;
-
-            background-color: rgba(0, 0, 0, 0.05); // A very subtle track on hover
-        }
-
-        scrollbar-width: none; // 'auto' | 'thin' | 'none'
-        scrollbar-color: rgba(127, 236, 250, 0.2) transparent; // thumb color track color
+        padding: 5px;
+        height: 100%;
+        overflow-y: hidden;
+        border-radius: 0 !important;
     }
+}
+
+.content {
+    // height: calc(100vh - 64px);
 }

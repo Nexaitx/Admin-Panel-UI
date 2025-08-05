@@ -1,13 +1,14 @@
 <div class="auth-wrapper d-flex justify-content-center mt-3">
-  <mat-card class="auth-card w-25">
-    <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
+  <div class="auth-card border p-3 rounded w-75">
+    <div class="auth-card-header">
+      <h3>Welcome To Vitoxyz Admin Panel!</h3>
+      <div class="auth-card-title">Login</div>
+    </div>
+    <div>
       <div class="login-form-section">
         <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
           <mat-form-field appearance="outline" class="w-100 mt-3" >
-            <mat-label>User Name</mat-label>
+            <mat-label>Email</mat-label>
             <input matInput type="username" formControlName="username" required>
             <mat-icon matSuffix>email</mat-icon>
           </mat-form-field> <br />
@@ -25,6 +26,6 @@
           <button mat-button color="accent" [routerLink]="['/signup']">Sign Up</button>
           </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

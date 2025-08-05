@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { authGuard, redirectIfAuthenticated } from './core/guards/auth-guard';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
-
 export const routes: Routes = [
     {
         path: '',
@@ -13,7 +12,7 @@ export const routes: Routes = [
                 path: 'dashboard',
                 loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
             },
-             {
+            {
                 path: 'client',
                 loadComponent: () => import('./pages/client/client').then(m => m.Client)
             },
@@ -28,6 +27,10 @@ export const routes: Routes = [
             {
                 path: 'pharmaceuticals',
                 loadComponent: () => import('./pages/pharmaceuticals/pharmaceuticals').then(m => m.Pharmaceuticals)
+            },
+            {
+                path: 'manage-accounts',
+                loadChildren: () => import('./pages/manage-accounts/manage-accounts-module').then(m => m.ManageAccountsModule)
             },
             {
                 path: 'bookings',
@@ -100,6 +103,10 @@ export const routes: Routes = [
             {
                 path: 'documents',
                 loadComponent: () => import('./pages/documents/documents').then(m => m.Documents)
+            },
+            {
+                path: 'roles',
+                loadComponent: () => import('./pages/roles/roles').then(m => m.Roles)
             },
             {
                 path: 'settings',
