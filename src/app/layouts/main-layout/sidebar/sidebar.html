@@ -4,37 +4,42 @@
             <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
         </span>
     </a>
-    <a mat-list-item routerLink="/client" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">account_circle</mat-icon><span>Client/User</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/staff" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">admin_panel_settings</mat-icon><span>Staff</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/doctor" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">local_hospital</mat-icon><span>Doctor</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/dietician" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">medical_information</mat-icon><span>Dietician</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/pharmaceuticals" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">healing</mat-icon><span>Pharmaceuticals</span>
-        </span>
-    </a>
+    <mat-expansion-panel mat-list-item class="mat-elevation-z0">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon>analytics</mat-icon><span>Manage</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
 
-    <a mat-list-item routerLink="/manage-accounts" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">analytics</mat-icon><span>Manage</span>
-        </span>
-    </a>
+        <mat-nav-list dense>
+            <a mat-list-item routerLink="/client" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>account_circle</mat-icon><span>Client/User</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/doctor" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>local_hospital</mat-icon><span>Doctors</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/dietician" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>medical_information</mat-icon><span>Dieticians</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/pharmaceuticals" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>healing</mat-icon><span>Pharmacist</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/staff" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>admin_panel_settings</mat-icon><span>Staff</span>
+                </span>
+            </a>
+        </mat-nav-list>
+    </mat-expansion-panel>
+
     <a mat-list-item routerLink="/dietician-reports" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">analytics</mat-icon><span>Dietician Reports</span>
@@ -65,6 +70,61 @@
             <mat-icon class="material-icons">swap_horiz</mat-icon><span>Override Duties</span>
         </span>
     </a>
+    <mat-expansion-panel mat-list-item class="mat-elevation-z0">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon>settings</mat-icon><span>Settings</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-nav-list dense>
+            <a mat-list-item routerLink="/complaint" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>report_problem</mat-icon><span>Complaints</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/overtime-approval" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>access_time</mat-icon><span>Overtime Handling</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/AI-logs" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>auto_fix_normal</mat-icon><span>AI Logs</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/payout" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>monetization_on</mat-icon><span>Payout</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/refund-handling" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>wallet</mat-icon><span>Refund Handling</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/marketing" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>campaign</mat-icon><span>Marketing</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/documents" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>support_agent</mat-icon><span>Support</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/support" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>construction</mat-icon><span>Tools</span>
+                </span>
+            </a>
+            <a mat-list-item routerLink="/documents" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>library_books</mat-icon><span>Documents</span>
+                </span>
+            </a>
+        </mat-nav-list>
+    </mat-expansion-panel>
     <a mat-list-item routerLink="/overtime-approval" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">access_time</mat-icon><span>Overtime Approval</span>
@@ -77,9 +137,7 @@
     </a>
     <a mat-list-item routerLink="/roles" routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <span class="material-icons">
-                assignment_ind
-            </span><span>Roles</span>
+            <mat-icon class="material-icons">group</mat-icon><span>Roles</span>
         </span>
     </a>
 
@@ -89,41 +147,5 @@
         </span>
     </a>
 
-    <mat-expansion-panel class="mat-elevation-z0">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <mat-icon>settings</mat-icon><span>Settings</span>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
 
-        <mat-nav-list dense>
-          <a mat-list-item routerLink="/complaint" routerLinkActive="active-link">
-            <mat-icon>report_problem</mat-icon><span>Complaints</span>
-          </a>
-          <a mat-list-item routerLink="/overtime-approval" routerLinkActive="active-link">
-            <mat-icon>access_time</mat-icon><span>Overtime Handling</span>
-          </a>
-          <a mat-list-item routerLink="/AI-logs" routerLinkActive="active-link">
-            <mat-icon>auto_fix_normal</mat-icon><span>AI Logs</span>
-          </a>
-          <a mat-list-item routerLink="/payout" routerLinkActive="active-link">
-            <mat-icon>monetization_on</mat-icon><span>Payout</span>
-          </a>
-          <a mat-list-item routerLink="/refund-handling" routerLinkActive="active-link">
-            <mat-icon>wallet</mat-icon><span>Refund Handling</span>
-          </a>
-           <a mat-list-item routerLink="/marketing" routerLinkActive="active-link">
-            <mat-icon>campaign</mat-icon><span>Marketing</span>
-          </a>
-          <a mat-list-item routerLink="/documents" routerLinkActive="active-link">
-            <mat-icon>support_agent</mat-icon><span>Support</span>
-          </a>
-          <a mat-list-item routerLink="/support" routerLinkActive="active-link">
-            <mat-icon>construction</mat-icon><span>Tools</span>
-          </a>
-          <a mat-list-item routerLink="/documents" routerLinkActive="active-link">
-            <mat-icon>library_books</mat-icon><span>Documents</span>
-          </a>
-        </mat-nav-list>
-      </mat-expansion-panel>
 </mat-nav-list>
