@@ -15,6 +15,18 @@
             </mat-form-field><br />
 
             <mat-form-field appearance="outline" class=" col-md-6 mt-3">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="roleType" required>
+                <mat-option value="" selected>Select Role</mat-option>
+                @for(r of roles; track r.roleType) {
+                <mat-option [value]="r.roleType">
+                  {{ r.roleType }}
+                </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class=" col-md-6 mt-3">
               <mat-label>Phone Number</mat-label>
               <input matInput type="number" formControlName="phoneNumber" required>
               <mat-icon matSuffix>phone</mat-icon>

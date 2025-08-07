@@ -13,6 +13,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { MatCardModule } from '@angular/material/card';
 import { HttpClient } from '@angular/common/http';
 import { API_URL, ENDPOINTS } from '../../core/const';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -38,20 +39,37 @@ export class Login {
   private fb = inject(FormBuilder);
   http = inject(HttpClient);
   loginForm!: FormGroup;
+  private _snackBar = inject(MatSnackBar);
 
   constructor() {
     this.loginForm = this.fb.group({
-      username: [''],
+      email: [''],
       password: ['']
     });
   }
 
   // Method for login submission
   onLoginSubmit(): void {
-    // this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
-      this.auth.login('Test token set', 'Admin');
-      this.router.navigate(['/dashboard']);
-    // })
+    this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
+      if (res) {
+        this.auth.login('jwtToken', res.token);
+        this._snackBar.open('Company Created Successful!', 'Successfully', {
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+        this.router.navigate(['/dashboard']);
+      }
+    },
+      error => {
+        this._snackBar.open('Login failed. Please check your credentials.', 'Error', {
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+      });
   }
 
   navigateToSignup(): void {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
@@ -8,7 +9,8 @@ import { RouterModule } from '@angular/router';
   imports: [
     MatListModule,
     MatIconModule,
-    RouterModule
+    RouterModule,
+    MatExpansionModule
   ],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.scss']

@@ -60,11 +60,6 @@
             <mat-icon class="material-icons">group</mat-icon><span>Bulk Assignments</span>
         </span>
     </a>
-    <a mat-list-item routerLink="/complaint" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">report_problem</mat-icon><span>Complaint</span>
-        </span>
-    </a>
     <a mat-list-item routerLink="/override-Duties" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">swap_horiz</mat-icon><span>Override Duties</span>
@@ -75,28 +70,11 @@
             <mat-icon class="material-icons">access_time</mat-icon><span>Overtime Approval</span>
         </span>
     </a>
-    <a mat-list-item routerLink="/payout" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">monetization_on</mat-icon><span>Payout</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/refund-handling" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">wallet</mat-icon><span>Refund Handling</span>
-        </span>
-    </a>
     <a mat-list-item routerLink="/reassign-duties" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">group_add</mat-icon><span>Reassign Duties</span>
         </span>
     </a>
-
-    <a mat-list-item routerLink="/AI-logs" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">auto_fix_normal</mat-icon><span>AI Logs</span>
-        </span>
-    </a>
-
     <a mat-list-item routerLink="/roles" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <span class="material-icons">
@@ -105,36 +83,47 @@
         </span>
     </a>
 
-    <a mat-list-item routerLink="/settings" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">settings</mat-icon><span>Settings</span>
-        </span>
-    </a>
     <a mat-list-item routerLink="/gps-live-deviation" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">sensors</mat-icon><span>GPS Live Deviation</span>
         </span>
     </a>
 
+    <mat-expansion-panel class="mat-elevation-z0">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>settings</mat-icon><span>Settings</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-    <a mat-list-item routerLink="/support" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">support_agent</mat-icon><span>Support</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/tools" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">construction</mat-icon><span>Tools</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/marketing" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">campaign</mat-icon><span>Marketing</span>
-        </span>
-    </a>
-    <a mat-list-item routerLink="/documents" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">library_books</mat-icon><span>Documents</span>
-        </span>
-    </a>
+        <mat-nav-list dense>
+          <a mat-list-item routerLink="/complaint" routerLinkActive="active-link">
+            <mat-icon>report_problem</mat-icon><span>Complaints</span>
+          </a>
+          <a mat-list-item routerLink="/overtime-approval" routerLinkActive="active-link">
+            <mat-icon>access_time</mat-icon><span>Overtime Handling</span>
+          </a>
+          <a mat-list-item routerLink="/AI-logs" routerLinkActive="active-link">
+            <mat-icon>auto_fix_normal</mat-icon><span>AI Logs</span>
+          </a>
+          <a mat-list-item routerLink="/payout" routerLinkActive="active-link">
+            <mat-icon>monetization_on</mat-icon><span>Payout</span>
+          </a>
+          <a mat-list-item routerLink="/refund-handling" routerLinkActive="active-link">
+            <mat-icon>wallet</mat-icon><span>Refund Handling</span>
+          </a>
+           <a mat-list-item routerLink="/marketing" routerLinkActive="active-link">
+            <mat-icon>campaign</mat-icon><span>Marketing</span>
+          </a>
+          <a mat-list-item routerLink="/documents" routerLinkActive="active-link">
+            <mat-icon>support_agent</mat-icon><span>Support</span>
+          </a>
+          <a mat-list-item routerLink="/support" routerLinkActive="active-link">
+            <mat-icon>construction</mat-icon><span>Tools</span>
+          </a>
+          <a mat-list-item routerLink="/documents" routerLinkActive="active-link">
+            <mat-icon>library_books</mat-icon><span>Documents</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
 </mat-nav-list>

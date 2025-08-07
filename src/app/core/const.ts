@@ -1,9 +1,9 @@
-export const API_URL = 'https://vitoxyzbackend.onrender.com';
+export const API_URL = 'https://vitoxyzcrm.onrender.com';
 export const ENDPOINTS = {
 
     // Authorization
-    LOGIN: '/loginWithPasswordAdmin',
-    SIGNUP: '/Signup',
+    LOGIN: '/login',
+    SIGNUP: '/signup',
     RESET_PASSWORD: '/auth/reset-password',
 
     // Users
