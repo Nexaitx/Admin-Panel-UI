@@ -48,12 +48,11 @@ export class Login {
     });
   }
 
-  // Method for login submission
   onLoginSubmit(): void {
     this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
       if (res) {
-        this.auth.login('jwtToken', res.token);
-        this._snackBar.open('Company Created Successful!', 'Successfully', {
+        this.auth.login(res?.token, res?.profile?.role?.roleType);
+        this._snackBar.open('Logged In Successful!', 'Successfully', {
           horizontalPosition: 'end',
           verticalPosition: 'top',
           duration: 3000,

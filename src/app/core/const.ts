@@ -27,7 +27,6 @@ export const ENDPOINTS = {
     DELETE_DIET_SUBSCRIPTION: '/api/dieticians/subscriptionplan-delete',
     GET_DIET_SUBSCRIPTION: '/api/user/subscription/plans',
 
-
     // Roles
     GET_ROLES: '/getAllRoles',
     CREATE_ROLE: '/createRole',
@@ -36,7 +35,7 @@ export const ENDPOINTS = {
 
     // Get Accounts
     GET_ACCOUNTS: '/getAllAccounts',
-    GET_ACOUNTS_BY_ROLE: '/getAccountByRole/{roleName}',
     UPDATE_ACCOUNT: '/updateAccount/',
-    DELETE_ACCOUNT: '/deleteAccount/'
+    DELETE_ACCOUNT: '/deleteAccount/',
+    GET_ACCOUNT_BY_ROLE: '/getAccountByRole/{roleType}'
 };

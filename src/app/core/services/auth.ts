@@ -14,9 +14,10 @@ export class Auth {
     return !!localStorage.getItem('token');
   }
 
-  login(token: string, role?: string): void {
+  login(token: string, role: string): void {
+    console.log(token, role)
     localStorage.setItem('token', token);
-    localStorage.setItem('role', role || 'user');
+    localStorage.setItem('role', role);
   }
 
   logout(): void {
