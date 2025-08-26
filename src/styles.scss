@@ -13,30 +13,29 @@ html {
 }
 
 .drawer-bottom {
-  background: #e8e9ea;
   position: sticky;
   bottom: 0;
 }
 
-mat-card-content{
-    height: 72vh !important;
-}
-mat-drawer-container, mat-drawer, table, mat-paginator {
-  background: white !important;
-}
-mat-drawer-container{
+mat-drawer-container {
   overflow-x: hidden !important;
 }
-mat-drawer-content{
+
+mat-drawer-content {
   overflow: hidden !important;
 }
 
-.btn-primary{
+.btn-primary {
   background: #14bbc1 !important;
   border: none !important
 }
 
-.tableScroll-container {
+.table-container {
   height: 400px;
   overflow-y: auto;
+}
+
+.mat-mdc-card-content:last-child,
+.mat-mdc-card-content:first-child {
+  padding: 0 !important;
 }

@@ -114,7 +114,7 @@ export class Client {
       email: user.email,
       phone: user.phone_number,
       contact: user.email,
-      aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
+      aadhaar: user.aadhaarVerified ? 'Verified' : 'Not Verified',
       address: user.address,
       city: user.city,
       date: this.datePipe.transform(user.last_location_update, 'mediumDate') || '',

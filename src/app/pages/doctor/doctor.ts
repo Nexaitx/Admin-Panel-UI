@@ -9,23 +9,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { MatOption, MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
-interface TableUser {
-  userName: string;
-  email: string;
-  phone: string;
-  contact: string;
-  aadhaar: string;
-  address: string;
-  city: string;
-  date: string;
-  user_id: number;
-  aadhaarUrl?: string;
-  originalUser: any;
-}
+export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
+  const password = control.get('password');
+  const confirmPassword = control.get('confirmPassword');
+
+  if (password && confirmPassword && password.value !== confirmPassword.value) {
+    return { 'passwordMismatch': true };
+  }
+  return null;
+};
+
 @Component({
   selector: 'app-doctor',
   imports: [MatCardModule,
@@ -38,34 +38,61 @@ interface TableUser {
     MatButtonModule,
     CommonModule,
     MatMenuModule,
-    MatSidenavModule],
+    MatSidenavModule,
+    MatSelectModule,
+    ReactiveFormsModule],
   templateUrl: './doctor.html',
-  styleUrl: './doctor.scss',
-  providers: [DatePipe]
+  styleUrl: './doctor.scss'
 })
 export class Doctor {
   http = inject(HttpClient);
-  users: any[] = [];
+  fb = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
+  accounts: any[] = [];
+  selectedRecord: any;
 
   isDrawerOpen: boolean = false;
-  selectedUser: TableUser | null = null;
+  selectedUser: any | null = null;
 
-  displayedColumns: string[] = ['userName', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'date', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'actions'];
 
-  dataSource: MatTableDataSource<TableUser>;
+  dataSource: MatTableDataSource<any>;
+  userForm: FormGroup;
+  isEdit: boolean = false;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private datePipe: DatePipe) {
-    this.dataSource = new MatTableDataSource<TableUser>([]);
+  constructor() {
+    this.dataSource = new MatTableDataSource<any>([]);
+    this.userForm = this.fb.group({
+      name: ['', Validators.required],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
+      role: ['doctor', Validators.required]
+    }, { validators: passwordMatchValidator });
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+    const phoneNumberControl = this.userForm.get('phoneNumber');
+    // Allow digits (0-9)
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+    if (phoneNumberControl && phoneNumberControl.value && phoneNumberControl.value.length >= 10 && charCode > 31) {
+      event.preventDefault();
+    }
   }
 
   ngOnInit(): void {
-    this.getUsers();
 
-    this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      const dataStr = `${data.userName} ${data.email} ${data.phone} ${data.contact} ${data.aadhaar} ${data.address} ${data.city} ${data.date}`.toLowerCase();
+    this.getAccounts();
+
+    this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
+      const dataStr = `${data.name} ${data.email} ${data.phone} ${data.contact} ${data.aadhaar} ${data.address} ${data.city}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -84,17 +111,69 @@ export class Doctor {
     }
   }
 
-  editElement(element: TableUser) {
-    alert(`Editing: ${element.userName} (User ID: ${element.user_id})`);
+  getAccounts() {
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/doctor').subscribe((res: any) => {
+      this.accounts = res;
+      this.mapAndSetDataSource(this.accounts);
+    })
   }
 
-  deleteElement(element: TableUser) {
-    console.log(`Delete ${element.userName} (ID: ${element.user_id})`);
-    alert(`Deleting: ${element.userName} (User ID: ${element.user_id})`);
+  onSubmit(): void {
+    if (this.userForm.valid) {
+      // Create a temporary object without confirmPassword for the API call
+      const formData = { ...this.userForm.value };
+      delete formData.confirmPassword;
+      if (this.isEdit) {
+        this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ACCOUNT}/${this.selectedRecord.user_id}`, formData).subscribe({
+          next: (res: any) => {
+            this.snackBar.open('Update successful!', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            });
+            console.log('API Response:', res);
+          },
+          error: (error: any) => {
+            this.snackBar.open('Update failed. Please try again.', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            });
+            console.error('API Error:', error);
+          }
+        });
+      } else {
+        this.http.post(API_URL + ENDPOINTS.SIGNUP, formData).subscribe({
+          next: (res: any) => {
+            this.snackBar.open('Registration successful!', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            });
+            console.log('API Response:', res);
+          },
+          error: (error: any) => {
+            this.snackBar.open('Registration failed. Please try again.', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            });
+            console.error('API Error:', error);
+          }
+        });
+      }
+    }
+  }
+  deleteElement(element: any) {
+    console.log(`Delete ${element.name} (ID: ${element.user_id})`);
+    alert(`Deleting: ${element.name} (User ID: ${element.user_id})`);
   }
 
-  openUserDrawer(element: TableUser) {
-    this.selectedUser = element;
+  openUserDrawer() {
+    console.log(this.selectedRecord)
+    if (this.isEdit) {
+      this.userForm.patchValue(this.selectedRecord);
+    }
     this.isDrawerOpen = true;
   }
 
@@ -104,16 +183,15 @@ export class Doctor {
   }
 
   mapAndSetDataSource(users: any[]): void {
-    const mappedUsers: TableUser[] = users.map(user => ({
-      user_id: user.user_id,
-      userName: user.userName,
+    const mappedUsers: any[] = users.map(user => ({
+      user_id: user.id,
+      name: user.name,
       email: user.email,
       phone: user.phone_number,
       contact: user.email,
       aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
       address: user.address,
       city: user.city,
-      date: this.datePipe.transform(user.last_location_update, 'mediumDate') || '',
       aadhaarUrl: user.aadhaar_card_attachment || null,
       originalUser: user
     }));
@@ -126,17 +204,5 @@ export class Doctor {
     if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
-  }
-
-  getUsers() {
-    this.http.get(API_URL + ENDPOINTS.GET_DOCTORS).subscribe({
-      next: (res: any) => {
-        this.users = res;
-        this.mapAndSetDataSource(this.users);
-      },
-      error: (err) => {
-        console.error('Error fetching users:', err);
-      }
-    });
   }
 }

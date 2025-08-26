@@ -1,3 +1,3 @@
 export const environment = {
-    apiUrl: 'https://vitoxyzcrm.onrender.com'
+    apiUrl: 'https://vitoxyzcrm-bosc.onrender.com'
 };

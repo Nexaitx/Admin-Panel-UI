@@ -80,42 +80,50 @@ export class Roles {
     }
   }
 
-  deleteElement(element: any): void {
-    const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '350px',
-      data: {
-        title: 'Confirm Deletion',
-        message: `Are you sure you want to delete the role "${element.roleType}"? This action cannot be undone.`,
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel'
-      }
-    });
+deleteElement(element: any): void {
+  const dialogRef = this.dialog.open(ConfirmationDialog, {
+    width: '350px',
+    data: {
+      title: 'Confirm Deletion',
+      message: `Are you sure you want to delete the role "${element.roleType}"? This action cannot be undone.`,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }
+  });
+  // ... (previous code)
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.http.delete(API_URL + ENDPOINTS.DELETE_ROLE + element.id).subscribe({
-          next: () => {
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.http.delete(API_URL + ENDPOINTS.DELETE_ROLE + element.id, { responseType: 'text' }).subscribe({
+        next: (res: any) => {
+          // The response is now a text string
+          if (res === 'Role deleted successfully') {
             this.getRoles();
             this.snackBar.open('Role deleted successfully!', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-success']
             });
-          },
-          error: err => {
-            console.error(err);
-            this.snackBar.open('Error deleting role. Please try again.', 'Close', {
+          } else {
+            // Handle unexpected text response
+            this.snackBar.open('Error deleting role. Unexpected response.', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-error']
             });
           }
-        });
-      } else {
-        this.snackBar.open('Deletion cancelled.', 'Close', {
-          duration: 2000,
-        });
-      }
-    });
-  }
+        },
+        error: error => {
+          console.error(error);
+          this.snackBar.open('Error deleting role. Please try again.', 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      });
+    } else {
+      // ... (rest of the code)
+    }
+  });
+}
 
   openUserDrawer(element?: any) {
     this.isEdit = !!element;
