@@ -37,5 +37,10 @@ export const ENDPOINTS = {
     GET_ACCOUNTS: '/getAllAccounts',
     UPDATE_ACCOUNT: '/updateAccount',
     DELETE_ACCOUNT: '/deleteAccount/',
-    GET_ACCOUNT_BY_ROLE: '/getAccountByRole'
+    GET_ACCOUNT_BY_ROLE: '/getAccountByRole',
+
+    // Get Bookings
+    GET_PREVIOUS_BOOKINGS: '/getPastBookings',
+    GET_ONGOING_BOOKINGS: '/getOnGoingBookings',
+    GET_UPCOMING_BOOKINGS: '/getUpcomingBookings'
 };

@@ -27,7 +27,7 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
 };
 
 @Component({
-  selector: 'app-doctor',
+  selector: 'app-pharmacist',
   imports: [MatCardModule,
     MatTableModule,
     MatSortModule,
@@ -41,11 +41,11 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
     MatSidenavModule,
     MatSelectModule,
     ReactiveFormsModule],
-  templateUrl: './doctor.html',
-  styleUrl: './doctor.scss'
+  templateUrl: './pharmacist.html',
+  styleUrl: './pharmacist.scss'
 })
-export class Doctor {
-  http = inject(HttpClient);
+export class Pharmacist {
+ http = inject(HttpClient);
   fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   accounts: any[] = [];
@@ -71,7 +71,7 @@ export class Doctor {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
-      role: ['doctor', Validators.required]
+      role: ['pharmacist', Validators.required]
     }, { validators: passwordMatchValidator });
   }
 
@@ -112,7 +112,7 @@ export class Doctor {
   }
 
   getAccounts() {
-    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/doctor').subscribe((res: any) => {
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/pharmacist').subscribe((res: any) => {
       this.accounts = res;
       this.mapAndSetDataSource(this.accounts);
     })

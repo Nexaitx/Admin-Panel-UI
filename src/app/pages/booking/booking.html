@@ -1,1 +1,19 @@
-<p>booking works!</p>
+<mat-tab-group (selectedIndexChange)="onTabChange($event)">
+    <mat-tab label="Previous Bookings"></mat-tab>
+    <mat-tab label="OnGoing Bookings"></mat-tab>
+    <mat-tab label="UpComing Bookings"></mat-tab>
+</mat-tab-group>
+
+<div class="p-4">
+    @if(activeBookingType === 'previous') {
+    <app-previous [booking]="activeBookingType"></app-previous>
+    }
+    @else if(activeBookingType === 'onGoing')
+    {
+    <app-on-going-booking [booking]="activeBookingType"></app-on-going-booking>
+    }
+    @else if(activeBookingType === 'upComing')
+    {
+    <app-up-coming-booking [booking]="activeBookingType"></app-up-coming-booking>
+    }
+</div>
