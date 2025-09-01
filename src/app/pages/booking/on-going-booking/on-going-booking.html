@@ -1,6 +1,11 @@
 <div class="">
+    <mat-form-field appearance="outline">
+        <mat-label>Search bookings</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="e.g. john" #input class="rounded-md">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
     <div class="scrollableTable">
-        <table mat-table [dataSource]="dataSource" class="w-full min-w-[1000px]">
+        <table mat-table [dataSource]="dataSource" matSort>
 
             <!-- ID Column -->
             <ng-container matColumnDef="id" sticky="true">
@@ -87,6 +92,8 @@
             <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
         </table>
     </div>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of bookings"
+        class="mt-4 rounded-lg shadow-sm"></mat-paginator>
 
     <div *ngIf="!isLoading && dataSource.data.length === 0" class="p-8 text-center text-gray-500">
         No bookings to display.
