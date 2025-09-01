@@ -58,7 +58,7 @@ export class Login {
           duration: 3000,
           panelClass: ['snackbar-success']
         });
-        this.router.navigate(['/dashboard']);
+  this.router.navigate(['/app/dashboard']);
       }
     },
       error => {

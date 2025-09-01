@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+    <a href="#">
+        <img src="/assets/images/logo.png" alt="Logo" style="height:40px">
+    </a>
+
+    <button mat-icon-button (click)="toggleMenu()" class="menu-toggler d-none">
+        <mat-icon>menu</mat-icon>
+    </button>
+
+    <div class="flex-grow d-none d-md-flex" [ngClass]="{'show-menu': isMenuOpen}">
+        <button mat-button (click)="toggleMenu()">About Us</button>
+        <button mat-button (click)="toggleMenu()">Why Us</button>
+        <button mat-button (click)="toggleMenu()">Services</button>
+        <button mat-button (click)="toggleMenu()">How It Works</button>
+    </div>
+
+    <div class="flex-row">
+        <button mat-button>Login</button>
+        <button class="px-3 ms-2 btn-sm btn btn-primary">Sign Up</button>
+    </div>
+</mat-toolbar>
+
+<app-login></app-login>

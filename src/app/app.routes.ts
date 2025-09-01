@@ -5,6 +5,10 @@ import { AuthLayout } from './layouts/auth-layout/auth-layout';
 export const routes: Routes = [
     {
         path: '',
+        loadComponent: () => import('./layouts/main-ui/main-ui').then(m => m.MainUi),
+    },
+    {
+        path: 'app',
         canActivate: [authGuard],
         component: MainLayout,
         children: [
@@ -145,23 +149,23 @@ export const routes: Routes = [
             }
         ]
     },
-    {
-        path: '',
-        component: AuthLayout,
-        canActivate: [redirectIfAuthenticated], // Use redirectIfAuthenticated guard if needed
-        children: [
-            {
-                path: 'login',
-                loadComponent: () => import('./pages/login/login').then(m => m.Login),
-            },
-            {
-                path: 'signup',
-                loadComponent: () => import('./pages/signup/signup').then(m => m.Signup),
-            },
-        ]
-    },
-    {
-        path: '**',
-        redirectTo: 'login'
-    }
+    // {
+    //     path: '',
+    //     component: AuthLayout,
+    //     canActivate: [redirectIfAuthenticated], // Use redirectIfAuthenticated guard if needed
+    //     children: [
+    //         {
+    //             path: 'login',
+    //             loadComponent: () => import('./pages/login/login').then(m => m.Login),
+    //         },
+    //         {
+    //             path: 'signup',
+    //             loadComponent: () => import('./pages/signup/signup').then(m => m.Signup),
+    //         },
+    //     ]
+    // },
+    // {
+    //     path: '**',
+    //     redirectTo: 'login'
+    // }
 ];

@@ -1,0 +1,45 @@
+mat-toolbar {
+    font-family: sans-serif !important;
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+}
+
+/* Hide navigation links on small screens by default */
+.flex-grow {
+  display: none;
+  flex-direction: column;
+}
+
+/* Show the menu when the 'show-menu' class is active */
+.show-menu {
+  display: flex !important;
+  position: absolute;
+  top: 64px; /* Adjust based on your toolbar height */
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 1rem;
+  background: white;
+  color: #000;
+}
+
+/* On medium and larger screens, display navigation links horizontally */
+@media (min-width: 768px) {
+  .flex-grow {
+    display: flex;
+    flex-direction: row;
+    position: static;
+    padding: 0;
+  }
+}
+
+@media (max-width: 767px) {
+    .menu-toggler {
+        display: block !important;
+    }
+}
+/* Hide the hamburger button on medium and larger screens */
+.d-md-none {
+  display: none;
+}

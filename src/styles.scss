@@ -2,7 +2,7 @@
 
 html {
   @include mat.theme((color: mat.$cyan-palette,
-      typography: ( // plain-family: Roboto,
+      typography: (
         brand-family: Open Sans,
         bold-weight: 900,
         medium-weight: 500,
@@ -12,6 +12,9 @@ html {
     ));
 }
 
+html, body {
+  font-family: Plus Jakarta Sans !important
+}
 .drawer-bottom {
   position: sticky;
   bottom: 0;

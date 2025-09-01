@@ -20,7 +20,7 @@ export const redirectIfAuthenticated: CanActivateFn = (route, state) => {
   const router = inject(Router);
   // Check if the user is authenticated
   if(auth.isAuthenticated()){
-    router.navigate(['/dashboard']);
+  router.navigate(['/app/dashboard']);
     return false;
   }
 
