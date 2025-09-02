@@ -9,6 +9,7 @@ import { Auth } from '../../core/services/auth';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
+import { Support } from '../../pages/support/support';
 
 @Component({
   selector: 'app-main-layout',
@@ -21,7 +22,8 @@ import { CommonModule } from '@angular/common';
     MatIconModule,
     MatTooltipModule,
     MatMenuModule,
-    CommonModule
+    CommonModule,
+    Support
   ],
   standalone: true,
   templateUrl: './main-layout.html',

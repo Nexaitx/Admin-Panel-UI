@@ -88,11 +88,6 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
-                path: 'reassign-duties',
-                loadComponent: () => import('./pages/reassign-duties/reassign-duties').then(m => m.ReassignDuties),
-                canActivate: [authGuard],
-            },
-            {
                 path: 'refund-handling',
                 loadComponent: () => import('./pages/refund-handling/refund-handling').then(m => m.RefundHandling),
                 canActivate: [authGuard],

@@ -1,1 +1,20 @@
-<p>support works!</p>
+@if(!isChatWindowVisible) {
+<div class="chat-toggle" (click)="openChat()">
+    <mat-icon>support_agent</mat-icon>
+</div>
+}
+
+@if(isChatWindowVisible) {
+<div class="chat-container">
+    <mat-icon (click)="closeChat()">close</mat-icon>
+    <div class="chat-content">
+        <p>Welcome! How can I help you today?</p>
+    </div>
+    <div class="chat-actions">
+        <textarea class="chat-input form-control me-2" placeholder="Type your message..."></textarea>
+        <button matMiniFab>
+            <mat-icon>send</mat-icon>
+        </button>
+    </div>
+</div>
+}
