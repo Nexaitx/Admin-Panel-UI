@@ -45,3 +45,8 @@ mat-drawer-content {
 .mat-mdc-card-content:first-child {
   padding: 0 !important;
 }
+
+.form-control:focus {
+  border-color: #dee2e6 !important;
+  box-shadow: none !important;
+}

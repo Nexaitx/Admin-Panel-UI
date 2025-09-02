@@ -47,13 +47,13 @@ export class Signup {
       email: [''],
       password: [''],
       confirmPassword: [''],
-      roleType: [],
+      roleType: [''],
     });
   }
 
   ngOnInit() {
     this.http.get(API_URL + ENDPOINTS.GET_ROLES).subscribe((res: any) => {
-      this.roles = res.role;
+      this.roles = res.role.filter((r: any) => r.roleType !== 'Admin' && r.roleType !== 'admin');
     });
   }
 
