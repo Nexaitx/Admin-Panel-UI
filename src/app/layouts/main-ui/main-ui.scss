@@ -1,8 +1,8 @@
 mat-toolbar {
-    font-family: sans-serif !important;
-    display: flex;
-    justify-content: space-between;
-    background: #fff;
+  font-family: sans-serif !important;
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
 }
 
 /* Hide navigation links on small screens by default */
@@ -15,7 +15,8 @@ mat-toolbar {
 .show-menu {
   display: flex !important;
   position: absolute;
-  top: 64px; /* Adjust based on your toolbar height */
+  top: 64px;
+  /* Adjust based on your toolbar height */
   left: 0;
   width: 100%;
   z-index: 1000;
@@ -35,14 +36,16 @@ mat-toolbar {
 }
 
 @media (max-width: 767px) {
-    .menu-toggler {
-        display: block !important;
-    }
+  .menu-toggler {
+    display: block !important;
+  }
 }
+
 /* Hide the hamburger button on medium and larger screens */
 .d-md-none {
   display: none;
 }
+
 .banner-heading {
   font-weight: 600 !important;
   width: 80%;
@@ -50,8 +53,9 @@ mat-toolbar {
 
 .banner-p {
   font-size: 14px;
-    width: 80%;
+  width: 80%;
 }
+
 .banner {
   background-image: url('../../../assets/images/bannerBG.png');
 }
@@ -60,15 +64,40 @@ mat-toolbar {
 
 // Default styling for the active button
 .active-auth-btn {
-    background-color: #14bbc1 !important; // Bootstrap's btn-primary color
-    color: white !important;
-    border-radius: 5px; // Add border-radius for styling
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+  background-color: #14bbc1 !important; // Bootstrap's btn-primary color
+  color: white !important;
+  border-radius: 5px; // Add border-radius for styling
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
 }
 
 // Ensure the 'Login' button doesn't have a background when not active
 .mat-button {
-    background-color: transparent !important;
-    color: inherit !important;
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+.about-list {
+  border-radius: 100%;
+  background: #14bbc1;
+  color: #fff !important;
+  height: 25px;
+
+  mat-icon {
+    font-size: 15px;
+    padding: 4px;
+  }
+}
+
+.text-warning {
+  background: #fff6e0;
+
+}
+
+.about-list-height {
+  line-height : 1;
+}
+
+h1 {
+  font-weight: 600;
 }

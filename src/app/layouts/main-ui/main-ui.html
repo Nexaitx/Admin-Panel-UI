@@ -15,18 +15,12 @@
     </div>
 
     <div class="flex-row">
-        <button
-            mat-button
-            (click)="authUI = 'login'"
-            [ngClass]="{'active-auth-btn': authUI === 'login'}"
+        <button mat-button (click)="authUI = 'login'" [ngClass]="{'active-auth-btn': authUI === 'login'}"
             class="rounded-pill btn btn-sm px-3">
             Login
         </button>
-        
-        <button
-            mat-button
-            (click)="authUI = 'signup'"
-            [ngClass]="{'active-auth-btn': authUI === 'signup'}"
+
+        <button mat-button (click)="authUI = 'signup'" [ngClass]="{'active-auth-btn': authUI === 'signup'}"
             class="px-3 ms-2 btn-sm btn rounded-pill">
             Sign Up
         </button>
@@ -51,6 +45,113 @@
                 @if(authUI === 'signup'){
                 <app-signup></app-signup>
                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 col-12">
+            <div>
+                <img src="../../../assets/images/about.png" alt="">
+            </div>
+        </div>
+
+        <div class="col-md-6 col-12 d-flex justify-content-center">
+            <div class="mt-3">
+                <h6 class="mb-3"> <span class="text-warning p-2 rounded">Why Vitoxyz Connect?</span></h6>
+                <h1>One platform. Two solutions. One healthier world.</h1>
+                <div class="d-flex align-items-center my-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Verified Professionals </h4>
+                        <small>Background-checked and experienced staff</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Quick Booking  </h4>
+                        <small>Easy scheduling with instant confirmation</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Healthcare Focused  </h4>
+                        <small>Specialized staff for hospitals, clinics & home care</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Home Support Services  </h4>
+                        <small>Babysitters, guards, and home nurses available anytime</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+
+        <div class="col-md-6 col-12 d-flex justify-content-center">
+            <div class="mt-3">
+                <h6 class="mb-3"> <span class="text-warning p-2 rounded">For Individuals & Patients</span></h6>
+                <h1>Services We Offer</h1>
+                <div class="d-flex align-items-center my-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Verified Professionals </h4>
+                        <small>Background-checked and experienced staff</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Quick Booking  </h4>
+                        <small>Easy scheduling with instant confirmation</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Healthcare Focused  </h4>
+                        <small>Specialized staff for hospitals, clinics & home care</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="about-list me-3">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="about-list-height">
+                        <h4 class="highlight mb-0">Home Support Services  </h4>
+                        <small>Babysitters, guards, and home nurses available anytime</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-12">
+            <div class="mt-3">
+                <img src="../../../assets/images/service.png" alt="" class="w-100">
             </div>
         </div>
     </div>
