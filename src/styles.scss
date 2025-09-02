@@ -13,7 +13,7 @@ html {
 }
 
 html, body {
-  font-family: Plus Jakarta Sans !important
+  font-family: sans-serif !important
 }
 .drawer-bottom {
   position: sticky;
@@ -31,6 +31,9 @@ mat-drawer-content {
 .btn-primary {
   background: #14bbc1 !important;
   border: none !important
+}
+.highlight {
+  color: #14bbc1 !important;
 }
 
 .table-container {

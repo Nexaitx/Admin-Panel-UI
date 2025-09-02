@@ -1,60 +1,70 @@
 <div class="auth-wrapper d-flex justify-content-center mt-3">
-  <div class="auth-card w-75">
+  <div class="auth-card bg-white p-3 rounded">
     <div class="auth-card-header">
-      <h3>Welcome To Vitoxyz Admin Panel!</h3>
-      <div class="auth-card-title">Sign Up</div>
+      <h3>Sign In To Your Account.</h3>
     </div>
     <div class="auth-card-content">
       <div class="signup-form-section">
         <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit()">
           <div class="row">
-            <mat-form-field appearance="outline" class=" col-md-6 mt-3">
-              <mat-label>Name</mat-label>
-              <input matInput type="text" formControlName="name" required>
-              <mat-icon matSuffix>person</mat-icon>
-            </mat-form-field><br />
+            <div class="col-md-6 mb-3">
+              <label for="name" class="form-label">Name</label>
+              <div class="input-group">
+                <input type="text" id="name" class="form-control" formControlName="name" required>
+                <span class="input-group-text"><i class="material-icons">person</i></span>
+              </div>
+            </div>
 
-            <mat-form-field appearance="outline" class=" col-md-6 mt-3">
-              <mat-label>Role</mat-label>
-              <mat-select formControlName="roleType" required>
-                <mat-option value="" selected>Select Role</mat-option>
+            <div class="col-md-6 mb-3">
+              <label for="roleType" class="form-label">Role</label>
+              <select id="roleType" class="form-control" formControlName="roleType" required>
+                <option value="" selected>Select Role</option>
                 @for(r of roles; track r.roleType) {
-                <mat-option [value]="r.roleType">
-                  {{ r.roleType }}
-                </mat-option>
+                  <option [value]="r.roleType">
+                    {{ r.roleType }}
+                  </option>
                 }
-              </mat-select>
-            </mat-form-field>
+              </select>
+            </div>
 
-            <mat-form-field appearance="outline" class=" col-md-6 mt-3">
-              <mat-label>Phone Number</mat-label>
-              <input matInput type="number" formControlName="phoneNumber" required>
-              <mat-icon matSuffix>phone</mat-icon>
-            </mat-form-field><br />
+            <div class="col-md-6 mb-3">
+              <label for="phoneNumber" class="form-label">Phone Number</label>
+              <div class="input-group">
+                <input type="text" id="phoneNumber" class="form-control" formControlName="phoneNumber" required>
+                <span class="input-group-text"><i class="material-icons">phone</i></span>
+              </div>
+            </div>
 
-            <mat-form-field appearance="outline" class=" col-md-6">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" formControlName="email" required>
-              <mat-icon matSuffix>email</mat-icon>
-            </mat-form-field><br />
+            <div class="col-md-6 mb-3">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-group">
+                <input type="email" id="email" class="form-control" formControlName="email" required>
+                <span class="input-group-text"><i class="material-icons">email</i></span>
+              </div>
+            </div>
 
-            <mat-form-field appearance="outline" class=" col-md-6">
-              <mat-label>Password</mat-label>
-              <input matInput type="password" formControlName="password" required>
-              <mat-icon matSuffix>lock</mat-icon>
-            </mat-form-field>
+            <div class="col-md-6 mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <input type="password" id="password" class="form-control" formControlName="password" required>
+                <span class="input-group-text"><i class="material-icons">lock</i></span>
+              </div>
+            </div>
 
-            <mat-form-field appearance="outline" class=" col-md-6">
-              <mat-label>Confirm Password</mat-label>
-              <input matInput type="password" formControlName="confirmPassword" required>
-              <mat-icon matSuffix>lock</mat-icon>
-            </mat-form-field><br />
+            <div class="col-md-6 mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <div class="input-group">
+                <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword" required>
+                <span class="input-group-text"><i class="material-icons">lock</i></span>
+              </div>
+            </div>
+
           </div>
-          <button mat-raised-button color="primary" type="submit" class="full-width-button">Sign Up</button>
+          <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
-        <div class="d-flex justify-content-between align-items-baseline mt-3">
+        <div class="d-flex justify-content-center align-items-baseline mt-3">
           <p>Already have an account?</p>
-          <button mat-button color="accent" [routerLink]="['/login']">Login</button>
+          <button class="btn btn-link highlight" [routerLink]="['/login']">Login</button>
         </div>
       </div>
     </div>

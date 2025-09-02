@@ -15,9 +15,43 @@
     </div>
 
     <div class="flex-row">
-        <button mat-button>Login</button>
-        <button class="px-3 ms-2 btn-sm btn btn-primary">Sign Up</button>
+        <button
+            mat-button
+            (click)="authUI = 'login'"
+            [ngClass]="{'active-auth-btn': authUI === 'login'}"
+            class="rounded-pill btn btn-sm px-3">
+            Login
+        </button>
+        
+        <button
+            mat-button
+            (click)="authUI = 'signup'"
+            [ngClass]="{'active-auth-btn': authUI === 'signup'}"
+            class="px-3 ms-2 btn-sm btn rounded-pill">
+            Sign Up
+        </button>
     </div>
 </mat-toolbar>
-
-<app-login></app-login>
+<div class="banner">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6 col-12 d-flex justify-content-center">
+                <div class="w-75">
+                    <h1 class="banner-heading">Your <span class="highlight">Trusted App</span> for Health, Care &
+                        Protection</h1>
+                    <h5 class="highlight">Life gets busy — but care shouldn't wait</h5>
+                    <p class="banner-p">With Vitoxyz you can easily book reliable nurses, hire professional guards,
+                        consult expert
+                        dietitians, and order medicines — all in just a few taps.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                @if(authUI === 'login'){
+                <app-login></app-login>}
+                @if(authUI === 'signup'){
+                <app-signup></app-signup>
+                }
+            </div>
+        </div>
+    </div>
+</div>
