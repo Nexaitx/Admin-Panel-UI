@@ -3,6 +3,9 @@ mat-toolbar {
   display: flex;
   justify-content: space-between;
   background: #fff;
+  top: 0;
+  z-index: 9999;
+  position: fixed;
 }
 
 /* Hide navigation links on small screens by default */
@@ -95,9 +98,13 @@ mat-toolbar {
 }
 
 .about-list-height {
-  line-height : 1;
+  line-height: 1;
 }
 
 h1 {
   font-weight: 600;
+}
+
+.container {
+  margin-top: 6% !important;
 }
