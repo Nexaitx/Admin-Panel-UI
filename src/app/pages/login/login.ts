@@ -39,6 +39,7 @@ export class Login {
   private fb = inject(FormBuilder);
   http = inject(HttpClient);
   loginForm!: FormGroup;
+  showPassword: boolean = false;
   private _snackBar = inject(MatSnackBar);
 
   constructor() {
@@ -48,6 +49,9 @@ export class Login {
     });
   }
 
+  togglePasswordVisibility() {
+this.showPassword = !this.showPassword;
+  }
   onLoginSubmit(): void {
     this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
       if (res) {

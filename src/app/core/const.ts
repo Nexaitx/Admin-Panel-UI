@@ -42,5 +42,9 @@ export const ENDPOINTS = {
     // Get Bookings
     GET_PREVIOUS_BOOKINGS: '/getPastBookings',
     GET_ONGOING_BOOKINGS: '/getOnGoingBookings',
-    GET_UPCOMING_BOOKINGS: '/getUpcomingBookings'
+    GET_UPCOMING_BOOKINGS: '/getUpcomingBookings',
+
+    // GPS
+    GET_GPS_DEVIATION_ALERTS: '/gps/Deviation',
+
 };
