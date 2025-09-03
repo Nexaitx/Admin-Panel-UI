@@ -1,1 +1,49 @@
-<p>gps-live-monitoring works!</p>
+<div class="mt-2">
+    <mat-form-field appearance="outline">
+        <mat-label>Search GPS Monitoring</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="e.g. GPS Live Monitoring" #input class="rounded-md">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div class="scrollableTable overflow-x-auto">
+        <table mat-table [dataSource]="dataSource" class="bg-white" matSort>
+
+            <ng-container matColumnDef="userId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>User Id</th>
+                <td mat-cell *matCellDef="let element">{{element.userId}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="userName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name</th>
+                <td mat-cell *matCellDef="let element">{{element.userName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="staffId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Id</th>
+                <td mat-cell *matCellDef="let element">{{element.staffId}}</td>
+            </ng-container>
+            <ng-container matColumnDef="staffName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Name</th>
+                <td mat-cell *matCellDef="let element">{{element.staffName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="distance">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Distance</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.distance_meters | number:'1.0-2'}} m
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsToDisplay;" class="hover:bg-gray-100 transition-colors">
+            </tr>
+        </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of alerts"
+        class="mt-4 rounded-lg shadow-sm"></mat-paginator>
+
+    <div *ngIf="dataSource.data.length === 0 && !isLoading" class="p-8 text-center text-gray-500">
+        No alerts to display.
+    </div>
+</div>
