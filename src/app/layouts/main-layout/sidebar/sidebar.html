@@ -34,7 +34,7 @@
             </a>
             <a mat-list-item routerLink="/app/pharmaceuticals" routerLinkActive="active-link">
                 <span class="sidebar-item-content">
-                    <mat-icon>healing</mat-icon><span>Pharmacist</span>
+                    <mat-icon>healing</mat-icon><span>Pharmaceuticals</span>
                 </span>
             </a>
             <a mat-list-item routerLink="/app/staff" routerLinkActive="active-link">
@@ -65,6 +65,13 @@
             <mat-icon class="material-icons">location_on</mat-icon><span>GPS Live Monitoring</span>
         </span>
     </a>
+
+    <a mat-list-item routerLink="/app/gps-live-deviation" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">sensors</mat-icon><span>GPS Live Deviation</span>
+        </span>
+    </a>
+
     <a mat-list-item routerLink="/app/bulk-assignments" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">group</mat-icon><span>Bulk Assignments</span>
@@ -73,6 +80,18 @@
     <a mat-list-item routerLink="/app/override-Duties" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">swap_horiz</mat-icon><span>Override Duties</span>
+        </span>
+    </a>
+
+    <a mat-list-item routerLink="/app/overtime-approval" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">access_time</mat-icon><span>Overtime Approval</span>
+        </span>
+    </a>
+
+    <a mat-list-item routerLink="/app/roles" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">group</mat-icon><span>Roles</span>
         </span>
     </a>
     <mat-expansion-panel mat-list-item class="mat-elevation-z0">
@@ -113,7 +132,7 @@
                     <mat-icon>campaign</mat-icon><span>Marketing</span>
                 </span>
             </a>
-            
+
             <a mat-list-item routerLink="/app/tools" routerLinkActive="active-link">
                 <span class="sidebar-item-content">
                     <mat-icon>construction</mat-icon><span>Tools</span>
@@ -126,23 +145,4 @@
             </a>
         </mat-nav-list>
     </mat-expansion-panel>
-    <a mat-list-item routerLink="/app/overtime-approval" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">access_time</mat-icon><span>Overtime Approval</span>
-        </span>
-    </a>
-    
-    <a mat-list-item routerLink="/app/roles" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">group</mat-icon><span>Roles</span>
-        </span>
-    </a>
-
-    <a mat-list-item routerLink="/app/gps-live-deviation" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">sensors</mat-icon><span>GPS Live Deviation</span>
-        </span>
-    </a>
-
-
 </mat-nav-list>
