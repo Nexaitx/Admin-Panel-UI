@@ -34,12 +34,12 @@ export class Dashboard {
     });
 
     // get dieticians
-    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + 'Dietician').subscribe((res: any) => {
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Dietician').subscribe((res: any) => {
       this.dieticians = res;
     });
 
     // get Doctors
-    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + 'Admin').subscribe((res: any) => {
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Admin').subscribe((res: any) => {
       this.doctors = res;
     });
 
