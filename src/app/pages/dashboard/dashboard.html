@@ -1,60 +1,60 @@
-<div>{{role}}</div>
+<h4 class="highlight mb-0">Welcome Back, {{userProfile?.userName}}!</h4>
+<small class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</small>
 <div class="row p-2">
-  <div class="card col-md-4" aria-hidden="true">
-    <div class="card-body">
-      <h5 class="card-title placeholder-glow">
-        <span class="placeholder col-6"></span>
-      </h5>
-      <p class="card-text placeholder-glow">
-        <span class="placeholder col-7"></span>
-        <span class="placeholder col-4"></span>
-        <span class="placeholder col-4"></span>
-        <span class="placeholder col-6"></span>
-        <span class="placeholder col-8"></span>
-      </p>
-      <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
-    </div>
+  <div class="col-md-4">
+    <mat-card class="example-card" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>{{role}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>some text</p>
+      </mat-card-content>
+      <mat-card-footer class="example-card-footer">
+        <mat-chip-set aria-label="Chihuahua traits">
+          <mat-chip>charming</mat-chip>
+          <mat-chip>graceful</mat-chip>
+          <mat-chip>sassy</mat-chip>
+        </mat-chip-set>
+      </mat-card-footer>
+    </mat-card>
+
   </div>
 
-
-  <div class="card col-md-4 mx-2" aria-hidden="true">
-    <div class="card-body">
-      <h5 class="card-title placeholder-glow">
-        <span class="placeholder col-6"></span>
-      </h5>
-      <p class="card-text placeholder-glow">
-        <span class="placeholder col-7"></span>
-        <span class="placeholder col-4"></span>
-        <span class="placeholder col-4"></span>
-        <span class="placeholder col-6"></span>
-        <span class="placeholder col-8"></span>
-      </p>
-      <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
-    </div>
+  <div class="col-md-4">
+    <mat-card class="example-card" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title class="text-muted">Accounts</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="text-muted">lorem ipsum text...</p>
+      </mat-card-content>
+      <mat-card-footer class="example-card-footer">
+        <div id="chart">
+          <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
+            [plotOptions]="chartOptions.plotOptions" [labels]="chartOptions.labels"></apx-chart>
+        </div>
+      </mat-card-footer>
+    </mat-card>
   </div>
 
-  <div class="card col-md-3" aria-hidden="true">
-    <div class="card-body">
-      <h5 class="card-title placeholder-glow">
-        <span class="placeholder col-6"></span>
-      </h5>
-      <p class="card-text placeholder-glow">
-        <span class="placeholder col-7"></span>
-        <span class="placeholder col-4"></span>
-        <span class="placeholder col-4"></span>
-        <span class="placeholder col-6"></span>
-        <span class="placeholder col-8"></span>
-      </p>
-      <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
-    </div>
+  <div class="col-md-4">
+    <mat-card class="example-card" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Clients & Staff Stats</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div id="chart">
+          <apx-chart [series]="chartOptionClientStaff.series" [chart]="chartOptionClientStaff.chart" [dataLabels]="chartOptionClientStaff.dataLabels"
+            [plotOptions]="chartOptionClientStaff.plotOptions" [yaxis]="chartOptionClientStaff.yaxis" [legend]="chartOptionClientStaff.legend"
+            [fill]="chartOptionClientStaff.fill" [stroke]="chartOptionClientStaff.stroke" [tooltip]="chartOptionClientStaff.tooltip"
+            [xaxis]="chartOptionClientStaff.xaxis"></apx-chart>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
-<div class="dashboard-container">
-  <h1>Dashboard</h1>
-  <p>Hi, Name! <br> Welcome to the Admin Dashboard!</p>
-</div>
+
 <div class="dashboard-content">
-  <p>Here you can manage your application settings, view statistics, and more.</p>
   <div class="dashboard-actions">
     <button mat-button color="primary" [routerLink]="['/staff']">Manage Staff</button>
     <button mat-button color="accent" [routerLink]="['/client']">View Clients/Users</button>
