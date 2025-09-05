@@ -4,7 +4,7 @@ export const ENDPOINTS = {
     // Authorization
     LOGIN: '/login',
     SIGNUP: '/signup',
-    RESET_PASSWORD: '/auth/reset-password',
+    RESET_PASSWORD: '/forgot-password',
 
     // Users
     GET_USERS: '/getAllUser',

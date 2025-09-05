@@ -1,6 +1,6 @@
 // src/app/login/login.ts (or wherever your Login component is located)
 
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Auth } from '../../core/services/auth';
@@ -41,6 +41,7 @@ export class Login {
   loginForm!: FormGroup;
   showPassword: boolean = false;
   private _snackBar = inject(MatSnackBar);
+  @Output() changeAuthUI = new EventEmitter<'login' | 'signup' | 'reset-password'>();
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -50,7 +51,7 @@ export class Login {
   }
 
   togglePasswordVisibility() {
-this.showPassword = !this.showPassword;
+    this.showPassword = !this.showPassword;
   }
   onLoginSubmit(): void {
     this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
@@ -62,7 +63,7 @@ this.showPassword = !this.showPassword;
           duration: 3000,
           panelClass: ['snackbar-success']
         });
-  this.router.navigate(['/app/dashboard']);
+        this.router.navigate(['/app/dashboard']);
       }
     },
       error => {
@@ -77,5 +78,9 @@ this.showPassword = !this.showPassword;
 
   navigateToSignup(): void {
     this.router.navigate(['/signup']);
+  }
+
+  onForgotPassword() {
+    this.changeAuthUI.emit('reset-password'); // Emit event to show reset password
   }
 }

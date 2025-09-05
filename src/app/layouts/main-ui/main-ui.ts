@@ -5,11 +5,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Signup } from '../../pages/signup/signup';
+import { ResetPassword } from '../../pages/login/reset-password/reset-password';
 
 @Component({
   selector: 'app-main-ui',
   imports: [Login,
     Signup,
+    ResetPassword,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
@@ -20,9 +22,13 @@ import { Signup } from '../../pages/signup/signup';
 })
 export class MainUi {
 isMenuOpen = false;
-authUI: 'login' | 'signup' = 'signup';
+authUI: 'login' | 'signup' | 'reset-password' = 'signup';
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  setAuthUI(state: 'login' | 'signup' | 'reset-password') {
+    this.authUI = state;
   }
 }

@@ -41,9 +41,12 @@
             </div>
             <div class="col-md-6 col-12">
                 @if(authUI === 'login'){
-                <app-login></app-login>}
+                <app-login (changeAuthUI)="setAuthUI($event)"></app-login>}
                 @if(authUI === 'signup'){
                 <app-signup></app-signup>
+                }
+                @if(authUI === 'reset-password'){
+                <app-reset-password (changeAuthUI)="setAuthUI($event)"></app-reset-password>
                 }
             </div>
         </div>

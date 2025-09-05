@@ -143,24 +143,5 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             }
         ]
-    },
-    // {
-    //     path: '',
-    //     component: AuthLayout,
-    //     canActivate: [redirectIfAuthenticated], // Use redirectIfAuthenticated guard if needed
-    //     children: [
-    //         {
-    //             path: 'login',
-    //             loadComponent: () => import('./pages/login/login').then(m => m.Login),
-    //         },
-    //         {
-    //             path: 'signup',
-    //             loadComponent: () => import('./pages/signup/signup').then(m => m.Signup),
-    //         },
-    //     ]
-    // },
-    // {
-    //     path: '**',
-    //     redirectTo: 'login'
-    // }
+    }
 ];

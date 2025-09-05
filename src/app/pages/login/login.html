@@ -6,7 +6,7 @@
     <div>
       <div class="login-form-section">
         <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
-          <div class="mb-3 mt-3">
+          <div class="mt-3">
             <label for="email" class="form-label">Email</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="material-icons">email</i></span>
@@ -18,17 +18,22 @@
             <label for="password" class="form-label">Password</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="material-icons">lock</i></span>
-              <input type="password" id="password" class="form-control password" formControlName="password" required>
-              <span class="input-group-text bg-white" (click)="togglePasswordVisibility()"><i class="material-icons highlight">
+              <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control password" formControlName="password" required>
+              <span class="input-group-text bg-white eye" (click)="togglePasswordVisibility()"><i class="material-icons highlight">
                   {{showPassword ? 'visibility_off' : 'visibility'}}</i></span>
             </div>
+
+            <div class="text-end">
+              <small class="highlight link" (click)="onForgotPassword()">Forgot Password?</small>
+            </div>
           </div>
+
 
           <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
         <div class="d-flex justify-content-center align-items-baseline mt-3">
           <p>Don't have an account?</p>
-          <span class="highlight" [routerLink]="['/signup']">&nbsp;Sign Up</span>
+          <span class="highlight link" [routerLink]="['/signup']">&nbsp;Sign Up</span>
         </div>
       </div>
     </div>
