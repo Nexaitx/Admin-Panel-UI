@@ -19,7 +19,7 @@ export const ENDPOINTS = {
     CREATE_DIETPLAN: '/api/dietplans/create',
     UPDATE_DIETPLAN: '/api/dietplans/',
     DELETE_DIETPLAN: '/api/dietplans/',
-    GET_DIETPLAN: '/api/dieticians/getAllDietPlan',
+    GET_DIETPLAN: '/getAllDietPlan',
 
     // Diet Plans Subscription Plans
     CREATE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-create',
