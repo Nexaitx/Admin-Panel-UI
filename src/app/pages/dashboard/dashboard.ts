@@ -23,7 +23,7 @@ import {
 } from "ng-apexcharts";
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 
 const ELEMENT_DATA = [
@@ -117,22 +117,22 @@ export class Dashboard {
     {
       columnDef: 'staffId',
       header: 'Staff Id',
-      cell: (element: any) => `${element.staffId}`,
+      cell: (element: any) => `${element.staff?.staffId}`,
     },
     {
       columnDef: 'staff',
       header: 'Staff',
-      cell: (element: any) => `${element.staff}`,
+      cell: (element: any) => `${element.staff?.name}`,
     },
     {
       columnDef: 'user',
       header: 'User',
-      cell: (element: any) => `${element.user}`,
+      cell: (element: any) => `${element.user?.name}`,
     },
     {
       columnDef: 'location',
       header: 'Location',
-      cell: (element: any) => `${element.location}`,
+      cell: (element: any) => `${element.latitude}, ${element.longitude}`,
     },
     {
       columnDef: 'status',
@@ -140,9 +140,10 @@ export class Dashboard {
       cell: (element: any) => `${element.status}`,
     },
   ];
-  dataSource = ELEMENT_DATA;
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   displayedColumns = this.columns.map(c => c.columnDef);
   showAll: boolean = false;
+  ongoingBookings: any;
 
   constructor() {
     this.chartOptions = {
@@ -295,7 +296,7 @@ export class Dashboard {
   }
 
   updateDataSource() {
-    this.dataSource = this.showAll ? ELEMENT_DATA : ELEMENT_DATA.slice(0, 5);
+    this.dataSource.data = this.showAll ? this.dataSource.data : this.dataSource.data.slice(0, 5);
   }
 
   toggleView() {
@@ -307,7 +308,7 @@ export class Dashboard {
     switch (status) {
       case 'In Complete':
         return '#f7e1de'; // A light blue
-      case 'Complete':
+      case 'ACTIVE':
         return '#dcf8d5ff'; // A light pink
       default:
         return '';
@@ -318,7 +319,7 @@ export class Dashboard {
     switch (status) {
       case 'In Complete':
         return '#C2185B'; // A dark pink
-      case 'Complete':
+      case 'ACTIVE':
         return '#2E7D32'; // A dark green
       default:
         return '';
@@ -327,18 +328,22 @@ export class Dashboard {
 
   getData() {
     // get dietplans
-    this.http.get(API_URL + ENDPOINTS.GET_DIETPLAN).subscribe((res: any) => {
-      this.dietPlans = res;
-    });
+    // this.http.get(API_URL + ENDPOINTS.GET_DIETPLAN).subscribe((res: any) => {
+    //   this.dietPlans = res;
+    // });
 
     // get dieticians
-    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Dietician').subscribe((res: any) => {
-      this.dieticians = res;
-    });
+    // this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Dietician').subscribe((res: any) => {
+    //   this.dieticians = res;
+    // });
 
     // get Doctors
-    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Admin').subscribe((res: any) => {
-      this.doctors = res;
+    // this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Admin').subscribe((res: any) => {
+    //   this.doctors = res;
+    // });
+
+    this.http.get(API_URL + ENDPOINTS.GET_ONGOING_BOOKINGS).subscribe((res: any) => {
+      this.dataSource.data = res;
     });
 
   }

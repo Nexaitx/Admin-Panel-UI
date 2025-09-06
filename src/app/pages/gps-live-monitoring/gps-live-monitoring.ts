@@ -9,6 +9,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-gps-live-monitoring',
@@ -29,7 +30,7 @@ export class GPSLiveMonitoring {
   dataSource = new MatTableDataSource<any>();
 
   // New columns based on the provided data structure
-  columnsToDisplay = [ 'userId', 'userName', 'staffId', 'staffName', 'distance'];
+  columnsToDisplay = [ 'userName', 'userLocation', 'staffName', 'staffLocation', 'actions'];
 
   isLoading = false;
 
@@ -40,6 +41,7 @@ export class GPSLiveMonitoring {
 
   ngOnInit(): void {
     this.fetchData();
+    this.getLocation();
   }
 
   ngAfterViewInit(): void {
@@ -73,5 +75,48 @@ export class GPSLiveMonitoring {
         this.isLoading = false;
       }
     });
+  }
+
+  address: string | undefined;
+  latitude: number | undefined;
+  longitude: number | undefined;
+  errorMessage: string | undefined;
+  private apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+  private apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+
+  getAddress(latitude: number, longitude: number): Observable<any> {
+    const url = `${this.apiUrl}?latlng=${latitude},${longitude}&key=${this.apiKey}`;
+    return this.http.get(url);
+  }
+
+getLocation(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position: GeolocationPosition) => {
+          this.latitude = position.coords.latitude;
+          this.longitude = position.coords.longitude;
+          this.getAddress(this.latitude, this.longitude).subscribe(
+            (response: any) => {
+              if (response.results && response.results.length > 0) {
+                this.address = response.results[0].formatted_address;
+              } else {
+                this.address = 'Address not found.';
+              }
+            },
+            (error) => {
+              console.error('Error with geocoding API:', error);
+              this.errorMessage = 'Error fetching address.';
+            }
+          );
+        },
+        (error: GeolocationPositionError) => {
+          this.errorMessage = 'Error getting location: ' + error.message;
+          console.error('Error getting geolocation:', error);
+        }
+      );
+    } else {
+      this.errorMessage = 'Geolocation is not supported by this browser.';
+      console.error('Geolocation is not supported by this browser.');
+    }
   }
 }

@@ -8,29 +8,28 @@
     <div class="scrollableTable overflow-x-auto">
         <table mat-table [dataSource]="dataSource" class="bg-white" matSort>
 
-            <ng-container matColumnDef="userId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>User Id</th>
-                <td mat-cell *matCellDef="let element">{{element.userId}}</td>
-            </ng-container>
-
             <ng-container matColumnDef="userName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name</th>
                 <td mat-cell *matCellDef="let element">{{element.userName}}</td>
             </ng-container>
-
-            <ng-container matColumnDef="staffId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Id</th>
-                <td mat-cell *matCellDef="let element">{{element.staffId}}</td>
+            <ng-container matColumnDef="userLocation">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>User Location</th>
+                <td mat-cell *matCellDef="let element">{{element.userLatitude}} {{element.userLongitude}}</td>
             </ng-container>
+
             <ng-container matColumnDef="staffName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Name</th>
                 <td mat-cell *matCellDef="let element">{{element.staffName}}</td>
             </ng-container>
 
-            <ng-container matColumnDef="distance">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Distance</th>
+            <ng-container matColumnDef="staffLocation">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Location</th>
+                <td mat-cell *matCellDef="let element">{{element.staffLatitude}} {{element.staffLongitude}}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
                 <td mat-cell *matCellDef="let element">
-                    {{element.distance_meters | number:'1.0-2'}} m
+                    <button matButton color="primary"><mat-icon>visibility</mat-icon></button>
                 </td>
             </ng-container>
 
