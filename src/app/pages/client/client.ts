@@ -16,8 +16,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 interface TableUser {
   userName: string;
   email: string;
-  phone: string;
-  contact: string;
+  phoneNumber: string;
   aadhaar: string;
   address: string;
   city: string;
@@ -54,7 +53,7 @@ export class Client {
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
 
-  displayedColumns: string[] = ['userName', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'date', 'actions'];
+  displayedColumns: string[] = ['userName', 'email', 'phoneNumber', 'aadhaar', 'address', 'city', 'date', 'actions'];
 
   dataSource: MatTableDataSource<TableUser>;
 
@@ -68,10 +67,10 @@ export class Client {
   ngOnInit(): void {
     this.getUsers();
 
-    this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      const dataStr = `${data.userName} ${data.email} ${data.phone} ${data.contact} ${data.aadhaar} ${data.address} ${data.city} ${data.date}`.toLowerCase();
-      return dataStr.includes(filter.toLowerCase());
-    };
+    // this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
+    //   const dataStr = `${data.userName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.date}`.toLowerCase();
+    //   return dataStr.includes(filter.toLowerCase());
+    // };
   }
 
   ngAfterViewInit(): void {
@@ -107,36 +106,36 @@ export class Client {
     this.selectedUser = null;
   }
 
-  mapAndSetDataSource(users: any[]): void {
-    const mappedUsers: TableUser[] = users.map(user => ({
-      user_id: user.user_id,
-      userName: user.userName,
-      email: user.email,
-      phone: user.phone_number,
-      contact: user.email,
-      aadhaar: user.aadhaarVerified ? 'Verified' : 'Not Verified',
-      address: user.address,
-      city: user.city,
-      date: this.datePipe.transform(user.last_location_update, 'mediumDate') || '',
-      aadhaarUrl: user.aadhaar_card_attachment || null,
-      originalUser: user
-    }));
+  // mapAndSetDataSource(users: any[]): void {
+  //   const mappedUsers: TableUser[] = users.map(user => ({
+  //     user_id: user.user_id,
+  //     userName: user.userName,
+  //     email: user.email,
+  //     phoneNumber: user.phoneNumberNumber,
+  //     aadhaar: user.aadhaarVerified ? 'Verified' : 'Not Verified',
+  //     address: user.address,
+  //     city: user.city,
+  //     date: this.datePipe.transform(user.last_location_update, 'mediumDate') || '',
+  //     aadhaarUrl: user.aadhaar_card_attachment || null,
+  //     originalUser: user
+  //   }));
 
-    this.dataSource.data = mappedUsers;
+  //   this.dataSource.data = mappedUsers;
 
-    if (this.sort) {
-      this.dataSource.sort = this.sort;
-    }
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
-  }
+  //   if (this.sort) {
+  //     this.dataSource.sort = this.sort;
+  //   }
+  //   if (this.paginator) {
+  //     this.dataSource.paginator = this.paginator;
+  //   }
+  // }
 
   getUsers() {
     this.http.get(API_URL + ENDPOINTS.GET_USERS).subscribe({
       next: (res: any) => {
-        this.users = res;
-        this.mapAndSetDataSource(this.users);
+        this.dataSource.data = res
+        // this.users = res;
+        // this.mapAndSetDataSource(this.users);
       },
       error: (err) => {
         console.error('Error fetching users:', err);
