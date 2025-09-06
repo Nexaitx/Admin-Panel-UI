@@ -1,70 +1,95 @@
+<div class="container">
 <h4 class="highlight mb-0">Welcome Back, {{userProfile?.userName}}!</h4>
 <small class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</small>
-<div class="row p-2">
+<div class="row p-2 mt-3">
   <div class="col-md-4">
-    <mat-card class="example-card" appearance="outlined">
+    <mat-card class="example-card bg-white shadow" appearance="outlined">
       <mat-card-header>
-        <mat-card-title>{{role}}</mat-card-title>
+        <mat-card-title class="d-flex"> <mat-icon> person_pin</mat-icon> {{role}}</mat-card-title>
       </mat-card-header>
-      <mat-card-content>
-        <p>some text</p>
+      <hr class="my-0">
+      <mat-card-content class="text-muted m-3">
+        <small class="d-flex"><mat-icon> mail_outline</mat-icon>&nbsp;{{userProfile?.email}}</small>
+        
+        <small class="d-flex mt-2"><mat-icon> phone</mat-icon>&nbsp;{{userProfile?.phoneNumber}}</small>
       </mat-card-content>
-      <mat-card-footer class="example-card-footer">
-        <mat-chip-set aria-label="Chihuahua traits">
-          <mat-chip>charming</mat-chip>
-          <mat-chip>graceful</mat-chip>
-          <mat-chip>sassy</mat-chip>
-        </mat-chip-set>
-      </mat-card-footer>
+
+    </mat-card>
+
+    <mat-card class="example-card my-2 bg-white shadow" appearance="outlined">
+      <mat-card-header class="d-flex justify-content-between">
+        <mat-card-title>Staff Types</mat-card-title>
+        <mat-icon class="navigations" [routerLink]="['/app/staff']" matTooltip="View Staff">launch</mat-icon>
+      </mat-card-header>
+      <hr class="mb-0">
+      <mat-card-content>
+
+        <div id="chart">
+          <apx-chart [series]="chartOptionsStaffType.series" [chart]="chartOptionsStaffType.chart"
+            [labels]="chartOptionsStaffType.labels" [fill]="chartOptionsStaffType.fill"
+            [stroke]="chartOptionsStaffType.stroke" [responsive]="chartOptionsStaffType.responsive"></apx-chart>
+        </div>
+      </mat-card-content>
+
     </mat-card>
 
   </div>
 
-  <div class="col-md-4">
-    <mat-card class="example-card" appearance="outlined">
+  <div class="col-md-4 mb-2">
+    <mat-card class="example-card bg-white shadow" appearance="outlined">
       <mat-card-header>
-        <mat-card-title class="text-muted">Accounts</mat-card-title>
+        <mat-card-title>Accounts</mat-card-title>
+        <mat-card-subtitle>
+          <small class="text-muted mb-0 mt-1">Role Wise Account Overview</small>
+        </mat-card-subtitle>
       </mat-card-header>
-      <mat-card-content>
-        <p class="text-muted">lorem ipsum text...</p>
-      </mat-card-content>
-      <mat-card-footer class="example-card-footer">
+      <hr class="mb-0">
+      <mat-card-content class="example-card-footer">
         <div id="chart">
           <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
             [plotOptions]="chartOptions.plotOptions" [labels]="chartOptions.labels"></apx-chart>
         </div>
-      </mat-card-footer>
+      </mat-card-content>
     </mat-card>
   </div>
 
-  <div class="col-md-4">
-    <mat-card class="example-card" appearance="outlined">
-      <mat-card-header>
+  <div class="col-md-4 mb-2">
+    <mat-card class="example-card bg-white shadow" appearance="outlined">
+      <mat-card-header class="d-flex justify-content-between">
         <mat-card-title>Clients & Staff Stats</mat-card-title>
+        <mat-icon class="navigations" [routerLink]="['/app/client']" matTooltip="View Clients">launch</mat-icon>
       </mat-card-header>
+      <hr class="mb-0 mt-1">
       <mat-card-content>
         <div id="chart">
-          <apx-chart [series]="chartOptionClientStaff.series" [chart]="chartOptionClientStaff.chart" [dataLabels]="chartOptionClientStaff.dataLabels"
-            [plotOptions]="chartOptionClientStaff.plotOptions" [yaxis]="chartOptionClientStaff.yaxis" [legend]="chartOptionClientStaff.legend"
-            [fill]="chartOptionClientStaff.fill" [stroke]="chartOptionClientStaff.stroke" [tooltip]="chartOptionClientStaff.tooltip"
-            [xaxis]="chartOptionClientStaff.xaxis"></apx-chart>
+          <apx-chart [series]="chartOptionClientStaff.series" [chart]="chartOptionClientStaff.chart"
+            [dataLabels]="chartOptionClientStaff.dataLabels" [plotOptions]="chartOptionClientStaff.plotOptions"
+            [yaxis]="chartOptionClientStaff.yaxis" [legend]="chartOptionClientStaff.legend"
+            [fill]="chartOptionClientStaff.fill" [stroke]="chartOptionClientStaff.stroke"
+            [tooltip]="chartOptionClientStaff.tooltip" [xaxis]="chartOptionClientStaff.xaxis"></apx-chart>
         </div>
       </mat-card-content>
     </mat-card>
   </div>
 </div>
 
-<div class="dashboard-content">
-  <div class="dashboard-actions">
-    <button mat-button color="primary" [routerLink]="['/staff']">Manage Staff</button>
-    <button mat-button color="accent" [routerLink]="['/client']">View Clients/Users</button>
+<div class="row">
+  <div class="col-12">
+    <mat-card class="example-card bg-white shadow" appearance="outlined">
+      <div class="d-flex justify-content-center align-items-center my-3">
+        <div>
+          <mat-card-header>
+            <mat-card-title class="text-muted">Bookings Overview</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div id="chart">
+              <apx-chart [series]="chartOptionsBooking.series" [chart]="chartOptionsBooking.chart"
+                [labels]="chartOptionsBooking.labels" [responsive]="chartOptionsBooking.responsive"></apx-chart>
+            </div>
+          </mat-card-content>
+        </div>
+      </div>
+    </mat-card>
   </div>
-  <div class="dashboard-stats">
-    <h2>Statistics</h2>
-    <p>Here you can view important statistics about your application.</p>
-  </div>
-  <div class="dashboard-reports">
-    <h2>Reports</h2>
-    <p>Generate and view reports related to your application data.</p>
-  </div>
+</div>
 </div>

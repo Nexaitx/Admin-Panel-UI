@@ -18,8 +18,11 @@ import {
   ApexStroke,
   ApexXAxis,
   ApexFill,
-  ApexTooltip
+  ApexTooltip,
+  ApexResponsive,
 } from "ng-apexcharts";
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -41,6 +44,24 @@ export type ChartOptionClientStaff = {
   legend: ApexLegend;
 };
 
+export type ChartOptionsBooking = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  labels: any;
+};
+
+export type ChartOptionsStaffType = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  labels: any;
+  stroke: ApexStroke;
+  fill: ApexFill;
+};
+
+
+
 
 @Component({
   selector: 'app-dashboard',
@@ -49,7 +70,9 @@ export type ChartOptionClientStaff = {
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss']
@@ -68,11 +91,14 @@ export class Dashboard {
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions!: ChartOptions;
   public chartOptionClientStaff!: ChartOptionClientStaff;
+  public chartOptionsBooking!: ChartOptionsBooking;
+  public chartOptionsStaffType!: ChartOptionsStaffType;
+
   constructor() {
     this.chartOptions = {
       series: [4, 5, 7, 8],
       chart: {
-        height: 200,
+        height: 280,
         type: "radialBar"
       },
       plotOptions: {
@@ -100,21 +126,17 @@ export class Dashboard {
     this.chartOptionClientStaff = {
       series: [
         {
-          name: "Net Profit",
+          name: "Clients",
           data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
         },
         {
-          name: "Revenue",
+          name: "Staffs",
           data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-        },
-        {
-          name: "Free Cash Flow",
-          data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
         }
       ],
       chart: {
         type: "bar",
-        height: 350
+        height: 300
       },
       plotOptions: {
         bar: {
@@ -133,7 +155,7 @@ export class Dashboard {
       legend: {
         show: true,
         position: 'top',
-        horizontalAlign: 'right'
+        horizontalAlign: 'left'
       },
       xaxis: {
         categories: [
@@ -164,28 +186,78 @@ export class Dashboard {
         }
       }
     };
-}
 
-ngOnInit() {
-  console.log(this.userProfile);
-  this.getData();
-}
+    this.chartOptionsBooking = {
+      series: [44, 55, 13, 43],
+      chart: {
+        width: 380,
+        type: "pie"
+      },
+      labels: ["Previous", "On Going", "Up Coming", "Cancelled"],
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ]
+    };
 
-getData() {
-  // get dietplans
-  this.http.get(API_URL + ENDPOINTS.GET_DIETPLAN).subscribe((res: any) => {
-    this.dietPlans = res;
-  });
+    this.chartOptionsStaffType = {
+      series: [14, 23, 21, 17, 15],
+      chart: {
+        type: "polarArea"
+      },
+      labels: [
+        'Nurse', 'Baby Sitter', 'Psychiatrist', 'Physiotherapist', 'Security Guard'
+      ],
+      stroke: {
+        colors: ["#fff"]
+      },
+      fill: {
+        opacity: 0.8
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ]
+    };
+  }
 
-  // get dieticians
-  this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Dietician').subscribe((res: any) => {
-    this.dieticians = res;
-  });
+  ngOnInit() {
+    this.getData();
+  }
 
-  // get Doctors
-  this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Admin').subscribe((res: any) => {
-    this.doctors = res;
-  });
+  getData() {
+    // get dietplans
+    this.http.get(API_URL + ENDPOINTS.GET_DIETPLAN).subscribe((res: any) => {
+      this.dietPlans = res;
+    });
 
-}
+    // get dieticians
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Dietician').subscribe((res: any) => {
+      this.dieticians = res;
+    });
+
+    // get Doctors
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Admin').subscribe((res: any) => {
+      this.doctors = res;
+    });
+
+  }
 }
