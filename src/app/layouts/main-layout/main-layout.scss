@@ -1,6 +1,9 @@
 mat-toolbar {
     background-color: #14bbc1;
     color: #ffffff;
+    position: fixed;
+    z-index: 9999;
+    top:0;
 
     button {
         color: #ffffff;
@@ -12,9 +15,11 @@ mat-toolbar {
         align-items: center;
     }
 }
+mat-drawer-container {
+    margin-top:60px;
 
+}
 .main-layout {
-    min-height: calc(100vh - 64px);    
 
     .sidebar {
         width: auto;
@@ -26,5 +31,5 @@ mat-toolbar {
 }
 
 .content {
-    // height: calc(100vh - 64px);
+    // margin-top: 69px;
 }

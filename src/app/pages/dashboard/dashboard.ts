@@ -23,7 +23,27 @@ import {
 } from "ng-apexcharts";
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
+import { CommonModule } from '@angular/common';
 
+const ELEMENT_DATA = [
+  { staffId: 1, staff: 'Hydrogen', user: 1.0079, status: 'In Complete', location: 'A1' },
+  { staffId: 2, staff: 'Helium', user: 4.0026, status: 'Complete', location: 'A2' },
+  { staffId: 3, staff: 'Lithium', user: 6.941, status: 'Complete', location: 'A3' },
+  { staffId: 1, staff: 'Hydrogen', user: 1.0079, status: 'In Complete', location: 'A1' },
+  { staffId: 4, staff: 'Beryllium', user: 9.0122, status: 'Complete', location: 'A4' },
+  { staffId: 2, staff: 'Helium', user: 4.0026, status: 'Complete', location: 'A2' },
+  { staffId: 5, staff: 'Boron', user: 10.811, status: 'Complete', location: 'A5' },
+  { staffId: 6, staff: 'Carbon', user: 12.0107, status: 'In Complete', location: 'A6' },
+  { staffId: 4, staff: 'Beryllium', user: 9.0122, status: 'Complete', location: 'A4' },
+  { staffId: 7, staff: 'Nitrogen', user: 14.0067, status: 'Complete', location: 'A7' },
+  { staffId: 5, staff: 'Boron', user: 10.811, status: 'Complete', location: 'A5' },
+  { staffId: 8, staff: 'Oxygen', user: 15.9994, status: 'Complete', location: 'A8' },
+  { staffId: 6, staff: 'Carbon', user: 12.0107, status: 'In Complete', location: 'A6' },
+  { staffId: 9, staff: 'Fluorine', user: 18.9984, status: 'In Complete', location: 'A9' },
+  { staffId: 10, staff: 'Neon', user: 20.1797, status: 'Complete', location: 'A10' },
+  { staffId: 8, staff: 'OxystaffIdgen', user: 15.9994, status: 'Complete', location: 'A8' },
+];
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
@@ -60,9 +80,6 @@ export type ChartOptionsStaffType = {
   fill: ApexFill;
 };
 
-
-
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -72,7 +89,9 @@ export type ChartOptionsStaffType = {
     MatChipsModule,
     NgApexchartsModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTableModule,
+    CommonModule
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss']
@@ -93,6 +112,37 @@ export class Dashboard {
   public chartOptionClientStaff!: ChartOptionClientStaff;
   public chartOptionsBooking!: ChartOptionsBooking;
   public chartOptionsStaffType!: ChartOptionsStaffType;
+
+  columns = [
+    {
+      columnDef: 'staffId',
+      header: 'Staff Id',
+      cell: (element: any) => `${element.staffId}`,
+    },
+    {
+      columnDef: 'staff',
+      header: 'Staff',
+      cell: (element: any) => `${element.staff}`,
+    },
+    {
+      columnDef: 'user',
+      header: 'User',
+      cell: (element: any) => `${element.user}`,
+    },
+    {
+      columnDef: 'location',
+      header: 'Location',
+      cell: (element: any) => `${element.location}`,
+    },
+    {
+      columnDef: 'status',
+      header: 'Status',
+      cell: (element: any) => `${element.status}`,
+    },
+  ];
+  dataSource = ELEMENT_DATA;
+  displayedColumns = this.columns.map(c => c.columnDef);
+  showAll: boolean = false;
 
   constructor() {
     this.chartOptions = {
@@ -172,7 +222,7 @@ export class Dashboard {
       },
       yaxis: {
         title: {
-          text: "$ (thousands)"
+          // text: "$ (thousands)"
         }
       },
       fill: {
@@ -181,7 +231,7 @@ export class Dashboard {
       tooltip: {
         y: {
           formatter: function (val) {
-            return "$ " + val + " thousands";
+            return val + " records";
           }
         }
       }
@@ -241,6 +291,38 @@ export class Dashboard {
 
   ngOnInit() {
     this.getData();
+    this.updateDataSource();
+  }
+
+  updateDataSource() {
+    this.dataSource = this.showAll ? ELEMENT_DATA : ELEMENT_DATA.slice(0, 5);
+  }
+
+  toggleView() {
+    this.showAll = !this.showAll;
+    this.updateDataSource();
+  }
+
+  getStatusBackgroundColor(status: string): string {
+    switch (status) {
+      case 'In Complete':
+        return '#f7e1de'; // A light blue
+      case 'Complete':
+        return '#dcf8d5ff'; // A light pink
+      default:
+        return '';
+    }
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'In Complete':
+        return '#C2185B'; // A dark pink
+      case 'Complete':
+        return '#2E7D32'; // A dark green
+      default:
+        return '';
+    }
   }
 
   getData() {

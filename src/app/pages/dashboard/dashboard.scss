@@ -3,3 +3,23 @@
     color: #6e8192 !important;
     font-size: larger;
 }
+
+.semibold {
+    font-weight: 600;
+    color: #333335;
+}
+
+
+.text-muted {
+    color: #8c9097 !important;
+}
+
+.mat-mdc-cell, .mat-mdc-header-cell {
+    border-color: #e7ebf0  !important
+}
+
+.status {
+    font-weight: 600;
+    border-radius: 5px;
+    padding: 5px 8px;
+}
