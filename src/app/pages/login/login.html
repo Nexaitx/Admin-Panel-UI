@@ -12,30 +12,39 @@
               <span class="input-group-text bg-white"><i class="material-icons">email</i></span>
               <input type="text" id="email" class="form-control" formControlName="email" required>
             </div>
+            <div class="text-danger" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+              @if(loginForm.get('email')?.errors?.['required']) { Please enter a valid email. }
+            </div>
           </div>
 
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="material-icons">lock</i></span>
-              <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control password" formControlName="password" required>
-              <span class="input-group-text bg-white eye" (click)="togglePasswordVisibility()"><i class="material-icons highlight">
+              <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control password"
+                formControlName="password" required>
+              <span class="input-group-text bg-white eye" (click)="togglePasswordVisibility()"><i
+                  class="material-icons highlight">
                   {{showPassword ? 'visibility_off' : 'visibility'}}</i></span>
             </div>
-
-            <div class="text-end">
-              <small class="highlight link" (click)="onForgotPassword()">Forgot Password?</small>
+            <div class="text-danger" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              @if(loginForm.get('password')?.errors?.['required']) { Password is required. }
             </div>
           </div>
 
 
-          <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
-        <div class="d-flex justify-content-center align-items-baseline mt-3">
-          <p>Don't have an account?</p>
-          <span class="highlight link" [routerLink]="['/signup']">&nbsp;Sign Up</span>
-        </div>
+          <div class="text-end">
+            <small class="highlight link" (click)="onForgotPassword()">Forgot Password?</small>
+          </div>
+
+
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+      <div class="d-flex justify-content-center align-items-baseline mt-3">
+        <p>Don't have an account?</p>
+        <span class="highlight link" [routerLink]="['/signup']">&nbsp;Sign Up</span>
       </div>
     </div>
   </div>
+</div>
 </div>

@@ -1,7 +1,14 @@
-
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +19,20 @@ import { HttpClient } from '@angular/common/http';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+// Custom validator function to check if passwords match
+export const passwordMatchValidator = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  const password = control.get('password');
+  const confirmPassword = control.get('confirmPassword');
+
+  if (!password || !confirmPassword) {
+    return null;
+  }
+
+  return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+};
 
 @Component({
   selector: 'app-signup',
@@ -27,10 +48,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatIconModule,
     MatCardModule,
     MatSnackBarModule,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './signup.html',
-  styleUrl: './signup.scss'
+  styleUrl: './signup.scss',
 })
 export class Signup {
   private router = inject(Router);
@@ -39,16 +60,40 @@ export class Signup {
   private _snackBar = inject(MatSnackBar);
   signupForm!: FormGroup;
   roles: any;
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor() {
-    this.signupForm = this.fb.group({
-      name: [''],
-      phoneNumber: [''],
-      email: [''],
-      password: [''],
-      confirmPassword: [''],
-      roleType: [''],
-    });
+    this.signupForm = this.fb.group(
+      {
+        name: ['', [Validators.required, Validators.pattern('^[a-zA-Z\\s]*$')]],
+        phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required],
+        roleType: ['', Validators.required],
+      },
+      {
+        // Add the custom validator at the form group level
+        validators: passwordMatchValidator,
+      }
+    );
+  }
+
+  onKeyPress(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Check if the character is a number (0-9)
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      // If not, prevent the key press
+      event.preventDefault();
+    }
+  }
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   ngOnInit() {
@@ -58,27 +103,41 @@ export class Signup {
   }
 
   onSignupSubmit(): void {
-    this.signupForm.value.roleType = 'Admin';
-    this.http.post(API_URL + ENDPOINTS.SIGNUP, this.signupForm.value).subscribe((res: any) => {
-      if (res) {
-        this._snackBar.open('Company Created Successful!', 'Successfully', {
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          duration: 3000,
-          panelClass: ['snackbar-success']
-        });
-        this.router.navigate(['/login']);
-      }
-    }, error => {
-      //  show snackbar with error message
-      this._snackBar.open('Company Already Exists', 'Error', {
+    // Check if the form is valid before submitting
+    if (this.signupForm.invalid) {
+      this.signupForm.markAllAsTouched();
+      this._snackBar.open('Please correct the form errors.', 'Error', {
         horizontalPosition: 'end',
         verticalPosition: 'top',
         duration: 3000,
-        panelClass: ['snackbar-error']
+        panelClass: ['snackbar-error'],
       });
-      console.error('Signup failed:', error.message);
-    });
+      return;
+    }
+
+    this.signupForm.value.roleType = 'Admin';
+    this.http.post(API_URL + ENDPOINTS.SIGNUP, this.signupForm.value).subscribe(
+      (res: any) => {
+        if (res) {
+          this._snackBar.open('Company Created Successful!', 'Successfully', {
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+          });
+          this.router.navigate(['/login']);
+        }
+      },
+      (error) => {
+        this._snackBar.open('Company Already Exists', 'Error', {
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+        });
+        console.error('Signup failed:', error.message);
+      }
+    );
   }
 
   navigateToLogin(): void {

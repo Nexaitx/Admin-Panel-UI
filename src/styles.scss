@@ -2,8 +2,7 @@
 
 html {
   @include mat.theme((color: mat.$cyan-palette,
-      typography: (
-        brand-family: Open Sans,
+      typography: (brand-family: Open Sans,
         bold-weight: 900,
         medium-weight: 500,
         regular-weight: 300,
@@ -12,9 +11,11 @@ html {
     ));
 }
 
-html, body {
+html,
+body {
   font-family: sans-serif !important
 }
+
 .drawer-bottom {
   position: sticky;
   bottom: 0;
@@ -32,6 +33,7 @@ mat-drawer-content {
   background: #14bbc1 !important;
   border: none !important
 }
+
 .highlight {
   color: #14bbc1 !important;
 }
@@ -46,7 +48,35 @@ mat-drawer-content {
   padding: 0 !important;
 }
 
+.mat-mdc-cell:first-child {
+  color: #000 !important;
+}
+
+.mat-mdc-cell {
+  color: #667085 !important;
+}
+
+.mat-mdc-menu-panel {
+  background-color: #fff !important;
+}
+
 .form-control:focus {
   border-color: #dee2e6 !important;
   box-shadow: none !important;
+}
+
+.true {
+  color: rgb(38, 233, 38);
+  background: rgb(233, 249, 233);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.false {
+  color: rgb(255, 0, 0);
+  background: rgb(255, 204, 204);
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 5px;
 }
