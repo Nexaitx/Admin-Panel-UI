@@ -9,8 +9,8 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text pe-0 bg-white"
+              <div class="field">
+                <span class="input-group-text pe-0 bg-white right"
                   ><i class="material-icons">person</i></span
                 >
                 <input
@@ -57,8 +57,8 @@
 
             <div class="col-md-6 mb-3">
               <label for="phoneNumber" class="form-label">Phone Number <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text pe-0 bg-white"
+              <div class="field">
+                <span class="input-group-text pe-0 bg-white right"
                   ><i class="material-icons">phone</i></span
                 >
                 <input
@@ -79,8 +79,8 @@
 
             <div class="col-md-6 mb-3">
               <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text pe-0 bg-white"
+              <div class="field">
+                <span class="input-group-text pe-0 bg-white right"
                   ><i class="material-icons">email</i></span
                 >
                 <input
@@ -104,14 +104,14 @@
 
             <div class="col-md-6 mb-3">
               <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text pe-0 bg-white"
+              <div class="field">
+                <span class="input-group-text pe-0 bg-white right"
                   ><i class="material-icons">lock</i></span
                 >
                 <input
                   [type]="showPassword ? 'text' : 'password'"
                   id="password"
-                  class="form-control"
+                  class="form-control password-field"
                   formControlName="password"
                   required
                 />
@@ -138,14 +138,14 @@
               <label for="confirmPassword" class="form-label"
                 >Confirm Password <span class="text-danger">*</span></label
               >
-              <div class="input-group">
-                <span class="input-group-text pe-0 bg-white"
+              <div class="field">
+                <span class="input-group-text pe-0 bg-white right"
                   ><i class="material-icons">lock</i></span
                 >
                 <input
                   [type]="showConfirmPassword ? 'text' : 'password'"
                   id="confirmPassword"
-                  class="form-control"
+                  class="form-control password-field"
                   formControlName="confirmPassword"
                   required
                 />

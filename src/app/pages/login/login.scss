@@ -31,3 +31,7 @@
 .text-danger {
     font-size: 12px;
 }
+
+.input-group, .input-group > .form-control {
+    position: inherit !important;
+}

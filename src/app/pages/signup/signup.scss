@@ -8,18 +8,49 @@
         font-size: 24px !important;
     }
 }
+
 .form-control {
-    border-left: none ;
+    border-left: none;
 }
 
 select {
     border-left: 1px solid #dee2e6 !important;
 }
+
 .material-icons {
     color: #e3e3e3;
+}
+
+.right {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .eye {
     cursor: pointer;
     font-size: 14px;
+
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-control {
+    border-radius:0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-right: 1px solid #e7e4e3;
+}
+
+.password-field {
+    position: inherit !important;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+}
+
+.field {
+    display: flex;
+    align-items: center;
 }

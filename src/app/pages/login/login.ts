@@ -54,34 +54,13 @@ export class Login {
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
-  // onLoginSubmit(): void {
-  //   this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
-  //     if (res) {
-  //       this.auth.login(res?.token, res?.profile?.role?.roleType);
-  //       this._snackBar.open('Logged In Successful!', 'Successfully', {
-  //         horizontalPosition: 'end',
-  //         verticalPosition: 'top',
-  //         duration: 3000,
-  //         panelClass: ['snackbar-success']
-  //       });
-  //       this.router.navigate(['/app/dashboard']);
-  //     }
-  //   },
-  //     error => {
-  //       this._snackBar.open('Login failed. Please check your credentials.', 'Error', {
-  //         horizontalPosition: 'end',
-  //         verticalPosition: 'top',
-  //         duration: 3000,
-  //         panelClass: ['snackbar-error']
-  //       });
-  //     });
-  // }
+
   onLoginSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       this._snackBar.open('Please fill out all required fields correctly.', 'Error', {
         horizontalPosition: 'end',
-        verticalPosition: 'bottom',
+        verticalPosition: 'top',
         duration: 3000,
         panelClass: ['snackbar-error']
       });
@@ -90,18 +69,11 @@ export class Login {
 
     else {
       this.isLoading = true;
-      // Simulate an HTTP call
-      setTimeout(() => {
-        this.isLoading = false;
-        const email = this.loginForm.get('email')?.value;
-        const password = this.loginForm.get('password')?.value;
-
-
-        this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
-          if (res) {
-            this.auth.login(res?.token, res?.profile?.role?.roleType, res?.profile);
-            this._snackBar.open('Logged In Successful!', 'Successfully', {
-              horizontalPosition: 'end',
+      this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
+        if (res) {
+          this.auth.login(res?.token, res?.profile?.role?.roleType, res?.profile);
+          this._snackBar.open('Logged In Successful!', 'Successfully', {
+            horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 3000,
               panelClass: ['snackbar-success']
@@ -129,8 +101,7 @@ export class Login {
               panelClass: ['snackbar-error']
             });
           });
-      }, 2000);
-    }
+      }
   }
   navigateToSignup(): void {
     this.router.navigate(['/signup']);
