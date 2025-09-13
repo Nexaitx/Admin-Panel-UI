@@ -1,4 +1,5 @@
 <mat-nav-list>
+    @if(userProfile?.role?.roleType === 'Admin'){
     <a mat-list-item routerLink="/app/dashboard" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
@@ -44,17 +45,15 @@
             </a>
         </mat-nav-list>
     </mat-expansion-panel>
+    }
 
-    <a mat-list-item routerLink="/app/dietician-reports" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">analytics</mat-icon><span>Dietician Reports</span>
-        </span>
-    </a>
+    @if(userProfile?.role?.roleType === 'Admin'){
     <a mat-list-item routerLink="/app/bookings" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">event</mat-icon><span>Bookings</span>
         </span>
     </a>
+
     <a mat-list-item routerLink="/app/duty-logs" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">assignment</mat-icon><span>Duty Logs</span>
@@ -89,11 +88,71 @@
         </span>
     </a>
 
+    <a mat-list-item routerLink="/app/devices-and-addresses" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">important_devices</mat-icon><span>Devices & Addresses</span>
+        </span>
+    </a>
     <a mat-list-item routerLink="/app/roles" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">group</mat-icon><span>Roles</span>
         </span>
     </a>
+    }
+
+    @if(userProfile?.role?.roleType === 'Dietician') {
+    <a mat-list-item routerLink="/app/dietician-dashboard" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
+        </span>
+    </a>
+    }
+
+    @if(userProfile?.role?.roleType === 'Pharmacist') {
+    <a mat-list-item routerLink="/app/pharmacist-dashboard" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
+        </span>
+    </a>
+    }
+
+    @if(userProfile?.role?.roleType === 'Doctor') {
+    <a mat-list-item routerLink="/app/doctor-dashboard" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
+        </span>
+    </a>
+    }
+
+    @if(userProfile?.role?.roleType === 'Physiotherapist') {
+    <a mat-list-item routerLink="/app/physiotherapist-dashboard" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
+        </span>
+    </a>
+    }
+
+    @if(userProfile?.role?.roleType === 'Psychiatrist') {
+    <a mat-list-item routerLink="/app/psychiatrist-dashboard" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
+        </span>
+    </a>
+    }
+    @if(userProfile?.role?.roleType === 'Admin' || userProfile?.role?.roleType === 'Dietician'){
+    <a mat-list-item routerLink="/app/dietician-reports" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">analytics</mat-icon><span>Dietician Reports</span>
+        </span>
+    </a>
+    }
+    @if(userProfile?.role?.roleType === 'Admin'
+    || userProfile?.role?.roleType === 'Dietician'
+    || userProfile?.role?.roleType === 'Pharmacist'
+    || userProfile?.role?.roleType === 'Doctor'
+    || userProfile?.role?.roleType === 'Physiotherapist'
+    || userProfile?.role?.roleType === 'Psychiatrist'){
+
     <mat-expansion-panel mat-list-item class="mat-elevation-z0">
         <mat-expansion-panel-header>
             <mat-panel-title>
@@ -144,5 +203,7 @@
                 </span>
             </a>
         </mat-nav-list>
+
     </mat-expansion-panel>
+    }
 </mat-nav-list>

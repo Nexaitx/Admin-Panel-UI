@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, Input, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -7,30 +7,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { API_URL, ENDPOINTS } from '../../core/const';
+import { API_URL, ENDPOINTS } from '../../../core/const';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
-
-interface TableStaff {
-  staffId: number;
-  name: string;
-  category: string;
-  experience: number;
-  price: number | null;
-  gender: string;
-  shiftType: string;
-  profession: string;
-  phone_number: string;
-  originalStaff: any;
-}
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-staff',
-  standalone: true,
+  selector: 'app-user',
   imports: [
-    CommonModule,
     MatCardModule,
     MatTableModule,
     MatSortModule,
@@ -40,46 +25,44 @@ interface TableStaff {
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    MatSidenavModule
+    MatSidenavModule,
+    DatePipe
   ],
-  templateUrl: './staff.html',
-  styleUrl: './staff.scss',
-  providers: [DatePipe]
+  templateUrl: './user.html',
+  styleUrl: './user.scss'
 })
-export class Staff {
+export class User {
+
   title = 'Staff List';
   http = inject(HttpClient);
   staffs: any[] = [];
   isDrawerOpen = false;
   selectedStaff: any = null;
+  @Input() device: string = 'userDevicesAndAddresses';
 
   displayedColumns: string[] = [
-    'staffId',
-    'name',
-    'category',
-    'experience',
-    'price',
-    'gender',
-    'shiftType',
-    'profession',
-    'phone_number',
-    'actions'
+    'userId',
+    'userName',
+    'ipAddress',
+    'deviceType',
+    'userAgent',
+    'loginTime',
   ];
 
-  dataSource: MatTableDataSource<TableStaff>;
+  dataSource: MatTableDataSource<any>;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor() {
-    this.dataSource = new MatTableDataSource<TableStaff>([]);
+    this.dataSource = new MatTableDataSource<any>([]);
   }
 
   ngOnInit() {
-    this.getStaffs();
-    this.dataSource.filterPredicate = (data: TableStaff, filter: string): boolean => {
+    this.getDevicesAddress();
+    this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
       // Concatenate all relevant string/number properties for searching
-      const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.phone_number}`.toLowerCase();
+      const dataStr = `${data.userId} ${data.userName} ${data.ipAddress} ${data.deviceType} ${data.userAgent} ${data.loginTime}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -98,13 +81,13 @@ export class Staff {
     }
   }
 
-  editElement(element: TableStaff) {
+  editElement(element: any) {
     console.log(`Edit ${element.name} (ID: ${element.staffId})`);
     alert(`Editing: ${element.name} (Staff ID: ${element.staffId})`);
     // Implement your edit logic here
   }
-  
-  openStaffDrawer(element: TableStaff) {
+
+  openStaffDrawer(element: any) {
     // You can use a boolean flag and a selectedStaff property to control the drawer
     this.selectedStaff = element;
     this.isDrawerOpen = true;
@@ -114,42 +97,28 @@ export class Staff {
     this.isDrawerOpen = false;
   }
 
-  deleteElement(element: TableStaff) {
-    console.log(`Delete ${element.name} (ID: ${element.staffId})`);
-    alert(`Deleting: ${element.name} (Staff ID: ${element.staffId})`);
-    // Implement your delete logic here
-  }
-
-  getStaffs() {
-    // Assuming ENDPOINTS.GET_STAFFS is the correct endpoint for staff data
-    this.http.get(API_URL + ENDPOINTS.GET_STAFFS).subscribe({
+  getDevicesAddress() {
+    this.http.get(API_URL + ENDPOINTS.GET_USER_DEVICES_ADDRESS).subscribe({
       next: (res: any) => {
         this.staffs = res;
         this.mapAndSetDataSource(this.staffs);
       },
       error: (err) => {
         console.error('Error fetching staffs:', err);
-        // Handle error display
       }
     });
   }
 
-  mapAndSetDataSource(staffs: any[]): void {
-    const mappedStaffs: TableStaff[] = staffs.map(staff => ({
-      staffId: staff.staffId,
-      name: staff.name,
-      category: staff.category,
-      experience: staff.experience,
-      price: staff.price, // Directly using price
-      gender: staff.gender,
-      shiftType: staff.shiftType,
-      profession: staff.profession,
-      phone_number: staff.phone_number, // Directly using phone_number
-      originalStaff: staff // Keep the original object
+  mapAndSetDataSource(devices: any[]): void {
+    const mappedDevices: any[] = devices.map(device => ({
+      userId: device.userId,
+      userName: device.userName,
+      ipAddress: device.ipAddress,
+      deviceType: device.deviceType,
+      userAgent: device.userAgent,
+      loginTime: device.loginTime,
     }));
-
-    this.dataSource.data = mappedStaffs;
-
+    this.dataSource.data = mappedDevices;
     if (this.sort) {
       this.dataSource.sort = this.sort;
     }

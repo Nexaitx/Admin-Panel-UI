@@ -20,11 +20,11 @@ mat-drawer-container {
 
 }
 .main-layout {
-
+    height: calc(100% - 65px) !important;
+    max-height: 88vh !important;
     .sidebar {
         width: auto;
         padding: 5px;
-        height: 100%;
         overflow-y: hidden;
         border-radius: 0 !important;
     }

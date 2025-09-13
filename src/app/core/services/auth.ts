@@ -14,15 +14,16 @@ export class Auth {
     return !!localStorage.getItem('token');
   }
 
-  login(token: string, role: string): void {
-    console.log(token, role)
+  login(token: string, role: string, userProfile: any): void {
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
+    localStorage.setItem('userProfile', JSON.stringify(userProfile));
   }
 
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('userProfile');
   }
 
    show() {

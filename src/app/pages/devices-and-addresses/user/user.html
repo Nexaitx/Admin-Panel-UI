@@ -1,0 +1,84 @@
+<mat-drawer-container class="drawer-container bg-white">
+  <mat-drawer class="w-75" #staffDrawer mode="over" [(opened)]="isDrawerOpen" position="end">
+    <h2>Staff Details</h2>
+    @if (selectedStaff){
+    <div>
+      <p>Name: {{ selectedStaff.name }}</p>
+      <p>Category: {{ selectedStaff.category }}</p>
+      <p>Aadhar Card Attachment: </p>
+      <img [src]="selectedStaff.adharUrl" alt="{{ selectedStaff.name }}'s photo">
+    </div>}
+    <button mat-button (click)="closeStaffDrawer()">Close</button>
+  </mat-drawer>
+  <div>
+    <div class="row">
+      <mat-form-field appearance="fill" class="col-md-3">
+        <mat-label>Search devices</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllStaffs>
+      </mat-form-field>
+      <div class="col-md-6 ms-auto">
+        <mat-paginator class="bg-white" [pageSizeOptions]="[5, 10, 20]" aria-label="Select page of staff">
+        </mat-paginator>
+      </div>
+    </div>
+
+    <section class="tableScroll-container w-100" tabindex="0">
+      <table mat-table [dataSource]="dataSource" matSort class="bg-white">
+
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> User ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.userId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> User </th>
+          <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ipAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> IP Address </th>
+          <td mat-cell *matCellDef="let element"> {{element.ipAddress}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Device Type </th>
+          <td mat-cell *matCellDef="let element"> {{element.deviceType}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userAgent">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> User Agent </th>
+          <td mat-cell *matCellDef="let element"> {{element.userAgent || 'N/A'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="loginTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Login Time </th>
+          <td mat-cell *matCellDef="let element"> {{element.loginTime | date : 'medium'}} </td>
+        </ng-container>       
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #actionMenu="matMenu">
+              <button mat-menu-item (click)="openStaffDrawer(element)">
+                <mat-icon>remove_red_eye</mat-icon>
+                <span>View</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data matching the filter
+            "{{inputAllStaffs.value}}"</td>
+        </tr>
+      </table>
+    </section>
+  </div>
+
+</mat-drawer-container>

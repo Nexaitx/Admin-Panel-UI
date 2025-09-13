@@ -96,32 +96,29 @@ export class Login {
         const email = this.loginForm.get('email')?.value;
         const password = this.loginForm.get('password')?.value;
 
-        // if (email === 'test@example.com' && password === 'password123') {
-        //   this.auth.login('mock-token-123', 'admin');
-        //   this._snackBar.open('Logged In Successfully!', 'Success', {
-        //     horizontalPosition: 'end',
-        //     verticalPosition: 'top',
-        //     duration: 3000,
-        //     panelClass: ['snackbar-success']
-        //   });
-        // } else {
-        //   this._snackBar.open('Login failed. Please check your credentials.', 'Error', {
-        //     horizontalPosition: 'end',
-        //     verticalPosition: 'top',
-        //     duration: 3000,
-        //     panelClass: ['snackbar-error']
-        //   });
-        // }
+
         this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
           if (res) {
-            this.auth.login(res?.token, res?.profile?.role?.roleType);
+            this.auth.login(res?.token, res?.profile?.role?.roleType, res?.profile);
             this._snackBar.open('Logged In Successful!', 'Successfully', {
               horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 3000,
               panelClass: ['snackbar-success']
             });
-            this.router.navigate(['/app/dashboard']);
+            const role = res?.profile?.role?.roleType;
+            console.log(role)
+            if (role === 'Admin') {
+              this.router.navigate(['/app/admin-dashboard']);
+            } else if (role === 'Doctor') {
+              this.router.navigate(['/app/doctor-dashboard']);
+            } else if (role === 'Pharmacist') {
+              this.router.navigate(['/app/pharmacist-dashboard']);
+            } else if (role === 'Dietician') {
+              this.router.navigate(['/app/dietician-dashboard']);
+            } else {
+              this.router.navigate(['/app/default-dashboard']);
+            }
           }
         },
           error => {
@@ -132,7 +129,7 @@ export class Login {
               panelClass: ['snackbar-error']
             });
           });
-      }, 2000); // Simulate network latency
+      }, 2000);
     }
   }
   navigateToSignup(): void {
@@ -140,6 +137,6 @@ export class Login {
   }
 
   onForgotPassword() {
-    this.changeAuthUI.emit('reset-password'); // Emit event to show reset password
+    this.changeAuthUI.emit('reset-password');
   }
 }

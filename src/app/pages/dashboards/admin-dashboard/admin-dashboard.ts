@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
-import { API_URL, ENDPOINTS } from '../../core/const';
+import { API_URL, ENDPOINTS } from '../../../core/const';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import {
@@ -81,7 +81,7 @@ export type ChartOptionsStaffType = {
 };
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-admin-dashboard',
   standalone: true,
   imports: [RouterLink,
     MatButtonModule,
@@ -93,11 +93,11 @@ export type ChartOptionsStaffType = {
     MatTableModule,
     CommonModule
   ],
-  templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.scss']
+  templateUrl: './admin-dashboard.html',
+  styleUrls: ['./admin-dashboard.scss']
 })
 
-export class Dashboard {
+export class AdminDashboard {
   http = inject(HttpClient)
   role = localStorage.getItem('role');
   clients: any;

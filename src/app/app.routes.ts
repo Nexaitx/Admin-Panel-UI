@@ -13,8 +13,38 @@ export const routes: Routes = [
         component: MainLayout,
         children: [
             {
-                path: 'dashboard',
-                loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+                path: 'admin-dashboard',
+                loadComponent: () => import('./pages/dashboards/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'doctor-dashboard',
+                loadComponent: () => import('./pages/dashboards/doctor-dashboard/doctor-dashboard').then(m => m.DoctorDashboard),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'pharmacist-dashboard',
+                loadComponent: () => import('./pages/dashboards/pharmacist-dashboard/pharmacist-dashboard').then(m => m.PharmacistDashboard),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'dietician-dashboard',
+                loadComponent: () => import('./pages/dashboards/dietician-dashboard/dietician-dashboard').then(m => m.DieticianDashboard),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'physiotherapist-dashboard',
+                loadComponent: () => import('./pages/dashboards/doctor-dashboard/doctor-dashboard').then(m => m.DoctorDashboard),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'psychiatrist-dashboard',
+                loadComponent: () => import('./pages/dashboards/pharmacist-dashboard/pharmacist-dashboard').then(m => m.PharmacistDashboard),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'default-dashboard',
+                loadComponent: () => import('./pages/dashboards/default-dashboard/default-dashboard').then(m => m.DefaultDashboard),
                 canActivate: [authGuard],
             },
             {
@@ -65,6 +95,11 @@ export const routes: Routes = [
             {
                 path: 'bulk-assignments',
                 loadComponent: () => import('./pages/bulk-assignment/bulk-assignment').then(m => m.BulkAssignment),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'devices-and-addresses',
+                loadComponent: () => import('./pages/devices-and-addresses/devices-and-addresses').then(m => m.DevicesAndAddresses),
                 canActivate: [authGuard],
             },
             {

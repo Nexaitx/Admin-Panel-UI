@@ -47,5 +47,9 @@ export const ENDPOINTS = {
 
     // GPS
     GET_GPS_DEVIATION_ALERTS: '/gps/Deviation',
-    GET_GPS_MONITORING: '/gpsMonitering', // MISSING ON SWAGGER
+    GET_GPS_MONITORING: '/gpsMonitering',
+
+    // Devices and Addresses
+    GET_USER_DEVICES_ADDRESS: '/getAllUserIpOrDeviceName',
+    GET_STAFF_DEVICES_ADDRESS: '/allAllStaffIpDeviceName',
 };

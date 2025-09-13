@@ -16,5 +16,9 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./sidebar.scss']
 })
 export class Sidebar {
+  userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
 
+  constructor(){
+    console.log(this.userProfile?.role?.roleType)
+  }
 }

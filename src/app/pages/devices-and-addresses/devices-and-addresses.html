@@ -1,0 +1,10 @@
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+      <mat-tab label="Client Devices & Addresses">
+        
+        <app-user [device]="'userDevicesAndAddresses'"></app-user>
+      </mat-tab>
+      <mat-tab label="Staff Devices & Addresses">
+        
+        <app-staff [device]="'staffDevicesAndAddresses'"></app-staff>
+      </mat-tab>
+    </mat-tab-group>
