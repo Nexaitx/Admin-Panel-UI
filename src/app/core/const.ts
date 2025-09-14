@@ -52,4 +52,9 @@ export const ENDPOINTS = {
     // Devices and Addresses
     GET_USER_DEVICES_ADDRESS: '/getAllUserIpOrDeviceName',
     GET_STAFF_DEVICES_ADDRESS: '/allAllStaffIpDeviceName',
+
+    // get details of dashboards
+    GET_ROLES_COUNT: '/getRoleCount',
+    GET_ACCOUNTS_COUNT: '/staffCategoryOrSubcategory',
+    GET_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan',
 };

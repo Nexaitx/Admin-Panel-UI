@@ -13,19 +13,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
-interface TableStaff {
-  staffId: number;
-  name: string;
-  category: string;
-  experience: number;
-  price: number | null;
-  gender: string;
-  shiftType: string;
-  profession: string;
-  phone_number: string;
-  originalStaff: any;
-}
-
 @Component({
   selector: 'app-staff',
   standalone: true,
@@ -62,24 +49,26 @@ export class Staff {
     'gender',
     'shiftType',
     'profession',
+    'email',
     'phone_number',
+    'rating',
+    'verified',
     'actions'
   ];
 
-  dataSource: MatTableDataSource<TableStaff>;
+  dataSource: MatTableDataSource<any>;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor() {
-    this.dataSource = new MatTableDataSource<TableStaff>([]);
+    this.dataSource = new MatTableDataSource<any>([]);
   }
 
   ngOnInit() {
     this.getStaffs();
-    this.dataSource.filterPredicate = (data: TableStaff, filter: string): boolean => {
-      // Concatenate all relevant string/number properties for searching
-      const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.phone_number}`.toLowerCase();
+    this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
+      const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.email} ${data.phone_number} ${data.rating} ${data.verified}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -98,13 +87,13 @@ export class Staff {
     }
   }
 
-  editElement(element: TableStaff) {
+  editElement(element: any) {
     console.log(`Edit ${element.name} (ID: ${element.staffId})`);
     alert(`Editing: ${element.name} (Staff ID: ${element.staffId})`);
     // Implement your edit logic here
   }
   
-  openStaffDrawer(element: TableStaff) {
+  openStaffDrawer(element: any) {
     // You can use a boolean flag and a selectedStaff property to control the drawer
     this.selectedStaff = element;
     this.isDrawerOpen = true;
@@ -114,7 +103,7 @@ export class Staff {
     this.isDrawerOpen = false;
   }
 
-  deleteElement(element: TableStaff) {
+  deleteElement(element: any) {
     console.log(`Delete ${element.name} (ID: ${element.staffId})`);
     alert(`Deleting: ${element.name} (Staff ID: ${element.staffId})`);
     // Implement your delete logic here
@@ -135,7 +124,7 @@ export class Staff {
   }
 
   mapAndSetDataSource(staffs: any[]): void {
-    const mappedStaffs: TableStaff[] = staffs.map(staff => ({
+    const mappedStaffs: any[] = staffs.map(staff => ({
       staffId: staff.staffId,
       name: staff.name,
       category: staff.category,
@@ -144,7 +133,10 @@ export class Staff {
       gender: staff.gender,
       shiftType: staff.shiftType,
       profession: staff.profession,
-      phone_number: staff.phone_number, // Directly using phone_number
+      email: staff.email,
+      phone_number: staff.phone_number,
+      rating: staff.rating,
+      verified: staff.verified,
       originalStaff: staff // Keep the original object
     }));
 

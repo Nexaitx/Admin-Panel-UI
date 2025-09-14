@@ -144,14 +144,22 @@
       <mat-card class="example-card bg-white shadow" appearance="outlined">
         <mat-card-header class="d-flex justify-content-between">
           <mat-card-title class="d-flex">Recent Diet Plans</mat-card-title>
-          <button matButton="tonal">View All</button>
+          <button mat-button (click)="toggleViewAll()">
+            {{ showAllDietPlans ? 'Show Less' : 'View All' }}
+          </button>
         </mat-card-header>
         <hr class="my-1">
         <mat-card-content class="text-muted m-3">
-
+          <ul type="none" [ngClass]="{'scrollable': showAllDietPlans}" class="diet-plan-list ps-0 dietPlans">
+            <li *ngFor="let plan of dietPlansToShow()" class="border-bottom py-2">
+              {{ plan.planType }}
+              <br>
+              <small>{{plan?.title}}</small>
+            </li>
+          </ul>
         </mat-card-content>
-
       </mat-card>
+
     </div>
   </div>
 </div>

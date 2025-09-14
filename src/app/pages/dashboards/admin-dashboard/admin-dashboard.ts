@@ -144,10 +144,12 @@ export class AdminDashboard {
   displayedColumns = this.columns.map(c => c.columnDef);
   showAll: boolean = false;
   ongoingBookings: any;
+  roles: [] = [];
+  accounts: [] = [];
 
   constructor() {
     this.chartOptions = {
-      series: [4, 5, 7, 8],
+      series: [],
       chart: {
         height: 280,
         type: "radialBar"
@@ -159,19 +161,26 @@ export class AdminDashboard {
               fontSize: "22px"
             },
             value: {
-              fontSize: "16px"
+              fontSize: "16px",
+              formatter: function (val: number) {
+                const opts: any = (arguments as any)[1];
+                const raw = opts && opts.w && opts.w.globals && opts.w.globals.series
+                  ? opts.w.globals.series[opts.seriesIndex]
+                  : val;
+                return (raw !== undefined && raw !== null) ? raw.toString() : val.toString();
+              }
             },
             total: {
               show: true,
               label: "Total",
               formatter: function (w) {
-                return "30";
+                return "0";
               }
             }
           }
         }
       },
-      labels: ["Doctors", "Dieticians", "Physiotherapist", "Psychiatrist"]
+      labels: []
     };
 
     this.chartOptionClientStaff = {
@@ -261,13 +270,11 @@ export class AdminDashboard {
     };
 
     this.chartOptionsStaffType = {
-      series: [14, 23, 21, 17, 15],
+      series: [],
       chart: {
         type: "polarArea"
       },
-      labels: [
-        'Nurse', 'Baby Sitter', 'Psychiatrist', 'Physiotherapist', 'Security Guard'
-      ],
+      labels: [],
       stroke: {
         colors: ["#fff"]
       },
@@ -327,24 +334,67 @@ export class AdminDashboard {
   }
 
   getData() {
-    // get dietplans
-    // this.http.get(API_URL + ENDPOINTS.GET_DIETPLAN).subscribe((res: any) => {
-    //   this.dietPlans = res;
-    // });
-
-    // get dieticians
-    // this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Dietician').subscribe((res: any) => {
-    //   this.dieticians = res;
-    // });
-
-    // get Doctors
-    // this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/Admin').subscribe((res: any) => {
-    //   this.doctors = res;
-    // });
 
     this.http.get(API_URL + ENDPOINTS.GET_ONGOING_BOOKINGS).subscribe((res: any) => {
       this.dataSource.data = res;
     });
 
+    // get ROLES COUNT
+    this.http.get(API_URL + ENDPOINTS.GET_ROLES_COUNT).subscribe((res: any) => {
+      this.roles = res;
+
+      const memberCounts = this.roles.map((r: any) => r.memberCount);
+      const roleTypes = this.roles.map((r: any) => r.roleType);
+      const total = memberCounts.reduce((acc, val) => acc + val, 0);
+
+      // update the options
+      this.chartOptions.series = memberCounts;
+      this.chartOptions.labels = roleTypes;
+      if (
+        this.chartOptions &&
+        this.chartOptions.plotOptions &&
+        this.chartOptions.plotOptions.radialBar &&
+        this.chartOptions.plotOptions.radialBar.dataLabels &&
+        this.chartOptions.plotOptions.radialBar.dataLabels.total
+      ) {
+        this.chartOptions.plotOptions.radialBar.dataLabels.total.formatter = () => total.toString();
+      }
+    });
+
+    // get counts for dashboards
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNTS_COUNT).subscribe((res: any) => {
+      // Check if the response is an array of objects with 'staffCount' and 'categoryName' properties
+      if (res && Array.isArray(res) && res.every(item => 'staffCount' in item && 'categoryName' in item)) {
+
+        const accountCounts = res.map((a: any) => a.staffCount);
+        const accountTypes = res.map((a: any) => a.categoryName);
+
+        // Create a new chart options object with the updated data
+        this.chartOptionsStaffType = {
+          ...this.chartOptionsStaffType, // Copy existing properties
+          series: accountCounts,
+          labels: accountTypes,
+        };
+      } else {
+        console.error('API response is not in the expected format:', res);
+      }
+    });
+    // get active diet plans
+    this.http.get(API_URL + ENDPOINTS.GET_ACTIVE_DIET_PLANS).subscribe((res: any) => {
+      this.dietPlans = res;
+    });
+
+  }
+
+  showAllDietPlans = false;
+  toggleViewAll() {
+    this.showAllDietPlans = !this.showAllDietPlans;
+  }
+
+  dietPlansToShow(): any[] {
+    if (!this.dietPlans) {
+      return [];
+    }
+    return this.showAllDietPlans ? this.dietPlans : this.dietPlans.slice(0, 5);
   }
 }
