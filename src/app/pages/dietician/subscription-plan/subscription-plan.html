@@ -45,7 +45,6 @@
         </mat-error>
       </mat-form-field>
 
-
       <label for="">Key Features</label>
       <div formArrayName="keyFeatures">
         <div *ngFor="let featureControl of keyFeatures.controls; let i = index;" class="d-flex align-items-center mb-2">
@@ -80,7 +79,7 @@
     <mat-card>
       <mat-card-content>
         <div class="table-controls d-flex">
-          <mat-form-field class="full-width-input">
+          <mat-form-field class="full-width-input w-25">
             <mat-label>Search Subscription Plans</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllUsers>
           </mat-form-field>
@@ -94,32 +93,32 @@
         <div class="table-container">
           <table mat-table [dataSource]="dietPlans" matSort>
             <ng-container matColumnDef="planType">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Plan Type </th>
-              <td mat-cell *matCellDef="let element"> {{element.planType}} </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Plan Type</th>
+              <td mat-cell *matCellDef="let element">{{ element.planType }}</td>
             </ng-container>
 
             <ng-container matColumnDef="tenure">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Tenure </th>
-              <td mat-cell *matCellDef="let element"> {{element.tenure}} </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Tenure</th>
+              <td mat-cell *matCellDef="let element">{{ element.tenure }}</td>
             </ng-container>
 
             <ng-container matColumnDef="title">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-              <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+              <td mat-cell *matCellDef="let element">{{ element.title }}</td>
             </ng-container>
 
             <ng-container matColumnDef="description">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
-              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+              <td mat-cell *matCellDef="let element">{{ element.description }}</td>
             </ng-container>
 
             <ng-container matColumnDef="keyFeatures">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Key Features </th>
-              <td mat-cell *matCellDef="let element"> {{element.keyFeatures.join(', ')}} </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Key Features</th>
+              <td mat-cell *matCellDef="let element">{{ element.keyFeatures?.join(', ') || 'None' }}</td>
             </ng-container>
 
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let element">
                 <button mat-icon-button [matMenuTriggerFor]="actionMenu">
                   <mat-icon>more_vert</mat-icon>
@@ -137,16 +136,15 @@
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
             <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data matching the filter
-                "{{inputAllUsers.value}}"</td>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data matching the filter "{{inputAllUsers.value}}"</td>
             </tr>
           </table>
 
-          <mat-paginator [pageSizeOptions]="[5, 10, 20, 100]" aria-label="Select page of users"></mat-paginator>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons aria-label="Select page of users"></mat-paginator>
         </div>
       </mat-card-content>
     </mat-card>

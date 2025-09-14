@@ -1,1 +1,39 @@
-<p>dietician-dashboard works!</p>
+<div class="container-fluid py-3">
+    <h4 class="semibold mb-0">Welcome Back, {{userProfile?.fullName}}!</h4>
+    <p class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</p>
+    <div class="row p-2 mt-3">
+        <div class="col-md-4">
+            <mat-card class="example-card bg-white shadow" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title class="d-flex"> <mat-icon> person_pin</mat-icon> {{role}}</mat-card-title>
+                </mat-card-header>
+                <hr class="my-0">
+                <mat-card-content class="text-muted m-3">
+                    <small class="d-flex"><mat-icon> mail_outline</mat-icon>&nbsp;{{userProfile?.email}}</small>
+
+                    <small class="d-flex mt-2"><mat-icon> phone</mat-icon>&nbsp;{{userProfile?.phoneNumber}}</small>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="col-md-4">
+            <mat-card class="example-card bg-white shadow" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Gender Distribution</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">Onboarded Users by Gender</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr class="my-0">
+                <mat-card-content>
+                    <div id="chart">
+                        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
+                            [labels]="chartOptions.labels" [responsive]="chartOptions.responsive"
+                            [fill]="chartOptions.fill" [legend]="chartOptions.legend"
+                            [dataLabels]="chartOptions.dataLabels" [plotOptions]="chartOptions.plotOptions"></apx-chart>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>

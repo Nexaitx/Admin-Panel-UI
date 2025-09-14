@@ -106,6 +106,23 @@
             <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
         </span>
     </a>
+    <a mat-list-item routerLink="/app/diet-users" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">people</mat-icon><span>Users</span>
+        </span>
+    </a>
+
+    <a mat-list-item routerLink="/app/diet-plans" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">people</mat-icon><span>Diet Plans</span>
+        </span>
+    </a>
+
+    <a mat-list-item routerLink="/app/subscription-plans" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">people</mat-icon><span>Subscription Plans</span>
+        </span>
+    </a>
     }
 
     @if(userProfile?.role?.roleType === 'Pharmacist') {

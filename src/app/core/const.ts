@@ -23,9 +23,9 @@ export const ENDPOINTS = {
 
     // Diet Plans Subscription Plans
     CREATE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-create',
-    UPDATE_DIET_SUBSCRIPTION: '/api/dieticians/subscriptionplan-update/',
-    DELETE_DIET_SUBSCRIPTION: '/api/dieticians/subscriptionplan-delete',
-    GET_DIET_SUBSCRIPTION: '/api/user/subscription/plans',
+    UPDATE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-update/',
+    DELETE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-delete',
+    GET_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plans',
 
     // Roles
     GET_ROLES: '/getAllRoles',
@@ -57,4 +57,10 @@ export const ENDPOINTS = {
     GET_ROLES_COUNT: '/getRoleCount',
     GET_ACCOUNTS_COUNT: '/staffCategoryOrSubcategory',
     GET_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan',
+
+
+    GET_USERS_ONBOARD_DIET: '/getAllOnBoardUser',
+    GET_ALL_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan', //Get all diet plans which are active or not
+    GET_DIET_PLANS: '/getAllDietPlan', // get all diet plans which are active to show on client app
+    GET_ALL_LOGGEDIN_DIETICIAN_DIET_PLANS: '/api/dieticians/getAllDietPlan',
 };

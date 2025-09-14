@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -39,9 +39,11 @@ import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
   templateUrl: './subscription-plan.html',
   styleUrls: ['./subscription-plan.scss']
 })
-export class SubscriptionPlan {
+export class SubscriptionPlan implements AfterViewInit {
   http = inject(HttpClient);
   fb = inject(FormBuilder);
+  snackBar = inject(MatSnackBar);
+  dialog = inject(MatDialog);
 
   isDrawerOpen: boolean = false;
   isEdit: boolean = false;
@@ -61,7 +63,7 @@ export class SubscriptionPlan {
     'actions'
   ];
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {
+  constructor() {
     this.dietPlanForm = this.fb.group({
       planType: ['', Validators.required],
       tenure: ['', Validators.required],
@@ -74,7 +76,9 @@ export class SubscriptionPlan {
   ngOnInit(): void {
     this.getDietPlans();
     this.dietPlans.filterPredicate = (data: any, filter: string): boolean => {
-      const dataStr = `${data.planType} ${data.tenure} ${data.title} ${data.description} ${data?.keyFeatures.join(', ')}`;
+      const dataStr = `${data.planType} ${data.tenure} ${data.title} ${data.description} ${
+        data.keyFeatures?.join(', ') || ''
+      }`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -105,7 +109,7 @@ export class SubscriptionPlan {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.delete(API_URL + ENDPOINTS.DELETE_DIETPLAN + element.id).subscribe({
+        this.http.delete(API_URL + ENDPOINTS.DELETE_DIET_SUBSCRIPTION + '/' + element.id).subscribe({
           next: () => {
             this.dietPlans.data = this.dietPlans.data.filter(item => item.id !== element.id);
             this.snackBar.open('Diet plan deleted successfully!', 'Close', {
@@ -146,8 +150,7 @@ export class SubscriptionPlan {
       keyFeatures.forEach((feature: any) => {
         this.addKeyFeature(feature);
       });
-    }
-    else {
+    } else {
       this.dietPlanForm.reset();
       this.keyFeatures.clear();
       this.addKeyFeature();
@@ -221,9 +224,8 @@ export class SubscriptionPlan {
   getDietPlans() {
     this.http.get(API_URL + ENDPOINTS.GET_DIET_SUBSCRIPTION).subscribe({
       next: (res: any) => {
-        console.log(res);
-        this.dietPlans.data = [...res.data];
-        console.log(this.dietPlans.data);
+        this.dietPlans.data = res;
+        this.mapAndSetDataSource(this.dietPlans.data);
       },
       error: (err) => {
         console.error(err);
@@ -233,6 +235,25 @@ export class SubscriptionPlan {
         });
       }
     });
+  }
+
+    mapAndSetDataSource(data: any[]): void {
+    const mappedData: any[] = data.map(data => ({
+      planType: data.planType,
+      title: data.title,
+      tenure: data.tenure,
+      description: data.description,
+      keyFeatures: data.keyFeatures,
+      id: data.id
+    }));
+
+    this.dietPlans.data = mappedData;
+    if (this.sort) {
+      this.dietPlans.sort = this.sort;
+    }
+    if (this.paginator) {
+      this.dietPlans.paginator = this.paginator;
+    }
   }
 
   get keyFeatures() {

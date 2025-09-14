@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationDialog } from '../../confirmation-dialog/confirmation-dialog';
@@ -32,20 +32,24 @@ import { MatDialog } from '@angular/material/dialog';
     CommonModule,
     MatMenuModule,
     MatSidenavModule,
-    ReactiveFormsModule],
+    ReactiveFormsModule,
+    FormsModule
+  ],
   templateUrl: './diet-plan.html',
   styleUrl: './diet-plan.scss',
 })
 export class DietPlan {
   http = inject(HttpClient);
-  fb = inject(FormBuilder)
+  fb = inject(FormBuilder);
+  role = localStorage.getItem('role') || '';
 
   isDrawerOpen: boolean = false;
   isEdit: boolean = false;
   selectedRecord: any;
+  selectedValue: string = '';
   dietPlanForm: FormGroup;
 
-  displayedColumns: string[] = ['planType', 'title', 'dietPreference', 'gender', 'minAge', 'maxAge', 'activityLevel', 'actions'];
+  displayedColumns: string[] = ['planType', 'title', 'dietPreference', 'gender', 'minAge', 'maxAge', 'activityLevel', 'active', 'actions'];
 
   dietPlans: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 
@@ -69,6 +73,12 @@ export class DietPlan {
   }
 
   ngOnInit(): void {
+    if (this.role === 'Admin') {
+      this.selectedValue = 'all';
+    }
+    if (this.role === 'Dietician') {
+      this.selectedValue = 'myDietPlans';
+    }
     this.getDietPlans();
     this.dietPlans.filterPredicate = (data: any, filter: string): boolean => {
       const dataStr = `${data.planType} ${data.dietPreference} ${data.gender} ${data.minAge} ${data.maxAge} ${data?.foodAvoid} ${data.activityLevel}`.toLowerCase();
@@ -155,6 +165,7 @@ export class DietPlan {
       maxAge: data.maxAge,
       foodAvoid: data.foodAvoid,
       activityLevel: data.activityLevel,
+      active: data.active,
       id: data.id
     }));
 
@@ -207,13 +218,41 @@ export class DietPlan {
   }
 
   getDietPlans() {
-    this.http.get(API_URL + ENDPOINTS.GET_DIETPLAN).subscribe({
-      next: (res: any) => {
-        this.dietPlans.data = res;
-        this.mapAndSetDataSource(this.dietPlans.data);
-      },
-      error: (err) => {
-      }
-    });
+    console.log(this.selectedValue);
+    if (this.selectedValue === 'myDietPlans') {
+      this.http.get(API_URL + ENDPOINTS.GET_ALL_LOGGEDIN_DIETICIAN_DIET_PLANS, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } }).subscribe({
+        next: (res: any) => {
+          this.dietPlans.data = res;
+          this.mapAndSetDataSource(this.dietPlans.data);
+        },
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('Error fetching diet plans. Please try again.', 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      });
+    }
+    if (this.selectedValue === 'active') {
+      this.http.get(API_URL + ENDPOINTS.GET_DIETPLAN).subscribe({
+        next: (res: any) => {
+          this.dietPlans.data = res;
+          this.mapAndSetDataSource(this.dietPlans.data);
+        },
+        error: (err) => {
+        }
+      });
+    }
+    if (this.selectedValue === 'all') {
+      this.http.get(API_URL + ENDPOINTS.GET_ALL_ACTIVE_DIET_PLANS).subscribe({
+        next: (res: any) => {
+          this.dietPlans.data = res;
+          this.mapAndSetDataSource(this.dietPlans.data);
+        },
+        error: (err) => {
+        }
+      });
+    }
   }
 }

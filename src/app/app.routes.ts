@@ -148,6 +148,21 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'diet-users',
+                loadComponent: () => import('./pages/diet-onboard-users/diet-onboard-users').then(m => m.DietOnboardUsers),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'diet-plans',
+                loadComponent: () => import('./pages/dietician/diet-plan/diet-plan').then(m => m.DietPlan),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'subscription-plans',
+                loadComponent: () => import('./pages/dietician/subscription-plan/subscription-plan').then(m => m.SubscriptionPlan),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'support',
                 loadComponent: () => import('./pages/support/support').then(m => m.Support),
                 canActivate: [authGuard],
@@ -160,7 +175,7 @@ export const routes: Routes = [
             {
                 path: 'marketing',
                 loadComponent: () => import('./pages/marketing/marketing').then(m => m.Marketing),
-                canActivate: [authGuard],   
+                canActivate: [authGuard],
             },
             {
                 path: 'documents',
