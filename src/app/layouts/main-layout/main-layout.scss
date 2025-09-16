@@ -17,6 +17,7 @@ mat-toolbar {
 }
 mat-drawer-container {
     margin-top:60px;
+    z-index:1
 
 }
 .main-layout {
@@ -27,9 +28,17 @@ mat-drawer-container {
         padding: 5px;
         overflow-y: hidden;
         border-radius: 0 !important;
+        z-index: 2;
     }
 }
 
 .content {
     min-height: 90vh;
+    background-color: #ffffff !important;
+}
+
+mat-drawer-content {
+    z-index:1;
+    position: relative;
+    display: block;
 }

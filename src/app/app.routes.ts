@@ -153,6 +153,11 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'appointments',
+                loadComponent: () => import('./pages/dietician-appointments/dietician-appointments').then(m => m.DieticianAppointments),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'diet-plans',
                 loadComponent: () => import('./pages/dietician/diet-plan/diet-plan').then(m => m.DietPlan),
                 canActivate: [authGuard],

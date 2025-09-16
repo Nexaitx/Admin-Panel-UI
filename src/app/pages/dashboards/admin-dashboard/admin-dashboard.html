@@ -74,13 +74,33 @@
   </div>
 
   <div class="row my-3">
-    <div class="col-12">
+    <div class="col-md-6">
       <mat-card class="example-card bg-white shadow" appearance="outlined">
         <div class="d-flex justify-content-center align-items-center my-3">
           <div>
             <mat-card-header>
               <mat-card-title>
                 Bookings Overview
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div id="chart">
+                <apx-chart [series]="chartOptionsBooking.series" [chart]="chartOptionsBooking.chart"
+                  [labels]="chartOptionsBooking.labels" [responsive]="chartOptionsBooking.responsive"></apx-chart>
+              </div>
+            </mat-card-content>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+     <div class="col-md-6">
+      <mat-card class="example-card bg-white shadow" appearance="outlined">
+        <div class="d-flex justify-content-center align-items-center my-3">
+          <div>
+            <mat-card-header>
+              <mat-card-title>
+                Pharmaceuticals Overview
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>

@@ -146,6 +146,7 @@ export class AdminDashboard {
   ongoingBookings: any;
   roles: [] = [];
   accounts: [] = [];
+  showAllDietPlans = false;
 
   constructor() {
     this.chartOptions = {
@@ -183,15 +184,78 @@ export class AdminDashboard {
       labels: []
     };
 
+    // this.chartOptionClientStaff = {
+    //   series: [
+    //     {
+    //       name: "Clients",
+    //       data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+    //     },
+    //     {
+    //       name: "Staffs",
+    //       data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+    //     }
+    //   ],
+    //   chart: {
+    //     type: "bar",
+    //     height: 300
+    //   },
+    //   plotOptions: {
+    //     bar: {
+    //       horizontal: false,
+    //       columnWidth: "55%"
+    //     }
+    //   },
+    //   dataLabels: {
+    //     enabled: false
+    //   },
+    //   stroke: {
+    //     show: true,
+    //     width: 2,
+    //     colors: ["transparent"]
+    //   },
+    //   legend: {
+    //     show: true,
+    //     position: 'top',
+    //     horizontalAlign: 'left'
+    //   },
+    //   xaxis: {
+    //     categories: [
+    //       "Feb",
+    //       "Mar",
+    //       "Apr",
+    //       "May",
+    //       "Jun",
+    //       "Jul",
+    //       "Aug",
+    //       "Sep",
+    //       "Oct"
+    //     ]
+    //   },
+    //   yaxis: {
+    //     title: {
+    //       // text: "$ (thousands)"
+    //     }
+    //   },
+    //   fill: {
+    //     opacity: 1
+    //   },
+    //   tooltip: {
+    //     y: {
+    //       formatter: function (val) {
+    //         return val + " records";
+    //       }
+    //     }
+    //   }
+    // };
     this.chartOptionClientStaff = {
       series: [
         {
           name: "Clients",
-          data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+          data: []
         },
         {
           name: "Staffs",
-          data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+          data: []
         }
       ],
       chart: {
@@ -218,17 +282,7 @@ export class AdminDashboard {
         horizontalAlign: 'left'
       },
       xaxis: {
-        categories: [
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct"
-        ]
+        categories: []
       },
       yaxis: {
         title: {
@@ -240,7 +294,7 @@ export class AdminDashboard {
       },
       tooltip: {
         y: {
-          formatter: function (val) {
+          formatter: function (val: any) {
             return val + " records";
           }
         }
@@ -363,15 +417,13 @@ export class AdminDashboard {
 
     // get counts for dashboards
     this.http.get(API_URL + ENDPOINTS.GET_ACCOUNTS_COUNT).subscribe((res: any) => {
-      // Check if the response is an array of objects with 'staffCount' and 'categoryName' properties
       if (res && Array.isArray(res) && res.every(item => 'staffCount' in item && 'categoryName' in item)) {
 
         const accountCounts = res.map((a: any) => a.staffCount);
         const accountTypes = res.map((a: any) => a.categoryName);
 
-        // Create a new chart options object with the updated data
         this.chartOptionsStaffType = {
-          ...this.chartOptionsStaffType, // Copy existing properties
+          ...this.chartOptionsStaffType,
           series: accountCounts,
           labels: accountTypes,
         };
@@ -384,9 +436,30 @@ export class AdminDashboard {
       this.dietPlans = res;
     });
 
+    // get clients and staff count
+    this.http.get(API_URL + ENDPOINTS.GET_CLIENT_STAFF_COUNT).subscribe((res: any) => {
+      // Assuming res is { totalUsers: 47, totalStaff: 56, totalRecords: 103 }
+      const month = "Current Month"; // Label for the single data point
+
+      // Update series data with API response
+      this.chartOptionClientStaff.series = [
+        {
+          name: "Clients",
+          data: [res.totalUsers] // [47]
+        },
+        {
+          name: "Staffs",
+          data: [res.totalStaff] // [56]
+        }
+      ];
+
+      // Update x-axis categories
+      this.chartOptionClientStaff.xaxis.categories = [month];
+    });
+    // this.http.get(API_URL + ENDPOINTS.GET_CLIENT_STAFF_COUNT).subscribe((res: any) => {
+    // });
   }
 
-  showAllDietPlans = false;
   toggleViewAll() {
     this.showAllDietPlans = !this.showAllDietPlans;
   }

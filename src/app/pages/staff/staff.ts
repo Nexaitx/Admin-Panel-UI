@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-staff',
@@ -27,7 +28,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatTooltipModule
   ],
   templateUrl: './staff.html',
   styleUrl: './staff.scss',
@@ -92,10 +94,11 @@ export class Staff {
     alert(`Editing: ${element.name} (Staff ID: ${element.staffId})`);
     // Implement your edit logic here
   }
-  
+
   openStaffDrawer(element: any) {
     // You can use a boolean flag and a selectedStaff property to control the drawer
     this.selectedStaff = element;
+    console.log('Selected Staff:', this.selectedStaff);
     this.isDrawerOpen = true;
   }
 
@@ -149,4 +152,9 @@ export class Staff {
       this.dataSource.paginator = this.paginator;
     }
   }
+
+  refreshData() {
+    this.ngOnInit();
+  }
+
 }

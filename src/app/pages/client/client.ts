@@ -20,7 +20,7 @@ interface TableUser {
   aadhaar: boolean;
   address: string;
   city: string;
-  date: string;
+  signupDate: string;
   user_id: number;
   aadhaarUrl?: string;
   originalUser: any;
@@ -49,12 +49,9 @@ interface TableUser {
 export class Client {
   http = inject(HttpClient);
   users: any[] = [];
-
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-
-  displayedColumns: string[] = ['userName', 'email', 'phoneNumber', 'aadhaar', 'address', 'city', 'date', 'actions'];
-
+  displayedColumns: string[] = ['userName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -68,7 +65,7 @@ export class Client {
     this.getUsers();
 
     this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      const dataStr = `${data.userName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.date}`.toLowerCase();
+      const dataStr = `${data.userName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -115,7 +112,7 @@ export class Client {
       aadhaar: user.aadhaarVerified,
       address: user.address,
       city: user.city,
-      date: this.datePipe.transform(user.last_location_update, 'mediumDate') || '',
+      signupDate: this.datePipe.transform(user.signupDate, 'mediumDate') || '',
       aadhaarUrl: user.aadhaar_card_attachment || null,
       originalUser: user
     }));

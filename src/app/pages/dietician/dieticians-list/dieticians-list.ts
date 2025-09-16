@@ -56,7 +56,7 @@ http = inject(HttpClient);
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
 
-  displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'actions'];
 
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;
@@ -122,16 +122,16 @@ http = inject(HttpClient);
     if (this.userForm.valid) {
       // Create a temporary object without confirmPassword for the API call
       const formData = { ...this.userForm.value };
-      delete formData.confirmPassword;
       if (this.isEdit) {
+
         this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ACCOUNT}/${this.selectedRecord.user_id}`, formData).subscribe({
           next: (res: any) => {
+            this.getAccounts();
             this.snackBar.open('Update successful!', 'Close', {
               duration: 3000,
               horizontalPosition: 'right',
               verticalPosition: 'top'
             });
-            console.log('API Response:', res);
           },
           error: (error: any) => {
             this.snackBar.open('Update failed. Please try again.', 'Close', {
@@ -139,13 +139,13 @@ http = inject(HttpClient);
               horizontalPosition: 'right',
               verticalPosition: 'top'
             });
-            console.error('API Error:', error);
           }
         });
       } else {
         this.http.post(API_URL + ENDPOINTS.SIGNUP, formData).subscribe({
           next: (res: any) => {
-            this.snackBar.open('Registration successful!', 'Close', {
+            this.getAccounts();
+            this.snackBar.open('Dietician Account created successfully!', 'Close', {
               duration: 3000,
               horizontalPosition: 'right',
               verticalPosition: 'top'
@@ -181,27 +181,6 @@ http = inject(HttpClient);
     this.selectedUser = null;
   }
 
-  // mapAndSetDataSource(users: any[]): void {
-  //   const mappedUsers: any[] = users.map(user => ({
-  //     user_id: user.id,
-  //     name: user.name,
-  //     email: user.email,
-  //     phone: user.phone_number,
-  //     contact: user.email,
-  //     aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
-  //     address: user.address,
-  //     city: user.city,
-  //     aadhaarUrl: user.aadhaar_card_attachment || null,
-  //     originalUser: user
-  //   }));
-  //   this.dataSource.data = mappedUsers;
-  //   if (this.sort) {
-  //     this.dataSource.sort = this.sort;
-  //   }
-  //   if (this.paginator) {
-  //     this.dataSource.paginator = this.paginator;
-  //   }
-  // }
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: any[] = users.map(user => ({
       user_id: user.id,
@@ -210,8 +189,6 @@ http = inject(HttpClient);
       phone: user.phone_number,
       contact: user.email,
       aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
-      address: user.address,
-      city: user.city,
       aadhaarUrl: user.aadhaar_card_attachment || null,
       originalUser: user
     }));

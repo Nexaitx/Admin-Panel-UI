@@ -56,19 +56,38 @@ export class DietOnboardUsers implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    // Custom filter predicate to search across all columns
-    this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const searchText = filter.trim().toLowerCase();
-      return Object.keys(data).some((key) => {
-        if (key === 'medicalCondition' && Array.isArray(data[key])) {
-          return data[key].join(' ').toLowerCase().includes(searchText);
-        }
-        if (key === 'anyMedication') {
-          return (data[key] ? 'Yes' : 'No').toLowerCase().includes(searchText);
-        }
-        return data[key]?.toString().toLowerCase().includes(searchText);
-      });
-    };
+  }
+
+  mapAndSetDataSource(data: any[]): void {
+    const mappedData: any[] = data.map(data => ({
+      ...data,
+      fullName: data.fullName,
+      age: data.age || 'N/A',
+      gender: data.gender || 'N/A',
+      height: data.height || 'N/A',
+      weight: data.weight || 'N/A',
+      dietPreference: data.dietPreference || 'N/A',
+      activityLevel: data.activityLevel || 'N/A',
+      dailyWaterIntake: data.dailyWaterIntake || 'N/A',
+      foodPreference: data.foodPreference || 'N/A',
+      foodAvoid: data.foodAvoid || 'N/A',
+      breakfast: data.breakfast || 'N/A',
+      lunch: data.lunch || 'N/A',
+      dinner: data.dinner || 'N/A',
+      anyMedication: data.anyMedication || 'N/A',
+      medication: data.medication || 'N/A',
+      medicalCondition: data.medicalCondition || 'N/A',
+      sleep: data.sleep || 'N/A',
+      wakeup: data.wakeup || 'N/A'
+    }));
+
+    this.dataSource.data = mappedData;
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   getDietUsers(): void {
@@ -76,6 +95,7 @@ export class DietOnboardUsers implements OnInit, AfterViewInit {
       next: (data: any) => {
         this.dietUsers = data;
         this.dataSource.data = this.dietUsers;
+        this.mapAndSetDataSource(this.dataSource.data);
       },
       error: (error) => {
         console.error('Error fetching diet users:', error);

@@ -13,7 +13,8 @@ html {
 
 html,
 body {
-  font-family: sans-serif !important
+  font-family: sans-serif !important;
+  background-color: #fff !important;
 }
 
 .drawer-bottom {
@@ -23,6 +24,7 @@ body {
 
 mat-drawer-container {
   overflow-x: hidden !important;
+  background-color: #ffffff !important;
 }
 
 mat-drawer-content {
@@ -93,4 +95,8 @@ mat-drawer-content {
      table {
        width: 100vw;
      }
+   }
+
+   table, mat-paginator, mat-drawer {
+    background-color: #fff !important;
    }

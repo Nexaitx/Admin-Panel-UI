@@ -14,6 +14,8 @@ import {
   ApexLegend,
   ApexPlotOptions,
 } from 'ng-apexcharts';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -46,7 +48,11 @@ export type ChartOptions = {
 @Component({
   selector: 'app-dietician-dashboard',
   standalone: true,
-  imports: [MatIconModule, MatCardModule, NgApexchartsModule],
+  imports: [MatIconModule,
+    MatCardModule,
+    NgApexchartsModule,
+    MatButtonModule,
+    MatTableModule],
   templateUrl: './dietician-dashboard.html',
   styleUrl: './dietician-dashboard.scss',
 })
@@ -57,13 +63,16 @@ export class DieticianDashboard implements OnInit {
   onBoardUsers: any[] = [];
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions!: ChartOptions;
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  displayedColumns: string[] = ['name', 'email', 'phone'];
+  showAll: boolean = false;
 
   constructor() {
     this.chartOptions = {
       series: [],
       chart: {
         height: 280,
-        type: 'radialBar', // Consider switching to 'pie' or 'donut' if raw counts are used
+        type: 'radialBar',
       },
       plotOptions: {
         radialBar: {
@@ -115,18 +124,19 @@ export class DieticianDashboard implements OnInit {
 
   ngOnInit(): void {
     this.getData();
+    this.updateDataSource();
   }
 
   getData(): void {
     this.http.get(API_URL + ENDPOINTS.GET_USERS_ONBOARD_DIET).subscribe({
       next: (res: any) => {
         this.onBoardUsers = res;
-        // Process gender counts
+        this.dataSource.data = this.onBoardUsers;
+        //  this.dataSource.data = this.showAll ? this.onBoardUsers : this.onBoardUsers.slice(0, 5);
         const maleCount = this.onBoardUsers.filter((user) => user.gender === 'male').length;
         const femaleCount = this.onBoardUsers.filter((user) => user.gender === 'female').length;
         const total = maleCount + femaleCount;
 
-        // Update chartOptions
         this.chartOptions = {
           ...this.chartOptions,
           series: [maleCount, femaleCount],
@@ -146,7 +156,6 @@ export class DieticianDashboard implements OnInit {
           },
         };
 
-        // Optionally, force chart update if necessary
         if (this.chart) {
           this.chart.updateOptions(this.chartOptions);
         }
@@ -156,4 +165,12 @@ export class DieticianDashboard implements OnInit {
       },
     });
   }
+  updateDataSource() {
+    this.dataSource.data = this.showAll ? this.dataSource.data : this.dataSource.data.slice(0, 5);
+  }
+  toggleView() {
+    this.showAll = !this.showAll;
+    this.updateDataSource();
+  }
+
 }

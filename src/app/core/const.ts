@@ -57,6 +57,7 @@ export const ENDPOINTS = {
     GET_ROLES_COUNT: '/getRoleCount',
     GET_ACCOUNTS_COUNT: '/staffCategoryOrSubcategory',
     GET_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan',
+    GET_CLIENT_STAFF_COUNT: '/getClientAndStaffCount',
 
 
     GET_USERS_ONBOARD_DIET: '/getAllOnBoardUser',

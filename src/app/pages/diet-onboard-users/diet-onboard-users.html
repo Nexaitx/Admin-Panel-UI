@@ -1,132 +1,127 @@
-  <!-- Search Input -->
-   <div class="d-flex">
-  <mat-form-field appearance="outline" class="search-field">
+<!-- Search Input -->
+<div class="table-controls d-flex">
+  <mat-form-field appearance="fill" class="search-field">
     <mat-label>Search</mat-label>
     <input matInput placeholder="Search users..." (keyup)="applyFilter($event)">
   </mat-form-field>
-  <mat-paginator class="ms-auto"
-    [pageSizeOptions]="[5, 10, 20, 100]"
-    showFirstLastButtons
+  <mat-paginator class="ms-auto" [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons
     aria-label="Select page of users">
   </mat-paginator>
-  </div>
+</div>
 
-  <!-- Table -->
-  <section class="tableScroll-container w-100" tabindex="0">
-    <mat-table [dataSource]="dataSource" matSort >
-      <!-- Full Name Column -->
-      <ng-container matColumnDef="fullName">
-        <mat-header-cell *matHeaderCellDef mat-sort-header  class="sticky-column">Full Name</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.fullName }}</mat-cell>
-      </ng-container>
+<!-- Table -->
+<section class="tableScroll-container">
+  <table mat-table [dataSource]="dataSource" matSort class="w-100">
+    <!-- Full Name Column -->
+    <ng-container matColumnDef="fullName" sticky="fullName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Full&nbsp;Name</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.fullName }}</mat-cell>
+    </ng-container>
 
-      <!-- Age Column -->
-      <ng-container matColumnDef="age">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Age</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.age }}</mat-cell>
-      </ng-container>
+    <!-- Age Column -->
+    <ng-container matColumnDef="age">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Age</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.age }}</mat-cell>
+    </ng-container>
 
-      <!-- Gender Column -->
-      <ng-container matColumnDef="gender">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Gender</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.gender }}</mat-cell>
-      </ng-container>
+    <!-- Gender Column -->
+    <ng-container matColumnDef="gender">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Gender</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.gender }}</mat-cell>
+    </ng-container>
 
-      <!-- Height Column -->
-      <ng-container matColumnDef="height">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Height</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.height }}</mat-cell>
-      </ng-container>
+    <!-- Height Column -->
+    <ng-container matColumnDef="height">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Height</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.height }}</mat-cell>
+    </ng-container>
 
-      <!-- Weight Column -->
-      <ng-container matColumnDef="weight">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Weight</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.weight }}</mat-cell>
-      </ng-container>
+    <!-- Weight Column -->
+    <ng-container matColumnDef="weight">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Weight</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.weight }}</mat-cell>
+    </ng-container>
 
-      <!-- Diet Preference Column -->
-      <ng-container matColumnDef="dietPreference">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Diet Preference</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.dietPreference }}</mat-cell>
-      </ng-container>
+    <!-- Diet Preference Column -->
+    <ng-container matColumnDef="dietPreference">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Diet&nbsp;Preference</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.dietPreference }}</mat-cell>
+    </ng-container>
 
-      <!-- Activity Level Column -->
-      <ng-container matColumnDef="activityLevel">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Activity Level</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.activityLevel }}</mat-cell>
-      </ng-container>
+    <!-- Activity Level Column -->
+    <ng-container matColumnDef="activityLevel">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Activity&nbsp;Level</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.activityLevel }}</mat-cell>
+    </ng-container>
 
-      <!-- Daily Water Intake Column -->
-      <ng-container matColumnDef="dailyWaterIntake">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Water Intake</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.dailyWaterIntake }}</mat-cell>
-      </ng-container>
+    <!-- Daily Water Intake Column -->
+    <ng-container matColumnDef="dailyWaterIntake">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Water&nbsp;Intake</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.dailyWaterIntake }}</mat-cell>
+    </ng-container>
 
-      <!-- Food Preference Column -->
-      <ng-container matColumnDef="foodPreference">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Food Preference</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.foodPreference }}</mat-cell>
-      </ng-container>
+    <!-- Food Preference Column -->
+    <ng-container matColumnDef="foodPreference">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Food&nbsp;Preference</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.foodPreference }}</mat-cell>
+    </ng-container>
 
-      <!-- Food Avoid Column -->
-      <ng-container matColumnDef="foodAvoid">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Food Avoid</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.foodAvoid }}</mat-cell>
-      </ng-container>
+    <!-- Food Avoid Column -->
+    <ng-container matColumnDef="foodAvoid">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Food&nbsp;Avoid</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.foodAvoid }}</mat-cell>
+    </ng-container>
 
-      <!-- Breakfast Column -->
-      <ng-container matColumnDef="breakfast">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Breakfast</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.breakfast }}</mat-cell>
-      </ng-container>
+    <!-- Breakfast Column -->
+    <ng-container matColumnDef="breakfast">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Breakfast</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.breakfast }}</mat-cell>
+    </ng-container>
 
-      <!-- Lunch Column -->
-      <ng-container matColumnDef="lunch">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Lunch</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.lunch }}</mat-cell>
-      </ng-container>
+    <!-- Lunch Column -->
+    <ng-container matColumnDef="lunch">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Lunch</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.lunch }}</mat-cell>
+    </ng-container>
 
-      <!-- Dinner Column -->
-      <ng-container matColumnDef="dinner">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Dinner</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.dinner }}</mat-cell>
-      </ng-container>
+    <!-- Dinner Column -->
+    <ng-container matColumnDef="dinner">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Dinner</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.dinner }}</mat-cell>
+    </ng-container>
 
-      <!-- Any Medication Column -->
-      <ng-container matColumnDef="anyMedication">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Any Medication</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.anyMedication ? 'Yes' : 'No' }}</mat-cell>
-      </ng-container>
+    <!-- Any Medication Column -->
+    <ng-container matColumnDef="anyMedication">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Any&nbsp;Medication</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.anyMedication ? 'Yes' : 'No' }}</mat-cell>
+    </ng-container>
 
-      <!-- Medication Column -->
-      <ng-container matColumnDef="medication">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Medication</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.medication }}</mat-cell>
-      </ng-container>
+    <!-- Medication Column -->
+    <ng-container matColumnDef="medication">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Medication</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.medication }}</mat-cell>
+    </ng-container>
 
-      <!-- Medical Condition Column -->
-      <ng-container matColumnDef="medicalCondition">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Medical Conditions</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.medicalCondition?.join(', ') || 'None' }}</mat-cell>
-      </ng-container>
+    <!-- Medical Condition Column -->
+    <ng-container matColumnDef="medicalCondition">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Medical Conditions</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.medicalCondition?.join(', ') || 'None' }}</mat-cell>
+    </ng-container>
 
-      <!-- Sleep Column -->
-      <ng-container matColumnDef="sleep">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Sleep</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.sleep }}</mat-cell>
-      </ng-container>
+    <!-- Sleep Column -->
+    <ng-container matColumnDef="sleep">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Sleep</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.sleep }}</mat-cell>
+    </ng-container>
 
-      <!-- Wakeup Column -->
-      <ng-container matColumnDef="wakeup">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Wakeup</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{ user.wakeup }}</mat-cell>
-      </ng-container>
+    <!-- Wakeup Column -->
+    <ng-container matColumnDef="wakeup">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Wakeup</mat-header-cell>
+      <mat-cell *matCellDef="let user">{{ user.wakeup }}</mat-cell>
+    </ng-container>
 
-      <!-- Header and Row Definitions -->
-      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    </mat-table>
-  </section>
-
-  <!-- Paginator -->
-  
+    <!-- Header and Row Definitions -->
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </table>
+</section>

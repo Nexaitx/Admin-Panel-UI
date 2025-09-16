@@ -1,0 +1,10 @@
+.table-wrapper {
+  overflow-x: auto;        /* allow horizontal scroll */
+  width: 100%;              /* take full width of parent */
+  /* optionally add min-width if you want the table to not shrink too much */
+}
+
+.table {
+  min-width: 800px;         /* adjust as needed so that it exceeds the wrapper width */
+  /* optional: white-space: nowrap; to prevent wrapping inside cells if that helps */
+}
