@@ -1,11 +1,8 @@
 <mat-toolbar>
-    <button mat-icon-button (click)="sidenav.toggle()">
+    <button mat-icon-button (click)="sidenav.toggle()"  [style.margin-left]="sidenav.opened ? '260px' : '0'">
         <mat-icon>menu</mat-icon>
     </button>
-    <!-- <span>Vitoxyz CRM</span> -->
-     <div>
-        <img src="assets/images/logo-light.png" alt="Vitoxyz Logo">
-     </div>
+     
     <div class="logout">
         <button mat-icon-button (click)="logout()" class="logout" matTooltip="Logout" matTooltipPosition="below">
             <mat-icon>logout</mat-icon>

@@ -6,40 +6,40 @@
 
 .material-icons {
   margin-right: 8px;
-  color: #6b6d6d;
+  color: #fff;
 }
 
 a span {
-  color: #6b6d6d !important;
+  color: #fff !important;
   font-size: 14px !important;
   font-weight: 400 !important;
 }
 
+
+
 .active-link,
 .active-link .material-icons,
 a:hover .material-icons {
-  background: #edf8f7 !important;
+  background: #0BBBC1 !important;
   border-radius: 50px !important;
-  color: #0BBBC1 !important;
+  color: #fff !important;
 }
 
 .active-link span,
 a:hover span {
-  color: #0BBBC1 !important;
+  color: #fff !important;
   font-weight: 500 !important;
 }
 
+mat-expansion-panel {
+  background: none !important;
+}
 
 mat-expansion-panel-header {
   padding: 0 15px;
 
   span {
     font-weight: 400;
-    color: grey;
+    color: #fff;
   }
-}
-
-mat-nav-list {
-  // position: fixed;
-  // top: 65px;
 }

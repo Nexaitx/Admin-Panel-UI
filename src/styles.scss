@@ -58,7 +58,7 @@ mat-drawer-content {
   color: #667085 !important;
 }
 
-.mat-mdc-menu-panel {
+.mat-mdc-menu-panel, mat-card-content, mat-toolbar {
   background-color: #fff !important;
 }
 
@@ -100,3 +100,58 @@ mat-drawer-content {
    table, mat-paginator, mat-drawer {
     background-color: #fff !important;
    }
+
+
+
+   
+
+   mat-nav-list {
+  max-height: 100vh; /* Ensure the nav list doesn't exceed viewport height */
+  overflow-y: auto; /* Enable vertical scrolling when content overflows */
+  scrollbar-width: none; /* Hide scrollbar by default in Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar in IE/Edge */
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+mat-nav-list::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  display: none; /* Hide by default */
+}
+
+/* Show scrollbar on hover */
+mat-nav-list:hover::-webkit-scrollbar {
+  display: block;
+}
+
+/* Style the scrollbar track */
+mat-nav-list::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+/* Style the scrollbar thumb */
+mat-nav-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3); /* Semi-transparent thumb */
+  border-radius: 4px;
+}
+
+/* Style the thumb on hover */
+mat-nav-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5); /* Darker thumb on hover */
+}
+
+/* Optional: Style for expansion panels and list items */
+mat-nav-list .mat-expansion-panel {
+  background: transparent; /* Match sidebar background */
+  box-shadow: none; /* Remove default elevation */
+}
+
+mat-nav-list .sidebar-item-content {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+}
+
+mat-nav-list .active-link {
+  background-color: rgba(0, 0, 0, 0.1); /* Highlight active link */
+  font-weight: 500;
+}
