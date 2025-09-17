@@ -147,6 +147,7 @@ export class AdminDashboard {
   roles: [] = [];
   accounts: [] = [];
   showAllDietPlans = false;
+  clientStaff: any;
 
   constructor() {
     this.chartOptions = {
@@ -184,79 +185,11 @@ export class AdminDashboard {
       labels: []
     };
 
-    // this.chartOptionClientStaff = {
-    //   series: [
-    //     {
-    //       name: "Clients",
-    //       data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-    //     },
-    //     {
-    //       name: "Staffs",
-    //       data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-    //     }
-    //   ],
-    //   chart: {
-    //     type: "bar",
-    //     height: 300
-    //   },
-    //   plotOptions: {
-    //     bar: {
-    //       horizontal: false,
-    //       columnWidth: "55%"
-    //     }
-    //   },
-    //   dataLabels: {
-    //     enabled: false
-    //   },
-    //   stroke: {
-    //     show: true,
-    //     width: 2,
-    //     colors: ["transparent"]
-    //   },
-    //   legend: {
-    //     show: true,
-    //     position: 'top',
-    //     horizontalAlign: 'left'
-    //   },
-    //   xaxis: {
-    //     categories: [
-    //       "Feb",
-    //       "Mar",
-    //       "Apr",
-    //       "May",
-    //       "Jun",
-    //       "Jul",
-    //       "Aug",
-    //       "Sep",
-    //       "Oct"
-    //     ]
-    //   },
-    //   yaxis: {
-    //     title: {
-    //       // text: "$ (thousands)"
-    //     }
-    //   },
-    //   fill: {
-    //     opacity: 1
-    //   },
-    //   tooltip: {
-    //     y: {
-    //       formatter: function (val) {
-    //         return val + " records";
-    //       }
-    //     }
-    //   }
-    // };
-    this.chartOptionClientStaff = {
+
+this.chartOptionClientStaff = {
       series: [
-        {
-          name: "Clients",
-          data: []
-        },
-        {
-          name: "Staffs",
-          data: []
-        }
+        { name: "Clients", data: [] },
+        { name: "Staffs", data: [] }
       ],
       chart: {
         type: "bar",
@@ -286,7 +219,7 @@ export class AdminDashboard {
       },
       yaxis: {
         title: {
-          // text: "$ (thousands)"
+          text: '' // can put something if needed
         }
       },
       fill: {
@@ -294,7 +227,7 @@ export class AdminDashboard {
       },
       tooltip: {
         y: {
-          formatter: function (val: any) {
+          formatter: (val: any) => {
             return val + " records";
           }
         }
@@ -302,12 +235,12 @@ export class AdminDashboard {
     };
 
     this.chartOptionsBooking = {
-      series: [44, 55, 13, 43],
+      series: [],
       chart: {
-        width: 380,
+        width: 280,
         type: "pie"
       },
-      labels: ["Previous", "On Going", "Up Coming", "Cancelled"],
+      labels: ["Previous", "Up Coming", "Cancelled"],
       responsive: [
         {
           breakpoint: 480,
@@ -326,7 +259,8 @@ export class AdminDashboard {
     this.chartOptionsStaffType = {
       series: [],
       chart: {
-        type: "polarArea"
+        type: "polarArea",
+        width: "300"
       },
       labels: [],
       stroke: {
@@ -420,7 +354,7 @@ export class AdminDashboard {
       if (res && Array.isArray(res) && res.every(item => 'staffCount' in item && 'categoryName' in item)) {
 
         const accountCounts = res.map((a: any) => a.staffCount);
-        const accountTypes = res.map((a: any) => a.categoryName);
+        const accountTypes = res.map((a: any) => a.subcategoryName);
 
         this.chartOptionsStaffType = {
           ...this.chartOptionsStaffType,
@@ -438,26 +372,33 @@ export class AdminDashboard {
 
     // get clients and staff count
     this.http.get(API_URL + ENDPOINTS.GET_CLIENT_STAFF_COUNT).subscribe((res: any) => {
-      // Assuming res is { totalUsers: 47, totalStaff: 56, totalRecords: 103 }
-      const month = "Current Month"; // Label for the single data point
+      this.clientStaff = res;
+      const clientsCount = res.totalUsers ?? 0;
+        const staffCount = res.totalStaff ?? 0;
+        const monthLabel = "Current Month"; // or derive from res or date
 
-      // Update series data with API response
-      this.chartOptionClientStaff.series = [
-        {
-          name: "Clients",
-          data: [res.totalUsers] // [47]
-        },
-        {
-          name: "Staffs",
-          data: [res.totalStaff] // [56]
-        }
-      ];
+        // Update series
+        this.chartOptionClientStaff.series = [
+          { name: "Clients", data: [clientsCount] },
+          { name: "Staffs", data: [staffCount] }
+        ];
 
-      // Update x-axis categories
-      this.chartOptionClientStaff.xaxis.categories = [month];
+        // Update xaxis categories
+        this.chartOptionClientStaff.xaxis = {
+          ...this.chartOptionClientStaff.xaxis,
+          categories: [monthLabel]
+        };
+
     });
-    // this.http.get(API_URL + ENDPOINTS.GET_CLIENT_STAFF_COUNT).subscribe((res: any) => {
-    // });
+
+    // Get bookings count
+    this.http.get(API_URL + ENDPOINTS.GET_BOOKING_COUNTS).subscribe((res: any) => {
+      const prev = res.accept || 0;
+      const decline = res.decline || 0;
+      const upcoming = res.PENDING || 0;
+
+      this.chartOptionsBooking.series = [prev, decline, upcoming];
+    });
   }
 
   toggleViewAll() {

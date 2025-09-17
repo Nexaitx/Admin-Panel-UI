@@ -24,6 +24,10 @@
     padding: 5px 8px;
 }
 .dietPlans {
-    height: 90vh;
+    height: 50vh;
     overflow-y: auto;
+}
+
+mat-card{
+    height: 100%
 }

@@ -58,8 +58,10 @@ export const ENDPOINTS = {
     GET_ACCOUNTS_COUNT: '/staffCategoryOrSubcategory',
     GET_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan',
     GET_CLIENT_STAFF_COUNT: '/getClientAndStaffCount',
+    GET_BOOKING_COUNTS: '/bookingStatus-Counts',
 
 
+       // Get dietician dashboard
     GET_USERS_ONBOARD_DIET: '/getAllOnBoardUser',
     GET_ALL_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan', //Get all diet plans which are active or not
     GET_DIET_PLANS: '/getAllDietPlan', // get all diet plans which are active to show on client app

@@ -3,11 +3,14 @@
   <p class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</p>
   <div class="row p-2 mt-3">
     <div class="col-md-4">
-      <mat-card class="example-card bg-white shadow" appearance="outlined">
+      <mat-card class="example-card bg-white shadow h-auto" appearance="outlined">
         <mat-card-header>
           <mat-card-title class="d-flex"> <mat-icon> person_pin</mat-icon> {{role}}</mat-card-title>
+          <mat-card-subtitle>
+            <small class="text-muted mb-0 mt-1">Personal Info</small>
+          </mat-card-subtitle>
         </mat-card-header>
-        <hr class="my-0">
+        <hr>
         <mat-card-content class="text-muted m-3">
           <small class="d-flex"><mat-icon> mail_outline</mat-icon>&nbsp;{{userProfile?.email}}</small>
 
@@ -16,13 +19,13 @@
 
       </mat-card>
 
-      <mat-card class="example-card my-2 bg-white shadow" appearance="outlined">
+      <mat-card class="example-card my-2 bg-white shadow h-auto" appearance="outlined">
         <mat-card-header class="d-flex justify-content-between">
           <mat-card-title>Staff Types</mat-card-title>
           <mat-icon class="navigations" [routerLink]="['/app/staff']" matTooltip="View Staff">launch</mat-icon>
         </mat-card-header>
         <hr class="mb-0">
-        <mat-card-content>
+        <mat-card-content class="my-2">
 
           <div id="chart">
             <apx-chart [series]="chartOptionsStaffType.series" [chart]="chartOptionsStaffType.chart"
@@ -58,9 +61,12 @@
         <mat-card-header class="d-flex justify-content-between">
           <mat-card-title>Clients & Staff Stats</mat-card-title>
           <mat-icon class="navigations" [routerLink]="['/app/client']" matTooltip="View Clients">launch</mat-icon>
+          <mat-card-subtitle>
+            <small class="text-muted mb-0 mt-1">Total Count of Client & Staff : {{clientStaff?.totalRecords}}</small>
+          </mat-card-subtitle>
         </mat-card-header>
-        <hr class="mb-0 mt-1">
-        <mat-card-content>
+        <hr>
+        <mat-card-content class="my-2">
           <div id="chart">
             <apx-chart [series]="chartOptionClientStaff.series" [chart]="chartOptionClientStaff.chart"
               [dataLabels]="chartOptionClientStaff.dataLabels" [plotOptions]="chartOptionClientStaff.plotOptions"
@@ -85,16 +91,18 @@
             </mat-card-header>
             <mat-card-content>
               <div id="chart">
-                <apx-chart [series]="chartOptionsBooking.series" [chart]="chartOptionsBooking.chart"
-                  [labels]="chartOptionsBooking.labels" [responsive]="chartOptionsBooking.responsive"></apx-chart>
+                <apx-chart #chartBooking [series]="chartOptionsBooking.series" [chart]="chartOptionsBooking.chart"
+                  [labels]="chartOptionsBooking.labels" [responsive]="chartOptionsBooking.responsive">
+                </apx-chart>
               </div>
+
             </mat-card-content>
           </div>
         </div>
       </mat-card>
     </div>
 
-     <div class="col-md-6">
+    <div class="col-md-6">
       <mat-card class="example-card bg-white shadow" appearance="outlined">
         <div class="d-flex justify-content-center align-items-center my-3">
           <div>
@@ -104,10 +112,7 @@
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>
-              <div id="chart">
-                <apx-chart [series]="chartOptionsBooking.series" [chart]="chartOptionsBooking.chart"
-                  [labels]="chartOptionsBooking.labels" [responsive]="chartOptionsBooking.responsive"></apx-chart>
-              </div>
+              Orders Count
             </mat-card-content>
           </div>
         </div>
@@ -124,7 +129,7 @@
             {{ showAll ? 'Show Less' : 'View All' }}
           </button>
         </mat-card-header>
-        <hr class="my-1">
+        <hr>
         <mat-card-content class="text-muted m-3">
           <table mat-table [dataSource]="dataSource" class="bg-white">
             @for (column of columns; track column) {
@@ -156,19 +161,18 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
         </mat-card-content>
-
       </mat-card>
     </div>
 
     <div class="col-md-4">
       <mat-card class="example-card bg-white shadow" appearance="outlined">
         <mat-card-header class="d-flex justify-content-between">
-          <mat-card-title class="d-flex">Recent Diet Plans</mat-card-title>
-          <button mat-button (click)="toggleViewAll()">
+          <mat-card-title class="d-flex">Recent&nbsp;Diet<br>Plans</mat-card-title>
+          <button matButton="tonal" (click)="toggleViewAll()">
             {{ showAllDietPlans ? 'Show Less' : 'View All' }}
           </button>
         </mat-card-header>
-        <hr class="my-1">
+        <hr>
         <mat-card-content class="text-muted m-3">
           <ul type="none" [ngClass]="{'scrollable': showAllDietPlans}" class="diet-plan-list ps-0 dietPlans">
             <li *ngFor="let plan of dietPlansToShow()" class="border-bottom py-2">
@@ -179,7 +183,6 @@
           </ul>
         </mat-card-content>
       </mat-card>
-
     </div>
   </div>
 </div>
