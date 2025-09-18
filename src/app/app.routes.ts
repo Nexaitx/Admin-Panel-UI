@@ -196,6 +196,11 @@ export const routes: Routes = [
                 path: 'settings',
                 loadComponent: () => import('./pages/settings/settings').then(m => m.Settings),
                 canActivate: [authGuard],
+            },
+            {
+                path: 'permissions',
+                loadComponent: () => import('./pages/permissions/permissions').then(m => m.Permissions),
+                canActivate: [authGuard],
             }
         ]
     }

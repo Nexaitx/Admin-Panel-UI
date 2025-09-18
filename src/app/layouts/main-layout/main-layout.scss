@@ -1,20 +1,18 @@
 mat-toolbar {
-    // background-color: #14bbc1;
-    // color: #ffffff;
+    border-bottom: 1px solid #C7E9E6;
     position: fixed;
-    // z-index: 9999;
+    z-index: 9999;
     top: 0;
-
-    button {
-        // color: #ffffff;
-    }
-    
 
     .logout {
         margin-left: auto;
         display: flex;
         align-items: center;
     }
+}
+
+mat-icon {
+    color: #0BBBC1 !important;
 }
 
 mat-drawer-container {
@@ -33,13 +31,13 @@ mat-drawer-container {
         border-radius: 0 !important;
         z-index: 2;
         position: fixed;
-        height:fit-content !important;
+        height: fit-content !important;
     }
 }
 
 .content {
     min-height: 90vh;
-    background-color: #ffffff !important;
+    // background-color: #ffffff !important;
 }
 
 mat-drawer-content {
