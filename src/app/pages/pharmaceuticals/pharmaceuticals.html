@@ -1,0 +1,14 @@
+<div class="d-flex justify-content-between mt-2">
+    <mat-form-field appearance="outline">
+        <mat-label>Select Orders</mat-label>
+        <mat-select>
+            <mat-option value="one">Past orders</mat-option>
+            <mat-option value="two">In Process/Shipped</mat-option>
+            <mat-option value="two">In Cart</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <button matMiniFab (click)="refreshData()"matTooltip="Refresh Data">
+        <mat-icon>loop</mat-icon>
+      </button>
+</div>
