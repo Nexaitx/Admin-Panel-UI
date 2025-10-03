@@ -8,6 +8,7 @@ export const ENDPOINTS = {
 
     // Users
     GET_USERS: '/getAllUser',
+    GET_ORGANIZATIONS: '/getAllOrganizations',
 
     // Staffs
     GET_STAFFS: '/getAllStaff',
@@ -27,11 +28,13 @@ export const ENDPOINTS = {
     DELETE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-delete',
     GET_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plans',
 
-    // Roles
+    // Roles & Permissions
     GET_ROLES: '/getAllRoles',
     CREATE_ROLE: '/createRole',
     UPDATE_ROLE: '/updateRole/',
     DELETE_ROLE: '/DeleteRole/',
+    GET_ROLE_PERMISSIONS: '/getRolePermit',
+    UPDATE_ROLE_PERMISSIONS: '/assignRolePermit',
 
     // Get Accounts
     GET_ACCOUNTS: '/getAllAccounts',
@@ -53,7 +56,10 @@ export const ENDPOINTS = {
     GET_USER_DEVICES_ADDRESS: '/getAllUserIpOrDeviceName',
     GET_STAFF_DEVICES_ADDRESS: '/allAllStaffIpDeviceName',
 
-    // get details of dashboards
+    // Get complaints
+    GET_COMPLAINTS: '/getAllComplain',
+
+    // get details of admin dashboards
     GET_ROLES_COUNT: '/getRoleCount',
     GET_ACCOUNTS_COUNT: '/staffCategoryOrSubcategory',
     GET_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan',
@@ -61,10 +67,11 @@ export const ENDPOINTS = {
     GET_BOOKING_COUNTS: '/bookingStatus-Counts',
 
 
-       // Get dietician dashboard
+    // Get dietician dashboard
     GET_USERS_ONBOARD_DIET: '/getAllOnBoardUser',
     GET_ALL_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan', //Get all diet plans which are active or not
     GET_DIET_PLANS: '/getAllDietPlan', // get all diet plans which are active to show on client app
     GET_ALL_LOGGEDIN_DIETICIAN_DIET_PLANS: '/api/dieticians/getAllDietPlan',
     GET_SCHEDULED_CALLS_COUNT: '/getDietScheduleCallCount',
+    GET_SCHEDULED_CALL: '/getDietScheduleCall'
 };

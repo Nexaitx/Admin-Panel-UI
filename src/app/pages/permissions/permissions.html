@@ -1,26 +1,29 @@
 <div class="d-flex justify-content-between">
-    <h4>Role Wise Permissions</h4>
-    <button matButton="tonal">Save</button>
+  <h4>Role Wise Permissions</h4>
+  <button matButton="tonal" (click)="savePermissions()">Save</button>
 </div>
 
-@for(role of roles; track role.roleType){
-<div class="example-section border-bottom pt-3" [formGroup]="toppings">
-    <h6>{{role?.roleType}}</h6>
-    <div class="row">
-    <p class="col-4"><mat-checkbox formControlName="pepperoni">Dashboard</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="extracheese">Manage</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Bookings</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Duty Logs</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">GPS Monitoring</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">GPS Deviation</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Bulk Assignment</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Overtime Duties</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Overtime Approvals</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Devices & Addresses</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Roles</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Pharma Bookings</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Dietician Reports</mat-checkbox></p>
-    <p class="col-4"><mat-checkbox formControlName="mushroom">Settings</mat-checkbox></p>
-    </div>
+<div *ngFor="let roleGroup of rolePermissions.controls; let i=index" [formGroup]="roleGroup" class="example-section border-bottom pt-3">
+  <h6 class="fw-bold">{{ roles[i]?.roleType }}</h6>
+  <div class="row" formGroupName="permissions">
+    <p class="col-4"><mat-checkbox [formControlName]="roles[i]?.roleType + ' Dashboard'">{{ roles[i]?.roleType }} Dashboard</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Manage">Manage</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Bookings">Bookings</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Duty Logs">Duty Logs</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="GPS Monitoring">GPS Monitoring</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="GPS Deviation">GPS Deviation</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Bulk Assignment">Bulk Assignment</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Overtime Duties">Overtime Duties</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Overtime Approvals">Overtime Approvals</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Devices & Addresses">Devices & Addresses</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Roles">Roles</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Pharma Bookings">Pharma Bookings</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Permissions">Permissions</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Diet Plans">Diet Plans</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Diet Subscription Plans">Diet Subscription Plans</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Ledgers">Ledgers</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Diet Bookings">Diet Bookings</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Dietician Reports">Dietician Reports</mat-checkbox></p>
+    <p class="col-4"><mat-checkbox formControlName="Settings">Settings</mat-checkbox></p>
+  </div>
 </div>
-}

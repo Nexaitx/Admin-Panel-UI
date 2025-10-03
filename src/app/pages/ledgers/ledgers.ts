@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { API_URL, ENDPOINTS } from '../../../core/const';
+import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
@@ -16,18 +16,8 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validator
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
-  const password = control.get('password');
-  const confirmPassword = control.get('confirmPassword');
-
-  if (password && confirmPassword && password.value !== confirmPassword.value) {
-    return { 'passwordMismatch': true };
-  }
-  return null;
-};
-
 @Component({
-  selector: 'app-dieticians-list',
+  selector: 'app-ledgers',
   imports: [
     MatCardModule,
     MatTableModule,
@@ -43,10 +33,10 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
     MatSelectModule,
     ReactiveFormsModule
   ],
-  templateUrl: './dieticians-list.html',
-  styleUrl: './dieticians-list.scss',
+  templateUrl: './ledgers.html',
+  styleUrl: './ledgers.scss'
 })
-export class DieticiansList {
+export class Ledgers {
   http = inject(HttpClient);
   fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
@@ -56,7 +46,7 @@ export class DieticiansList {
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
 
-  displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'actions'];
+  displayedColumns: string[] = ['staffId', 'staffName', 'totalPay', 'staffAmount', 'companyAmount', 'wallet', 'withdrawl', 'actions'];
 
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;
@@ -74,7 +64,7 @@ export class DieticiansList {
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
       role: ['doctor', Validators.required]
-    }, { validators: passwordMatchValidator });
+    });
   }
 
   onKeyPress(event: KeyboardEvent): void {
@@ -183,14 +173,13 @@ export class DieticiansList {
 
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: any[] = users.map(user => ({
-      user_id: user.id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone_number,
-      contact: user.email,
-      aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
-      aadhaarUrl: user.aadhaar_card_attachment || null,
-      originalUser: user
+      staffId: '01',
+      staffName: 'User name',
+      totalPay: '800',
+      staffAmount: '550',
+      companyAmount: '250',
+      wallet: '500',
+      withdrawl: user.withdrawl ? true : false
     }));
     this.dataSource.data = mappedUsers;
 

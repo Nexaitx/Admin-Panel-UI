@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, Input, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -7,27 +7,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { API_URL, ENDPOINTS } from '../../core/const';
+import { API_URL, ENDPOINTS } from '../../../core/const';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
 interface TableUser {
-  username: string;
+  organizationName: string;
   email: string;
-  phone: string;
-  status: boolean;
-  subject: string;
-  message: string;
-  id: number;
+  phoneNumber: string;
+  aadhaar: boolean;
+  address: string;
+  city: string;
+  signupDate: string;
+  user_id: number;
+  aadhaarUrl?: string;
   originalUser: any;
 }
-
 @Component({
-  selector: 'app-complaint',
-  imports: [
-    MatCardModule,
+  selector: 'app-client-organization',
+  imports: [ MatCardModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -37,18 +37,18 @@ interface TableUser {
     MatButtonModule,
     CommonModule,
     MatMenuModule,
-    MatSidenavModule
-  ],
-  templateUrl: './complaint.html',
-  styleUrl: './complaint.scss',
+    MatSidenavModule],
+  templateUrl: './client-organization.html',
+  styleUrl: './client-organization.scss',
   providers: [DatePipe]
 })
-export class Complaint {
+export class ClientOrganization {
+  @Input() client: any;
   http = inject(HttpClient);
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['username', 'email', 'phone', 'subject', 'message', 'status', 'actions'];
+  displayedColumns: string[] = ['organizationName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -58,11 +58,11 @@ export class Complaint {
     this.dataSource = new MatTableDataSource<TableUser>([]);
   }
 
+  ngOnInit(): void {
+    this.getOrganizations();
 
-  ngOnInit() {
-    this.getComplaints();
     this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      const dataStr = `${data.username} ${data.email} ${data.phone} ${data.status} ${data.subject} ${data.message}`.toLowerCase();
+      const dataStr = `${data.organizationName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -82,12 +82,12 @@ export class Complaint {
   }
 
   editElement(element: TableUser) {
-    alert(`Editing: ${element.username} (User ID: ${element.id})`);
+    alert(`Editing: ${element.organizationName} (User ID: ${element.user_id})`);
   }
 
   deleteElement(element: TableUser) {
-    console.log(`Delete ${element.username} (ID: ${element.id})`);
-    alert(`Deleting: ${element.username} (User ID: ${element.id})`);
+    console.log(`Delete ${element.organizationName} (ID: ${element.user_id})`);
+    alert(`Deleting: ${element.organizationName} (User ID: ${element.user_id})`);
   }
 
   openUserDrawer(element: TableUser) {
@@ -102,13 +102,15 @@ export class Complaint {
 
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: TableUser[] = users.map(user => ({
-      id: user.id,
-      username: user.username,
+      user_id: user.user_id,
+      organizationName: user.organizationName,
       email: user.email,
-      phone: user.phone,
-      status: user.statusVerified,
-      subject: user.subject,
-      message: this.datePipe.transform(user.message, 'mediumDate') || '',
+      phoneNumber: user.phoneNumber,
+      aadhaar: user.aadhaarVerified,
+      address: user.address,
+      city: user.city,
+      signupDate: this.datePipe.transform(user.signupDate, 'mediumDate') || '',
+      aadhaarUrl: user.aadhaar_card_attachment || null,
       originalUser: user
     }));
 
@@ -122,15 +124,16 @@ export class Complaint {
     }
   }
 
-  getComplaints() {
-    this.http.get(API_URL + ENDPOINTS.GET_COMPLAINTS).subscribe((res: any) => {
-      this.dataSource.data = res
-      this.users = res;
-      this.mapAndSetDataSource(this.users);
-    },
-      (err) => {
-        console.error('Error fetching users:', err);
-      }
-    );
+  getOrganizations() {
+    this.http.get(API_URL + ENDPOINTS.GET_ORGANIZATIONS).subscribe({
+      next: (res: any) => {
+        this.dataSource.data = res
+        this.users = res;
+        this.mapAndSetDataSource(this.users);
+      },
+        error: (err) => {
+          console.error('Error fetching users:', err);
+        }
+    })
   }
 }

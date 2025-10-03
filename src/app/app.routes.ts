@@ -118,6 +118,11 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'ledgers',
+                loadComponent: () => import('./pages/ledgers/ledgers').then(m => m.Ledgers),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'payout',
                 loadComponent: () => import('./pages/payout/payout').then(m => m.Payout),
                 canActivate: [authGuard],

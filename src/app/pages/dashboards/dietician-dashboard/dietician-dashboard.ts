@@ -3,9 +3,11 @@ import { Component, inject, ViewChild, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { API_URL, ENDPOINTS } from '../../../core/const';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 
 import {
+  ChartComponent,
+  NgApexchartsModule,
+  ApexAxisChartSeries,
   ApexNonAxisChartSeries,
   ApexResponsive,
   ApexChart,
@@ -13,6 +15,9 @@ import {
   ApexDataLabels,
   ApexLegend,
   ApexPlotOptions,
+  ApexYAxis,
+  ApexXAxis,
+  ApexTitleSubtitle,
 } from 'ng-apexcharts';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,6 +50,18 @@ export type ChartOptions = {
   };
 };
 
+export type ChartCall = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  yaxis: ApexYAxis;
+  xaxis: ApexXAxis;
+  fill: ApexFill;
+  title: ApexTitleSubtitle;
+};
+
+
 @Component({
   selector: 'app-dietician-dashboard',
   standalone: true,
@@ -63,6 +80,8 @@ export class DieticianDashboard implements OnInit {
   onBoardUsers: any[] = [];
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions!: ChartOptions;
+  public chartCall!: ChartCall;
+
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   displayedColumns: string[] = ['name', 'email', 'phone'];
   showAll: boolean = false;
@@ -120,6 +139,105 @@ export class DieticianDashboard implements OnInit {
         enabled: true,
       },
     };
+
+    this.chartCall = {
+      series: [
+        {
+          name: "Scheduled Calls",
+          data: []
+        }
+      ],
+      chart: {
+        height: 350,
+        type: "bar"
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            position: "top" // top, center, bottom
+          }
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function(val) {
+          return val + "%";
+        },
+        offsetY: -20,
+        style: {
+          fontSize: "12px",
+          colors: ["#304758"]
+        }
+      },
+
+      xaxis: {
+        categories: [
+          
+        ],
+        position: "top",
+        labels: {
+          offsetY: -18
+        },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        crosshairs: {
+          fill: {
+            type: "gradient",
+            gradient: {
+              colorFrom: "#D8E3F0",
+              colorTo: "#BED1E6",
+              stops: [0, 100],
+              opacityFrom: 0.4,
+              opacityTo: 0.5
+            }
+          }
+        },
+        tooltip: {
+          enabled: true,
+          offsetY: -35
+        }
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shade: "light",
+          type: "horizontal",
+          shadeIntensity: 0.25,
+          gradientToColors: undefined,
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [50, 0, 100, 100]
+        }
+      },
+      yaxis: {
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        labels: {
+          show: false,
+          formatter: function(val) {
+            return val + "%";
+          }
+        }
+      },
+      title: {
+        text: "Monthly Inflation in Argentina, 2002",
+        // floating: 0,
+        offsetY: 320,
+        align: "center",
+        style: {
+          color: "#444"
+        }
+      }
+    };
   }
 
   ngOnInit(): void {
@@ -128,6 +246,7 @@ export class DieticianDashboard implements OnInit {
   }
 
   getData(): void {
+    // get gender
     this.http.get(API_URL + ENDPOINTS.GET_USERS_ONBOARD_DIET).subscribe({
       next: (res: any) => {
         this.onBoardUsers = res;
@@ -164,6 +283,69 @@ export class DieticianDashboard implements OnInit {
         console.error('Error fetching onboard users:', error);
       },
     });
+
+    // get schedule call count
+    this.http.get(API_URL + ENDPOINTS.GET_SCHEDULED_CALL).subscribe({
+      next: (res:any)=>{
+       if (!Array.isArray(res)) {
+        console.error("Expected array from scheduled calls API", res);
+        return;
+      }
+
+      // Step 1: define helper to get month name
+      const monthNames = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ];
+
+      // Step 2: count per month
+      const countsByMonth: { [monthName: string]: number } = {};
+
+      for (const item of res) {
+        if (!item.date) continue;
+        const dt = new Date(item.date);
+        if (isNaN(dt.getTime())) {
+          console.warn("Invalid date:", item.date);
+          continue;
+        }
+        const monthIndex = dt.getMonth();
+        const monthName = monthNames[monthIndex];
+
+        if (!countsByMonth[monthName]) {
+          countsByMonth[monthName] = 1;
+        } else {
+          countsByMonth[monthName]++;
+        }
+      }
+
+      // Step 3: sort by month order (using your predefined list)
+      const sortedMonths = monthNames.filter(m => countsByMonth[m] !== undefined);
+      // Filter preserves order of monthNames so Jan->Dec
+
+      const data = sortedMonths.map(m => countsByMonth[m]);
+
+      // Step 4: update the chartCall
+      this.chartCall = {
+        ...this.chartCall,
+        series: [
+          {
+            name: "Scheduled Calls",
+            data: data
+          }
+        ],
+        xaxis: {
+          ...this.chartCall.xaxis,
+          categories: monthNames
+        },
+        title: {
+          ...this.chartCall.title,
+          text: "Scheduled Calls by Month"
+        }
+      };
+
+      }
+    })
+
   }
   updateDataSource() {
     this.dataSource.data = this.showAll ? this.dataSource.data : this.dataSource.data.slice(0, 5);

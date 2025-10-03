@@ -10,6 +10,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Observable } from 'rxjs';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-gps-live-monitoring',
@@ -21,7 +22,7 @@ import { Observable } from 'rxjs';
     MatSortModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule],
+    MatSidenavModule],
   templateUrl: './gps-live-monitoring.html',
   styleUrl: './gps-live-monitoring.scss'
 })
@@ -30,13 +31,14 @@ export class GPSLiveMonitoring {
   dataSource = new MatTableDataSource<any>();
 
   // New columns based on the provided data structure
-  columnsToDisplay = [ 'userName', 'userLocation', 'staffName', 'staffLocation', 'actions'];
+  columnsToDisplay = [ 'staffId', 'staffName', 'staffLocation', 'actions'];
 
   isLoading = false;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+selectedStaff: any;
   constructor() { }
 
   ngOnInit(): void {
@@ -119,4 +121,10 @@ getLocation(): void {
       console.error('Geolocation is not supported by this browser.');
     }
   }
+
+  viewStaffLocation(element: any): void {
+    this.selectedStaff = element;
+    this.sidenav.open();
+  }
+
 }

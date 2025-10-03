@@ -36,6 +36,28 @@
             </mat-card>
         </div>
 
+        <div class="col-md-4">
+            <mat-card class="example-card bg-white shadow" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Gender Distribution</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">Onboarded Users by Gender</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr class="my-0">
+                <mat-card-content>
+                    <div id="chart">
+                        <apx-chart [series]="chartCall.series" [chart]="chartCall.chart"
+                            [dataLabels]="chartCall.dataLabels" [plotOptions]="chartCall.plotOptions"
+                            [yaxis]="chartCall.yaxis" [xaxis]="chartCall.xaxis" [fill]="chartCall.fill"
+                            [title]="chartCall.title"></apx-chart>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+
+
         <div class="col-12 my-3">
             <mat-card class="example-card bg-white shadow" appearance="outlined">
                 <mat-card-header class="d-flex justify-content-between">

@@ -71,7 +71,7 @@ export class Signup {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
-        roleType: ['', Validators.required],
+        role: ['', Validators.required],
       },
       {
         // Add the custom validator at the form group level
@@ -115,7 +115,7 @@ export class Signup {
       return;
     }
 
-    this.signupForm.value.roleType = 'Admin';
+    // this.signupForm.value.roleType = 'Admin';
     this.http.post(API_URL + ENDPOINTS.SIGNUP, this.signupForm.value).subscribe(
       (res: any) => {
         if (res) {
