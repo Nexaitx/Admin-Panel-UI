@@ -106,7 +106,7 @@ export class AdminDashboard {
   doctors: any;
   dieticians: any;
   pharmacist: any;
-  userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+  userProfile = JSON.parse(localStorage.getItem('permissions') || '{}');
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions!: ChartOptions;
   public chartOptionClientStaff!: ChartOptionClientStaff;

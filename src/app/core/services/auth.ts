@@ -14,9 +14,9 @@ export class Auth {
     return !!localStorage.getItem('token');
   }
 
-  login(token: string, role: string, userProfile: any): void {
+  login(token: string, permissions: string[], userProfile: any): void {
     localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
+    localStorage.setItem('permissions', JSON.stringify(permissions));
     localStorage.setItem('userProfile', JSON.stringify(userProfile));
   }
 

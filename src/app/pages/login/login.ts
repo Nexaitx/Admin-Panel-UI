@@ -71,26 +71,27 @@ export class Login {
       this.isLoading = true;
       this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
         if (res) {
-          this.auth.login(res?.token, res?.profile?.role?.roleType, res?.profile);
+          this.auth.login(res?.token, res?.permissions, res?.profile);
           this._snackBar.open('Logged In Successful!', 'Successfully', {
             horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 3000,
               panelClass: ['snackbar-success']
             });
-            const role = res?.profile?.role?.roleType;
-            console.log(role)
-            if (role === 'Admin') {
+            const perm = res?.permissions;
+            // console.log(role)
+            if (perm.includes('Admin Dashboard')) {
               this.router.navigate(['/app/admin-dashboard']);
-            } else if (role === 'Doctor') {
-              this.router.navigate(['/app/doctor-dashboard']);
-            } else if (role === 'Pharmacist') {
-              this.router.navigate(['/app/pharmacist-dashboard']);
-            } else if (role === 'Dietician') {
-              this.router.navigate(['/app/dietician-dashboard']);
-            } else {
-              this.router.navigate(['/app/default-dashboard']);
             }
+            // } else if (role === 'Doctor') {
+              // this.router.navigate(['/app/doctor-dashboard']);
+            // } else if (role === 'Pharmacist') {
+              // this.router.navigate(['/app/pharmacist-dashboard']);
+            // } else if (role === 'Dietician') {
+              // this.router.navigate(['/app/dietician-dashboard']);
+            // } else {
+              // this.router.navigate(['/app/default-dashboard']);
+            // }
           }
         },
           error => {

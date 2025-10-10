@@ -18,27 +18,24 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./sidebar.scss']
 })
 export class Sidebar {
-  userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+  userProfile = JSON.parse(localStorage.getItem('permissions') || '{}');
   permissions: string[] = [];
+
   constructor() {
-    console.log(this.userProfile?.role?.roleType);
     this.loadFromStorage();
   }
+
   loadFromStorage() {
-    // const permJson = localStorage.getItem('permissions');
-    const permJson = this.userProfile?.role?.permissions;
-    console.log(permJson);
+    const permJson = this.userProfile;
     this.permissions = permJson;
   }
 
   hasPermission(permission: string): boolean {
-    // exact match or contains logic
-    console.log(permission)
     return this.permissions.includes(permission);
   }
 
-  // optionally, helper for “Dashboard” permission which may be role‑specific
-  hasDashboardForRole(roleType: string): boolean {
-    return this.hasPermission(`${roleType} Dashboard`);
-  }
+  // hasDashboardForRole(roleType: string): boolean {
+  //   console.log(this.hasPermission(`${roleType} Dashboard`));
+  //   return this.hasPermission(`${roleType} Dashboard`);
+  // }
 }
