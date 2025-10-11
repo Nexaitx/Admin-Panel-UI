@@ -12,6 +12,7 @@ export const ENDPOINTS = {
 
     // Staffs
     GET_STAFFS: '/getAllStaff',
+    GET_DUTY_LOGS: '/getDutyLog',
 
     // Doctors
     GET_DOCTORS: '/getAllDoctor',

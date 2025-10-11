@@ -31,14 +31,14 @@ export class GPSLiveMonitoring {
   dataSource = new MatTableDataSource<any>();
 
   // New columns based on the provided data structure
-  columnsToDisplay = [ 'staffId', 'staffName', 'staffLocation', 'actions'];
+  columnsToDisplay = ['staffId', 'staffName', 'staffLocation', 'actions'];
 
   isLoading = false;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('sidenav') sidenav!: MatSidenav;
-selectedStaff: any;
+  selectedStaff: any;
   constructor() { }
 
   ngOnInit(): void {
@@ -91,7 +91,7 @@ selectedStaff: any;
     return this.http.get(url);
   }
 
-getLocation(): void {
+  getLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position: GeolocationPosition) => {

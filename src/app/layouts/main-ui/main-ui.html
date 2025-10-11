@@ -7,13 +7,6 @@
         <mat-icon>menu</mat-icon>
     </button>
 
-    <div class="flex-grow d-none d-md-flex" [ngClass]="{'show-menu': isMenuOpen}">
-        <button mat-button (click)="toggleMenu()">About Us</button>
-        <button mat-button (click)="toggleMenu()">Why Us</button>
-        <button mat-button (click)="toggleMenu()">Services</button>
-        <button mat-button (click)="toggleMenu()">How It Works</button>
-    </div>
-
     <div class="flex-row">
         <button mat-button (click)="authUI = 'login'" [ngClass]="{'active-auth-btn': authUI === 'login'}"
             class="rounded-pill btn btn-sm px-3">
