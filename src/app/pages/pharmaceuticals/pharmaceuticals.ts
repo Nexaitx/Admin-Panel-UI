@@ -15,7 +15,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './pharmaceuticals.scss'
 })
 export class Pharmaceuticals {
+  selectedOrderType = 'past';
 
   refreshData() { }
-  
+
+  onOrderTypeChange(value: string) {
+  }
+
+
 }

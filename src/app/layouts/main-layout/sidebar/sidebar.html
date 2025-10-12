@@ -2,7 +2,8 @@
     <div class="pb-4">
         <img src="./assets/images/logo-light.png" alt="Vitoxyz Logo">
     </div>
-    <a mat-list-item routerLink="/app/admin-dashboard" *ngIf="hasPermission('Admin Dashboard')" routerLinkActive="active-link">
+    <a mat-list-item routerLink="/app/admin-dashboard" *ngIf="hasPermission('Admin Dashboard')"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
         </span>
@@ -51,30 +52,35 @@
             <mat-icon class="material-icons">assignment</mat-icon><span>Duty Logs</span>
         </span>
     </a>
-    <a *ngIf="hasPermission('GPS Monitoring')" mat-list-item routerLink="/app/gps-live-monitoring" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('GPS Monitoring')" mat-list-item routerLink="/app/gps-live-monitoring"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">location_on</mat-icon><span>GPS Live Monitoring</span>
         </span>
     </a>
 
-    <a *ngIf="hasPermission('GPS Deviation')" mat-list-item routerLink="/app/gps-live-deviation" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('GPS Deviation')" mat-list-item routerLink="/app/gps-live-deviation"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">sensors</mat-icon><span>GPS Live Deviation</span>
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Bulk Assignment')" mat-list-item routerLink="/app/bulk-assignments" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Bulk Assignment')" mat-list-item routerLink="/app/bulk-assignments"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">group</mat-icon><span>Bulk Assignments</span>
         </span>
     </a>
-    <a *ngIf="hasPermission('Overtime Duties')" mat-list-item routerLink="/app/override-Duties" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Overtime Duties')" mat-list-item routerLink="/app/override-Duties"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">swap_horiz</mat-icon><span>Override Duties</span>
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Overtime Approvals')" mat-list-item routerLink="/app/overtime-approval" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Overtime Approvals')" mat-list-item routerLink="/app/overtime-approval"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">access_time</mat-icon><span>Overtime Approval</span>
         </span>
@@ -84,30 +90,25 @@
             <mat-icon class="material-icons">money</mat-icon><span>Ledgers</span>
         </span>
     </a>
-    <a *ngIf="hasPermission('Devices & Addresses')" mat-list-item routerLink="/app/devices-and-addresses" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Devices & Addresses')" mat-list-item routerLink="/app/devices-and-addresses"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">important_devices</mat-icon><span>Devices & Addresses</span>
         </span>
     </a>
-    <a *ngIf="hasPermission('Roles')" mat-list-item routerLink="/app/roles" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">group</mat-icon><span>Roles</span>
-        </span>
-    </a>
 
-    <a *ngIf="hasPermission('Pharma Bookings')" mat-list-item routerLink="/app/pharmaceuticals" routerLinkActive="active-link">
+
+    <a *ngIf="hasPermission('Pharma Bookings')" mat-list-item routerLink="/app/pharmaceuticals"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon>healing</mat-icon><span>Pharma Bookings</span>
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Permissions')" mat-list-item routerLink="/app/permissions" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon>library_books</mat-icon><span>Permissions</span>
-        </span>
-    </a>
 
-    <a *ngIf="hasPermission('Dietician Dashboard')" mat-list-item routerLink="/app/dietician-dashboard" routerLinkActive="active-link">
+
+    <a *ngIf="hasPermission('Dietician Dashboard')" mat-list-item routerLink="/app/dietician-dashboard"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
         </span>
@@ -124,63 +125,69 @@
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Diet Subscription Plans')" mat-list-item routerLink="/app/subscription-plans" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Diet Subscription Plans')" mat-list-item routerLink="/app/subscription-plans"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">poll</mat-icon><span>Subscription Plans</span>
         </span>
     </a>
-    <a *ngIf="hasPermission('Appointments')" mat-list-item routerLink="/app/appointments" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Appointments')" mat-list-item routerLink="/app/appointments"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">date_range</mat-icon><span>Appointments</span>
         </span>
     </a>
 
-
-    <a *ngIf="hasPermission('Pharmacist Dashboard')" mat-list-item routerLink="/app/pharmacist-dashboard" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
-        </span>
-    </a>
-
-    <a *ngIf="hasPermission('Return Orders')" mat-list-item routerLink="/app/pharmaceuticals" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon>360</mat-icon><span>Return Orders</span>
-        </span>
-    </a>
-
-    <a *ngIf="hasPermission('Order Status')" mat-list-item routerLink="/app/pharmaceuticals" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Order Status')" mat-list-item routerLink="/app/pharmaceuticals"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon>pin_drop</mat-icon><span>Orders Locate</span>
         </span>
     </a>
 
-
-
-    <a *ngIf="hasPermission('Doctor dashboard')" mat-list-item routerLink="/app/doctor-dashboard" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Doctor dashboard')" mat-list-item routerLink="/app/doctor-dashboard"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
+        </span>
+    </a>
+    <a *ngIf="hasPermission('Pharmacist Dashboard')" mat-list-item routerLink="/app/pharmacist-dashboard"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
+        </span>
+    </a>
+    <a *ngIf="hasPermission('Physiotherapist Dashboard')" mat-list-item routerLink="/app/physiotherapist-dashboard"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Physiotherapist Dashboard')" mat-list-item routerLink="/app/physiotherapist-dashboard" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Psychiatrist Dashboard')" mat-list-item routerLink="/app/psychiatrist-dashboard"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
         </span>
     </a>
-
-    <a *ngIf="hasPermission('Psychiatrist Dashboard')" mat-list-item routerLink="/app/psychiatrist-dashboard" routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">widgets</mat-icon><span>Dashboard</span>
-        </span>
-    </a>
-    <a *ngIf="hasPermission('Dietician Reports')" mat-list-item routerLink="/app/dietician-reports" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Dietician Reports')" mat-list-item routerLink="/app/dietician-reports"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">analytics</mat-icon><span>Dietician Reports</span>
         </span>
     </a>
 
-
-    <mat-expansion-panel mat-list-item class="mat-elevation-z0" *ngIf="hasPermission('Settings')" >
+    <a *ngIf="hasPermission('Roles')" mat-list-item routerLink="/app/roles" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">group</mat-icon><span>Roles</span>
+        </span>
+    </a>
+    <a *ngIf="hasPermission('Permissions')" mat-list-item routerLink="/app/permissions" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon>library_books</mat-icon><span>Permissions</span>
+        </span>
+    </a>
+    <mat-expansion-panel mat-list-item class="mat-elevation-z0" *ngIf="hasPermission('Settings')">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <mat-icon>settings</mat-icon><span>Settings</span>
