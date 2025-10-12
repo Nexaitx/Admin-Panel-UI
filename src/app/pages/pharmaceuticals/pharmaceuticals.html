@@ -1,18 +1,69 @@
 <div class="d-flex mt-2">
-    <mat-icon>filter_list</mat-icon>
+  <mat-icon>filter_list</mat-icon>
+  <mat-form-field appearance="outline" class="small-select">
+    <mat-label>Select Orders</mat-label>
+    <mat-select [(value)]="selectedOrderType" (selectionChange)="onOrderTypeChange($event.value)">
+      <mat-option value="">All Orders</mat-option>
+      <mat-option value="past">Past Orders</mat-option>
+      <mat-option value="in-process">In Process/Shipped</mat-option>
+      <mat-option value="in-cart">In Cart</mat-option>
+      <mat-option value="returned">Returned Orders</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-    <mat-form-field appearance="outline" class="small-select">
-        <mat-label>Select Orders</mat-label>
-        <mat-select [(value)]="selectedOrderType" (selectionChange)="onOrderTypeChange($event.value)" class="rounded-md">
-            <mat-option value="past">Past Orders</mat-option>
-            <mat-option value="in-process">In Process/Shipped</mat-option>
-            <mat-option value="in-cart">In Cart</mat-option>
-            <mat-option value="returned">Returned Orders</mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <button class="ms-auto" matMiniFab (click)="refreshData()" matTooltip="Refresh Data">
-        <mat-icon>loop</mat-icon>
-      </button>
-
+  <button class="ms-auto" mat-mini-fab (click)="refreshData()" matTooltip="Refresh Data">
+    <mat-icon>loop</mat-icon>
+  </button>
 </div>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+  <!-- ID Column -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+    <td mat-cell *matCellDef="let o"> {{ o.id }} </td>
+  </ng-container>
+
+  <!-- Order Date -->
+  <ng-container matColumnDef="orderDate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+    <td mat-cell *matCellDef="let o"> {{ o.orderDate }} </td>
+  </ng-container>
+
+  <!-- Customer -->
+  <ng-container matColumnDef="customer">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer </th>
+    <td mat-cell *matCellDef="let o"> {{ o.customer }} </td>
+  </ng-container>
+
+  <!-- Status -->
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+    <td mat-cell *matCellDef="let o"> {{ o.status }} </td>
+  </ng-container>
+
+  <!-- Total -->
+  <ng-container matColumnDef="total">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
+    <td mat-cell *matCellDef="let o"> {{ o.total }} </td>
+  </ng-container>
+
+  <!-- Actions -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <td mat-cell *matCellDef="let o">
+      <button mat-icon-button color="primary" (click)="onEdit(o)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="onDelete(o)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>

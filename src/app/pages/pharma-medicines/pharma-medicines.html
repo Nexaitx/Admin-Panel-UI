@@ -1,0 +1,130 @@
+<mat-drawer-container class="med-container" autosize>
+
+    <mat-drawer class="w-75 p-4" #drawer mode="over" position="end" [disableClose]="false">
+        <div class="drawer-form">
+            <h3>{{ editing ? 'Edit Medicine' : 'Create Medicine' }}</h3>
+            <form [formGroup]="medicineForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>State / City</mat-label>
+                        <mat-select formControlName="location">
+                            <mat-option *ngFor="let loc of locations" [value]="loc">{{ loc }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Medicine Name</mat-label>
+                        <input matInput formControlName="name" />
+                    </mat-form-field>
+
+
+                    <mat-slide-toggle class="col-md-6" formControlName="onApp">Show on App</mat-slide-toggle>
+
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Discount (%)</mat-label>
+                        <input matInput type="number" formControlName="discount" min="0" max="100" />
+                    </mat-form-field>
+
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Usage</mat-label>
+                        <textarea matInput formControlName="usage"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Side Effects</mat-label>
+                        <textarea matInput formControlName="sideEffects"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>MRP</mat-label>
+                        <input matInput type="number" formControlName="mrp" />
+                    </mat-form-field>
+
+                    <input class="col-md-6" type="file" formControlName="imageFile" (change)="onFileSelected($event)" />
+
+                </div>
+                <div class="button-row">
+                    <button mat-button (click)="drawer.close()">Cancel</button>
+                    <button mat-flat-button color="primary" type="submit" [disabled]="medicineForm.invalid">
+                        {{ editing ? 'Update' : 'Create' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </mat-drawer>
+
+    <mat-drawer-content>
+        <div class="toolbar-row d-flex align-items-center mt-2">
+            <mat-icon>filter_list</mat-icon>
+            <mat-form-field appearance="outline" class="small-select ms-2">
+                <mat-label>Select Orders</mat-label>
+                <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
+                    <mat-option value="">All Medicines type--</mat-option>
+                    <mat-option value="otc">OTC Medicines</mat-option>
+                    <mat-option value="medicines">Medicines</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <button class="ms-auto" matButton="tonal" (click)="openCreate()">Create Medicine</button>
+        </div>
+
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+            <!-- Define columns: location, name, onApp, discount, usage, sideEffects, mrp, image, actions -->
+
+            <ng-container matColumnDef="location">
+                <th mat-header-cell *matHeaderCellDef>Location</th>
+                <td mat-cell *matCellDef="let m">{{ m.location }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Medicine Name</th>
+                <td mat-cell *matCellDef="let m">{{ m.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="onApp">
+                <th mat-header-cell *matHeaderCellDef>On App?</th>
+                <td mat-cell *matCellDef="let m">
+                    <mat-icon *ngIf="m.onApp">check_circle</mat-icon>
+                    <mat-icon *ngIf="!m.onApp">cancel</mat-icon>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="discount">
+                <th mat-header-cell *matHeaderCellDef>Discount</th>
+                <td mat-cell *matCellDef="let m">{{ m.discount }}%</td>
+            </ng-container>
+
+            <ng-container matColumnDef="mrp">
+                <th mat-header-cell *matHeaderCellDef>MRP</th>
+                <td mat-cell *matCellDef="let m">{{ m.mrp | currency }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="image">
+                <th mat-header-cell *matHeaderCellDef>Image</th>
+                <td mat-cell *matCellDef="let m">
+                    <img *ngIf="m.imageUrl" [src]="m.imageUrl" width="50" />
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let m">
+                    <button mat-icon-button color="primary" (click)="openEdit(m)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteMedicine(m)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+    </mat-drawer-content>
+
+</mat-drawer-container>
