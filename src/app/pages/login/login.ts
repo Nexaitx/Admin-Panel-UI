@@ -71,14 +71,14 @@ export class Login {
       this.isLoading = true;
       this.http.post(API_URL + ENDPOINTS.LOGIN, this.loginForm.value).subscribe((res: any) => {
         if (res) {
-          this.auth.login(res?.token, res?.permissions, res?.profile);
+          this.auth.login(res?.token, res?.profile?.role?.permissions, res?.profile);
           this._snackBar.open('Logged In Successful!', 'Successfully', {
             horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 3000,
               panelClass: ['snackbar-success']
             });
-            const perm = res?.permissions;
+            const perm = res?.profile?.role?.permissions;
             // console.log(role)
             if (perm.includes('Admin Dashboard')) {
               this.router.navigate(['/app/admin-dashboard']);

@@ -74,5 +74,10 @@ export const ENDPOINTS = {
     GET_DIET_PLANS: '/getAllDietPlan', // get all diet plans which are active to show on client app
     GET_ALL_LOGGEDIN_DIETICIAN_DIET_PLANS: '/api/dieticians/getAllDietPlan',
     GET_SCHEDULED_CALLS_COUNT: '/getDietScheduleCallCount',
-    GET_SCHEDULED_CALL: '/getDietScheduleCall'
+    GET_SCHEDULED_CALL: '/getDietScheduleCall',
+
+    // Pharmacy
+    GET_ORDERS_IN_CART: '/api/adminCart/orderInCart',
+    GET_ORDER_STATUSES: '/api/orders/status-options',
+    GET_ORDERS_BY_STATUS: '/api/orders/status/',
 };

@@ -1,89 +1,135 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input'; // Added for search input
+import { MatFormFieldModule } from '@angular/material/form-field'; // Added for search form field
+import { API_URL, ENDPOINTS } from '../../core/const';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-pharmaceuticals',
-  imports: [MatSelectModule,
+  imports: [
+    MatTabsModule,
+    MatSelectModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
-    MatPaginatorModule,
-    MatSortModule
-
+    MatSortModule,
+    MatInputModule, // Added
+    MatFormFieldModule, // Added
+    CommonModule
   ],
+  providers: [DatePipe],
   templateUrl: './pharmaceuticals.html',
   styleUrl: './pharmaceuticals.scss'
 })
-export class Pharmaceuticals {
-  displayedColumns: string[] = [
-    'id', 'orderDate', 'customer', 'status', 'total', 'actions'
+export class Pharmaceuticals implements AfterViewInit {
+  processedColumns: string[] = [
+    'orderId', 'orderNumber', 'userId', 'userName', 'userPhoneNumber',
+    'userEmail', 'paymentStatus', 'orderDate', 'expectedDeliveryDate',
+    'finalAmount', 'status', 'taxAmount', 'totalAmount', 'actions'
   ];
-  dataSource = new MatTableDataSource<any>([]);
 
-  selectedOrderType: string = '';
+  cartColumns: string[] = [
+    'id', 'productName', 'brandName', 'dosage', 'productForm',
+    'quantity', 'price', 'totalPrice', 'userName', 'addedDate', 'actions'
+  ];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  cartOrders = new MatTableDataSource<any>([]);
+  processedOrders = new MatTableDataSource<any>([]);
 
-  allOrders: any[] = [];
+  selectedOrderType: string = 'PENDING';
+  activeTabIndex: number = 0;
+  orderStatuses: any[] = [];
 
-  ngOnInit() {
-    this.loadOrders();
-  }
+  @ViewChild('cartPaginator') cartPaginator!: MatPaginator;
+  @ViewChild('processedPaginator') processedPaginator!: MatPaginator;
+  @ViewChild('cartSort') cartSort!: MatSort;
+  @ViewChild('processedSort') processedSort!: MatSort;
+
+  http = inject(HttpClient);
+  datePipe = inject(DatePipe);
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.cartOrders.paginator = this.cartPaginator;
+    this.cartOrders.sort = this.cartSort;
+    this.processedOrders.paginator = this.processedPaginator;
+    this.processedOrders.sort = this.processedSort;
+
+    this.loadCartOrders();
+    this.onOrderTypeChange(this.selectedOrderType);
   }
 
-  loadOrders() {
-    // In real app, fetch from your API. Here is dummy data:
-    this.allOrders = [
-      { id: 1, orderDate: new Date('2025-10-01'), customer: 'Alice', status: 'past', total: 100.50 },
-      { id: 2, orderDate: new Date('2025-10-05'), customer: 'Bob', status: 'in-process', total: 75.00 },
-      { id: 3, orderDate: new Date('2025-10-07'), customer: 'in-cart', status: 'in-cart', total: 20.00 },
-      { id: 4, orderDate: new Date('2025-09-28'), customer: 'Carol', status: 'returned', total: 50.25 },
-      // ... more
-    ];
+  ngOnInit() {
+    this.getOrderStatuses();
+  }
 
-    this.applyFilterAndRefresh();
+  getOrderStatuses() {
+    this.http.get(`${API_URL}${ENDPOINTS.GET_ORDER_STATUSES}`).subscribe((data: any) => {
+      this.orderStatuses = data;
+    });
+  }
+
+  onTabChange(event: any) {
+    this.activeTabIndex = event.index;
+    if (event.index === 0) {
+      this.loadCartOrders();
+    } else {
+      this.onOrderTypeChange(this.selectedOrderType);
+    }
+  }
+
+  loadCartOrders() {
+    this.http.get(`${API_URL}${ENDPOINTS.GET_ORDERS_IN_CART}`).subscribe((data: any) => {
+      this.cartOrders.data = data;
+      console.log('Cart orders loaded:', data);
+    }, error => {
+      console.error('Error loading cart orders:', error);
+    });
   }
 
   onOrderTypeChange(newType: string) {
     this.selectedOrderType = newType;
-    this.applyFilterAndRefresh();
+    console.log('Selected Order Type:', this.selectedOrderType);
+
+    this.http.get(`${API_URL}${ENDPOINTS.GET_ORDERS_BY_STATUS}${newType}`).subscribe((data: any) => {
+      this.processedOrders.data = data;
+    });
   }
 
-  applyFilterAndRefresh() {
-    let filtered = this.allOrders;
-    if (this.selectedOrderType) {
-      filtered = filtered.filter(o => o.status === this.selectedOrderType);
+  onView(item: any) {
+    console.log('View item', item);
+  }
+
+  formatAddedDate(date: string): string {
+    return this.datePipe.transform(date, 'medium') || date;
+  }
+
+  // New filter methods
+  applyCartFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.cartOrders.filter = filterValue.trim().toLowerCase();
+
+    if (this.cartOrders.paginator) {
+      this.cartOrders.paginator.firstPage();
     }
-    this.dataSource.data = filtered;
   }
 
-  refreshData() {
-    // re-fetch / re-load
-    this.loadOrders();
+  applyProcessedFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.processedOrders.filter = filterValue.trim().toLowerCase();
+
+    if (this.processedOrders.paginator) {
+      this.processedOrders.paginator.firstPage();
+    }
   }
-
-  onEdit(order: any) {
-    console.log('Edit', order);
-  }
-
-  onDelete(order: any) {
-    console.log('Delete', order);
-    this.allOrders = this.allOrders.filter(o => o.id !== order.id);
-    this.applyFilterAndRefresh();
-  }
-
-
 }
