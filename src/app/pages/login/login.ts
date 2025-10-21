@@ -79,15 +79,18 @@ export class Login {
               panelClass: ['snackbar-success']
             });
             const perm = res?.profile?.role?.permissions;
-            // console.log(role)
+            console.log(perm);
             if (perm.includes('Admin Dashboard')) {
               this.router.navigate(['/app/admin-dashboard']);
             }
+            else if (perm.includes('Pharmacist Dashboard')) {
+
+              this.router.navigate(['/app/pharmacist-dashboard']);
+            }
             // } else if (role === 'Doctor') {
-              // this.router.navigate(['/app/doctor-dashboard']);
-            // } else if (role === 'Pharmacist') {
-              // this.router.navigate(['/app/pharmacist-dashboard']);
-            // } else if (role === 'Dietician') {
+              // this.router.navigate(['/app/doctor-dashboard']); }
+             
+            //  else if (role === 'Dietician') {
               // this.router.navigate(['/app/dietician-dashboard']);
             // } else {
               // this.router.navigate(['/app/default-dashboard']);

@@ -58,7 +58,9 @@ mat-drawer-content {
   color: #667085 !important;
 }
 
-.mat-mdc-menu-panel, mat-card-content, mat-toolbar {
+.mat-mdc-menu-panel,
+mat-card-content,
+mat-toolbar {
   background-color: #fff !important;
 }
 
@@ -83,35 +85,44 @@ mat-drawer-content {
   border-radius: 5px;
 }
 
-   mat-drawer-container {
-     position: relative;
-     height: auto;
-   }
+mat-drawer-container {
+  position: relative;
+  height: auto;
+}
 
-   section {
-     height: 400px;
-     overflow: auto;
+section {
+  height: 400px;
+  overflow: auto;
 
-     table {
-       width: 100vw;
-     }
-   }
+  table {
+    width: 100vw;
+  }
+}
 
-   table, mat-paginator, mat-drawer, mat-sidenav-container {
-    background-color: #fff !important;
-   } 
+table,
+mat-paginator,
+mat-drawer,
+mat-sidenav-container {
+  background-color: #fff !important;
+}
 
-   mat-nav-list {
-  max-height: 100vh; /* Ensure the nav list doesn't exceed viewport height */
-  overflow-y: auto; /* Enable vertical scrolling when content overflows */
-  scrollbar-width: none; /* Hide scrollbar by default in Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar in IE/Edge */
+mat-nav-list {
+  max-height: 100vh;
+  /* Ensure the nav list doesn't exceed viewport height */
+  overflow-y: auto;
+  /* Enable vertical scrolling when content overflows */
+  scrollbar-width: none;
+  /* Hide scrollbar by default in Firefox */
+  -ms-overflow-style: none;
+  /* Hide scrollbar in IE/Edge */
 }
 
 /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
 mat-nav-list::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
-  display: none; /* Hide by default */
+  width: 8px;
+  /* Width of the scrollbar */
+  display: none;
+  /* Hide by default */
 }
 
 /* Show scrollbar on hover */
@@ -121,36 +132,47 @@ mat-nav-list:hover::-webkit-scrollbar {
 
 /* Style the scrollbar track */
 mat-nav-list::-webkit-scrollbar-track {
-  background: transparent; /* Transparent track */
+  background: transparent;
+  /* Transparent track */
 }
 
 /* Style the scrollbar thumb */
 mat-nav-list::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3); /* Semi-transparent thumb */
+  background: rgba(0, 0, 0, 0.3);
+  /* Semi-transparent thumb */
   border-radius: 4px;
 }
 
 /* Style the thumb on hover */
 mat-nav-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5); /* Darker thumb on hover */
+  background: rgba(0, 0, 0, 0.5);
+  /* Darker thumb on hover */
 }
 
 /* Optional: Style for expansion panels and list items */
 mat-nav-list .mat-expansion-panel {
-  background: transparent; /* Match sidebar background */
-  box-shadow: none; /* Remove default elevation */
+  background: transparent;
+  /* Match sidebar background */
+  box-shadow: none;
+  /* Remove default elevation */
 }
 
 mat-nav-list .sidebar-item-content {
   display: flex;
   align-items: center;
-  gap: 8px; /* Space between icon and text */
+  gap: 8px;
+  /* Space between icon and text */
 }
 
 mat-nav-list .active-link {
   background-color: rgba(0, 0, 0, 0.1);
   font-weight: 500;
 }
+
 .mat-drawer-content {
   min-height: 80vh !important;
+}
+
+.mat-mdc-header-row {
+  background: #e4fafb !important
 }

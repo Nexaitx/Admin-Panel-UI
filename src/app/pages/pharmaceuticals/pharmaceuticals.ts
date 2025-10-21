@@ -11,7 +11,10 @@ import { MatInputModule } from '@angular/material/input'; // Added for search in
 import { MatFormFieldModule } from '@angular/material/form-field'; // Added for search form field
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-pharmaceuticals',
@@ -24,9 +27,12 @@ import { CommonModule, DatePipe } from '@angular/common';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatInputModule, // Added
-    MatFormFieldModule, // Added
-    CommonModule
+    MatInputModule,
+    MatFormFieldModule,
+    CommonModule,
+    MatCardModule,
+    MatListModule,
+    MatSidenavModule
   ],
   providers: [DatePipe],
   templateUrl: './pharmaceuticals.html',
@@ -48,9 +54,12 @@ export class Pharmaceuticals implements AfterViewInit {
   processedOrders = new MatTableDataSource<any>([]);
 
   selectedOrderType: string = 'PENDING';
+  selectedItem: any = null;
   activeTabIndex: number = 0;
   orderStatuses: any[] = [];
+  isDrawerOpen = false;
 
+  @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild('cartPaginator') cartPaginator!: MatPaginator;
   @ViewChild('processedPaginator') processedPaginator!: MatPaginator;
   @ViewChild('cartSort') cartSort!: MatSort;
@@ -58,6 +67,7 @@ export class Pharmaceuticals implements AfterViewInit {
 
   http = inject(HttpClient);
   datePipe = inject(DatePipe);
+  // currencyPipe = inject(CurrencyPipe);
 
   ngAfterViewInit() {
     this.cartOrders.paginator = this.cartPaginator;
@@ -99,21 +109,55 @@ export class Pharmaceuticals implements AfterViewInit {
 
   onOrderTypeChange(newType: string) {
     this.selectedOrderType = newType;
-    console.log('Selected Order Type:', this.selectedOrderType);
-
     this.http.get(`${API_URL}${ENDPOINTS.GET_ORDERS_BY_STATUS}${newType}`).subscribe((data: any) => {
       this.processedOrders.data = data;
     });
   }
 
   onView(item: any) {
-    console.log('View item', item);
+    this.selectedItem = { ...item }; // Create a copy to avoid reference issues
+
+    // If it's a processed order and doesn't have orderItems, fetch detailed data
+    if (!this.isCartItem() && (!item.orderItems || item.orderItems.length === 0)) {
+      this.loadOrderDetails(item.orderId || item.id);
+    }
+
+    this.isDrawerOpen = true;
+    console.log('Opening drawer for item:', this.selectedItem);
+  }
+  loadOrderDetails(orderId: string) {
+    // Replace with your actual API endpoint to get order details
+    this.http.get(`${API_URL}/orders/${orderId}/details`).subscribe({
+      next: (detailedOrder: any) => {
+        this.selectedItem = { ...this.selectedItem, ...detailedOrder };
+      },
+      error: (error) => {
+        console.error('Error loading order details:', error);
+        // Still open drawer with available data
+      }
+    });
+  }
+
+  closeDrawer() {
+    this.isDrawerOpen = false;
+    this.selectedItem = null;
   }
 
   formatAddedDate(date: string): string {
     return this.datePipe.transform(date, 'medium') || date;
   }
 
+  isCartItem() {
+    return this.activeTabIndex === 0;
+  }
+  
+  onDrawerClosed() {
+    this.selectedItem = null;
+  }
+
+  getDrawerTitle() {
+    return this.isCartItem() ? 'Cart Item Details' : 'Order Details';
+  }
   // New filter methods
   applyCartFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

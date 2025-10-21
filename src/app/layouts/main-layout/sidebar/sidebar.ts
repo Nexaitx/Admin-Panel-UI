@@ -28,14 +28,15 @@ export class Sidebar {
   loadFromStorage() {
     const permJson = this.userProfile;
     this.permissions = permJson;
+    console.log(this.permissions);
   }
 
   hasPermission(permission: string): boolean {
     return this.permissions.includes(permission);
   }
 
-  // hasDashboardForRole(roleType: string): boolean {
-  //   console.log(this.hasPermission(`${roleType} Dashboard`));
-  //   return this.hasPermission(`${roleType} Dashboard`);
-  // }
+  hasDashboardForRole(roleType: string): boolean {
+    console.log(this.hasPermission(`${roleType} Dashboard`));
+    return this.hasPermission(`${roleType} Dashboard`);
+  }
 }

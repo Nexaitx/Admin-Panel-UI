@@ -52,7 +52,7 @@ export class Staff {
     'shiftType',
     'profession',
     'email',
-    'phone_number',
+    'phoneNumber',
     'rating',
     'verified',
     'actions'
@@ -70,7 +70,7 @@ export class Staff {
   ngOnInit() {
     this.getStaffs();
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
-      const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.email} ${data.phone_number} ${data.rating} ${data.verified}`.toLowerCase();
+      const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.email} ${data.phoneNumber} ${data.rating} ${data.verified}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -137,7 +137,7 @@ export class Staff {
       shiftType: staff.shiftType,
       profession: staff.profession,
       email: staff.email,
-      phone_number: staff.phone_number,
+      phoneNumber: staff.phoneNumber,
       rating: staff.rating,
       verified: staff.verified,
       originalStaff: staff // Keep the original object

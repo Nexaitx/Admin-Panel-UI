@@ -5,51 +5,194 @@
             <h3>{{ editing ? 'Edit Medicine' : 'Create Medicine' }}</h3>
             <form [formGroup]="medicineForm" (ngSubmit)="onSubmit()">
                 <div class="row">
+                    <!-- Name -->
                     <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>State / City</mat-label>
-                        <mat-select formControlName="location">
-                            <mat-option *ngFor="let loc of locations" [value]="loc">{{ loc }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Medicine Name</mat-label>
+                        <mat-label>Name </mat-label>
                         <input matInput formControlName="name" />
                     </mat-form-field>
 
-
-                    <mat-slide-toggle class="col-md-6" formControlName="onApp">Show on App</mat-slide-toggle>
-
+                    <!-- Description -->
                     <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Discount (%)</mat-label>
-                        <input matInput type="number" formControlName="discount" min="0" max="100" />
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description"></textarea>
                     </mat-form-field>
 
+                    <!-- Price -->
                     <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Usage</mat-label>
-                        <textarea matInput formControlName="usage"></textarea>
+                        <mat-label>Price </mat-label>
+                        <input matInput type="number" formControlName="price" min="1" />
                     </mat-form-field>
 
+                    <!-- Quantity in stock -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Quantity In Stock</mat-label>
+                        <input matInput type="number" formControlName="quantityInStock" min="0" />
+                    </mat-form-field>
+
+                    <!-- Category -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Category </mat-label>
+                        <input matInput formControlName="category" />
+                    </mat-form-field>
+
+                    <!-- Manufacturer -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Manufacturer</mat-label>
+                        <input matInput formControlName="manufacturer" />
+                    </mat-form-field>
+
+                    <!-- Expiry Date -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Expiry Date</mat-label>
+                        <input matInput type="date" formControlName="expiryDate" />
+                    </mat-form-field>
+
+                    <!-- Gender Restriction -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Gender Restriction</mat-label>
+                        <input matInput formControlName="genderRestriction" />
+                    </mat-form-field>
+
+                    <!-- Min Age -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Min Age</mat-label>
+                        <input matInput type="number" formControlName="minAge" min="0" />
+                    </mat-form-field>
+
+                    <!-- Max Age -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Max Age</mat-label>
+                        <input matInput type="number" formControlName="maxAge" min="0" />
+                    </mat-form-field>
+
+                    <!-- Uses -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Uses</mat-label>
+                        <textarea matInput formControlName="uses"></textarea>
+                    </mat-form-field>
+
+                    <!-- Precautions -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Precautions</mat-label>
+                        <textarea matInput formControlName="precautions"></textarea>
+                    </mat-form-field>
+
+                    <!-- Side Effects -->
                     <mat-form-field class="col-md-6" appearance="outline">
                         <mat-label>Side Effects</mat-label>
                         <textarea matInput formControlName="sideEffects"></textarea>
                     </mat-form-field>
 
+                    <!-- Brand Name -->
                     <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>MRP</mat-label>
-                        <input matInput type="number" formControlName="mrp" />
+                        <mat-label>Brand Name</mat-label>
+                        <input matInput formControlName="brandName" />
                     </mat-form-field>
 
-                    <input class="col-md-6" type="file" formControlName="imageFile" (change)="onFileSelected($event)" />
+                    <!-- Dosage -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Dosage</mat-label>
+                        <input matInput formControlName="dosage" />
+                    </mat-form-field>
+
+                    <!-- Prescription Required -->
+                    <mat-slide-toggle class="col-md-6" formControlName="prescription_required">
+                        Prescription Required
+                    </mat-slide-toggle>
+
+                    <!-- Show In App -->
+                    <mat-slide-toggle class="col-md-6" formControlName="showInApp">
+                        Show In App
+                    </mat-slide-toggle>
+
+                    <!-- Product Form -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Product Form</mat-label>
+                        <input matInput formControlName="product_form" />
+                    </mat-form-field>
+
+                    <!-- How to Use -->
+                    <mat-form-field class="col-md-12" appearance="outline">
+                        <mat-label>How to Use</mat-label>
+                        <textarea matInput formControlName="how_to_use"></textarea>
+                    </mat-form-field>
+
+                    <!-- Safety Advise -->
+                    <mat-form-field class="col-md-12" appearance="outline">
+                        <mat-label>Safety Advice</mat-label>
+                        <textarea matInput formControlName="safety_advise"></textarea>
+                    </mat-form-field>
+
+                    <!-- Common Side Effects -->
+                    <mat-form-field class="col-md-12" appearance="outline">
+                        <mat-label>Common Side Effects</mat-label>
+                        <textarea matInput formControlName="common_side_effec"></textarea>
+                    </mat-form-field>
+
+                    <!-- Pregnancy Interaction -->
+                    <mat-form-field class="col-md-12" appearance="outline">
+                        <mat-label>Pregnancy Interaction</mat-label>
+                        <textarea matInput formControlName="pregnancy_interaction"></textarea>
+                    </mat-form-field>
+
+                    <!-- How It Works -->
+                    <mat-form-field class="col-md-12" appearance="outline">
+                        <mat-label>How It Works</mat-label>
+                        <textarea matInput formControlName="how_it_works"></textarea>
+                    </mat-form-field>
+
+                    <!-- Storage -->
+                    <mat-form-field class="col-md-12" appearance="outline">
+                        <mat-label>Storage</mat-label>
+                        <textarea matInput formControlName="storage"></textarea>
+                    </mat-form-field>
+
+                    <!-- Medicine Type -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Medicine Type</mat-label>
+                        <input matInput formControlName="medicine_type" />
+                    </mat-form-field>
+
+                    <!-- Salt Composition -->
+                    <mat-form-field class="col-md-6" appearance="outline">
+                        <mat-label>Salt Composition</mat-label>
+                        <input matInput formControlName="salt_composition" />
+                    </mat-form-field>
+
+                    <!-- Images (you may want a repeatable file input) -->
+                    <div class="col-md-12">
+                        <label>Images</label>
+                        <div *ngIf="medicineForm && images" formArrayName="images">
+                            <div *ngFor="let imgCtrl of images.controls; let i = index"
+                                class="d-flex align-items-center mb-2">
+                                <input type="file" [formControlName]="i" (change)="onFileSelected($event, i)"
+                                    multiple />
+                                <button mat-icon-button class="text-danger" type="button"
+                                    (click)="removeImageControl(i)" aria-label="Remove this image">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="my-2" mat-button (click)="addImageControl()">
+                            <i class="bi bi-plus"></i> Add More Image
+                        </button>
+                    </div>
+
+
+                    <!-- Set First Image As Primary -->
+                    <mat-slide-toggle class="col-md-6" formControlName="setFirstImageAsPrimary">
+                        Set First Image As Primary
+                    </mat-slide-toggle>
 
                 </div>
+
                 <div class="button-row">
                     <button mat-button (click)="drawer.close()">Cancel</button>
                     <button mat-flat-button color="primary" type="submit" [disabled]="medicineForm.invalid">
                         {{ editing ? 'Update' : 'Create' }}
                     </button>
                 </div>
-
             </form>
         </div>
     </mat-drawer>
@@ -60,70 +203,173 @@
             <mat-form-field appearance="outline" class="small-select ms-2">
                 <mat-label>Select Orders</mat-label>
                 <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
-                    <mat-option value="">All Medicines type--</mat-option>
+                    <mat-option value="manually-added-medicines">Manually Added Medicines</mat-option>
                     <mat-option value="otc">OTC Medicines</mat-option>
                     <mat-option value="medicines">Medicines</mat-option>
                 </mat-select>
             </mat-form-field>
 
+            <mat-form-field appearance="outline" class="ms-2 small-select">
+                <mat-label>Search Orders</mat-label>
+                <input matInput (keyup)="applySearchFilter($event)" placeholder="Search by medicine">
+            </mat-form-field>
+
             <button class="ms-auto" matButton="tonal" (click)="openCreate()">Create Medicine</button>
         </div>
+        <section>
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+                <ng-container matColumnDef="breadcrumbs" sticky>
+                    <th mat-header-cell *matHeaderCellDef>Breadcrumbs</th>
+                    <td mat-cell *matCellDef="let m">{{ m?.breadcrumbs }}</td>
+                </ng-container>
 
-            <!-- Define columns: location, name, onApp, discount, usage, sideEffects, mrp, image, actions -->
+                <ng-container matColumnDef="countryOfOrigin">
+                    <th mat-header-cell *matHeaderCellDef>Country of Origin</th>
+                    <td mat-cell *matCellDef="let m">{{ m?.countryOfOrigin }}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="location">
-                <th mat-header-cell *matHeaderCellDef>Location</th>
-                <td mat-cell *matCellDef="let m">{{ m.location }}</td>
-            </ng-container>
+                <ng-container matColumnDef="directionsForUse">
+                    <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
+                    <td mat-cell *matCellDef="let m">{{ m?.directionsForUse || m?.how_to_use }}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Medicine Name</th>
-                <td mat-cell *matCellDef="let m">{{ m.name }}</td>
-            </ng-container>
+                <ng-container matColumnDef="expiration">
+                    <th mat-header-cell *matHeaderCellDef>Expiration</th>
+                    <td mat-cell *matCellDef="let m">{{ m.expiration || m.expiryDate | date: 'mediumDate' }}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="onApp">
-                <th mat-header-cell *matHeaderCellDef>On App?</th>
-                <td mat-cell *matCellDef="let m">
-                    <mat-icon *ngIf="m.onApp">check_circle</mat-icon>
-                    <mat-icon *ngIf="!m.onApp">cancel</mat-icon>
-                </td>
-            </ng-container>
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>ID</th>
+                    <td mat-cell *matCellDef="let m">{{ m.id || m.medicineId}}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="discount">
-                <th mat-header-cell *matHeaderCellDef>Discount</th>
-                <td mat-cell *matCellDef="let m">{{ m.discount }}%</td>
-            </ng-container>
+                <ng-container matColumnDef="imageUrls">
+                    <th mat-header-cell *matHeaderCellDef>Images</th>
+                    <td mat-cell *matCellDef="let m">
+                        <ng-container *ngFor="let url of m.imageUrls">
+                            <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
+                        </ng-container>
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="mrp">
-                <th mat-header-cell *matHeaderCellDef>MRP</th>
-                <td mat-cell *matCellDef="let m">{{ m.mrp | currency }}</td>
-            </ng-container>
+                <ng-container matColumnDef="information">
+                    <th mat-header-cell *matHeaderCellDef>Information</th>
+                    <td mat-cell *matCellDef="let m">{{ m.information || m.description }}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="image">
-                <th mat-header-cell *matHeaderCellDef>Image</th>
-                <td mat-cell *matCellDef="let m">
-                    <img *ngIf="m.imageUrl" [src]="m.imageUrl" width="50" />
-                </td>
-            </ng-container>
+                <ng-container matColumnDef="keyBenefits">
+                    <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
+                    <td mat-cell *matCellDef="let m">{{ m.keyBenefits }}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Actions</th>
-                <td mat-cell *matCellDef="let m">
-                    <button mat-icon-button color="primary" (click)="openEdit(m)">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn" (click)="deleteMedicine(m)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </td>
-            </ng-container>
+                <ng-container matColumnDef="keyIngredients">
+                    <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
+                    <td mat-cell *matCellDef="let m">{{ m.keyIngredients }}</td>
+                </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+                <ng-container matColumnDef="manufacturerAddress">
+                    <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
+                    <td mat-cell *matCellDef="let m">{{ m.manufacturerAddress }}</td>
+                </ng-container>
 
+                <ng-container matColumnDef="manufacturerDetails">
+                    <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
+                    <td mat-cell *matCellDef="let m">{{ m.manufacturerDetails }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="manufacturers">
+                    <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
+                    <td mat-cell *matCellDef="let m">{{ m.manufacturers || m.manufacturer}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="marketerDetails">
+                    <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
+                    <td mat-cell *matCellDef="let m">{{ m.marketerDetails }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="mrp">
+                    <th mat-header-cell *matHeaderCellDef>MRP</th>
+                    <td mat-cell *matCellDef="let m">{{ m.mrp || m.price }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let m">{{ m.name }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="packageInfo">
+                    <th mat-header-cell *matHeaderCellDef>Package Info</th>
+                    <td mat-cell *matCellDef="let m">{{ m.packageInfo }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="packaging">
+                    <th mat-header-cell *matHeaderCellDef>Packaging</th>
+                    <td mat-cell *matCellDef="let m">{{ m.packaging }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="productForm">
+                    <th mat-header-cell *matHeaderCellDef>Product Form</th>
+                    <td mat-cell *matCellDef="let m">{{ m.productForm || m.product_form }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="productHighlights">
+                    <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
+                    <td mat-cell *matCellDef="let m">{{ m.productHighlights }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="qty">
+                    <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                    <td mat-cell *matCellDef="let m">{{ m.qty || m.quantityInStock}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="safetyInformation">
+                    <th mat-header-cell *matHeaderCellDef>Safety Information</th>
+                    <td mat-cell *matCellDef="let m">{{ m.safetyInformation || m.safety_advise }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef>Type</th>
+                    <td mat-cell *matCellDef="let m">{{ m.type }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let m">
+                        <!-- More / 3-dots button triggers the menu -->
+                        <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+
+                        <!-- The menu itself -->
+                        <mat-menu #actionsMenu="matMenu">
+                            <!-- Edit option always shown or based on condition -->
+                            <button mat-menu-item (click)="editing = true; openEdit(m)">
+                                <mat-icon>edit</mat-icon>
+                                <span>Edit Medicine</span>
+                            </button>
+                            <button mat-menu-item>
+                                <!-- <mat-icon>visibility</mat-icon> -->
+                                <span class="material-icons-outlined">
+                                    app_registration
+                                </span>
+                                <span>Edit Visibility</span>
+                            </button>
+
+                            <!-- Delete option only shown when manually-added type -->
+                            <button mat-menu-item *ngIf="selectedMedicineType === 'manually-added-medicines'"
+                                (click)="deleteMedicine(m)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Delete</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </section>
         <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
     </mat-drawer-content>
 

@@ -80,4 +80,16 @@ export const ENDPOINTS = {
     GET_ORDERS_IN_CART: '/api/adminCart/orderInCart',
     GET_ORDER_STATUSES: '/api/orders/status-options',
     GET_ORDERS_BY_STATUS: '/api/orders/status/',
+
+    // medicines
+    GET_OTC_MEDICINES: '/api/products', // otc medicines
+    GET_PRESCRIBED_MEDICINES: '/api/medicines/getMedicine', // prescribed/drug
+    GET_MY_MEDICINES: '/api/medicines/my-medicines', // manually added medicines by pharma admin
+    CREATE_MEDICINE: '/api/medicines/add-with-images', // create medicine by pharmacist with images
+    CREATE_MEDICINE_NO_IMAGE: '/api/medicines/add', // create medicine by pharmacist without image
+    UPDATE_MEDICINE: '/api/medicines/',
+    DELETE_MEDICINE: '/api/medicines/',  // delete medicine create by pharmacist
+    GET_SEARCH_OTC_MEDICINES: '/api/products/search', // search in otc medicines
+    GET_SEARCH_PRESCRIBED_MEDICINES: '/api/medicines/search', // search in prescribed/drug medicines
+    GET_SEARCH_MY_MEDICINES: '/api/medicines/search-by-name', // search in manually added medicines by pharma admin
 };
