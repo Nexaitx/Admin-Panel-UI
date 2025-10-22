@@ -89,6 +89,10 @@ export const ENDPOINTS = {
     CREATE_MEDICINE_NO_IMAGE: '/api/medicines/add', // create medicine by pharmacist without image
     UPDATE_MEDICINE: '/api/medicines/',
     DELETE_MEDICINE: '/api/medicines/',  // delete medicine create by pharmacist
+
+    UPDATE_DISCOUNT_MEDICINE: '/api/admin/medicines/toggle', // Update discount and get actual price / remove price
+    GET_DISCOUNTED_MEDICINES: '/api/admin/medicine-reports/my-managed-with-details', // Get all discounted medicines
+
     GET_SEARCH_OTC_MEDICINES: '/api/products/search', // search in otc medicines
     GET_SEARCH_PRESCRIBED_MEDICINES: '/api/medicines/search', // search in prescribed/drug medicines
     GET_SEARCH_MY_MEDICINES: '/api/medicines/search-by-name', // search in manually added medicines by pharma admin

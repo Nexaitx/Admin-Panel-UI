@@ -28,7 +28,6 @@ export class Sidebar {
   loadFromStorage() {
     const permJson = this.userProfile;
     this.permissions = permJson;
-    console.log(this.permissions);
   }
 
   hasPermission(permission: string): boolean {

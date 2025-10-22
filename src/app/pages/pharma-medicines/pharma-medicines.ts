@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -13,13 +13,16 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-pharma-medicines',
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
@@ -30,19 +33,26 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatSidenavModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDatepickerModule,
+    MatDialogModule
   ],
   templateUrl: './pharma-medicines.html',
-  styleUrl: './pharma-medicines.scss'
+  styleUrl: './pharma-medicines.scss',
+  providers: [provideNativeDateAdapter()],
 })
 export class PharmaMedicines {
   selectedMedicineType: string = 'manually-added-medicines';
+  selectedMedicine: any;
 
   @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('discountDialog') discountDialog!: TemplateRef<any>; // Reference to dialog template
 
   medicineForm!: FormGroup;
-  editing = false;
+  discountForm!: FormGroup;
+  editing: boolean = false;
+  checkedToggle: boolean = false;
   editingMedicineId: number | null = null;
 
   locations = ['State A', 'State B', 'City C', 'City D'];
@@ -54,47 +64,69 @@ export class PharmaMedicines {
     'imageUrls', 'information', 'keyBenefits', 'keyIngredients',
     'manufacturerAddress', 'manufacturerDetails', 'manufacturers',
     'marketerDetails', 'mrp', 'name', 'packageInfo', 'packaging',
-    'productForm', 'productHighlights', 'qty', 'safetyInformation', 'type', 'actions']
+    'productForm', 'productHighlights', 'qty', 'safetyInformation', 'type', 'actions'
+  ];
+
+  displayedManualMedicineColumns: string[] = [
+    'directionsForUse', 'expiration', 'id',
+    'imageUrls', 'information', 'keyBenefits', 'keyIngredients',
+    'manufacturerAddress', 'manufacturerDetails', 'manufacturers',
+    'marketerDetails', 'mrp', 'name', 'packageInfo', 'packaging',
+    'productForm', 'productHighlights', 'qty', 'safetyInformation', 'type', 'actions'
+  ];
+
+  displayedDiscountedMedicineColumns: string[] = [
+    'productId', 'productName', 'productType', 'originalPrice', 'discountPrice',
+    'discountPercentage', 'isAvailable', 'managedAt', 'updatedAt', 'adminId',
+    'adminName', 'adminEmail', 'adminPhoneNumber', 'adminCreatedAt', 'actions'
+  ];
+
   http = inject(HttpClient);
   dialog = inject(MatDialog);
   snackBar = inject(MatSnackBar);
 
   constructor(private fb: FormBuilder) {
     this.medicineForm = this.fb.group({
-      name: ['', Validators.required],
-      description: [''],
+      name: [null, Validators.required],
+      description: [null],
       price: [0, [Validators.required, Validators.min(0)]],
       quantityInStock: [0, [Validators.min(0)]],
-      category: ['', Validators.required],
-      manufacturer: [''],
-      expiryDate: [''],
-      genderRestriction: [''],
+      category: [null, Validators.required],
+      manufacturer: [null],
+      expiryDate: [null],
+      genderRestriction: [null],
       minAge: [0, [Validators.min(0)]],
       maxAge: [0, [Validators.min(0)]],
-      uses: [''],
-      precautions: [''],
-      sideEffects: [''],
-      brandName: [''],
-      dosage: [''],
+      uses: [null],
+      precautions: [null],
+      sideEffects: [null],
+      brandName: [null],
+      dosage: [null],
       prescription_required: [false],
       showInApp: [false],
-      product_form: [''],
-      how_to_use: [''],
-      safety_advise: [''],
-      common_side_effec: [''],
-      pregnancy_interaction: [''],
-      how_it_works: [''],
-      storage: [''],
-      medicine_type: [''],
-      salt_composition: [''],
+      product_form: [null],
+      how_to_use: [null],
+      safety_advise: [null],
+      common_side_effec: [null],
+      pregnancy_interaction: [null],
+      how_it_works: [null],
+      storage: [null],
+      medicine_type: [null],
+      salt_composition: [null],
       images: this.fb.array([]),
       setFirstImageAsPrimary: [false]
+    });
+
+    this.discountForm = this.fb.group({
+      productId: [{ value: null, disabled: true }, Validators.required],
+      productType: [null],
+      isAvailable: [true],
+      discountPercentage: [0, [Validators.min(0), Validators.max(100)]]
     });
   }
 
   ngOnInit() {
-    // this.loadMedicines();
-    this.onMedicineTypeChange(this.selectedMedicineType)
+    this.onMedicineTypeChange(this.selectedMedicineType);
     this.dataSource.paginator = this.paginator;
   }
 
@@ -103,7 +135,7 @@ export class PharmaMedicines {
   }
 
   addImageControl() {
-    (this.medicineForm.get('images') as FormArray).push(this.fb.control(null));
+    this.images.push(this.fb.control(null));
   }
 
   onFileSelected(event: Event, index: number) {
@@ -115,6 +147,7 @@ export class PharmaMedicines {
       arr.at(index).patchValue(file);
     }
   }
+
   removeImageControl(index: number) {
     this.images.removeAt(index);
   }
@@ -125,7 +158,7 @@ export class PharmaMedicines {
         q: (event.target as HTMLInputElement).value,
         page: 0,
         size: 10
-      }
+      };
       this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_OTC_MEDICINES}`, { params: payload })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
@@ -137,7 +170,7 @@ export class PharmaMedicines {
         q: (event.target as HTMLInputElement).value,
         page: 0,
         size: 10
-      }
+      };
       this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_PRESCRIBED_MEDICINES}`, { params: payload })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
@@ -156,14 +189,13 @@ export class PharmaMedicines {
         size: 10,
         sortBy: 'name',
         sortDirection: 'asc'
-      }
+      };
       this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_MY_MEDICINES}`, { params: payload, headers })
         .subscribe((data: any) => {
           this.medicines = data?.data?.medicines || [];
           this.dataSource.data = this.medicines;
         });
     }
-
   }
 
   openCreate() {
@@ -231,7 +263,7 @@ export class PharmaMedicines {
       sideEffects: form.sideEffects || '',
       brandName: form.brandName || '',
       dosage: form.dosage || '',
-      prescription_required: form.prescription_required || '',
+      prescription_required: form.prescription_required || false,
       showInApp: form.showInApp || false,
       product_form: form.product_form || '',
       how_to_use: form.how_to_use || '',
@@ -246,42 +278,39 @@ export class PharmaMedicines {
       images: form.images || []
     };
 
-    if (this.editing && this.editingMedicineId != null) {
-      this.http.put(`${API_URL}${ENDPOINTS.UPDATE_MEDICINE}/${this.editingMedicineId}`, payload)
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    if (this.editing) {
+      this.http.put(`${API_URL}${ENDPOINTS.UPDATE_MEDICINE}/${this.selectedMedicine?.medicineId}`, payload, { headers })
         .subscribe(response => {
           this.medicines = this.medicines.map(m => {
-            if (m.medicineId === this.editingMedicineId) {
+            if (m.medicineId === this.selectedMedicine?.medicineId) {
               return { ...m, ...payload };
             }
             return m;
           });
           this.dataSource.data = this.medicines;
           this.showSuccess('Medicine updated successfully');
-        },
-          error => {
-            console.error('Error fetching medicines:', error);
-            this.showError('Failed to fetch medicines');
-          });
+        }, error => {
+          console.error('Error updating medicine:', error);
+          this.showError('Failed to update medicine');
+        });
     } else {
-      console.log('Creating medicine with payload:', payload);
-      const token = localStorage.getItem('token');
-      let headers = new HttpHeaders();
-      if (token) {
-        headers = headers.set('Authorization', `Bearer ${token}`);
-      }
       if (this.images.length > 0) {
         this.http.post(API_URL + ENDPOINTS.CREATE_MEDICINE, payload, { headers })
           .subscribe((response: any) => {
             this.medicines.push(response.data);
             this.dataSource.data = this.medicines;
             this.showSuccess('Medicine created successfully');
-          },
-            error => {
-              console.error('Error fetching medicines:', error);
-              this.showError('Failed to fetch medicines');
-            });
-      }
-      else {
+          }, error => {
+            console.error('Error creating medicine:', error);
+            this.showError('Failed to create medicine');
+          });
+      } else {
         payload.images = [];
         payload.setFirstImageAsPrimary = false;
         this.http.post(API_URL + ENDPOINTS.CREATE_MEDICINE_NO_IMAGE, payload, { headers })
@@ -289,42 +318,43 @@ export class PharmaMedicines {
             this.medicines.push(response.data);
             this.dataSource.data = this.medicines;
             this.showSuccess('Medicine created successfully');
-          },
-            error => {
-              console.error('Error fetching medicines:', error);
-              this.showError('Failed to fetch medicines');
-            });
+          }, error => {
+            console.error('Error creating medicine:', error);
+            this.showError('Failed to create medicine');
+          });
       }
-
-      this.editing = false;
-      this.editingMedicineId = null;
-      this.drawer.close();
     }
-  }
 
+    this.editing = false;
+    this.editingMedicineId = null;
+    this.drawer.close();
+  }
 
   onMedicineTypeChange(selectedValue: string) {
     this.selectedMedicineType = selectedValue;
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
     if (selectedValue === 'otc') {
-      this.http.get(API_URL + ENDPOINTS.GET_OTC_MEDICINES).subscribe((data: any) => {
-        this.medicines = data.data.content || [];
-        this.dataSource.data = this.medicines;
-      });
+      this.http.get(API_URL + ENDPOINTS.GET_OTC_MEDICINES, { headers })
+        .subscribe((data: any) => {
+          this.medicines = data.data.content || [];
+          this.dataSource.data = this.medicines;
+        });
     }
 
     if (selectedValue === 'medicines') {
-      this.http.get(API_URL + ENDPOINTS.GET_PRESCRIBED_MEDICINES).subscribe((data: any) => {
-        this.medicines = data.data.content || [];
-        this.dataSource.data = this.medicines;
-      });
+      this.http.get(API_URL + ENDPOINTS.GET_PRESCRIBED_MEDICINES, { headers })
+        .subscribe((data: any) => {
+          this.medicines = data.data.content || [];
+          this.dataSource.data = this.medicines;
+        });
     }
 
     if (selectedValue === 'manually-added-medicines') {
-      const token = localStorage.getItem('token');
-      let headers = new HttpHeaders();
-      if (token) {
-        headers = headers.set('Authorization', `Bearer ${token}`);
-      }
       this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers })
         .subscribe((data: any) => {
           this.medicines = data?.medicines || [];
@@ -338,7 +368,7 @@ export class PharmaMedicines {
       width: '400px',
       data: {
         title: 'Confirm Delete',
-        message: `Are you sure you want to delete medicine ${m.name || ''}?`,
+        message: `Are you sure you want to delete medicine ${m?.name || ''}?`,
         cancelButtonText: 'Cancel',
         confirmButtonText: 'Delete'
       }
@@ -351,12 +381,12 @@ export class PharmaMedicines {
         if (token) {
           headers = headers.set('Authorization', `Bearer ${token}`);
         }
-        this.http.delete(`${API_URL + ENDPOINTS.DELETE_MEDICINE}${m.medicineId}`, { headers }).subscribe(() => {
-          this.medicines = this.medicines.filter(x => x.medicineId !== m.medicineId);
-          this.dataSource.data = this.medicines;
-          this.showSuccess('Medicine deleted successfully');
-        },
-          error => {
+        this.http.delete(`${API_URL + ENDPOINTS.DELETE_MEDICINE}${m?.medicineId}`, { headers })
+          .subscribe(() => {
+            this.medicines = this.medicines.filter(x => x?.medicineId !== m?.medicineId);
+            this.dataSource.data = this.medicines;
+            this.showSuccess('Medicine deleted successfully');
+          }, error => {
             console.error('Delete failed:', error);
             this.showError('Failed to delete medicine');
           });
@@ -367,7 +397,7 @@ export class PharmaMedicines {
   private showSuccess(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
-      panelClass: ['snackbar-success']  // optional custom style
+      panelClass: ['snackbar-success']
     });
   }
 
@@ -378,4 +408,71 @@ export class PharmaMedicines {
     });
   }
 
+  toggleDiscountedMedicines(event: any) {
+    const checked = event.checked;
+    if (checked) {
+      this.selectedMedicineType = '';
+      const token = localStorage.getItem('token');
+      let headers = new HttpHeaders();
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+      this.http.get(`${API_URL + ENDPOINTS.GET_DISCOUNTED_MEDICINES}`, { headers })
+        .subscribe((data: any) => {
+          this.medicines = data || [];
+          this.dataSource.data = this.medicines;
+        });
+    } else {
+      this.onMedicineTypeChange(this.selectedMedicineType);
+    }
+  }
+
+  openDiscountDialog(m: any) {
+    this.selectedMedicine = m;
+    this.discountForm.patchValue({
+      productId: m.productId || m.id,
+      productType: m.productType || m.type,
+      isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
+      discountPercentage: m.discountPercentage || 0
+    });
+
+    const dialogRef = this.dialog.open(this.discountDialog, {
+      width: '400px',
+      data: { form: this.discountForm }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.saveDiscount();
+      }
+    });
+  }
+
+  saveDiscount() {
+    if (this.discountForm.invalid) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    const payload = {
+      productId: this.selectedMedicine?.productId || this.selectedMedicine?.medicineId,
+      productType: null,
+      isAvailable: this.discountForm.value.isAvailable,
+      discountPercentage: this.discountForm.value.discountPercentage
+    };
+    this.http.post(`${API_URL}${ENDPOINTS.UPDATE_DISCOUNT_MEDICINE}`, payload, { headers })
+      .subscribe(response => {
+        this.toggleDiscountedMedicines({ checked: true });
+        this.dataSource.data = this.medicines;
+        this.showSuccess('Discount updated successfully');
+      }, error => {
+        console.error('Error updating discount:', error);
+        this.showError('Failed to update discount');
+      });
+  }
 }

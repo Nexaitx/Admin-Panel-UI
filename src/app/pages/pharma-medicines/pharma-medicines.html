@@ -1,376 +1,555 @@
 <mat-drawer-container class="med-container" autosize>
+  <mat-drawer class="w-75 p-4" #drawer mode="over" position="end" [disableClose]="false">
+    <div class="drawer-form">
+      <h3>{{ editing ? 'Edit Medicine' : 'Create Medicine' }}</h3>
+      <form [formGroup]="medicineForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <!-- Name -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
 
-    <mat-drawer class="w-75 p-4" #drawer mode="over" position="end" [disableClose]="false">
-        <div class="drawer-form">
-            <h3>{{ editing ? 'Edit Medicine' : 'Create Medicine' }}</h3>
-            <form [formGroup]="medicineForm" (ngSubmit)="onSubmit()">
-                <div class="row">
-                    <!-- Name -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Name </mat-label>
-                        <input matInput formControlName="name" />
-                    </mat-form-field>
+          <!-- Description -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+          </mat-form-field>
 
-                    <!-- Description -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Description</mat-label>
-                        <textarea matInput formControlName="description"></textarea>
-                    </mat-form-field>
+          <!-- Price -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Price</mat-label>
+            <input matInput type="number" formControlName="price" min="1" />
+          </mat-form-field>
 
-                    <!-- Price -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Price </mat-label>
-                        <input matInput type="number" formControlName="price" min="1" />
-                    </mat-form-field>
+          <!-- Quantity in stock -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Quantity In Stock</mat-label>
+            <input matInput type="number" formControlName="quantityInStock" min="0" />
+          </mat-form-field>
 
-                    <!-- Quantity in stock -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Quantity In Stock</mat-label>
-                        <input matInput type="number" formControlName="quantityInStock" min="0" />
-                    </mat-form-field>
+          <!-- Category -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Category</mat-label>
+            <input matInput formControlName="category" />
+          </mat-form-field>
 
-                    <!-- Category -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Category </mat-label>
-                        <input matInput formControlName="category" />
-                    </mat-form-field>
+          <!-- Manufacturer -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Manufacturer</mat-label>
+            <input matInput formControlName="manufacturer" />
+          </mat-form-field>
 
-                    <!-- Manufacturer -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Manufacturer</mat-label>
-                        <input matInput formControlName="manufacturer" />
-                    </mat-form-field>
+          <!-- Expiry Date -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Expiry Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="expiryDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
 
-                    <!-- Expiry Date -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Expiry Date</mat-label>
-                        <input matInput type="date" formControlName="expiryDate" />
-                    </mat-form-field>
+          <!-- Gender Restriction -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Gender Restriction</mat-label>
+            <input matInput formControlName="genderRestriction" />
+          </mat-form-field>
 
-                    <!-- Gender Restriction -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Gender Restriction</mat-label>
-                        <input matInput formControlName="genderRestriction" />
-                    </mat-form-field>
+          <!-- Min Age -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Min Age</mat-label>
+            <input matInput type="number" formControlName="minAge" min="0" />
+          </mat-form-field>
 
-                    <!-- Min Age -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Min Age</mat-label>
-                        <input matInput type="number" formControlName="minAge" min="0" />
-                    </mat-form-field>
+          <!-- Max Age -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Max Age</mat-label>
+            <input matInput type="number" formControlName="maxAge" min="0" />
+          </mat-form-field>
 
-                    <!-- Max Age -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Max Age</mat-label>
-                        <input matInput type="number" formControlName="maxAge" min="0" />
-                    </mat-form-field>
+          <!-- Uses -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Uses</mat-label>
+            <textarea matInput formControlName="uses"></textarea>
+          </mat-form-field>
 
-                    <!-- Uses -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Uses</mat-label>
-                        <textarea matInput formControlName="uses"></textarea>
-                    </mat-form-field>
+          <!-- Precautions -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Precautions</mat-label>
+            <textarea matInput formControlName="precautions"></textarea>
+          </mat-form-field>
 
-                    <!-- Precautions -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Precautions</mat-label>
-                        <textarea matInput formControlName="precautions"></textarea>
-                    </mat-form-field>
+          <!-- Side Effects -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Side Effects</mat-label>
+            <textarea matInput formControlName="sideEffects"></textarea>
+          </mat-form-field>
 
-                    <!-- Side Effects -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Side Effects</mat-label>
-                        <textarea matInput formControlName="sideEffects"></textarea>
-                    </mat-form-field>
+          <!-- Brand Name -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Brand Name</mat-label>
+            <input matInput formControlName="brandName" />
+          </mat-form-field>
 
-                    <!-- Brand Name -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Brand Name</mat-label>
-                        <input matInput formControlName="brandName" />
-                    </mat-form-field>
+          <!-- Dosage -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Dosage</mat-label>
+            <input matInput formControlName="dosage" />
+          </mat-form-field>
 
-                    <!-- Dosage -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Dosage</mat-label>
-                        <input matInput formControlName="dosage" />
-                    </mat-form-field>
+          <!-- Product Form -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Product Form</mat-label>
+            <input matInput formControlName="product_form" />
+          </mat-form-field>
 
-                    <!-- Prescription Required -->
-                    <mat-slide-toggle class="col-md-6" formControlName="prescription_required">
-                        Prescription Required
-                    </mat-slide-toggle>
+          <!-- Prescription Required -->
+          <mat-slide-toggle class="col-md-6 mb-3" formControlName="prescription_required">
+            Prescription Required
+          </mat-slide-toggle>
 
-                    <!-- Show In App -->
-                    <mat-slide-toggle class="col-md-6" formControlName="showInApp">
-                        Show In App
-                    </mat-slide-toggle>
+          <!-- Show In App -->
+          <mat-slide-toggle class="col-md-6 mb-3" formControlName="showInApp">
+            Show In App
+          </mat-slide-toggle>
 
-                    <!-- Product Form -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Product Form</mat-label>
-                        <input matInput formControlName="product_form" />
-                    </mat-form-field>
+          <!-- How to Use -->
+          <mat-form-field class="col-md-12" appearance="outline">
+            <mat-label>How to Use</mat-label>
+            <textarea matInput formControlName="how_to_use"></textarea>
+          </mat-form-field>
 
-                    <!-- How to Use -->
-                    <mat-form-field class="col-md-12" appearance="outline">
-                        <mat-label>How to Use</mat-label>
-                        <textarea matInput formControlName="how_to_use"></textarea>
-                    </mat-form-field>
+          <!-- Safety Advice -->
+          <mat-form-field class="col-md-12" appearance="outline">
+            <mat-label>Safety Advice</mat-label>
+            <textarea matInput formControlName="safety_advise"></textarea>
+          </mat-form-field>
 
-                    <!-- Safety Advise -->
-                    <mat-form-field class="col-md-12" appearance="outline">
-                        <mat-label>Safety Advice</mat-label>
-                        <textarea matInput formControlName="safety_advise"></textarea>
-                    </mat-form-field>
+          <!-- Common Side Effects -->
+          <mat-form-field class="col-md-12" appearance="outline">
+            <mat-label>Common Side Effects</mat-label>
+            <textarea matInput formControlName="common_side_effec"></textarea>
+          </mat-form-field>
 
-                    <!-- Common Side Effects -->
-                    <mat-form-field class="col-md-12" appearance="outline">
-                        <mat-label>Common Side Effects</mat-label>
-                        <textarea matInput formControlName="common_side_effec"></textarea>
-                    </mat-form-field>
+          <!-- Pregnancy Interaction -->
+          <mat-form-field class="col-md-12" appearance="outline">
+            <mat-label>Pregnancy Interaction</mat-label>
+            <textarea matInput formControlName="pregnancy_interaction"></textarea>
+          </mat-form-field>
 
-                    <!-- Pregnancy Interaction -->
-                    <mat-form-field class="col-md-12" appearance="outline">
-                        <mat-label>Pregnancy Interaction</mat-label>
-                        <textarea matInput formControlName="pregnancy_interaction"></textarea>
-                    </mat-form-field>
+          <!-- How It Works -->
+          <mat-form-field class="col-md-12" appearance="outline">
+            <mat-label>How It Works</mat-label>
+            <textarea matInput formControlName="how_it_works"></textarea>
+          </mat-form-field>
 
-                    <!-- How It Works -->
-                    <mat-form-field class="col-md-12" appearance="outline">
-                        <mat-label>How It Works</mat-label>
-                        <textarea matInput formControlName="how_it_works"></textarea>
-                    </mat-form-field>
+          <!-- Storage -->
+          <mat-form-field class="col-md-12" appearance="outline">
+            <mat-label>Storage</mat-label>
+            <textarea matInput formControlName="storage"></textarea>
+          </mat-form-field>
 
-                    <!-- Storage -->
-                    <mat-form-field class="col-md-12" appearance="outline">
-                        <mat-label>Storage</mat-label>
-                        <textarea matInput formControlName="storage"></textarea>
-                    </mat-form-field>
+          <!-- Medicine Type -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Medicine Type</mat-label>
+            <input matInput formControlName="medicine_type" />
+          </mat-form-field>
 
-                    <!-- Medicine Type -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Medicine Type</mat-label>
-                        <input matInput formControlName="medicine_type" />
-                    </mat-form-field>
+          <!-- Salt Composition -->
+          <mat-form-field class="col-md-6" appearance="outline">
+            <mat-label>Salt Composition</mat-label>
+            <input matInput formControlName="salt_composition" />
+          </mat-form-field>
 
-                    <!-- Salt Composition -->
-                    <mat-form-field class="col-md-6" appearance="outline">
-                        <mat-label>Salt Composition</mat-label>
-                        <input matInput formControlName="salt_composition" />
-                    </mat-form-field>
+          <!-- Images -->
+          <div class="col-md-12">
+            <label>Images</label>
+            <div *ngIf="medicineForm && images" formArrayName="images">
+              <div *ngFor="let imgCtrl of images.controls; let i = index" class="d-flex align-items-center mb-2">
+                <input type="file" [formControlName]="i" (change)="onFileSelected($event, i)" multiple />
+                <button mat-icon-button class="text-danger" type="button" (click)="removeImageControl(i)" aria-label="Remove this image">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+            <button type="button" class="my-2" mat-button (click)="addImageControl()">
+              <i class="bi bi-plus"></i> Add More Image
+            </button>
+          </div>
 
-                    <!-- Images (you may want a repeatable file input) -->
-                    <div class="col-md-12">
-                        <label>Images</label>
-                        <div *ngIf="medicineForm && images" formArrayName="images">
-                            <div *ngFor="let imgCtrl of images.controls; let i = index"
-                                class="d-flex align-items-center mb-2">
-                                <input type="file" [formControlName]="i" (change)="onFileSelected($event, i)"
-                                    multiple />
-                                <button mat-icon-button class="text-danger" type="button"
-                                    (click)="removeImageControl(i)" aria-label="Remove this image">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </div>
-                        </div>
-
-                        <button type="button" class="my-2" mat-button (click)="addImageControl()">
-                            <i class="bi bi-plus"></i> Add More Image
-                        </button>
-                    </div>
-
-
-                    <!-- Set First Image As Primary -->
-                    <mat-slide-toggle class="col-md-6" formControlName="setFirstImageAsPrimary">
-                        Set First Image As Primary
-                    </mat-slide-toggle>
-
-                </div>
-
-                <div class="button-row">
-                    <button mat-button (click)="drawer.close()">Cancel</button>
-                    <button mat-flat-button color="primary" type="submit" [disabled]="medicineForm.invalid">
-                        {{ editing ? 'Update' : 'Create' }}
-                    </button>
-                </div>
-            </form>
+          <!-- Set First Image As Primary -->
+          <mat-slide-toggle class="col-md-6 mb-3" formControlName="setFirstImageAsPrimary">
+            Set First Image As Primary
+          </mat-slide-toggle>
         </div>
-    </mat-drawer>
 
-    <mat-drawer-content>
-        <div class="toolbar-row d-flex align-items-center mt-2">
-            <mat-icon>filter_list</mat-icon>
-            <mat-form-field appearance="outline" class="small-select ms-2">
-                <mat-label>Select Orders</mat-label>
-                <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
-                    <mat-option value="manually-added-medicines">Manually Added Medicines</mat-option>
-                    <mat-option value="otc">OTC Medicines</mat-option>
-                    <mat-option value="medicines">Medicines</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="ms-2 small-select">
-                <mat-label>Search Orders</mat-label>
-                <input matInput (keyup)="applySearchFilter($event)" placeholder="Search by medicine">
-            </mat-form-field>
-
-            <button class="ms-auto" matButton="tonal" (click)="openCreate()">Create Medicine</button>
+        <div class="button-row">
+          <button mat-button (click)="drawer.close()">Cancel</button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="medicineForm.invalid">
+            {{ editing ? 'Update' : 'Create' }}
+          </button>
         </div>
-        <section>
-            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      </form>
+    </div>
+  </mat-drawer>
 
-                <ng-container matColumnDef="breadcrumbs" sticky>
-                    <th mat-header-cell *matHeaderCellDef>Breadcrumbs</th>
-                    <td mat-cell *matCellDef="let m">{{ m?.breadcrumbs }}</td>
-                </ng-container>
+  <mat-drawer-content>
+    <div class="toolbar-row d-flex align-items-baseline mt-2">
+      <div>
+        <mat-icon>filter_list</mat-icon>
+      </div>
+      <mat-form-field appearance="outline" class="small-select ms-2 w-75">
+        <mat-label>Select Orders</mat-label>
+        <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
+          <mat-option value="" disabled>Select Medicine Type</mat-option>
+          <mat-option value="manually-added-medicines">Manually Added Medicines</mat-option>
+          <mat-option value="otc">OTC Medicines</mat-option>
+          <mat-option value="medicines">Medicines</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-                <ng-container matColumnDef="countryOfOrigin">
-                    <th mat-header-cell *matHeaderCellDef>Country of Origin</th>
-                    <td mat-cell *matCellDef="let m">{{ m?.countryOfOrigin }}</td>
-                </ng-container>
+      <mat-form-field appearance="outline" class="ms-2 w-50 small-select">
+        <mat-label>Search Orders</mat-label>
+        <input matInput (keyup)="applySearchFilter($event)" placeholder="Search by medicine">
+      </mat-form-field>
 
-                <ng-container matColumnDef="directionsForUse">
-                    <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
-                    <td mat-cell *matCellDef="let m">{{ m?.directionsForUse || m?.how_to_use }}</td>
-                </ng-container>
+      <mat-slide-toggle class="col-md-6 ms-2 mb-3" (change)="checkedToggle= true; toggleDiscountedMedicines($event)">
+        Check Discounted Medicines
+      </mat-slide-toggle>
 
-                <ng-container matColumnDef="expiration">
-                    <th mat-header-cell *matHeaderCellDef>Expiration</th>
-                    <td mat-cell *matCellDef="let m">{{ m.expiration || m.expiryDate | date: 'mediumDate' }}</td>
-                </ng-container>
+      <button class="ms-auto" matButton="tonal" (click)="editing = false; openCreate()">Create Medicine</button>
+    </div>
 
-                <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef>ID</th>
-                    <td mat-cell *matCellDef="let m">{{ m.id || m.medicineId}}</td>
-                </ng-container>
+    <section>
+      @if(selectedMedicineType != 'manually-added-medicines' && !checkedToggle) {
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="breadcrumbs" sticky>
+            <th mat-header-cell *matHeaderCellDef>Breadcrumbs</th>
+            <td mat-cell *matCellDef="let m">{{ m?.breadcrumbs }}</td>
+          </ng-container>
+          <ng-container matColumnDef="countryOfOrigin">
+            <th mat-header-cell *matHeaderCellDef>Country of Origin</th>
+            <td mat-cell *matCellDef="let m">{{ m?.countryOfOrigin }}</td>
+          </ng-container>
+          <ng-container matColumnDef="directionsForUse">
+            <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
+            <td mat-cell *matCellDef="let m">{{ m?.directionsForUse }}</td>
+          </ng-container>
+          <ng-container matColumnDef="expiration">
+            <th mat-header-cell *matHeaderCellDef>Expiration</th>
+            <td mat-cell *matCellDef="let m">{{ m?.expiration }}</td>
+          </ng-container>
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let m">{{ m?.id }}</td>
+          </ng-container>
+          <ng-container matColumnDef="imageUrls">
+            <th mat-header-cell *matHeaderCellDef>Images</th>
+            <td mat-cell *matCellDef="let m">
+              <ng-container *ngFor="let url of m?.imageUrls">
+                <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
+              </ng-container>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="information">
+            <th mat-header-cell *matHeaderCellDef>Information</th>
+            <td mat-cell *matCellDef="let m">{{ m?.information }}</td>
+          </ng-container>
+          <ng-container matColumnDef="keyBenefits">
+            <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
+            <td mat-cell *matCellDef="let m">{{ m?.keyBenefits }}</td>
+          </ng-container>
+          <ng-container matColumnDef="keyIngredients">
+            <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
+            <td mat-cell *matCellDef="let m">{{ m?.keyIngredients }}</td>
+          </ng-container>
+          <ng-container matColumnDef="manufacturerAddress">
+            <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
+            <td mat-cell *matCellDef="let m">{{ m?.manufacturerAddress }}</td>
+          </ng-container>
+          <ng-container matColumnDef="manufacturerDetails">
+            <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
+            <td mat-cell *matCellDef="let m">{{ m?.manufacturerDetails }}</td>
+          </ng-container>
+          <ng-container matColumnDef="manufacturers">
+            <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
+            <td mat-cell *matCellDef="let m">{{ m?.manufacturers }}</td>
+          </ng-container>
+          <ng-container matColumnDef="marketerDetails">
+            <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
+            <td mat-cell *matCellDef="let m">{{ m?.marketerDetails }}</td>
+          </ng-container>
+          <ng-container matColumnDef="mrp">
+            <th mat-header-cell *matHeaderCellDef>MRP</th>
+            <td mat-cell *matCellDef="let m">{{ m?.mrp }}</td>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let m">{{ m?.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="packageInfo">
+            <th mat-header-cell *matHeaderCellDef>Package Info</th>
+            <td mat-cell *matCellDef="let m">{{ m?.packageInfo }}</td>
+          </ng-container>
+          <ng-container matColumnDef="packaging">
+            <th mat-header-cell *matHeaderCellDef>Packaging</th>
+            <td mat-cell *matCellDef="let m">{{ m?.packaging }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productForm">
+            <th mat-header-cell *matHeaderCellDef>Product Form</th>
+            <td mat-cell *matCellDef="let m">{{ m?.productForm }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productHighlights">
+            <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
+            <td mat-cell *matCellDef="let m">{{ m?.productHighlights }}</td>
+          </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef>Quantity</th>
+            <td mat-cell *matCellDef="let m">{{ m?.qty }}</td>
+          </ng-container>
+          <ng-container matColumnDef="safetyInformation">
+            <th mat-header-cell *matHeaderCellDef>Safety Information</th>
+            <td mat-cell *matCellDef="let m">{{ m?.safetyInformation }}</td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let m">{{ m?.type }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let m">
+              <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #actionsMenu="matMenu">
+                <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+                  <mat-icon>app_registration</mat-icon>
+                  <span>Update Discount</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      } @else if (checkedToggle) {
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="productId" sticky>
+            <th mat-header-cell *matHeaderCellDef>Product ID</th>
+            <td mat-cell *matCellDef="let m">{{ m?.productId }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productName" sticky>
+            <th mat-header-cell *matHeaderCellDef>Product Name</th>
+            <td mat-cell *matCellDef="let m">{{ m?.productName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productType">
+            <th mat-header-cell *matHeaderCellDef>Product Type</th>
+            <td mat-cell *matCellDef="let m">{{ m?.productType }}</td>
+          </ng-container>
+          <ng-container matColumnDef="originalPrice">
+            <th mat-header-cell *matHeaderCellDef>Original Price</th>
+            <td mat-cell *matCellDef="let m">{{ m?.originalPrice }}</td>
+          </ng-container>
+          <ng-container matColumnDef="discountPrice">
+            <th mat-header-cell *matHeaderCellDef>Discount Price</th>
+            <td mat-cell *matCellDef="let m">{{ m?.discountPrice }}</td>
+          </ng-container>
+          <ng-container matColumnDef="discountPercentage">
+            <th mat-header-cell *matHeaderCellDef>Discount Percentage</th>
+            <td mat-cell *matCellDef="let m">{{ m?.discountPercentage }}</td>
+          </ng-container>
+          <ng-container matColumnDef="isAvailable">
+            <th mat-header-cell *matHeaderCellDef>Is Available</th>
+            <td mat-cell *matCellDef="let m"><mat-icon [style.color]="m?.isAvailable ? 'green' : 'red'">
+      {{ m?.isAvailable ? 'check' : 'cancel' }}
+    </mat-icon></td>
+          </ng-container>
+          <ng-container matColumnDef="managedAt">
+            <th mat-header-cell *matHeaderCellDef>Managed At</th>
+            <td mat-cell *matCellDef="let m">{{ m?.managedAt | date: 'mediumDate' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef>Updated At</th>
+            <td mat-cell *matCellDef="let m">{{ m?.updatedAt | date: 'mediumDate' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="adminId">
+            <th mat-header-cell *matHeaderCellDef>Admin ID</th>
+            <td mat-cell *matCellDef="let m">{{ m?.adminId }}</td>
+          </ng-container>
+          <ng-container matColumnDef="adminName">
+            <th mat-header-cell *matHeaderCellDef>Admin Name</th>
+            <td mat-cell *matCellDef="let m">{{ m?.adminName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="adminEmail">
+            <th mat-header-cell *matHeaderCellDef>Admin Email</th>
+            <td mat-cell *matCellDef="let m">{{ m?.adminEmail }}</td>
+          </ng-container>
+          <ng-container matColumnDef="adminPhoneNumber">
+            <th mat-header-cell *matHeaderCellDef>Admin Phone Number</th>
+            <td mat-cell *matCellDef="let m">{{ m?.adminPhoneNumber }}</td>
+          </ng-container>
+          <ng-container matColumnDef="adminCreatedAt">
+            <th mat-header-cell *matHeaderCellDef>Admin Created At</th>
+            <td mat-cell *matCellDef="let m">{{ m?.adminCreatedAt | date: 'mediumDate' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let m">
+              <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #actionsMenu="matMenu">
+                <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+                  <mat-icon>app_registration</mat-icon>
+                  <span>Update Discount</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedDiscountedMedicineColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedDiscountedMedicineColumns;"></tr>
+        </table>
+      } @else {
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="directionsForUse">
+            <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
+            <td mat-cell *matCellDef="let m">{{ m?.directionsForUse }}</td>
+          </ng-container>
+          <ng-container matColumnDef="expiration">
+            <th mat-header-cell *matHeaderCellDef>Expiration</th>
+            <td mat-cell *matCellDef="let m">{{ m?.expiration | date: 'mediumDate' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let m">{{ m?.id }}</td>
+          </ng-container>
+          <ng-container matColumnDef="imageUrls">
+            <th mat-header-cell *matHeaderCellDef>Images</th>
+            <td mat-cell *matCellDef="let m">
+              <ng-container *ngFor="let url of m?.imageUrls">
+                <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
+              </ng-container>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="information">
+            <th mat-header-cell *matHeaderCellDef>Information</th>
+            <td mat-cell *matCellDef="let m">{{ m?.information }}</td>
+          </ng-container>
+          <ng-container matColumnDef="keyBenefits">
+            <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
+            <td mat-cell *matCellDef="let m">{{ m?.keyBenefits }}</td>
+          </ng-container>
+          <ng-container matColumnDef="keyIngredients">
+            <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
+            <td mat-cell *matCellDef="let m">{{ m?.keyIngredients }}</td>
+          </ng-container>
+          <ng-container matColumnDef="manufacturerAddress">
+            <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
+            <td mat-cell *matCellDef="let m">{{ m?.manufacturerAddress }}</td>
+          </ng-container>
+          <ng-container matColumnDef="manufacturerDetails">
+            <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
+            <td mat-cell *matCellDef="let m">{{ m?.manufacturerDetails }}</td>
+          </ng-container>
+          <ng-container matColumnDef="manufacturers">
+            <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
+            <td mat-cell *matCellDef="let m">{{ m?.manufacturers }}</td>
+          </ng-container>
+          <ng-container matColumnDef="marketerDetails">
+            <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
+            <td mat-cell *matCellDef="let m">{{ m?.marketerDetails }}</td>
+          </ng-container>
+          <ng-container matColumnDef="mrp">
+            <th mat-header-cell *matHeaderCellDef>MRP</th>
+            <td mat-cell *matCellDef="let m">{{ m?.mrp }}</td>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let m">{{ m?.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="packageInfo">
+            <th mat-header-cell *matHeaderCellDef>Package Info</th>
+            <td mat-cell *matCellDef="let m">{{ m?.packageInfo }}</td>
+          </ng-container>
+          <ng-container matColumnDef="packaging">
+            <th mat-header-cell *matHeaderCellDef>Packaging</th>
+            <td mat-cell *matCellDef="let m">{{ m?.packaging }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productForm">
+            <th mat-header-cell *matHeaderCellDef>Product Form</th>
+            <td mat-cell *matCellDef="let m">{{ m?.productForm }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productHighlights">
+            <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
+            <td mat-cell *matCellDef="let m">{{ m?.productHighlights }}</td>
+          </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef>Quantity</th>
+            <td mat-cell *matCellDef="let m">{{ m?.qty }}</td>
+          </ng-container>
+          <ng-container matColumnDef="safetyInformation">
+            <th mat-header-cell *matHeaderCellDef>Safety Information</th>
+            <td mat-cell *matCellDef="let m">{{ m?.safetyInformation }}</td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let m">{{ m?.type }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let m">
+              <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #actionsMenu="matMenu">
+                <button mat-menu-item (click)="editing = true; selectedMedicine = m; openEdit(m)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit Medicine</span>
+                </button>
+                <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+                  <mat-icon>app_registration</mat-icon>
+                  <span>Update Discount</span>
+                </button>
+                <button mat-menu-item *ngIf="selectedMedicineType === 'manually-added-medicines'" (click)="deleteMedicine(m)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedManualMedicineColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedManualMedicineColumns;"></tr>
+        </table>
+      }
+    </section>
+    <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+  </mat-drawer-content>
 
-                <ng-container matColumnDef="imageUrls">
-                    <th mat-header-cell *matHeaderCellDef>Images</th>
-                    <td mat-cell *matCellDef="let m">
-                        <ng-container *ngFor="let url of m.imageUrls">
-                            <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
-                        </ng-container>
-                    </td>
-                </ng-container>
+  <!-- Discount Dialog Template -->
+  <ng-template #discountDialog>
+    <h2 mat-dialog-title>Update Discount</h2>
+    <mat-dialog-content>
+      <form [formGroup]="discountForm">
+        
+        
+        <mat-form-field appearance="outline" class="w-100 mt-3">
+          <mat-label>Discount Percentage</mat-label>
+          <input matInput type="number" formControlName="discountPercentage" min="0" max="100" />
+          <mat-error *ngIf="discountForm.get('discountPercentage')?.hasError('min')">
+            Discount must be at least 0%
+          </mat-error>
+          <mat-error *ngIf="discountForm.get('discountPercentage')?.hasError('max')">
+            Discount cannot exceed 100%
+          </mat-error>
+        </mat-form-field>
 
-                <ng-container matColumnDef="information">
-                    <th mat-header-cell *matHeaderCellDef>Information</th>
-                    <td mat-cell *matCellDef="let m">{{ m.information || m.description }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="keyBenefits">
-                    <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
-                    <td mat-cell *matCellDef="let m">{{ m.keyBenefits }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="keyIngredients">
-                    <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
-                    <td mat-cell *matCellDef="let m">{{ m.keyIngredients }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="manufacturerAddress">
-                    <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
-                    <td mat-cell *matCellDef="let m">{{ m.manufacturerAddress }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="manufacturerDetails">
-                    <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
-                    <td mat-cell *matCellDef="let m">{{ m.manufacturerDetails }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="manufacturers">
-                    <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
-                    <td mat-cell *matCellDef="let m">{{ m.manufacturers || m.manufacturer}}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="marketerDetails">
-                    <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
-                    <td mat-cell *matCellDef="let m">{{ m.marketerDetails }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="mrp">
-                    <th mat-header-cell *matHeaderCellDef>MRP</th>
-                    <td mat-cell *matCellDef="let m">{{ m.mrp || m.price }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>Name</th>
-                    <td mat-cell *matCellDef="let m">{{ m.name }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="packageInfo">
-                    <th mat-header-cell *matHeaderCellDef>Package Info</th>
-                    <td mat-cell *matCellDef="let m">{{ m.packageInfo }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="packaging">
-                    <th mat-header-cell *matHeaderCellDef>Packaging</th>
-                    <td mat-cell *matCellDef="let m">{{ m.packaging }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="productForm">
-                    <th mat-header-cell *matHeaderCellDef>Product Form</th>
-                    <td mat-cell *matCellDef="let m">{{ m.productForm || m.product_form }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="productHighlights">
-                    <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
-                    <td mat-cell *matCellDef="let m">{{ m.productHighlights }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="qty">
-                    <th mat-header-cell *matHeaderCellDef>Quantity</th>
-                    <td mat-cell *matCellDef="let m">{{ m.qty || m.quantityInStock}}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="safetyInformation">
-                    <th mat-header-cell *matHeaderCellDef>Safety Information</th>
-                    <td mat-cell *matCellDef="let m">{{ m.safetyInformation || m.safety_advise }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="type">
-                    <th mat-header-cell *matHeaderCellDef>Type</th>
-                    <td mat-cell *matCellDef="let m">{{ m.type }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions" stickyEnd>
-                    <th mat-header-cell *matHeaderCellDef> Actions </th>
-                    <td mat-cell *matCellDef="let m">
-                        <!-- More / 3-dots button triggers the menu -->
-                        <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-
-                        <!-- The menu itself -->
-                        <mat-menu #actionsMenu="matMenu">
-                            <!-- Edit option always shown or based on condition -->
-                            <button mat-menu-item (click)="editing = true; openEdit(m)">
-                                <mat-icon>edit</mat-icon>
-                                <span>Edit Medicine</span>
-                            </button>
-                            <button mat-menu-item>
-                                <!-- <mat-icon>visibility</mat-icon> -->
-                                <span class="material-icons-outlined">
-                                    app_registration
-                                </span>
-                                <span>Edit Visibility</span>
-                            </button>
-
-                            <!-- Delete option only shown when manually-added type -->
-                            <button mat-menu-item *ngIf="selectedMedicineType === 'manually-added-medicines'"
-                                (click)="deleteMedicine(m)">
-                                <mat-icon>delete</mat-icon>
-                                <span>Delete</span>
-                            </button>
-                        </mat-menu>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-        </section>
-        <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
-    </mat-drawer-content>
-
+        <mat-slide-toggle formControlName="isAvailable" class="mb-3">
+          Is Available
+        </mat-slide-toggle>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-flat-button color="primary" [disabled]="discountForm.invalid" (click)="saveDiscount(); dialog.closeAll()">Save</button>
+    </mat-dialog-actions>
+  </ng-template>
 </mat-drawer-container>
