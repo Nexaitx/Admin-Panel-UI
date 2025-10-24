@@ -165,8 +165,14 @@
             <label>Images</label>
             <div *ngIf="medicineForm && images" formArrayName="images">
               <div *ngFor="let imgCtrl of images.controls; let i = index" class="d-flex align-items-center mb-2">
-                <input type="file" [formControlName]="i" (change)="onFileSelected($event, i)" multiple />
-                <button mat-icon-button class="text-danger" type="button" (click)="removeImageControl(i)" aria-label="Remove this image">
+                <!-- Display existing image URL as a preview -->
+                <ng-container *ngIf="imgCtrl.value && typeof imgCtrl.value === 'string'">
+                  <img [src]="imgCtrl.value" alt="Medicine Image" width="50" style="margin-right: 8px;" />
+                </ng-container>
+                <!-- Display file input for new uploads or allow replacing existing -->
+                <input type="file" [formControlName]="i" (change)="onFileSelected($event, i)" />
+                <button mat-icon-button class="text-danger" type="button" (click)="removeImageControl(i)"
+                  aria-label="Remove this image">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
@@ -193,11 +199,11 @@
   </mat-drawer>
 
   <mat-drawer-content>
-    <div class="toolbar-row d-flex align-items-baseline mt-2">
-      <div>
+    <div class="row mt-2">
+      <div class="col-md-1">
         <mat-icon>filter_list</mat-icon>
       </div>
-      <mat-form-field appearance="outline" class="small-select ms-2 w-75">
+      <mat-form-field appearance="outline" class="small-select col-md-3">
         <mat-label>Select Orders</mat-label>
         <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
           <mat-option value="" disabled>Select Medicine Type</mat-option>
@@ -207,321 +213,318 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="ms-2 w-50 small-select">
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
         <mat-label>Search Orders</mat-label>
         <input matInput (keyup)="applySearchFilter($event)" placeholder="Search by medicine">
       </mat-form-field>
 
-      <mat-slide-toggle class="col-md-6 ms-2 mb-3" (change)="checkedToggle= true; toggleDiscountedMedicines($event)">
+      <mat-slide-toggle class="col-md-2 col-sm-5 col-6 mb-3" [checked]="checkedToggle"
+        (change)="toggleDiscountedMedicines($event)">
         Check Discounted Medicines
       </mat-slide-toggle>
 
-      <button class="ms-auto" matButton="tonal" (click)="editing = false; openCreate()">Create Medicine</button>
+      <button class="col-md-2  col-sm-5 col-6" matButton="tonal" (click)="editing = false; openCreate()">Create
+        Medicine</button>
     </div>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons></mat-paginator>
 
     <section>
       @if(selectedMedicineType != 'manually-added-medicines' && !checkedToggle) {
-        <table mat-table [dataSource]="dataSource" matSort>
-          <ng-container matColumnDef="breadcrumbs" sticky>
-            <th mat-header-cell *matHeaderCellDef>Breadcrumbs</th>
-            <td mat-cell *matCellDef="let m">{{ m?.breadcrumbs }}</td>
-          </ng-container>
-          <ng-container matColumnDef="countryOfOrigin">
-            <th mat-header-cell *matHeaderCellDef>Country of Origin</th>
-            <td mat-cell *matCellDef="let m">{{ m?.countryOfOrigin }}</td>
-          </ng-container>
-          <ng-container matColumnDef="directionsForUse">
-            <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
-            <td mat-cell *matCellDef="let m">{{ m?.directionsForUse }}</td>
-          </ng-container>
-          <ng-container matColumnDef="expiration">
-            <th mat-header-cell *matHeaderCellDef>Expiration</th>
-            <td mat-cell *matCellDef="let m">{{ m?.expiration }}</td>
-          </ng-container>
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let m">{{ m?.id }}</td>
-          </ng-container>
-          <ng-container matColumnDef="imageUrls">
-            <th mat-header-cell *matHeaderCellDef>Images</th>
-            <td mat-cell *matCellDef="let m">
-              <ng-container *ngFor="let url of m?.imageUrls">
-                <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
-              </ng-container>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="information">
-            <th mat-header-cell *matHeaderCellDef>Information</th>
-            <td mat-cell *matCellDef="let m">{{ m?.information }}</td>
-          </ng-container>
-          <ng-container matColumnDef="keyBenefits">
-            <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
-            <td mat-cell *matCellDef="let m">{{ m?.keyBenefits }}</td>
-          </ng-container>
-          <ng-container matColumnDef="keyIngredients">
-            <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
-            <td mat-cell *matCellDef="let m">{{ m?.keyIngredients }}</td>
-          </ng-container>
-          <ng-container matColumnDef="manufacturerAddress">
-            <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
-            <td mat-cell *matCellDef="let m">{{ m?.manufacturerAddress }}</td>
-          </ng-container>
-          <ng-container matColumnDef="manufacturerDetails">
-            <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
-            <td mat-cell *matCellDef="let m">{{ m?.manufacturerDetails }}</td>
-          </ng-container>
-          <ng-container matColumnDef="manufacturers">
-            <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
-            <td mat-cell *matCellDef="let m">{{ m?.manufacturers }}</td>
-          </ng-container>
-          <ng-container matColumnDef="marketerDetails">
-            <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
-            <td mat-cell *matCellDef="let m">{{ m?.marketerDetails }}</td>
-          </ng-container>
-          <ng-container matColumnDef="mrp">
-            <th mat-header-cell *matHeaderCellDef>MRP</th>
-            <td mat-cell *matCellDef="let m">{{ m?.mrp }}</td>
-          </ng-container>
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let m">{{ m?.name }}</td>
-          </ng-container>
-          <ng-container matColumnDef="packageInfo">
-            <th mat-header-cell *matHeaderCellDef>Package Info</th>
-            <td mat-cell *matCellDef="let m">{{ m?.packageInfo }}</td>
-          </ng-container>
-          <ng-container matColumnDef="packaging">
-            <th mat-header-cell *matHeaderCellDef>Packaging</th>
-            <td mat-cell *matCellDef="let m">{{ m?.packaging }}</td>
-          </ng-container>
-          <ng-container matColumnDef="productForm">
-            <th mat-header-cell *matHeaderCellDef>Product Form</th>
-            <td mat-cell *matCellDef="let m">{{ m?.productForm }}</td>
-          </ng-container>
-          <ng-container matColumnDef="productHighlights">
-            <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
-            <td mat-cell *matCellDef="let m">{{ m?.productHighlights }}</td>
-          </ng-container>
-          <ng-container matColumnDef="qty">
-            <th mat-header-cell *matHeaderCellDef>Quantity</th>
-            <td mat-cell *matCellDef="let m">{{ m?.qty }}</td>
-          </ng-container>
-          <ng-container matColumnDef="safetyInformation">
-            <th mat-header-cell *matHeaderCellDef>Safety Information</th>
-            <td mat-cell *matCellDef="let m">{{ m?.safetyInformation }}</td>
-          </ng-container>
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Type</th>
-            <td mat-cell *matCellDef="let m">{{ m?.type }}</td>
-          </ng-container>
-          <ng-container matColumnDef="actions" stickyEnd>
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let m">
-              <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
-                <mat-icon>more_vert</mat-icon>
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="breadcrumbs" sticky>
+          <th mat-header-cell *matHeaderCellDef>Breadcrumbs</th>
+          <td mat-cell *matCellDef="let m">{{ m?.breadcrumbs }}</td>
+        </ng-container>
+        <ng-container matColumnDef="countryOfOrigin">
+          <th mat-header-cell *matHeaderCellDef>Country of Origin</th>
+          <td mat-cell *matCellDef="let m">{{ m?.countryOfOrigin }}</td>
+        </ng-container>
+        <ng-container matColumnDef="directionsForUse">
+          <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
+          <td mat-cell *matCellDef="let m">{{ m?.directionsForUse }}</td>
+        </ng-container>
+        <ng-container matColumnDef="expiration">
+          <th mat-header-cell *matHeaderCellDef>Expiration</th>
+          <td mat-cell *matCellDef="let m">{{ m?.expiration }}</td>
+        </ng-container>
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let m">{{ m?.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="imageUrls">
+          <th mat-header-cell *matHeaderCellDef>Images</th>
+          <td mat-cell *matCellDef="let m">
+            <ng-container *ngFor="let url of m?.imageUrls">
+              <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
+            </ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="information">
+          <th mat-header-cell *matHeaderCellDef>Information</th>
+          <td mat-cell *matCellDef="let m">{{ m?.information }}</td>
+        </ng-container>
+        <ng-container matColumnDef="keyBenefits">
+          <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
+          <td mat-cell *matCellDef="let m">{{ m?.keyBenefits }}</td>
+        </ng-container>
+        <ng-container matColumnDef="keyIngredients">
+          <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
+          <td mat-cell *matCellDef="let m">{{ m?.keyIngredients }}</td>
+        </ng-container>
+        <ng-container matColumnDef="manufacturerAddress">
+          <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
+          <td mat-cell *matCellDef="let m">{{ m?.manufacturerAddress }}</td>
+        </ng-container>
+        <ng-container matColumnDef="manufacturerDetails">
+          <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
+          <td mat-cell *matCellDef="let m">{{ m?.manufacturerDetails }}</td>
+        </ng-container>
+        <ng-container matColumnDef="manufacturers">
+          <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
+          <td mat-cell *matCellDef="let m">{{ m?.manufacturers }}</td>
+        </ng-container>
+        <ng-container matColumnDef="marketerDetails">
+          <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
+          <td mat-cell *matCellDef="let m">{{ m?.marketerDetails }}</td>
+        </ng-container>
+        <ng-container matColumnDef="mrp">
+          <th mat-header-cell *matHeaderCellDef>MRP</th>
+          <td mat-cell *matCellDef="let m">{{ m?.mrp }}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let m">{{ m?.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="packageInfo">
+          <th mat-header-cell *matHeaderCellDef>Package Info</th>
+          <td mat-cell *matCellDef="let m">{{ m?.packageInfo }}</td>
+        </ng-container>
+        <ng-container matColumnDef="packaging">
+          <th mat-header-cell *matHeaderCellDef>Packaging</th>
+          <td mat-cell *matCellDef="let m">{{ m?.packaging }}</td>
+        </ng-container>
+        <ng-container matColumnDef="productForm">
+          <th mat-header-cell *matHeaderCellDef>Product Form</th>
+          <td mat-cell *matCellDef="let m">{{ m?.productForm }}</td>
+        </ng-container>
+        <ng-container matColumnDef="productHighlights">
+          <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
+          <td mat-cell *matCellDef="let m">{{ m?.productHighlights }}</td>
+        </ng-container>
+        <ng-container matColumnDef="qty">
+          <th mat-header-cell *matHeaderCellDef>Quantity</th>
+          <td mat-cell *matCellDef="let m">{{ m?.qty }}</td>
+        </ng-container>
+        <ng-container matColumnDef="safetyInformation">
+          <th mat-header-cell *matHeaderCellDef>Safety Information</th>
+          <td mat-cell *matCellDef="let m">{{ m?.safetyInformation }}</td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let m">{{ m?.type }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let m">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+                <mat-icon>app_registration</mat-icon>
+                <span>Update Discount</span>
               </button>
-              <mat-menu #actionsMenu="matMenu">
-                <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
-                  <mat-icon>app_registration</mat-icon>
-                  <span>Update Discount</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
       } @else if (checkedToggle) {
-        <table mat-table [dataSource]="dataSource" matSort>
-          <ng-container matColumnDef="productId" sticky>
-            <th mat-header-cell *matHeaderCellDef>Product ID</th>
-            <td mat-cell *matCellDef="let m">{{ m?.productId }}</td>
-          </ng-container>
-          <ng-container matColumnDef="productName" sticky>
-            <th mat-header-cell *matHeaderCellDef>Product Name</th>
-            <td mat-cell *matCellDef="let m">{{ m?.productName }}</td>
-          </ng-container>
-          <ng-container matColumnDef="productType">
-            <th mat-header-cell *matHeaderCellDef>Product Type</th>
-            <td mat-cell *matCellDef="let m">{{ m?.productType }}</td>
-          </ng-container>
-          <ng-container matColumnDef="originalPrice">
-            <th mat-header-cell *matHeaderCellDef>Original Price</th>
-            <td mat-cell *matCellDef="let m">{{ m?.originalPrice }}</td>
-          </ng-container>
-          <ng-container matColumnDef="discountPrice">
-            <th mat-header-cell *matHeaderCellDef>Discount Price</th>
-            <td mat-cell *matCellDef="let m">{{ m?.discountPrice }}</td>
-          </ng-container>
-          <ng-container matColumnDef="discountPercentage">
-            <th mat-header-cell *matHeaderCellDef>Discount Percentage</th>
-            <td mat-cell *matCellDef="let m">{{ m?.discountPercentage }}</td>
-          </ng-container>
-          <ng-container matColumnDef="isAvailable">
-            <th mat-header-cell *matHeaderCellDef>Is Available</th>
-            <td mat-cell *matCellDef="let m"><mat-icon [style.color]="m?.isAvailable ? 'green' : 'red'">
-      {{ m?.isAvailable ? 'check' : 'cancel' }}
-    </mat-icon></td>
-          </ng-container>
-          <ng-container matColumnDef="managedAt">
-            <th mat-header-cell *matHeaderCellDef>Managed At</th>
-            <td mat-cell *matCellDef="let m">{{ m?.managedAt | date: 'mediumDate' }}</td>
-          </ng-container>
-          <ng-container matColumnDef="updatedAt">
-            <th mat-header-cell *matHeaderCellDef>Updated At</th>
-            <td mat-cell *matCellDef="let m">{{ m?.updatedAt | date: 'mediumDate' }}</td>
-          </ng-container>
-          <ng-container matColumnDef="adminId">
-            <th mat-header-cell *matHeaderCellDef>Admin ID</th>
-            <td mat-cell *matCellDef="let m">{{ m?.adminId }}</td>
-          </ng-container>
-          <ng-container matColumnDef="adminName">
-            <th mat-header-cell *matHeaderCellDef>Admin Name</th>
-            <td mat-cell *matCellDef="let m">{{ m?.adminName }}</td>
-          </ng-container>
-          <ng-container matColumnDef="adminEmail">
-            <th mat-header-cell *matHeaderCellDef>Admin Email</th>
-            <td mat-cell *matCellDef="let m">{{ m?.adminEmail }}</td>
-          </ng-container>
-          <ng-container matColumnDef="adminPhoneNumber">
-            <th mat-header-cell *matHeaderCellDef>Admin Phone Number</th>
-            <td mat-cell *matCellDef="let m">{{ m?.adminPhoneNumber }}</td>
-          </ng-container>
-          <ng-container matColumnDef="adminCreatedAt">
-            <th mat-header-cell *matHeaderCellDef>Admin Created At</th>
-            <td mat-cell *matCellDef="let m">{{ m?.adminCreatedAt | date: 'mediumDate' }}</td>
-          </ng-container>
-          <ng-container matColumnDef="actions" stickyEnd>
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let m">
-              <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
-                <mat-icon>more_vert</mat-icon>
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="productId" sticky>
+          <th mat-header-cell *matHeaderCellDef>Product ID</th>
+          <td mat-cell *matCellDef="let m">{{ m?.productId }}</td>
+        </ng-container>
+        <ng-container matColumnDef="productName" sticky>
+          <th mat-header-cell *matHeaderCellDef>Product Name</th>
+          <td mat-cell *matCellDef="let m">{{ m?.productName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="productType">
+          <th mat-header-cell *matHeaderCellDef>Product Type</th>
+          <td mat-cell *matCellDef="let m">{{ m?.productType }}</td>
+        </ng-container>
+        <ng-container matColumnDef="originalPrice">
+          <th mat-header-cell *matHeaderCellDef>Original Price</th>
+          <td mat-cell *matCellDef="let m">{{ m?.originalPrice }}</td>
+        </ng-container>
+        <ng-container matColumnDef="discountPrice">
+          <th mat-header-cell *matHeaderCellDef>Discount Price</th>
+          <td mat-cell *matCellDef="let m">{{ m?.discountPrice }}</td>
+        </ng-container>
+        <ng-container matColumnDef="discountPercentage">
+          <th mat-header-cell *matHeaderCellDef>Discount Percentage</th>
+          <td mat-cell *matCellDef="let m">{{ m?.discountPercentage }}</td>
+        </ng-container>
+        <ng-container matColumnDef="isAvailable">
+          <th mat-header-cell *matHeaderCellDef>Is Available</th>
+          <td mat-cell *matCellDef="let m"><mat-icon [style.color]="m?.isAvailable ? 'green' : 'red'">
+              {{ m?.isAvailable ? 'check' : 'cancel' }}
+            </mat-icon></td>
+        </ng-container>
+        <ng-container matColumnDef="managedAt">
+          <th mat-header-cell *matHeaderCellDef>Managed At</th>
+          <td mat-cell *matCellDef="let m">{{ m?.managedAt | date: 'mediumDate' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="updatedAt">
+          <th mat-header-cell *matHeaderCellDef>Updated At</th>
+          <td mat-cell *matCellDef="let m">{{ m?.updatedAt | date: 'mediumDate' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="adminId">
+          <th mat-header-cell *matHeaderCellDef>Admin ID</th>
+          <td mat-cell *matCellDef="let m">{{ m?.adminId }}</td>
+        </ng-container>
+        <ng-container matColumnDef="adminName">
+          <th mat-header-cell *matHeaderCellDef>Admin Name</th>
+          <td mat-cell *matCellDef="let m">{{ m?.adminName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="adminEmail">
+          <th mat-header-cell *matHeaderCellDef>Admin Email</th>
+          <td mat-cell *matCellDef="let m">{{ m?.adminEmail }}</td>
+        </ng-container>
+        <ng-container matColumnDef="adminPhoneNumber">
+          <th mat-header-cell *matHeaderCellDef>Admin Phone Number</th>
+          <td mat-cell *matCellDef="let m">{{ m?.adminPhoneNumber }}</td>
+        </ng-container>
+        <ng-container matColumnDef="adminCreatedAt">
+          <th mat-header-cell *matHeaderCellDef>Admin Created At</th>
+          <td mat-cell *matCellDef="let m">{{ m?.adminCreatedAt | date: 'mediumDate' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let m">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+                <mat-icon>app_registration</mat-icon>
+                <span>Update Discount</span>
               </button>
-              <mat-menu #actionsMenu="matMenu">
-                <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
-                  <mat-icon>app_registration</mat-icon>
-                  <span>Update Discount</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedDiscountedMedicineColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedDiscountedMedicineColumns;"></tr>
-        </table>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedDiscountedMedicineColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedDiscountedMedicineColumns;"></tr>
+      </table>
       } @else {
-        <table mat-table [dataSource]="dataSource" matSort>
-          <ng-container matColumnDef="directionsForUse">
-            <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
-            <td mat-cell *matCellDef="let m">{{ m?.directionsForUse }}</td>
-          </ng-container>
-          <ng-container matColumnDef="expiration">
-            <th mat-header-cell *matHeaderCellDef>Expiration</th>
-            <td mat-cell *matCellDef="let m">{{ m?.expiration | date: 'mediumDate' }}</td>
-          </ng-container>
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let m">{{ m?.id }}</td>
-          </ng-container>
-          <ng-container matColumnDef="imageUrls">
-            <th mat-header-cell *matHeaderCellDef>Images</th>
-            <td mat-cell *matCellDef="let m">
-              <ng-container *ngFor="let url of m?.imageUrls">
-                <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
-              </ng-container>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="information">
-            <th mat-header-cell *matHeaderCellDef>Information</th>
-            <td mat-cell *matCellDef="let m">{{ m?.information }}</td>
-          </ng-container>
-          <ng-container matColumnDef="keyBenefits">
-            <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
-            <td mat-cell *matCellDef="let m">{{ m?.keyBenefits }}</td>
-          </ng-container>
-          <ng-container matColumnDef="keyIngredients">
-            <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
-            <td mat-cell *matCellDef="let m">{{ m?.keyIngredients }}</td>
-          </ng-container>
-          <ng-container matColumnDef="manufacturerAddress">
-            <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
-            <td mat-cell *matCellDef="let m">{{ m?.manufacturerAddress }}</td>
-          </ng-container>
-          <ng-container matColumnDef="manufacturerDetails">
-            <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
-            <td mat-cell *matCellDef="let m">{{ m?.manufacturerDetails }}</td>
-          </ng-container>
-          <ng-container matColumnDef="manufacturers">
-            <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
-            <td mat-cell *matCellDef="let m">{{ m?.manufacturers }}</td>
-          </ng-container>
-          <ng-container matColumnDef="marketerDetails">
-            <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
-            <td mat-cell *matCellDef="let m">{{ m?.marketerDetails }}</td>
-          </ng-container>
-          <ng-container matColumnDef="mrp">
-            <th mat-header-cell *matHeaderCellDef>MRP</th>
-            <td mat-cell *matCellDef="let m">{{ m?.mrp }}</td>
-          </ng-container>
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let m">{{ m?.name }}</td>
-          </ng-container>
-          <ng-container matColumnDef="packageInfo">
-            <th mat-header-cell *matHeaderCellDef>Package Info</th>
-            <td mat-cell *matCellDef="let m">{{ m?.packageInfo }}</td>
-          </ng-container>
-          <ng-container matColumnDef="packaging">
-            <th mat-header-cell *matHeaderCellDef>Packaging</th>
-            <td mat-cell *matCellDef="let m">{{ m?.packaging }}</td>
-          </ng-container>
-          <ng-container matColumnDef="productForm">
-            <th mat-header-cell *matHeaderCellDef>Product Form</th>
-            <td mat-cell *matCellDef="let m">{{ m?.productForm }}</td>
-          </ng-container>
-          <ng-container matColumnDef="productHighlights">
-            <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
-            <td mat-cell *matCellDef="let m">{{ m?.productHighlights }}</td>
-          </ng-container>
-          <ng-container matColumnDef="qty">
-            <th mat-header-cell *matHeaderCellDef>Quantity</th>
-            <td mat-cell *matCellDef="let m">{{ m?.qty }}</td>
-          </ng-container>
-          <ng-container matColumnDef="safetyInformation">
-            <th mat-header-cell *matHeaderCellDef>Safety Information</th>
-            <td mat-cell *matCellDef="let m">{{ m?.safetyInformation }}</td>
-          </ng-container>
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Type</th>
-            <td mat-cell *matCellDef="let m">{{ m?.type }}</td>
-          </ng-container>
-          <ng-container matColumnDef="actions" stickyEnd>
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let m">
-              <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
-                <mat-icon>more_vert</mat-icon>
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- ID -->
+        <ng-container matColumnDef="medicineId">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let m">{{ m.medicineId }}</td>
+        </ng-container>
+
+        <!-- Image -->
+        <ng-container matColumnDef="imageUrls">
+          <th mat-header-cell *matHeaderCellDef>Images</th>
+          <td mat-cell *matCellDef="let m">
+            <ng-container *ngFor="let url of m.imageUrls">
+              <img [src]="url" width="50" style="margin-right:4px;" />
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <!-- Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let m">{{ m.name }}</td>
+        </ng-container>
+
+        <!-- Category -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let m">{{ m.category }}</td>
+        </ng-container>
+
+        <!-- Price -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let m">{{ m.price }}</td>
+        </ng-container>
+
+        <!-- MRP -->
+        <ng-container matColumnDef="mrp">
+          <th mat-header-cell *matHeaderCellDef>MRP</th>
+          <td mat-cell *matCellDef="let m">{{ m.mrp || '—' }}</td>
+        </ng-container>
+
+        <!-- Discount -->
+        <ng-container matColumnDef="discountPercentage">
+          <th mat-header-cell *matHeaderCellDef>Discount %</th>
+          <td mat-cell *matCellDef="let m">{{ m.discountPercentage || '—' }}</td>
+        </ng-container>
+
+        <!-- Quantity -->
+        <ng-container matColumnDef="quantityInStock">
+          <th mat-header-cell *matHeaderCellDef>Stock</th>
+          <td mat-cell *matCellDef="let m">{{ m.quantityInStock }}</td>
+        </ng-container>
+
+        <!-- Expiry -->
+        <ng-container matColumnDef="expiryDate">
+          <th mat-header-cell *matHeaderCellDef>Expiry Date</th>
+          <td mat-cell *matCellDef="let m">{{ m.expiryDate | date: 'mediumDate' }}</td>
+        </ng-container>
+
+        <!-- Prescription -->
+        <ng-container matColumnDef="prescription_required">
+          <th mat-header-cell *matHeaderCellDef>Prescription</th>
+          <td mat-cell *matCellDef="let m">{{ m.prescription_required ? 'Yes' : 'No' }}</td>
+        </ng-container>
+
+        <!-- Active -->
+        <ng-container matColumnDef="active">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let m">{{ m.active ? 'Active' : 'Inactive' }}</td>
+        </ng-container>
+
+        <!-- Added By -->
+        <ng-container matColumnDef="addedByPharmacistName">
+          <th mat-header-cell *matHeaderCellDef>Added By</th>
+          <td mat-cell *matCellDef="let m">{{ m.addedByPharmacistName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let m">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+                <mat-icon>app_registration</mat-icon>
+                <span>Update Discount</span>
               </button>
-              <mat-menu #actionsMenu="matMenu">
-                <button mat-menu-item (click)="editing = true; selectedMedicine = m; openEdit(m)">
-                  <mat-icon>edit</mat-icon>
-                  <span>Edit Medicine</span>
-                </button>
-                <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
-                  <mat-icon>app_registration</mat-icon>
-                  <span>Update Discount</span>
-                </button>
-                <button mat-menu-item *ngIf="selectedMedicineType === 'manually-added-medicines'" (click)="deleteMedicine(m)">
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedManualMedicineColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedManualMedicineColumns;"></tr>
-        </table>
+              <button mat-menu-item (click)="selectedMedicine = m; openEdit(m)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="deleteMedicine(m)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedManualMedicineColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedManualMedicineColumns;"></tr>
+      </table>
+
       }
     </section>
-    <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
   </mat-drawer-content>
 
   <!-- Discount Dialog Template -->
@@ -529,8 +532,8 @@
     <h2 mat-dialog-title>Update Discount</h2>
     <mat-dialog-content>
       <form [formGroup]="discountForm">
-        
-        
+
+
         <mat-form-field appearance="outline" class="w-100 mt-3">
           <mat-label>Discount Percentage</mat-label>
           <input matInput type="number" formControlName="discountPercentage" min="0" max="100" />
@@ -549,7 +552,8 @@
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="primary" [disabled]="discountForm.invalid" (click)="saveDiscount(); dialog.closeAll()">Save</button>
+      <button mat-flat-button color="primary" [disabled]="discountForm.invalid"
+        (click)="saveDiscount(); dialog.closeAll()">Save</button>
     </mat-dialog-actions>
   </ng-template>
 </mat-drawer-container>

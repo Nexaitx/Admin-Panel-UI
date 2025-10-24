@@ -87,7 +87,7 @@ export const ENDPOINTS = {
     GET_MY_MEDICINES: '/api/medicines/my-medicines', // manually added medicines by pharma admin
     CREATE_MEDICINE: '/api/medicines/add-with-images', // create medicine by pharmacist with images
     CREATE_MEDICINE_NO_IMAGE: '/api/medicines/add', // create medicine by pharmacist without image
-    UPDATE_MEDICINE: '/api/medicines/',
+    UPDATE_MEDICINE: '/api/medicines',
     DELETE_MEDICINE: '/api/medicines/',  // delete medicine create by pharmacist
 
     UPDATE_DISCOUNT_MEDICINE: '/api/admin/medicines/toggle', // Update discount and get actual price / remove price

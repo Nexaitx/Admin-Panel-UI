@@ -68,12 +68,11 @@ export class PharmaMedicines {
   ];
 
   displayedManualMedicineColumns: string[] = [
-    'directionsForUse', 'expiration', 'id',
-    'imageUrls', 'information', 'keyBenefits', 'keyIngredients',
-    'manufacturerAddress', 'manufacturerDetails', 'manufacturers',
-    'marketerDetails', 'mrp', 'name', 'packageInfo', 'packaging',
-    'productForm', 'productHighlights', 'qty', 'safetyInformation', 'type', 'actions'
+    'medicineId', 'imageUrls', 'name', 'category', 'price', 'mrp',
+    'discountPercentage', 'quantityInStock', 'expiryDate', 'prescription_required',
+    'active', 'addedByPharmacistName', 'actions'
   ];
+
 
   displayedDiscountedMedicineColumns: string[] = [
     'productId', 'productName', 'productType', 'originalPrice', 'discountPrice',
@@ -84,6 +83,8 @@ export class PharmaMedicines {
   http = inject(HttpClient);
   dialog = inject(MatDialog);
   snackBar = inject(MatSnackBar);
+  currentPage: number = 0;
+  pageSize: number = 5;
 
   constructor(private fb: FormBuilder) {
     this.medicineForm = this.fb.group({
@@ -130,6 +131,14 @@ export class PharmaMedicines {
     this.dataSource.paginator = this.paginator;
   }
 
+  ngAfterViewInit() {
+    // Initialize paginator and listen for page changes
+    this.dataSource.paginator = this.paginator;
+    this.paginator.page.subscribe(() => {
+      this.onMedicineTypeChange(this.selectedMedicineType);
+    });
+  }
+
   get images(): FormArray {
     return this.medicineForm.get('images') as FormArray;
   }
@@ -143,7 +152,6 @@ export class PharmaMedicines {
     if (input.files && input.files.length) {
       const file = input.files[0];
       const arr = this.medicineForm.get('images') as FormArray;
-      console.log('Selected file for index', index, file);
       arr.at(index).patchValue(file);
     }
   }
@@ -152,41 +160,104 @@ export class PharmaMedicines {
     this.images.removeAt(index);
   }
 
+  // applySearchFilter(event: Event) {
+  //   if (this.selectedMedicineType === 'otc') {
+  //     const payload = {
+  //       q: (event.target as HTMLInputElement).value,
+  //       page: 0,
+  //       size: 10
+  //     };
+  //     this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_OTC_MEDICINES}`, { params: payload })
+  //       .subscribe((data: any) => {
+  //         this.medicines = data.data.content || [];
+  //         this.dataSource.data = this.medicines;
+  //       });
+  //   }
+  //   if (this.selectedMedicineType === 'medicines') {
+  //     const payload = {
+  //       q: (event.target as HTMLInputElement).value,
+  //       page: 0,
+  //       size: 10
+  //     };
+  //     this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_PRESCRIBED_MEDICINES}`, { params: payload })
+  //       .subscribe((data: any) => {
+  //         this.medicines = data.data.content || [];
+  //         this.dataSource.data = this.medicines;
+  //       });
+  //   }
+  //   if (this.selectedMedicineType === 'manually-added-medicines') {
+  //     const token = localStorage.getItem('token');
+  //     let headers = new HttpHeaders();
+  //     if (token) {
+  //       headers = headers.set('Authorization', `Bearer ${token}`);
+  //     }
+  //     const payload = {
+  //       name: (event.target as HTMLInputElement).value,
+  //       page: 0,
+  //       size: 10,
+  //       sortBy: 'name',
+  //       sortDirection: 'asc'
+  //     };
+  //     this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_MY_MEDICINES}`, { params: payload, headers })
+  //       .subscribe((data: any) => {
+  //         this.medicines = data?.data?.medicines || [];
+  //         this.dataSource.data = this.medicines;
+  //       });
+  //   }
+  // }
   applySearchFilter(event: Event) {
+    const searchValue = (event.target as HTMLInputElement).value;
+    const page = this.paginator ? this.paginator.pageIndex : 0;
+    const size = this.paginator ? this.paginator.pageSize : 10;
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
     if (this.selectedMedicineType === 'otc') {
       const payload = {
-        q: (event.target as HTMLInputElement).value,
-        page: 0,
-        size: 10
+        q: searchValue,
+        page: page.toString(),
+        size: size.toString()
       };
-      this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_OTC_MEDICINES}`, { params: payload })
+      this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_OTC_MEDICINES}`, { params: payload, headers })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
           this.dataSource.data = this.medicines;
+          if (this.paginator && data.data.totalElements) {
+            this.paginator.length = data.data.totalElements;
+          }
+        }, error => {
+          console.error('Error searching OTC medicines:', error);
+          this.showError('Failed to search OTC medicines');
         });
     }
+
     if (this.selectedMedicineType === 'medicines') {
       const payload = {
-        q: (event.target as HTMLInputElement).value,
-        page: 0,
-        size: 10
+        q: searchValue,
+        page: page.toString(),
+        size: size.toString()
       };
-      this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_PRESCRIBED_MEDICINES}`, { params: payload })
+      this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_PRESCRIBED_MEDICINES}`, { params: payload, headers })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
           this.dataSource.data = this.medicines;
+          if (this.paginator && data.data.totalElements) {
+            this.paginator.length = data.data.totalElements;
+          }
+        }, error => {
+          console.error('Error searching prescribed medicines:', error);
+          this.showError('Failed to search prescribed medicines');
         });
     }
+
     if (this.selectedMedicineType === 'manually-added-medicines') {
-      const token = localStorage.getItem('token');
-      let headers = new HttpHeaders();
-      if (token) {
-        headers = headers.set('Authorization', `Bearer ${token}`);
-      }
       const payload = {
-        name: (event.target as HTMLInputElement).value,
-        page: 0,
-        size: 10,
+        name: searchValue,
+        page: page.toString(),
+        size: size.toString(),
         sortBy: 'name',
         sortDirection: 'asc'
       };
@@ -194,6 +265,12 @@ export class PharmaMedicines {
         .subscribe((data: any) => {
           this.medicines = data?.data?.medicines || [];
           this.dataSource.data = this.medicines;
+          if (this.paginator && data.totalElements) {
+            this.paginator.length = data.totalElements;
+          }
+        }, error => {
+          console.error('Error searching manually added medicines:', error);
+          this.showError('Failed to search manually added medicines');
         });
     }
   }
@@ -208,6 +285,20 @@ export class PharmaMedicines {
   openEdit(m: any) {
     this.editing = true;
     this.editingMedicineId = m.id ?? null;
+
+    // Clear existing images FormArray
+    while (this.images.length) {
+      this.images.removeAt(0);
+    }
+
+    // Populate images FormArray with existing image URLs
+    if (m.imageUrls && Array.isArray(m.imageUrls)) {
+      m.imageUrls.forEach((url: string) => {
+        this.images.push(this.fb.control(url));
+      });
+    }
+
+    // Patch other form values
     this.medicineForm.patchValue({
       name: m.name,
       description: m.description,
@@ -235,9 +326,9 @@ export class PharmaMedicines {
       storage: m.storage,
       medicine_type: m.medicine_type,
       salt_composition: m.salt_composition,
-      setFirstImageAsPrimary: m.setFirstImageAsPrimary,
-      images: []
+      setFirstImageAsPrimary: m.setFirstImageAsPrimary
     });
+
     this.drawer.open();
   }
 
@@ -285,6 +376,7 @@ export class PharmaMedicines {
     }
 
     if (this.editing) {
+      console.log(this.selectedMedicine?.medicineId)
       this.http.put(`${API_URL}${ENDPOINTS.UPDATE_MEDICINE}/${this.selectedMedicine?.medicineId}`, payload, { headers })
         .subscribe(response => {
           this.medicines = this.medicines.map(m => {
@@ -330,35 +422,121 @@ export class PharmaMedicines {
     this.drawer.close();
   }
 
+  // onMedicineTypeChange(selectedValue: string) {
+  //   this.selectedMedicineType = selectedValue;
+  //   this.checkedToggle = false;
+  //   const token = localStorage.getItem('token');
+  //   let headers = new HttpHeaders();
+  //   if (token) {
+  //     headers = headers.set('Authorization', `Bearer ${token}`);
+  //   }
+  //   const params = {
+  //     page: this.currentPage.toString(),
+  //     size: this.pageSize.toString()
+  //   };
+
+  //   if (selectedValue === 'otc') {
+  //     this.dataSource.data = [];
+  //     this.http.get(API_URL + ENDPOINTS.GET_OTC_MEDICINES, { headers, params })
+  //       .subscribe((data: any) => {
+  //         this.medicines = data.data.content || [];
+  //         this.dataSource.data = this.medicines;
+  //       });
+  //   }
+
+  //   if (selectedValue === 'medicines') {
+  //     this.dataSource.data = [];
+  //     this.http.get(API_URL + ENDPOINTS.GET_PRESCRIBED_MEDICINES, { headers, params })
+  //       .subscribe((data: any) => {
+  //         this.medicines = data.data.content || [];
+  //         this.dataSource.data = this.medicines;
+  //       });
+  //   }
+
+  //   if (selectedValue === 'manually-added-medicines') {
+  //     this.dataSource.data = [];
+  //     this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers, params })
+  //       .subscribe((data: any) => {
+  //         this.medicines = data?.medicines || [];
+  //         this.dataSource.data = this.medicines;
+  //       });
+  //   }
+  // }
+
   onMedicineTypeChange(selectedValue: string) {
     this.selectedMedicineType = selectedValue;
+    this.checkedToggle = false;
     const token = localStorage.getItem('token');
     let headers = new HttpHeaders();
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
+    const page = this.paginator ? this.paginator.pageIndex : 0;
+    const size = this.paginator ? this.paginator.pageSize : 10;
+
+    const params = {
+      page: page.toString(),
+      size: size.toString()
+    };
+
     if (selectedValue === 'otc') {
-      this.http.get(API_URL + ENDPOINTS.GET_OTC_MEDICINES, { headers })
+      this.dataSource.data = [];
+      this.http.get(API_URL + ENDPOINTS.GET_OTC_MEDICINES, { headers, params })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
           this.dataSource.data = this.medicines;
+          if (this.paginator && data.data.totalElements != null) {
+            this.paginator.length = data.data.totalElements;
+            const totalPages = data.data.totalPages || 1;
+            if (this.paginator.pageIndex >= totalPages) {
+              this.paginator.pageIndex = totalPages - 1;
+              this.onMedicineTypeChange(this.selectedMedicineType);
+            }
+          }
+        }, error => {
+          console.error('Error fetching OTC medicines:', error);
+          this.showError('Failed to load OTC medicines');
         });
     }
 
     if (selectedValue === 'medicines') {
-      this.http.get(API_URL + ENDPOINTS.GET_PRESCRIBED_MEDICINES, { headers })
+      this.dataSource.data = [];
+      this.http.get(API_URL + ENDPOINTS.GET_PRESCRIBED_MEDICINES, { headers, params })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
           this.dataSource.data = this.medicines;
+          if (this.paginator && data.data.totalElements != null) {
+            this.paginator.length = data.data.totalElements;
+            const totalPages = data.data.totalPages || 1;
+            if (this.paginator.pageIndex >= totalPages) {
+              this.paginator.pageIndex = totalPages - 1;
+              this.onMedicineTypeChange(this.selectedMedicineType);
+            }
+          }
+        }, error => {
+          console.error('Error fetching prescribed medicines:', error);
+          this.showError('Failed to load prescribed medicines');
         });
     }
 
     if (selectedValue === 'manually-added-medicines') {
-      this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers })
+      this.dataSource.data = [];
+      this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers, params })
         .subscribe((data: any) => {
           this.medicines = data?.medicines || [];
           this.dataSource.data = this.medicines;
+          if (this.paginator && data.totalElements != null) {
+            this.paginator.length = data.totalElements;
+            const totalPages = data.totalPages || 1;
+            if (this.paginator.pageIndex >= totalPages) {
+              this.paginator.pageIndex = totalPages - 1;
+              this.onMedicineTypeChange(this.selectedMedicineType);
+            }
+          }
+        }, error => {
+          console.error('Error fetching manually added medicines:', error);
+          this.showError('Failed to load manually added medicines');
         });
     }
   }
@@ -408,21 +586,61 @@ export class PharmaMedicines {
     });
   }
 
+  // toggleDiscountedMedicines(event: any) {
+  //   // Use the event.checked value directly to update the component property
+  //   this.checkedToggle = event.checked;
+
+  //   if (this.checkedToggle) { // Toggle is ON
+  //     this.selectedMedicineType = '';
+  //     const token = localStorage.getItem('token');
+  //     let headers = new HttpHeaders();
+  //     if (token) {
+  //       headers = headers.set('Authorization', `Bearer ${token}`);
+  //     }
+  //     this.dataSource.data = [];
+  //     this.http.get(`${API_URL + ENDPOINTS.GET_DISCOUNTED_MEDICINES}`, { headers })
+  //       .subscribe((data: any) => {
+  //         this.medicines = data || [];
+  //         this.dataSource.data = this.medicines;
+  //       });
+  //   } else { // Toggle is OFF
+  //     // If the toggle is turned off, revert to the default manually-added medicines view
+  //     // or whatever was last selected/should be the default
+  //     const lastSelectedType = this.selectedMedicineType || 'manually-added-medicines';
+  //     this.onMedicineTypeChange(lastSelectedType);
+  //   }
+  // }
   toggleDiscountedMedicines(event: any) {
     const checked = event.checked;
+    this.checkedToggle = checked;
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
     if (checked) {
       this.selectedMedicineType = '';
-      const token = localStorage.getItem('token');
-      let headers = new HttpHeaders();
-      if (token) {
-        headers = headers.set('Authorization', `Bearer ${token}`);
-      }
-      this.http.get(`${API_URL + ENDPOINTS.GET_DISCOUNTED_MEDICINES}`, { headers })
+      const page = this.paginator ? this.paginator.pageIndex : 0;
+      const size = this.paginator ? this.paginator.pageSize : 10;
+      const params = {
+        page: page.toString(),
+        size: size.toString()
+      };
+      this.dataSource.data = [];
+      this.http.get(`${API_URL + ENDPOINTS.GET_DISCOUNTED_MEDICINES}`, { headers, params })
         .subscribe((data: any) => {
           this.medicines = data || [];
           this.dataSource.data = this.medicines;
+          if (this.paginator && data.totalElements) {
+            this.paginator.length = data.totalElements;
+          }
+        }, error => {
+          console.error('Error fetching discounted medicines:', error);
+          this.showError('Failed to load discounted medicines');
         });
     } else {
+      this.dataSource.data = [];
       this.onMedicineTypeChange(this.selectedMedicineType);
     }
   }
