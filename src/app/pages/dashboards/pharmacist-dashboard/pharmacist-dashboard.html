@@ -1,1 +1,77 @@
-<p>pharmacist-dashboard works!</p>
+<div class="container-fluid py-3">
+    <h4 class="semibold mb-0">Welcome Back, {{userProfile?.fullName}}!</h4>
+    <p class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</p>
+    <div class="row p-2 mt-3">
+        <div class="col-md-4">
+            <mat-card class="example-card bg-white shadow h-auto" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title class="d-flex"> <mat-icon> person_pin</mat-icon>
+                        {{userProfile?.role?.roleType}}</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">Personal Info</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr>
+                <mat-card-content class="text-muted m-1">
+                    <small class="d-flex"><mat-icon> mail_outline</mat-icon>&nbsp;{{userProfile?.email || 'My
+                        Email'}}</small>
+
+                    <small class="d-flex mt-2"><mat-icon> phone</mat-icon>&nbsp;{{userProfile?.phoneNumber || 'My Phone
+                        Number'}}</small>
+                </mat-card-content>
+
+            </mat-card>
+        </div>
+
+        <div class="col-md-8 mb-2">
+            <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Get Bookings</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">In Cart, Delivered and Orders on the Way</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr class="mb-0">
+                <mat-card-content class="example-card-footer m-1">
+                    <ul>
+                        <li class="text-muted"> Total Products in Cart: 0 </li>
+                        <li class="text-muted"> Total Products on the Way: 5 </li>
+                        <li class="text-muted"> Total Delivered Products: 6</li>
+                    </ul>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-md-12">
+            <mat-card class="example-card bg-white shadow" appearance="outlined">
+                <mat-card-header class="d-flex justify-content-between">
+                    <mat-card-title class="d-flex">My Medicines</mat-card-title>
+                    <button matButton="tonal" (click)="toggleView()">
+                        {{ showAll ? 'Show Less' : 'View All' }}
+                    </button>
+                </mat-card-header>
+                <hr>
+                <mat-card-content class="text-muted m-3">
+                    <table mat-table [dataSource]="dataSource" class="bg-white">
+                        @for (column of columns; track column) {
+                        <ng-container [matColumnDef]="column.columnDef">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{column.header}}
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                {{column.cell(row)}}
+                            </td>
+                        </ng-container>
+                        }
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+
+    </div>
+</div>

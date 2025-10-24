@@ -76,6 +76,10 @@ export const ENDPOINTS = {
     GET_SCHEDULED_CALLS_COUNT: '/getDietScheduleCallCount',
     GET_SCHEDULED_CALL: '/getDietScheduleCall',
 
+
+    // get pharmacy dashboard
+    GET_CART_ITEM_COUNT: '/api/admin/cart/items/count',
+
     // Pharmacy
     GET_ORDERS_IN_CART: '/api/admin/cart/items',
     GET_ORDER_STATUSES: '/api/admin/orders/statuses',
