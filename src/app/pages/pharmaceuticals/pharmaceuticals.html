@@ -1,4 +1,4 @@
-<mat-drawer-container class="h-100" autosize>
+<mat-drawer-container class="h-100">
 
   <mat-drawer #drawer mode="over" position="end" [opened]="isDrawerOpen" (closedStart)="onDrawerClosed()">
     <div class="drawer-content p-3">
@@ -18,10 +18,10 @@
           <p><strong>User ID:</strong> {{ selectedItem.userId }}</p>
           <p><strong>User Name:</strong> {{ selectedItem.userName }}</p>
           <p><strong>User Email:</strong> {{ selectedItem.userEmail }}</p>
-          <p><strong>User Phone:</strong> {{ selectedItem.userPhoneNumber }}</p>
-          <p><strong>Brand Name:</strong> {{ selectedItem.brandName }}</p>
+          <p><strong>User Phone:</strong> {{ selectedItem.userPhone }}</p>
+          <p><strong>Brand Name:</strong> {{ selectedItem.productType }}</p>
           <p><strong>Manufacturer:</strong> {{ selectedItem.manufacturer || 'N/A' }}</p>
-          <p><strong>Dosage:</strong> {{ selectedItem.dosage }}</p>
+          <p><strong>adminName:</strong> {{ selectedItem.adminName }}</p>
           <p><strong>Product Form:</strong> {{ selectedItem.productForm }}</p>
           <ng-container *ngIf="selectedItem.imageUrl">
             <p><strong>Image:</strong></p>
@@ -40,9 +40,9 @@
           <p><strong>Quantity:</strong> {{ selectedItem.quantity }}</p>
           <p><strong>Unit Price:</strong> {{ selectedItem.unitPrice | number:'1.2-2' }}</p>
           <p><strong>Total Price:</strong> {{ selectedItem.totalPrice | number:'1.2-2' }}</p>
-          <p><strong>Brand Name:</strong> {{ selectedItem.brandName }}</p>
+          <p><strong>Brand Name:</strong> {{ selectedItem.productType }}</p>
           <p><strong>Manufacturer:</strong> {{ selectedItem.manufacturer }}</p>
-          <p><strong>Dosage:</strong> {{ selectedItem.dosage }}</p>
+          <p><strong>adminName:</strong> {{ selectedItem.adminName }}</p>
           <ng-container *ngIf="selectedItem.imageUrl">
             <p><strong>Image:</strong></p>
             <img [src]="selectedItem.imageUrl" alt="Product image" style="max-width: 100%;" />
@@ -60,7 +60,7 @@
 
       <mat-tab label="Orders in Cart">
         <div class="tab-content pt-3">
-          <div class="toolbar d-flex align-items-center mb-2">
+          <div class="toolbar d-flex align-items-baseline mb-2">
             <mat-icon>filter_list</mat-icon>
 
             <mat-form-field appearance="outline" class="ms-2 small-select">
@@ -74,7 +74,7 @@
           <section>
             <table mat-table [dataSource]="cartOrders" matSort #cartSort="matSort">
 
-              <ng-container matColumnDef="id">
+              <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Cart ID </th>
                 <td mat-cell *matCellDef="let item"> {{ item.id }} </td>
               </ng-container>
@@ -84,14 +84,19 @@
                 <td mat-cell *matCellDef="let item"> {{ item.productName }} </td>
               </ng-container>
 
-              <ng-container matColumnDef="brandName">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Brand </th>
-                <td mat-cell *matCellDef="let item"> {{ item.brandName || 'N/A' }} </td>
+              <ng-container matColumnDef="productType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Type </th>
+                <td mat-cell *matCellDef="let item"> {{ item.productType || 'N/A' }} </td>
               </ng-container>
 
-              <ng-container matColumnDef="dosage">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Dosage </th>
-                <td mat-cell *matCellDef="let item"> {{ item.dosage }} </td>
+              <ng-container matColumnDef="adminName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Pharmacist Name </th>
+                <td mat-cell *matCellDef="let item"> {{ item.adminName }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="adminEmail">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Pharmacist Email </th>
+                <td mat-cell *matCellDef="let item"> {{ item.adminEmail }} </td>
               </ng-container>
 
               <ng-container matColumnDef="productForm">
@@ -117,6 +122,11 @@
               <ng-container matColumnDef="userName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer </th>
                 <td mat-cell *matCellDef="let item"> {{ item.userName }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="userEmail">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> User Email </th>
+                <td mat-cell *matCellDef="let item"> {{ item.userEmail }} </td>
               </ng-container>
 
               <ng-container matColumnDef="addedDate">
@@ -150,9 +160,9 @@
             <mat-form-field appearance="outline" class="ms-2 small-select">
               <mat-label>Filter by Status</mat-label>
               <mat-select [(value)]="selectedOrderType" (selectionChange)="onOrderTypeChange($event.value)">
-                @for (type of orderStatuses; track type.value) {
-                <mat-option [value]="type.value">
-                  {{ type.label | titlecase }}
+                @for (type of orderStatuses; track type) {
+                <mat-option [value]="type">
+                  {{ type | titlecase }}
                 </mat-option>
                 }
               </mat-select>
@@ -161,7 +171,8 @@
               <mat-label>Search Orders</mat-label>
               <input matInput (keyup)="applyProcessedFilter($event)" placeholder="Search by order ID, customer, etc.">
             </mat-form-field>
-            <mat-paginator class="ms-auto" #processedPaginator [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons>
+            <mat-paginator class="ms-auto" #processedPaginator [pageSizeOptions]="[5, 10, 20, 100]"
+              showFirstLastButtons>
             </mat-paginator>
           </div>
 
@@ -189,9 +200,9 @@
                 <td mat-cell *matCellDef="let item"> {{ item.userName }} </td>
               </ng-container>
 
-              <ng-container matColumnDef="userPhoneNumber">
+              <ng-container matColumnDef="userPhone">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
-                <td mat-cell *matCellDef="let item"> {{ item.userPhoneNumber }} </td>
+                <td mat-cell *matCellDef="let item"> {{ item.userPhone }} </td>
               </ng-container>
 
               <ng-container matColumnDef="userEmail">

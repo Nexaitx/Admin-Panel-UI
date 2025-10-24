@@ -10,7 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatInputModule } from '@angular/material/input'; // Added for search input
 import { MatFormFieldModule } from '@angular/material/form-field'; // Added for search form field
 import { API_URL, ENDPOINTS } from '../../core/const';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
@@ -40,14 +40,14 @@ import { MatListModule } from '@angular/material/list';
 })
 export class Pharmaceuticals implements AfterViewInit {
   processedColumns: string[] = [
-    'orderId', 'orderNumber', 'userId', 'userName', 'userPhoneNumber',
+    'orderId', 'orderNumber', 'userId', 'userName', 'userPhone',
     'userEmail', 'paymentStatus', 'orderDate', 'expectedDeliveryDate',
     'finalAmount', 'status', 'taxAmount', 'totalAmount', 'actions'
   ];
 
   cartColumns: string[] = [
-    'id', 'productName', 'brandName', 'dosage', 'productForm',
-    'quantity', 'price', 'totalPrice', 'userName', 'addedDate', 'actions'
+    'id', 'productName', 'productType', 'adminName', 'adminEmail', 'productForm',
+    'quantity', 'price', 'totalPrice', 'userName', 'userEmail', 'addedDate', 'actions'
   ];
 
   cartOrders = new MatTableDataSource<any>([]);
@@ -58,6 +58,7 @@ export class Pharmaceuticals implements AfterViewInit {
   activeTabIndex: number = 0;
   orderStatuses: any[] = [];
   isDrawerOpen = false;
+  user = JSON.parse(localStorage.getItem('userProfile') || '{}');
 
   @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild('cartPaginator') cartPaginator!: MatPaginator;
@@ -84,9 +85,21 @@ export class Pharmaceuticals implements AfterViewInit {
   }
 
   getOrderStatuses() {
-    this.http.get(`${API_URL}${ENDPOINTS.GET_ORDER_STATUSES}`).subscribe((data: any) => {
-      this.orderStatuses = data;
-    });
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    if (!this.user.pan) {
+      this.http.get(`${API_URL}${ENDPOINTS.GET_ORDER_STATUSES}`, { headers }).subscribe((data: any) => {
+        this.orderStatuses = data.statuses;
+      });
+    }
+    else {
+      this.http.get(`${API_URL}${ENDPOINTS.GET_ALL_ORDER_STATUS}`, { headers }).subscribe((data: any) => {
+        this.orderStatuses = data.statuses;
+      });
+    }
   }
 
   onTabChange(event: any) {
@@ -99,19 +112,48 @@ export class Pharmaceuticals implements AfterViewInit {
   }
 
   loadCartOrders() {
-    this.http.get(`${API_URL}${ENDPOINTS.GET_ORDERS_IN_CART}`).subscribe((data: any) => {
-      this.cartOrders.data = data;
-      console.log('Cart orders loaded:', data);
-    }, error => {
-      console.error('Error loading cart orders:', error);
-    });
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    if (!this.user.pan) {
+      this.http.get(`${API_URL}${ENDPOINTS.GET_ORDERS_IN_CART}`, { headers }).subscribe((data: any) => {
+        this.cartOrders.data = data.cartItems;
+      }, error => {
+        console.error('Error loading cart orders:', error);
+      });
+    }
+    else {
+      this.http.get(API_URL + ENDPOINTS.GET_ALL_CART).subscribe((data: any) => {
+        this.cartOrders.data = data;
+      }, error => {
+        console.error('Error loading cart orders:', error);
+      });
+    }
   }
 
   onOrderTypeChange(newType: string) {
     this.selectedOrderType = newType;
-    this.http.get(`${API_URL}${ENDPOINTS.GET_ORDERS_BY_STATUS}${newType}`).subscribe((data: any) => {
-      this.processedOrders.data = data;
-    });
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    if (!this.user.pan) {
+      const params = { orderStatus: newType };
+      this.http.get(API_URL + ENDPOINTS.GET_ORDERS_BY_STATUS, { params, headers }).subscribe((data: any) => {
+        this.processedOrders.data = data;
+      });
+    }
+    else {
+      this.selectedOrderType = newType;
+      const url = `${API_URL}${ENDPOINTS.GET_ORDERS_BY_STATUS_ADMIN}${encodeURIComponent(newType)}`;
+      this.http.get(url)
+        .subscribe((data: any) => {
+          this.processedOrders.data = data;
+        });
+    }
   }
 
   onView(item: any) {
@@ -150,7 +192,7 @@ export class Pharmaceuticals implements AfterViewInit {
   isCartItem() {
     return this.activeTabIndex === 0;
   }
-  
+
   onDrawerClosed() {
     this.selectedItem = null;
   }

@@ -4,7 +4,6 @@
       min-height: 40px !important;
       padding-top: 8px !important;
       padding-bottom: 0 !important;
-
     }
 
     .small-select .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
@@ -29,10 +28,16 @@
     }
   }
 }
+
 section {
-   height: 400px;
+  height: 400px;
   overflow: auto;
 }
+
 table {
   width: 100%;
+}
+
+.mat-drawer.mat-drawer-opened.mat-drawer-opened {
+    position: fixed !important;
 }

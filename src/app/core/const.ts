@@ -77,9 +77,15 @@ export const ENDPOINTS = {
     GET_SCHEDULED_CALL: '/getDietScheduleCall',
 
     // Pharmacy
-    GET_ORDERS_IN_CART: '/api/adminCart/orderInCart',
-    GET_ORDER_STATUSES: '/api/orders/status-options',
-    GET_ORDERS_BY_STATUS: '/api/orders/status/',
+    GET_ORDERS_IN_CART: '/api/admin/cart/items',
+    GET_ORDER_STATUSES: '/api/admin/orders/statuses',
+    GET_ORDERS_BY_STATUS: '/api/admin/orders/items/order-status/filter',
+
+    //Super Admin - Pharmaceuticals
+    GET_ALL_CART: "/api/super-admin/cart/items",
+    GET_ALL_ORDER_STATUS: "/api/super-admin/orders/statuses",
+    GET_ORDERS_BY_STATUS_ADMIN: "/api/super-admin/orderswithdetails/status/",
+    GET_PRODUCT_BY_PRODUCTNAME: "/api/super-admin/cart/search/product", // GET BY PRODUCT NAME
 
     // medicines
     GET_OTC_MEDICINES: '/api/products', // otc medicines

@@ -1,5 +1,5 @@
-<mat-toolbar [style.margin-left]="sidenav.opened ? '260px' : '0'" [style.width]="sidenav.opened ? '80%' : '100%'">
-    <button mat-icon-button (click)="sidenav.toggle()" >
+<mat-toolbar>
+    <button mat-icon-button [style.margin-left]="sidenav.opened ? '260px' : '0'" (click)="sidenav.toggle()" >
         <mat-icon>menu</mat-icon>
     </button>
      
