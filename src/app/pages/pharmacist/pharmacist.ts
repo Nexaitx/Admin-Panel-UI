@@ -12,9 +12,11 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
   const password = control.get('password');
@@ -40,12 +42,16 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
     MatMenuModule,
     MatSidenavModule,
     MatSelectModule,
-    ReactiveFormsModule],
+    ReactiveFormsModule,
+    MatSlideToggleModule,
+    FormsModule,
+    MatProgressSpinnerModule
+  ],
   templateUrl: './pharmacist.html',
   styleUrl: './pharmacist.scss'
 })
 export class Pharmacist {
- http = inject(HttpClient);
+  http = inject(HttpClient);
   fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   accounts: any[] = [];
@@ -59,6 +65,10 @@ export class Pharmacist {
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;
   isEdit: boolean = false;
+  submittingVerification: boolean = false;
+  toggleChecked: boolean = false;
+  verification: boolean = false;
+
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -124,7 +134,7 @@ export class Pharmacist {
       const formData = { ...this.userForm.value };
       delete formData.confirmPassword;
       if (this.isEdit) {
-        this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ACCOUNT}/${this.selectedRecord.user_id}`, formData).subscribe({
+        this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ACCOUNT}/${this.selectedUser.user_id}`, formData).subscribe({
           next: (res: any) => {
             this.snackBar.open('Update successful!', 'Close', {
               duration: 3000,
@@ -168,10 +178,19 @@ export class Pharmacist {
     alert(`Deleting: ${element.name} (User ID: ${element.user_id})`);
   }
 
+  view: boolean = false;
+
   openUserDrawer() {
-    console.log(this.selectedRecord)
-    if (this.isEdit) {
-      this.userForm.patchValue(this.selectedRecord);
+    console.log(this.selectedUser);
+    if (this.isEdit || this.view || this.verification) {
+      this.http.get(`${API_URL}${ENDPOINTS.GET_ADMIN_BY_ID}${this.selectedUser?.user_id}`).subscribe((res: any) => {
+        this.selectedUser = res;
+        this.userForm.patchValue(this.selectedUser);
+        this.toggleChecked = res.active
+      });
+    }
+    else {
+      this.userForm.reset();
     }
     this.isDrawerOpen = true;
   }
@@ -179,6 +198,7 @@ export class Pharmacist {
   closeUserDrawer() {
     this.isDrawerOpen = false;
     this.selectedUser = null;
+    this.verification = false
   }
 
   mapAndSetDataSource(users: any[]): void {
@@ -203,5 +223,32 @@ export class Pharmacist {
     if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
+  }
+
+  submitVerification() {
+    if (!this.selectedUser || !this.selectedUser?.user_id) {
+      this.snackBar.open('Admin id missing.', 'Close', { duration: 3000, panelClass: ['snackbar-error'] });
+      return;
+    }
+    const adminId = this.selectedUser?.user_id;
+    const url = `${API_URL}${ENDPOINTS.UPDATE_VERIFICATION_ACCESS}/${adminId}/toggle-status`;
+    this.submittingVerification = true;
+
+    this.http.put(url, null).subscribe({
+      next: (res: any) => {
+        this.submittingVerification = false;
+        if (res.active === false) {
+          this.snackBar.open(`${this.selectedUser.originalUser.name} not Verified.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+        }
+        else {
+          this.snackBar.open(`${this.selectedUser.originalUser.name} Verified successfully.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+        }
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.submittingVerification = false;
+        this.snackBar.open('Failed to verified. Try again later.', 'Close', { duration: 4000, panelClass: ['snackbar-error'] });
+      }
+    });
   }
 }

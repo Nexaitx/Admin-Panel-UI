@@ -1,15 +1,16 @@
 <mat-drawer-container class="drawer-container">
     <mat-drawer class="w-75 p-3" #userDrawer mode="over" [(opened)]="isDrawerOpen" position="end">
-        <h2>Pharmacist Details</h2>
-        @if(selectedUser)
-        {<div>
+        <h2> {{ verification ? 'Pharmacist Verification' : 'Pharmacist Details' }}</h2>
+        @if(selectedUser && !verification)
+        {
+        <div>
             <p><strong>Name:</strong> {{ selectedUser.name }}</p>
             <p><strong>Email:</strong> {{ selectedUser.email }}</p>
             <p><strong>Phone:</strong> {{ selectedUser.phone }}</p>
             <p><strong>Contact (Email):</strong> {{ selectedUser.contact }}</p>
-            <p><strong>Aadhaar Status:</strong> {{ selectedUser.aadhaar }}</p>
             <p><strong>Address:</strong> {{ selectedUser.address }}</p>
             <p><strong>City:</strong> {{ selectedUser.city }}</p>
+            <p><strong>Verified:</strong> {{selectedUser.active ? 'Yes' : 'No'}} </p>
 
             <div *ngIf="selectedUser.aadhaarUrl">
                 <p><strong>Aadhaar Card Attachment:</strong></p>
@@ -22,8 +23,37 @@
 
         </div>
         <button mat-button (click)="closeUserDrawer()">Close</button>
-        }
-        @else {
+        } @else if(selectedUser && verification){
+        <div class="verification-section">
+            <div>
+                <p><strong>Name:</strong> {{ selectedUser.name }}</p>
+                <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+                <p><strong>Phone:</strong> {{ selectedUser.phone }}</p>
+                <p><strong>Contact (Email):</strong> {{ selectedUser.contact }}</p>
+                <p><strong>Address:</strong> {{ selectedUser.address }}</p>
+                <p><strong>City:</strong> {{ selectedUser.city }}</p>
+
+                <div *ngIf="selectedUser.aadhaarUrl">
+                    <p><strong>Aadhaar Card Attachment:</strong></p>
+                    <img [src]="selectedUser.aadhaarUrl" alt="{{ selectedUser.name }}'s Aadhaar"
+                        style="max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px;">
+                </div>
+                <div *ngIf="!selectedUser.aadhaarUrl">
+                    <p>Aadhaar Card Attachment: N/A</p>
+                </div>
+
+            </div>
+
+            <mat-slide-toggle [(ngModel)]="toggleChecked">Mark as verified</mat-slide-toggle>
+            <div class="d-flex justify-content-between">
+                <button mat-button (click)="closeUserDrawer()">Close</button>
+                <button mat-raised-button color="primary" (click)="submitVerification()">
+                    <mat-spinner *ngIf="submittingVerification" diameter="18"></mat-spinner>
+                    <span *ngIf="!submittingVerification">Submit</span>
+                </button>
+            </div>
+        </div>
+        } @else {
         <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
 
             <div class="row">
@@ -87,6 +117,7 @@
             </div>
         </form>
         }
+
     </mat-drawer>
 
     <div>
@@ -147,14 +178,24 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #actionMenu="matMenu">
-                            <button mat-menu-item (click)="selectedRecord = element; isEdit= true; openUserDrawer()">
+                            <button mat-menu-item
+                                (click)="isEdit= true; selectedUser = element; verification = false; openUserDrawer()">
                                 <mat-icon>edit</mat-icon>
                                 <span>Edit</span>
                             </button>
-                            <button mat-menu-item (click)="selectedUser= element; openUserDrawer()">
+
+                            <button mat-menu-item
+                                (click)="verification = true; selectedUser = element; openUserDrawer()">
+                                <mat-icon>verified_user</mat-icon>
+                                <span>Verification</span>
+                            </button>
+
+                            <button mat-menu-item
+                                (click)="view = true; selectedUser = element; verification = false; openUserDrawer()">
                                 <mat-icon>remove_red_eye</mat-icon>
                                 <span>View</span>
                             </button>
+
                             <button mat-menu-item (click)="deleteElement(element)">
                                 <mat-icon>delete</mat-icon>
                                 <span>Delete</span>
