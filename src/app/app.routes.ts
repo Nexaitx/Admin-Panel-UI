@@ -8,6 +8,14 @@ export const routes: Routes = [
         loadComponent: () => import('./layouts/main-ui/main-ui').then(m => m.MainUi),
     },
     {
+        path: 'complete-verification',
+        loadComponent: () => import('./layouts/complete-verification/complete-verification').then(m => m.CompleteVerification)
+    },
+    {
+        path: 'verification-under-process',
+        loadComponent: () => import('./layouts/kyc-under-process/kyc-under-process').then(m => m.KycUnderProcess)
+    },
+    {
         path: 'app',
         canActivate: [authGuard],
         component: MainLayout,

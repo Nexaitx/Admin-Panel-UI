@@ -1,0 +1,10 @@
+.verif-card { max-width:900px; margin:20px auto; padding:16px }
+.full-width { width:100%; }
+.row-two { display:flex; gap:12px }
+.row-two > * { flex:1 }
+.step-actions { margin-top:16px; display:flex; gap:8px }
+.file-row { margin:12px 0 }
+.file-info { font-size:13px; color:rgba(0,0,0,0.6) }
+.helper { font-size:13px; color:rgba(0,0,0,0.6) }
+.required { color:var(--mat-warn, #d32f2f) }
+.upload-progress { display:flex; align-items:center; gap:12px; margin-top:12px }

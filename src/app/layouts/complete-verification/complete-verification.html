@@ -1,0 +1,143 @@
+<div class="container-fluid">
+    <div class="logout text-end">
+        <button mat-icon-button (click)="logout()" class="logout" matTooltip="Logout" matTooltipPosition="below">
+            <mat-icon>logout</mat-icon>
+        </button>
+    </div>
+
+    <mat-card class="verif-card">
+        <h2>Pharmacist Verification</h2>
+
+
+        <mat-horizontal-stepper linear #stepper>
+
+            <!-- STEP 1: Basic verification (you can add OTP verification outside this form) -->
+            <mat-step [stepControl]="basicForm">
+                <form [formGroup]="basicForm">
+                    <ng-template matStepLabel>Basic Info</ng-template>
+
+                    <mat-form-field appearance="outline" class="full-width my-2">
+                        <mat-label>Full name</mat-label>
+                        <input matInput formControlName="fullName" placeholder="e.g. John Doe" required>
+                        <mat-error *ngIf="basicForm.get('fullName')?.hasError('required')">Full name is
+                            required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Phone</mat-label>
+                        <input matInput formControlName="phone" placeholder="Enter phone" required>
+                        <mat-error *ngIf="basicForm.get('phone')?.hasError('required')">Phone is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" placeholder="Enter email" required>
+                        <mat-error *ngIf="basicForm.get('email')?.hasError('required')">Email is required</mat-error>
+                    </mat-form-field>
+
+                    <div class="step-actions">
+                        <button mat-button matStepperNext [disabled]="basicForm.invalid">Next</button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <mat-step [stepControl]="documentsForm">
+                <form [formGroup]="documentsForm">
+                    <ng-template matStepLabel>Upload Documents</ng-template>
+
+                    <p class="helper">Please upload clear scanned copies or photos (max 5 MB each). Accepted: jpg, png,
+                        pdf</p>
+
+                    <!-- Drug / Pharmacy License -->
+                    <div class="file-row">
+                        <label>Drug / Pharmacy License <span class="required">*</span></label>
+                        <input type="file" formControlName="drugLicense" (change)="onFileSelected($event, 'license')" accept=".jpg,.jpeg,.png,.pdf" />
+                        <div class="file-info" *ngIf="licenseName">Selected: {{ licenseName }}</div>
+                        <mat-error *ngIf="documentsForm.get('license')?.hasError('required')">Drug License is
+                            required</mat-error>
+                    </div>
+
+                    <!-- PAN or Aadhaar - user can upload either; we enforce at least one -->
+                    <div class="file-row">
+                        <label>PAN or Aadhaar (any one) <span class="required">*</span></label>
+                        <input type="file" formControlName="idProof" (change)="onFileSelected($event, 'id')" accept=".jpg,.jpeg,.png,.pdf" />
+                        <div class="file-info" *ngIf="idName">Selected: {{ idName }}</div>
+                        <!-- <mat-hint *ngIf="!idPresent">Upload either PAN or Aadhaar. You can upload both if available.</mat-hint> -->
+                    </div>
+
+                    <div class="step-actions">
+                        <button mat-button matStepperPrevious>Back</button>
+                        <button mat-button matStepperNext [disabled]="!documentsForm.valid">Next</button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <!-- STEP 3: Pharmacy address -->
+            <mat-step [stepControl]="addressForm">
+                <form [formGroup]="addressForm">
+                    <ng-template matStepLabel>Pharmacy Address</ng-template>
+
+                    <mat-form-field appearance="outline" class="full-width mt-2">
+                        <mat-label>Pharmacy name</mat-label>
+                        <input matInput formControlName="pharmacyName" required>
+                        <mat-error *ngIf="addressForm.get('pharmacyName')?.hasError('required')">Required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Address line 1</mat-label>
+                        <input matInput formControlName="addressLine1" required>
+                        <mat-error *ngIf="addressForm.get('addressLine1')?.hasError('required')">Required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Address line 2</mat-label>
+                        <input matInput formControlName="addressLine2">
+                    </mat-form-field>
+
+                    <div class="row-two">
+                        <mat-form-field appearance="outline">
+                            <mat-label>City</mat-label>
+                            <input matInput formControlName="city" required>
+                            <mat-error *ngIf="addressForm.get('city')?.hasError('required')">Required</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>State</mat-label>
+                            <input matInput formControlName="state" required>
+                            <mat-error *ngIf="addressForm.get('state')?.hasError('required')">Required</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row-two">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Pincode</mat-label>
+                            <input matInput formControlName="pincode" required pattern="[0-9]{6}">
+                            <mat-error *ngIf="addressForm.get('pincode')?.hasError('required')">Required</mat-error>
+                            <mat-error *ngIf="addressForm.get('pincode')?.hasError('pattern')">Enter a valid 6-digit
+                                pincode</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Country</mat-label>
+                            <input matInput formControlName="country" required>
+                            <mat-error *ngIf="addressForm.get('country')?.hasError('required')">Required</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="step-actions">
+                        <button mat-button matStepperPrevious>Back</button>
+                        <button mat-raised-button color="primary" (click)="submit()"
+                            [disabled]="addressForm.invalid || submitting">Submit</button>
+                    </div>
+
+                    <div class="upload-progress" *ngIf="uploadProgress !== null">
+                        <mat-progress-spinner mode="determinate" [value]="uploadProgress"></mat-progress-spinner>
+                        <div>{{ uploadProgress }}% uploaded</div>
+                    </div>
+
+                </form>
+            </mat-step>
+
+        </mat-horizontal-stepper>
+    </mat-card>
+</div>

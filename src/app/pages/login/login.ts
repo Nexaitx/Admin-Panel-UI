@@ -83,9 +83,12 @@ export class Login {
             if (perm.includes('Admin Dashboard')) {
               this.router.navigate(['/app/admin-dashboard']);
             }
-            else if (perm.includes('Pharmacist Dashboard')) {
+            else if (perm.includes('Pharmacist Dashboard') && res?.profile?.active === true) {
 
               this.router.navigate(['/app/pharmacist-dashboard']);
+            }
+            else {
+              this.router.navigate(['/complete-verification']);
             }
             // } else if (role === 'Doctor') {
               // this.router.navigate(['/app/doctor-dashboard']); }

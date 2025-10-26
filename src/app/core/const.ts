@@ -79,6 +79,7 @@ export const ENDPOINTS = {
 
     // get pharmacy dashboard
     GET_CART_ITEM_COUNT: '/api/admin/cart/items/count',
+    SUBMIT_KYC_DOCUMENTS: '/api/pharmacist/kyc-verification', //APIs are pending
 
     // Pharmacy
     GET_ORDERS_IN_CART: '/api/admin/cart/items',
