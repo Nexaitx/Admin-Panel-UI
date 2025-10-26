@@ -79,6 +79,7 @@ export const ENDPOINTS = {
 
     UPDATE_VERIFICATION_ACCESS: '/activestatus',
     GET_ADMIN_BY_ID: '/getAdminById/',
+    UPDATE_MEDICINE_PERMISSION: '/api/admin-management/givepharmacist/',
     // get pharmacy dashboard
     GET_CART_ITEM_COUNT: '/api/admin/cart/items/count',
     SUBMIT_KYC_DOCUMENTS: '/api/pharmacist/kyc-verification', //APIs are pending

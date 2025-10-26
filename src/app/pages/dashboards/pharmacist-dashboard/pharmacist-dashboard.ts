@@ -81,17 +81,6 @@ export class PharmacistDashboard {
       header: 'Show in App',
       cell: (element: any) => `${element.showInApp}`,
     }
-    // {
-    //   columnDef: 'showInApp',
-    //   header: 'Show in App',
-    //   // Use cellRenderer or cell if your grid allows templates
-    //   cellRenderer: (params: any) => {
-    //     const val = params.value;
-    //     return val
-    //       ? `<mat-icon style="color: green; vertical-align: middle;">check_circle</mat-icon>`
-    //       : `<mat-icon style="color: red; vertical-align: middle;">cancel</mat-icon>`;
-    //   }
-    // }
   ];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   displayedColumns = this.columns.map(c => c.columnDef);

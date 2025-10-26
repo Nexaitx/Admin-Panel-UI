@@ -190,6 +190,11 @@
                                 <span>Verification</span>
                             </button>
 
+                            <button mat-menu-item (click)="selectedUser = element; openDialog(element)">
+                                <mat-icon>key</mat-icon>
+                                <span>Permission</span>
+                            </button>
+
                             <button mat-menu-item
                                 (click)="view = true; selectedUser = element; verification = false; openUserDrawer()">
                                 <mat-icon>remove_red_eye</mat-icon>
@@ -217,4 +222,21 @@
             </mat-paginator>
         </div>
     </div>
+
+    <ng-template #discountDialog>
+        <h2 mat-dialog-title>Permission to Add Medicine / Product</h2>
+        <mat-dialog-content>
+            <form>
+                <label>Do you want to restrict this pharmacist from adding medicines or products?</label>
+                <mat-radio-group aria-label="Select an option" [(ngModel)]="permission" name="permission">
+                    <mat-radio-button [value]="true">Yes</mat-radio-button>
+                    <mat-radio-button [value]="false">No</mat-radio-button>
+                </mat-radio-group>
+            </form>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-button mat-dialog-close>Cancel</button>
+            <button mat-flat-button color="primary" (click)="updateMedicinePermission(); dialog.closeAll()">Save</button>
+        </mat-dialog-actions>
+    </ng-template>
 </mat-drawer-container>

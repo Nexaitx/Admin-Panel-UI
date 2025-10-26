@@ -15,7 +15,16 @@ import { Auth } from '../../core/services/auth';
 })
 export class KycUnderProcess {
   private router = inject(Router)
-  private auth = inject(Auth)
+  private auth = inject(Auth);
+
+  ngOnInit() {
+    let user = JSON.parse(localStorage.getItem('userProfile') || '{}');
+    console.log(user.active)
+    if(user.active === true) {
+      this.router.navigate(['/app/pharmacist-dashboard']);
+    }
+  }
+
   logout() {
     this.auth.logout();
     this.router.navigate(['']);

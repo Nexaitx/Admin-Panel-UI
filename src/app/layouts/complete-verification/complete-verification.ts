@@ -78,6 +78,14 @@ export class CompleteVerification {
     });
   }
 
+  ngOnInit() {
+    let user = JSON.parse(localStorage.getItem('userProfile') || '{}');
+    console.log(user.active)
+    if(user.active === true) {
+      this.router.navigate(['/app/pharmacist-dashboard']);
+    }
+  }
+
   onFileSelected(event: Event, which: 'license' | 'id') {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;

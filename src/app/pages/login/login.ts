@@ -74,41 +74,44 @@ export class Login {
           this.auth.login(res?.token, res?.profile?.role?.permissions, res?.profile);
           this._snackBar.open('Logged In Successful!', 'Successfully', {
             horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 3000,
-              panelClass: ['snackbar-success']
-            });
-            const perm = res?.profile?.role?.permissions;
-            console.log(perm);
-            if (perm.includes('Admin Dashboard')) {
-              this.router.navigate(['/app/admin-dashboard']);
-            }
-            else if (perm.includes('Pharmacist Dashboard') && res?.profile?.active === true) {
-
-              this.router.navigate(['/app/pharmacist-dashboard']);
-            }
-            else {
-              this.router.navigate(['/complete-verification']);
-            }
-            // } else if (role === 'Doctor') {
-              // this.router.navigate(['/app/doctor-dashboard']); }
-             
-            //  else if (role === 'Dietician') {
-              // this.router.navigate(['/app/dietician-dashboard']);
-            // } else {
-              // this.router.navigate(['/app/default-dashboard']);
-            // }
-          }
-        },
-          error => {
-            this._snackBar.open('Login failed. Please check your credentials.', 'Error', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 3000,
-              panelClass: ['snackbar-error']
-            });
+            verticalPosition: 'top',
+            duration: 3000,
+            panelClass: ['snackbar-success']
           });
-      }
+          const perm = res?.profile?.role?.permissions;
+          console.log(perm);
+          if (perm.includes('Admin Dashboard')) {
+            this.router.navigate(['/app/admin-dashboard']);
+          }
+          else if (perm.includes('Pharmacist Dashboard') && res?.profile?.active === true) {
+
+            this.router.navigate(['/app/pharmacist-dashboard']);
+          }
+          else if (perm.includes('Dietician Dashboard')) {
+            this.router.navigate(['/app/dietician-dashboard']);
+          }
+          else {
+            this.router.navigate(['/complete-verification']);
+          }
+          // } else if (role === 'Doctor') {
+          // this.router.navigate(['/app/doctor-dashboard']); }
+
+          //  else if (role === 'Dietician') {
+          // this.router.navigate(['/app/dietician-dashboard']);
+          // } else {
+          // this.router.navigate(['/app/default-dashboard']);
+          // }
+        }
+      },
+        error => {
+          this._snackBar.open('Login failed. Please check your credentials.', 'Error', {
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        });
+    }
   }
   navigateToSignup(): void {
     this.router.navigate(['/signup']);

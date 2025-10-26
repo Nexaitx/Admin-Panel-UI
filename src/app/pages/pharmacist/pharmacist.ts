@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -17,6 +17,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 
 export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
   const password = control.get('password');
@@ -45,7 +47,10 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
     ReactiveFormsModule,
     MatSlideToggleModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    MatRadioModule,
+    FormsModule
   ],
   templateUrl: './pharmacist.html',
   styleUrl: './pharmacist.scss'
@@ -56,10 +61,10 @@ export class Pharmacist {
   private snackBar = inject(MatSnackBar);
   accounts: any[] = [];
   selectedRecord: any;
-
+  view: boolean = false;
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
-
+  permission: boolean = false;
   displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'actions'];
 
   dataSource: MatTableDataSource<any>;
@@ -68,8 +73,8 @@ export class Pharmacist {
   submittingVerification: boolean = false;
   toggleChecked: boolean = false;
   verification: boolean = false;
-
-
+  dialog = inject(MatDialog);
+  @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -98,9 +103,7 @@ export class Pharmacist {
   }
 
   ngOnInit(): void {
-
     this.getAccounts();
-
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
       const dataStr = `${data.name} ${data.email} ${data.phone} ${data.contact} ${data.aadhaar} ${data.address} ${data.city}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
@@ -134,7 +137,7 @@ export class Pharmacist {
       const formData = { ...this.userForm.value };
       delete formData.confirmPassword;
       if (this.isEdit) {
-        this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ACCOUNT}/${this.selectedUser.user_id}`, formData).subscribe({
+        this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ACCOUNT}/${this.selectedUser.admin_id}`, formData).subscribe({
           next: (res: any) => {
             this.snackBar.open('Update successful!', 'Close', {
               duration: 3000,
@@ -177,8 +180,6 @@ export class Pharmacist {
     console.log(`Delete ${element.name} (ID: ${element.user_id})`);
     alert(`Deleting: ${element.name} (User ID: ${element.user_id})`);
   }
-
-  view: boolean = false;
 
   openUserDrawer() {
     console.log(this.selectedUser);
@@ -226,11 +227,12 @@ export class Pharmacist {
   }
 
   submitVerification() {
-    if (!this.selectedUser || !this.selectedUser?.user_id) {
+    console.log(this.selectedUser)
+    if (!this.selectedUser || !this.selectedUser?.admin_id) {
       this.snackBar.open('Admin id missing.', 'Close', { duration: 3000, panelClass: ['snackbar-error'] });
       return;
     }
-    const adminId = this.selectedUser?.user_id;
+    const adminId = this.selectedUser?.admin_id;
     const url = `${API_URL}${ENDPOINTS.UPDATE_VERIFICATION_ACCESS}/${adminId}/toggle-status`;
     this.submittingVerification = true;
 
@@ -238,10 +240,10 @@ export class Pharmacist {
       next: (res: any) => {
         this.submittingVerification = false;
         if (res.active === false) {
-          this.snackBar.open(`${this.selectedUser.originalUser.name} not Verified.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+          this.snackBar.open(`${this.selectedUser.name} not Verified.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
         }
         else {
-          this.snackBar.open(`${this.selectedUser.originalUser.name} Verified successfully.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+          this.snackBar.open(`${this.selectedUser.name} Verified successfully.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
         }
       },
       error: (err: any) => {
@@ -250,5 +252,35 @@ export class Pharmacist {
         this.snackBar.open('Failed to verified. Try again later.', 'Close', { duration: 4000, panelClass: ['snackbar-error'] });
       }
     });
+  }
+
+
+  openDialog(m: any) {
+    this.http.get(`${API_URL}${ENDPOINTS.GET_ADMIN_BY_ID}${this.selectedUser?.user_id}`).subscribe((res: any) => {
+      this.permission = res.canAddMedicine
+    });
+    const dialogRef = this.dialog.open(this.discountDialog, {
+      width: '400px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  updateMedicinePermission() {
+    let url = `${API_URL}${ENDPOINTS.UPDATE_MEDICINE_PERMISSION}${this.selectedUser.user_id}/toggle-medicine-permission`;
+    this.http.put(url, null).subscribe((res: any) => {
+      if (res.canAddMedicine === true) {
+        this.snackBar.open('Permission Granted', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+      }
+      else {
+        this.snackBar.open('Permission Denied', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+      }
+    },
+      (err: any) => {
+        console.error(err);
+        this.snackBar.open('Failed to give permission. Try again later.', 'Close', { duration: 4000, panelClass: ['snackbar-error'] });
+      })
   }
 }
