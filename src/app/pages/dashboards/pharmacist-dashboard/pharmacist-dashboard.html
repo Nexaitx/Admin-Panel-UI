@@ -11,13 +11,15 @@
                         <small class="text-muted mb-0 mt-1">Personal Info</small>
                     </mat-card-subtitle>
                 </mat-card-header>
-                <hr>
+                <hr class="mb-0">
                 <mat-card-content class="text-muted m-1">
-                    <small class="d-flex"><mat-icon> mail_outline</mat-icon>&nbsp;{{userProfile?.email || 'My
+                    <small class="d-flex"><mat-icon> mail_outline</mat-icon>&nbsp;{{myAccount?.email || 'My
                         Email'}}</small>
 
-                    <small class="d-flex mt-2"><mat-icon> phone</mat-icon>&nbsp;{{userProfile?.phoneNumber || 'My Phone
+                    <small class="d-flex"><mat-icon> phone</mat-icon>&nbsp;{{myAccount?.phoneNumber || 'My Phone
                         Number'}}</small>
+
+                        <small class="d-flex"><mat-icon> add_moderator</mat-icon>&nbsp;{{myAccount.pan ? 'PAN India' : 'Specific State/ City' }}</small>
                 </mat-card-content>
 
             </mat-card>
@@ -26,17 +28,81 @@
         <div class="col-md-8 mb-2">
             <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
                 <mat-card-header>
-                    <mat-card-title>Get Bookings</mat-card-title>
+                    <mat-card-title>Total Counts</mat-card-title>
                     <mat-card-subtitle>
-                        <small class="text-muted mb-0 mt-1">In Cart, Delivered and Orders on the Way</small>
+                        <small class="text-muted mb-0 mt-1">Prescribed Medicines, OTC Medicines, Total Medicines</small>
                     </mat-card-subtitle>
                 </mat-card-header>
                 <hr class="mb-0">
                 <mat-card-content class="example-card-footer m-1">
                     <ul>
-                        <li class="text-muted"> Total Products in Cart: 0 </li>
-                        <li class="text-muted"> Total Products on the Way: 5 </li>
-                        <li class="text-muted"> Total Delivered Products: 6</li>
+                        <li class="text-muted"> Total Prescribed Products : {{allMedicineCount?.medicineCount}} </li>
+                        <li class="text-muted"> Total OTC Products: {{allMedicineCount?.otcCount}}</li>
+                        <li class="text-muted"> Total Products : {{allMedicineCount?.totalProducts}} </li>
+                    </ul>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="col-md-6 mb-2">
+            <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>My Products</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">Products Manually Added by Me</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr class="mb-0">
+                <mat-card-content class="example-card-footer m-1">
+                    <ul>
+                        <li class="text-muted"> Total Products : {{medicineCountOfMyProduct?.totalProducts}} </li>
+                        <li class="text-muted"> Total Medicines : {{medicineCountOfMyProduct?.totalMedicines}} </li>
+                        <li class="text-muted"> Total Available Products:
+                            {{medicineCountOfMyProduct?.availableProducts}}</li>
+                        <li class="text-muted"> Total Unavailable Products :
+                            {{medicineCountOfMyProduct?.unavailableProducts}} </li>
+                        <li class="text-muted"> Total Inactive Medicine :
+                            {{medicineCountOfMyProduct?.inactiveMedicines}} </li>
+                        <li class="text-muted"> Total Discounted Products:
+                            {{medicineCountOfMyProduct?.discountedProducts}}</li>
+                        <li class="text-muted"> Total Managed Products :
+                            {{medicineCountOfMyProduct?.totalManagedProducts}} </li>
+                    </ul>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="col-md-6 mb-2">
+            <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>My Orders</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">Orders Statistics</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr class="mb-0">
+                <mat-card-content class="example-card-footer m-1">
+                    <ul>
+                        <li class="text-muted"> Total Cart Items : {{myOrders?.totalCartItems}} </li>
+                        <li class="text-muted"> Total otcCartItems:
+                            {{myOrders?.otcCartItems}}</li>
+                        <li class="text-muted"> Total medicineManagementItems :
+                            {{myOrders?.medicineManagementItems}} </li>
+                        <li class="text-muted"> Total totalCartValue :
+                            {{myOrders?.totalCartValue}} </li>
+                        <li class="text-muted"> Total totalOrders:
+                            {{myOrders?.totalOrders}}</li>
+                        <li class="text-muted"> Total pendingOrders :
+                            {{myOrders?.pendingOrders}} </li>
+                        <li class="text-muted"> Total confirmedOrders : {{myOrders?.confirmedOrders}} </li>
+                        <li class="text-muted"> Total shippedOrders : {{myOrders?.shippedOrders}} </li>
+                        <li class="text-muted"> Total deliveredOrders : {{myOrders?.deliveredOrders}} </li>
+                        <li class="text-muted"> Total cancelledOrders : {{myOrders?.cancelledOrders}} </li>
+                        <li class="text-muted"> Total paidOrders : {{myOrders?.paidOrders}} </li>
+                        <li class="text-muted"> Total pendingPaymentOrders : {{myOrders?.pendingPaymentOrders}} </li>
+                        <li class="text-muted"> Total recentOrders : {{myOrders?.recentOrders}} </li>
+                        <li class="text-muted"> Total totalOrderValue : {{myOrders?.totalOrderValue}} </li>
+                        <li class="text-muted"> Total totalActivities : {{myOrders?.totalActivities}} </li>
                     </ul>
                 </mat-card-content>
             </mat-card>
@@ -54,27 +120,27 @@
                 </mat-card-header>
                 <hr>
                 <mat-card-content class="text-muted m-3">
-<table mat-table [dataSource]="dataSource" class="bg-white">
-  <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
-    <th mat-header-cell *matHeaderCellDef>
-      {{column.header}}
-    </th>
-    <td mat-cell *matCellDef="let row">
-      <!-- special handling for showInApp column -->
-      <ng-container *ngIf="column.columnDef === 'showInApp'; else normalCell">
-        <mat-icon [ngClass]="row.showInApp ? 'icon-yes' : 'icon-no'">
-          {{ row.showInApp ? 'check' : 'close' }}
-        </mat-icon>
-      </ng-container>
-      <ng-template #normalCell>
-        {{ column.cell(row) }}
-      </ng-template>
-    </td>
-  </ng-container>
+                    <table mat-table [dataSource]="dataSource" class="bg-white">
+                        <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{column.header}}
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <!-- special handling for showInApp column -->
+                                <ng-container *ngIf="column.columnDef === 'showInApp'; else normalCell">
+                                    <mat-icon [ngClass]="row.showInApp ? 'icon-yes' : 'icon-no'">
+                                        {{ row.showInApp ? 'check' : 'close' }}
+                                    </mat-icon>
+                                </ng-container>
+                                <ng-template #normalCell>
+                                    {{ column.cell(row) }}
+                                </ng-template>
+                            </td>
+                        </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
 
                 </mat-card-content>
             </mat-card>

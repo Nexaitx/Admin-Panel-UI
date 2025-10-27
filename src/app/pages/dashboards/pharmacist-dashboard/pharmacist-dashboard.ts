@@ -88,7 +88,11 @@ export class PharmacistDashboard {
   ongoingBookings: any;
   accounts: [] = [];
   showAllDietPlans = false;
-  clientStaff: any;
+  allMedicineCount: any;
+  medicineStatusCount: any;
+  medicineCountOfMyProduct: any;
+  myAccount: any;
+  myOrders: any;
   router = inject(Router);
 
   constructor() {
@@ -147,8 +151,27 @@ export class PharmacistDashboard {
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
+
+    this.http.get(API_URL + ENDPOINTS.GET_LOGGED_IN_USER_DETAILS, { headers }).subscribe((res: any) => {
+      this.myAccount = res;
+    });
     this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers }).subscribe((res: any) => {
       this.dataSource.data = res.medicines;
+    });
+
+    this.http.get(API_URL + ENDPOINTS.GET_ALL_MEDICINES_COUNT).subscribe((res: any) => {
+      this.allMedicineCount = res;
+    });
+
+    this.http.get(API_URL + ENDPOINTS.GET_ORDERS_COUNT, { headers }).subscribe((res: any) => {
+      this.medicineStatusCount = res;
+    });
+
+    this.http.get(API_URL + ENDPOINTS.GET_COUNT_OF_MY_PRODUCTS, { headers }).subscribe((res: any) => {
+      this.medicineCountOfMyProduct = res;
+    });
+    this.http.get(API_URL + ENDPOINTS.GET_MY_ORDERS, { headers }).subscribe((res: any) => {
+      this.myOrders = res;
     });
   }
 

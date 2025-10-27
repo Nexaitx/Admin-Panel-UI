@@ -42,6 +42,7 @@ export const ENDPOINTS = {
     UPDATE_ACCOUNT: '/updateAccount',
     DELETE_ACCOUNT: '/deleteAccount/',
     GET_ACCOUNT_BY_ROLE: '/getAccountByRole',
+    GET_LOGGED_IN_USER_DETAILS: '/profile',
 
     // Get Bookings
     GET_PREVIOUS_BOOKINGS: '/getPastBookings',
@@ -83,6 +84,10 @@ export const ENDPOINTS = {
     // get pharmacy dashboard
     GET_CART_ITEM_COUNT: '/api/admin/cart/items/count',
     SUBMIT_KYC_DOCUMENTS: '/api/pharmacist/kyc-verification', //APIs are pending
+    GET_ALL_MEDICINES_COUNT: '/api/admin/dbmedicine/count',
+    GET_ORDERS_COUNT: '/api/admin/counts/orders',
+    GET_COUNT_OF_MY_PRODUCTS: '/api/admin/counts/my-products',
+    GET_MY_ORDERS: '/api/admin/counts/dashboard',
 
     // Pharmacy
     GET_ORDERS_IN_CART: '/api/admin/cart/items',
