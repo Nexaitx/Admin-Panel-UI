@@ -26,7 +26,8 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>phoneNumber</mat-label>
                         <input matInput formControlName="phoneNumber" placeholder="Enter phoneNumber" required>
-                        <mat-error *ngIf="basicForm.get('phoneNumber')?.hasError('required')">phoneNumber is required</mat-error>
+                        <mat-error *ngIf="basicForm.get('phoneNumber')?.hasError('required')">phoneNumber is
+                            required</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="full-width">
@@ -127,12 +128,9 @@
                             <mat-error *ngIf="addressForm.get('country')?.hasError('required')">Required</mat-error>
                         </mat-form-field>
                     </div>
-                    <!-- <div><span><u class="text-primary" (click)="openTermsDialog()">Terms & Conditions</u></span></div> -->
                     <div class="terms-section">
-                        <!-- <mat-checkbox formControlName="termsAccepted"> -->
                         <span> I accept the <a href="javascript:void(0)" (click)="openTermsDialog()">Terms &
                                 Conditions</a></span>
-                        <!-- </mat-checkbox> -->
                     </div>
 
                     <div class="step-actions">
@@ -140,8 +138,6 @@
                         <button mat-raised-button color="primary" (click)="submit()"
                             [disabled]="!termsAcceptedInDialog || addressForm.invalid || submitting">Submit</button>
                     </div>
-
-
                 </form>
             </mat-step>
 
