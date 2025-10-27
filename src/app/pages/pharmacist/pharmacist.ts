@@ -65,7 +65,7 @@ export class Pharmacist {
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
   permission: boolean = false;
-  displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'address', 'city', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'actions'];
 
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;
@@ -93,7 +93,6 @@ export class Pharmacist {
   onKeyPress(event: KeyboardEvent): void {
     const charCode = event.which ? event.which : event.keyCode;
     const phoneNumberControl = this.userForm.get('phoneNumber');
-    // Allow digits (0-9)
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
       event.preventDefault();
     }
@@ -105,7 +104,7 @@ export class Pharmacist {
   ngOnInit(): void {
     this.getAccounts();
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
-      const dataStr = `${data.name} ${data.email} ${data.phone} ${data.contact} ${data.aadhaar} ${data.address} ${data.city}`.toLowerCase();
+      const dataStr = `${data.name} ${data.email}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
