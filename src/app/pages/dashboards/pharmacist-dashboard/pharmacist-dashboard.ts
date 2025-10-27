@@ -9,24 +9,46 @@ import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
   ApexChart,
+  ApexAxisChartSeries,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexLegend,
   NgApexchartsModule,
   ChartComponent,
-} from "ng-apexcharts";
+} from 'ng-apexcharts';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
+import { catchError, of } from 'rxjs';
 
-export type ChartOptions = {
+export type RadialChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
   labels: string[];
   plotOptions: ApexPlotOptions;
 };
 
+export type PieChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  labels: string[];
+  dataLabels: ApexDataLabels;
+  legend: ApexLegend;
+};
+
+export type BarChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+};
+
 @Component({
   selector: 'app-pharmacist-dashboard',
-  imports: [RouterLink,
+  imports: [
+    RouterLink,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
@@ -34,21 +56,22 @@ export type ChartOptions = {
     MatIconModule,
     MatTooltipModule,
     MatTableModule,
-    CommonModule],
+    CommonModule,
+  ],
   templateUrl: './pharmacist-dashboard.html',
-  styleUrl: './pharmacist-dashboard.scss'
+  styleUrl: './pharmacist-dashboard.scss',
 })
 export class PharmacistDashboard {
-  http = inject(HttpClient)
-  clients: any;
-  staffs: any;
-  dietPlans: any;
-  doctors: any;
-  dieticians: any;
-  pharmacist: any;
+  http = inject(HttpClient);
+  router = inject(Router);
   userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
-  @ViewChild("chart") chart!: ChartComponent;
-  public chartOptions!: ChartOptions;
+  @ViewChild('radialChart') radialChart!: ChartComponent;
+  @ViewChild('pieChart') pieChart!: ChartComponent;
+  @ViewChild('barChart') barChart!: ChartComponent;
+
+  public radialChartOptions!: RadialChartOptions;
+  public pieChartOptions!: PieChartOptions;
+  public barChartOptions!: BarChartOptions;
 
   columns = [
     {
@@ -80,55 +103,85 @@ export class PharmacistDashboard {
       columnDef: 'showInApp',
       header: 'Show in App',
       cell: (element: any) => `${element.showInApp}`,
-    }
+    },
   ];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  displayedColumns = this.columns.map(c => c.columnDef);
+  displayedColumns = this.columns.map((c) => c.columnDef);
   showAll: boolean = false;
-  ongoingBookings: any;
-  accounts: [] = [];
-  showAllDietPlans = false;
   allMedicineCount: any;
-  medicineStatusCount: any;
   medicineCountOfMyProduct: any;
   myAccount: any;
   myOrders: any;
-  router = inject(Router);
+  showAllDietPlans: boolean = false;
+  dietPlans: any;
 
   constructor() {
-    this.chartOptions = {
+    // Radial Bar Chart for Medicine Counts
+    this.radialChartOptions = {
       series: [],
       chart: {
         height: 280,
-        type: "radialBar"
+        type: 'radialBar',
       },
       plotOptions: {
         radialBar: {
           dataLabels: {
-            name: {
-              fontSize: "22px"
-            },
+            name: { fontSize: '22px' },
             value: {
-              fontSize: "16px",
-              formatter: function (val: number) {
-                const opts: any = (arguments as any)[1];
-                const raw = opts && opts.w && opts.w.globals && opts.w.globals.series
-                  ? opts.w.globals.series[opts.seriesIndex]
-                  : val;
-                return (raw !== undefined && raw !== null) ? raw.toString() : val.toString();
-              }
+              fontSize: '16px',
+              formatter: (val: number) => {
+              const seriesValue = Number(val); // Convert val to number
+              console.log('Formatter - val:', val, 'seriesValue:', seriesValue); // Debug formatter
+              return Number.isFinite(seriesValue) ? seriesValue.toFixed(0) : '0';
+            },
             },
             total: {
               show: true,
-              label: "Total",
-              formatter: function (w) {
-                return "0";
-              }
-            }
-          }
-        }
+              label: 'Total',
+              formatter: () => {
+              const total = Number(this.allMedicineCount?.totalProducts) || 0;
+              return Number.isFinite(total) ? total.toFixed(0) : '0';
+            },
+            },
+          },
+        },
       },
-      labels: []
+      labels: [],
+    };
+
+    // Pie Chart and Bar Chart configurations remain unchanged
+    this.pieChartOptions = {
+      series: [],
+      chart: {
+        height: 280,
+        type: 'pie',
+      },
+      labels: [],
+      dataLabels: {
+        enabled: true,
+      },
+      legend: {
+        position: 'bottom',
+      },
+    };
+
+    this.barChartOptions = {
+      series: [],
+      chart: {
+        height: 280,
+        type: 'bar',
+      },
+      xaxis: {
+        categories: [],
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+        },
+      },
     };
   }
 
@@ -151,29 +204,121 @@ export class PharmacistDashboard {
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
-
     this.http.get(API_URL + ENDPOINTS.GET_LOGGED_IN_USER_DETAILS, { headers }).subscribe((res: any) => {
       this.myAccount = res;
     });
+
     this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers }).subscribe((res: any) => {
       this.dataSource.data = res.medicines;
     });
 
-    this.http.get(API_URL + ENDPOINTS.GET_ALL_MEDICINES_COUNT).subscribe((res: any) => {
+    this.http.get(API_URL + ENDPOINTS.GET_ALL_MEDICINES_COUNT, { headers }).subscribe((res: any) => {
       this.allMedicineCount = res;
+      this.updateRadialChart();
     });
-
-    this.http.get(API_URL + ENDPOINTS.GET_ORDERS_COUNT, { headers }).subscribe((res: any) => {
-      this.medicineStatusCount = res;
-    });
+    
 
     this.http.get(API_URL + ENDPOINTS.GET_COUNT_OF_MY_PRODUCTS, { headers }).subscribe((res: any) => {
       this.medicineCountOfMyProduct = res;
+      this.updatePieChart();
     });
+
     this.http.get(API_URL + ENDPOINTS.GET_MY_ORDERS, { headers }).subscribe((res: any) => {
       this.myOrders = res;
+      this.updateBarChart();
     });
   }
+
+ updateRadialChart() {
+    if (this.allMedicineCount) {
+      const series = [
+        Number(this.allMedicineCount.medicineCount) || 0,
+        Number(this.allMedicineCount.otcCount) || 0,
+        Number(this.allMedicineCount.totalProducts) || 0,
+      ];
+      console.log('updateRadialChart - series:', series); // Debug series values
+      this.radialChartOptions = {
+        ...this.radialChartOptions,
+        series: series,
+        labels: ['Prescribed Medicines', 'OTC Medicines', 'Total Products'],
+      };
+      console.log('Updating chart with options:', this.radialChartOptions); // Debug chart update
+      if (this.radialChart) {
+        this.radialChart.updateSeries(series, true); // Update series directly
+        this.radialChart.updateOptions(
+          {
+            labels: ['Prescribed Medicines', 'OTC Medicines', 'Total Products'],
+          },
+          true,
+          true
+        );
+      }
+    } else {
+      console.warn('allMedicineCount is undefined or null');
+      const series = [0, 0, 0];
+      this.radialChartOptions = {
+        ...this.radialChartOptions,
+        series: series,
+        labels: ['Prescribed Medicines', 'OTC Medicines', 'Total Products'],
+      };
+      if (this.radialChart) {
+        this.radialChart.updateSeries(series, true);
+        this.radialChart.updateOptions(
+          {
+            labels: ['Prescribed Medicines', 'OTC Medicines', 'Total Products'],
+          },
+          true,
+          true
+        );
+      }
+    }
+  }
+  updatePieChart() {
+    if (this.medicineCountOfMyProduct) {
+      this.pieChartOptions = {
+        ...this.pieChartOptions,
+        series: [
+          this.medicineCountOfMyProduct.totalProducts || 0,
+          this.medicineCountOfMyProduct.availableProducts || 0,
+          this.medicineCountOfMyProduct.unavailableProducts || 0,
+          this.medicineCountOfMyProduct.discountedProducts || 0,
+        ],
+        labels: ['Total Products', 'Available Products', 'Unavailable Products', 'Discounted Products'],
+      };
+    }
+  }
+
+  updateBarChart() {
+    if (this.myOrders) {
+      this.barChartOptions = {
+        ...this.barChartOptions,
+        series: [
+          {
+            name: 'Order Counts',
+            data: [
+              this.myOrders.totalOrders || 0,
+              this.myOrders.pendingOrders || 0,
+              this.myOrders.confirmedOrders || 0,
+              this.myOrders.shippedOrders || 0,
+              this.myOrders.deliveredOrders || 0,
+              this.myOrders.cancelledOrders || 0,
+            ],
+          },
+        ],
+        xaxis: {
+          categories: [
+            'Total Orders',
+            'Pending Orders',
+            'Confirmed Orders',
+            'Shipped Orders',
+            'Delivered Orders',
+            'Cancelled Orders',
+          ],
+        },
+      };
+    }
+  }
+
 
   toggleViewAll() {
     this.showAllDietPlans = !this.showAllDietPlans;
@@ -185,5 +330,4 @@ export class PharmacistDashboard {
     }
     return this.showAllDietPlans ? this.dietPlans : this.dietPlans.slice(0, 5);
   }
-
 }

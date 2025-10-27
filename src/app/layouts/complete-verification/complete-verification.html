@@ -9,7 +9,7 @@
         <h2>Pharmacist Verification</h2>
 
 
-        <mat-horizontal-stepper linear #stepper>
+        <mat-horizontal-stepper linear #stepper *ngIf="uploadProgress === null">
 
             <!-- STEP 1: Basic verification (you can add OTP verification outside this form) -->
             <mat-step [stepControl]="basicForm">
@@ -18,15 +18,15 @@
 
                     <mat-form-field appearance="outline" class="full-width my-2">
                         <mat-label>Full name</mat-label>
-                        <input matInput formControlName="fullName" placeholder="e.g. John Doe" required>
-                        <mat-error *ngIf="basicForm.get('fullName')?.hasError('required')">Full name is
+                        <input matInput formControlName="name" placeholder="e.g. John Doe" required>
+                        <mat-error *ngIf="basicForm.get('name')?.hasError('required')">Full name is
                             required</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Phone</mat-label>
-                        <input matInput formControlName="phone" placeholder="Enter phone" required>
-                        <mat-error *ngIf="basicForm.get('phone')?.hasError('required')">Phone is required</mat-error>
+                        <mat-label>phoneNumber</mat-label>
+                        <input matInput formControlName="phoneNumber" placeholder="Enter phoneNumber" required>
+                        <mat-error *ngIf="basicForm.get('phoneNumber')?.hasError('required')">phoneNumber is required</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="full-width">
@@ -36,7 +36,8 @@
                     </mat-form-field>
 
                     <div class="step-actions">
-                        <button mat-button matStepperNext [disabled]="basicForm.invalid">Next</button>
+                        <button mat-button matStepperNext>Next</button>
+                        <!-- <button mat-button matStepperNext [disabled]="basicForm.invalid">Next</button> -->
                     </div>
                 </form>
             </mat-step>
@@ -51,7 +52,8 @@
                     <!-- Drug / Pharmacy License -->
                     <div class="file-row">
                         <label>Drug / Pharmacy License <span class="required">*</span></label>
-                        <input type="file" formControlName="drugLicense" (change)="onFileSelected($event, 'license')" accept=".jpg,.jpeg,.png,.pdf" />
+                        <input type="file" formControlName="licenseFile" (change)="onFileSelected($event, 'license')"
+                            accept=".jpg,.jpeg,.png,.pdf" />
                         <div class="file-info" *ngIf="licenseName">Selected: {{ licenseName }}</div>
                         <mat-error *ngIf="documentsForm.get('license')?.hasError('required')">Drug License is
                             required</mat-error>
@@ -60,14 +62,16 @@
                     <!-- PAN or Aadhaar - user can upload either; we enforce at least one -->
                     <div class="file-row">
                         <label>PAN or Aadhaar (any one) <span class="required">*</span></label>
-                        <input type="file" formControlName="idProof" (change)="onFileSelected($event, 'id')" accept=".jpg,.jpeg,.png,.pdf" />
+                        <input type="file" formControlName="idProofFile" (change)="onFileSelected($event, 'id')"
+                            accept=".jpg,.jpeg,.png,.pdf" />
                         <div class="file-info" *ngIf="idName">Selected: {{ idName }}</div>
                         <!-- <mat-hint *ngIf="!idPresent">Upload either PAN or Aadhaar. You can upload both if available.</mat-hint> -->
                     </div>
 
                     <div class="step-actions">
                         <button mat-button matStepperPrevious>Back</button>
-                        <button mat-button matStepperNext [disabled]="!documentsForm.valid">Next</button>
+                        <button mat-button matStepperNext>Next</button>
+                        <!-- <button mat-button matStepperNext [disabled]="!documentsForm.valid">Next</button> -->
                     </div>
                 </form>
             </mat-step>
@@ -85,13 +89,13 @@
 
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Address line 1</mat-label>
-                        <input matInput formControlName="addressLine1" required>
-                        <mat-error *ngIf="addressForm.get('addressLine1')?.hasError('required')">Required</mat-error>
+                        <input matInput formControlName="address1" required>
+                        <mat-error *ngIf="addressForm.get('address1')?.hasError('required')">Required</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Address line 2</mat-label>
-                        <input matInput formControlName="addressLine2">
+                        <input matInput formControlName="address2">
                     </mat-form-field>
 
                     <div class="row-two">
@@ -123,21 +127,63 @@
                             <mat-error *ngIf="addressForm.get('country')?.hasError('required')">Required</mat-error>
                         </mat-form-field>
                     </div>
+                    <!-- <div><span><u class="text-primary" (click)="openTermsDialog()">Terms & Conditions</u></span></div> -->
+                    <div class="terms-section">
+                        <!-- <mat-checkbox formControlName="termsAccepted"> -->
+                        <span> I accept the <a href="javascript:void(0)" (click)="openTermsDialog()">Terms &
+                                Conditions</a></span>
+                        <!-- </mat-checkbox> -->
+                    </div>
 
                     <div class="step-actions">
                         <button mat-button matStepperPrevious>Back</button>
                         <button mat-raised-button color="primary" (click)="submit()"
-                            [disabled]="addressForm.invalid || submitting">Submit</button>
+                            [disabled]="!termsAcceptedInDialog || addressForm.invalid || submitting">Submit</button>
                     </div>
 
-                    <div class="upload-progress" *ngIf="uploadProgress !== null">
-                        <mat-progress-spinner mode="determinate" [value]="uploadProgress"></mat-progress-spinner>
-                        <div>{{ uploadProgress }}% uploaded</div>
-                    </div>
 
                 </form>
             </mat-step>
 
         </mat-horizontal-stepper>
+        <div class="upload-progress" *ngIf="uploadProgress !== null">
+            <mat-progress-spinner mode="determinate" [value]="uploadProgress"></mat-progress-spinner>
+            <div>{{ uploadProgress }}% uploaded</div>
+        </div>
     </mat-card>
+    <ng-template #termsDialog>
+        <h2 mat-dialog-title>Terms and Conditions</h2>
+        <mat-dialog-content>
+            <div class="terms-content">
+                <p><strong>Vitoxyz Pharmacy Terms and Conditions</strong></p>
+                <p>
+                    By registering as a pharmacist with Vitoxyz, you agree to the following terms and conditions:
+                </p>
+                <ul>
+                    <li>You must provide accurate and complete information during the verification process.</li>
+                    <li>All uploaded documents (e.g., Drug/Pharmacy License, PAN/Aadhaar) must be valid and authentic.
+                    </li>
+                    <li>Vitoxyz reserves the right to verify and approve your account based on the provided documents.
+                    </li>
+                    <li>You agree to comply with all applicable laws and regulations related to pharmacy operations in
+                        India.</li>
+                    <li>Any misuse of the platform may result in account suspension or termination.</li>
+                    <li>Vitoxyz is not liable for any errors in the information provided by you during registration.
+                    </li>
+                    <li>Your account will be activated only after successful verification by the Vitoxyz admin team.
+                    </li>
+                </ul>
+                <p>Please review these terms carefully before accepting.</p>
+                <mat-checkbox [(ngModel)]="termsAcceptedInDialog" color="primary">
+                    I accept the Terms and Conditions
+                </mat-checkbox>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-button (click)="dialog.closeAll()">Cancel</button>
+            <button mat-raised-button color="primary" (click)="dialog.closeAll()" [disabled]="!termsAcceptedInDialog">
+                Accept
+            </button>
+        </mat-dialog-actions>
+    </ng-template>
 </div>

@@ -1,10 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { Auth } from '../../core/services/auth';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient, HttpEventType } from '@angular/common/http';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient, HttpEventType, HttpHeaders } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatStepperModule } from '@angular/material/stepper';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @Component({
@@ -26,6 +28,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatProgressSpinnerModule,
     MatInputModule,
     MatFormFieldModule,
+    MatDialogModule,
+    FormsModule,
+    MatCheckboxModule
   ],
   templateUrl: './complete-verification.html',
   styleUrl: './complete-verification.scss'
@@ -52,38 +57,62 @@ export class CompleteVerification {
   submitting = false;
   uploadProgress: number | null = null;
   // replace with your real endpoint
-  private readonly API_UPLOAD_URL = '/api/pharmacist/kyc-verification';
+
+  public dialog = inject(MatDialog);
+  termsAcceptedInDialog: any = false;
+  @ViewChild('termsDialog') termsDialog!: TemplateRef<any>;
 
   constructor() {
     this.basicForm = this.fb.group({
-      fullName: ['', Validators.required],
-      phone: ['', Validators.required],
+      name: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
       email: ['', Validators.required]
     });
 
 
     this.documentsForm = this.fb.group({
-      drugLicense: [null, Validators.required],
-      idProof: [null],
+      licenseFile: [null, Validators.required],
+      idProofFile: [null],
     });
 
     this.addressForm = this.fb.group({
       pharmacyName: ['', Validators.required],
-      addressLine1: ['', Validators.required],
-      addressLine2: [''],
+      address1: ['', Validators.required],
+      address2: [''],
       city: ['', Validators.required],
       state: ['', Validators.required],
       pincode: ['', [Validators.required, Validators.pattern('[0-9]{6}')]],
-      country: ['India', Validators.required]
+      country: ['India', Validators.required],
+      termsAccepted: [false, Validators.required]
     });
   }
 
   ngOnInit() {
     let user = JSON.parse(localStorage.getItem('userProfile') || '{}');
-    console.log(user.active)
-    if(user.active === true) {
+    if (user.active === true) {
       this.router.navigate(['/app/pharmacist-dashboard']);
     }
+  }
+
+  openTermsDialog() {
+    this.termsAcceptedInDialog = this.addressForm.get('termsAccepted')?.value || false;
+    const dialogRef = this.dialog.open(this.termsDialog, {
+      width: '600px',
+      maxHeight: '80vh',
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.addressForm.get('termsAccepted')?.setValue(true);
+        this._snackBar.open('Terms and Conditions accepted.', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+        });
+      } else {
+        this.addressForm.get('termsAccepted')?.setValue(false);
+      }
+    });
   }
 
   onFileSelected(event: Event, which: 'license' | 'id') {
@@ -124,22 +153,34 @@ export class CompleteVerification {
       alert('Please complete required fields and upload the license.');
       return;
     }
-    // Build form data
-    const fd = new FormData();
-    fd.append('fullName', this.basicForm.get('fullName')?.value);
-    fd.append('phone', this.basicForm.get('phone')?.value);
-    fd.append('pharmacyName', this.addressForm.get('pharmacyName')?.value);
-    fd.append('addressLine1', this.addressForm.get('addressLine1')?.value);
-    fd.append('addressLine2', this.addressForm.get('addressLine2')?.value || '');
-    fd.append('city', this.addressForm.get('city')?.value);
-    fd.append('state', this.addressForm.get('state')?.value);
-    fd.append('pincode', this.addressForm.get('pincode')?.value);
-    fd.append('country', this.addressForm.get('country')?.value);
-    fd.append('licenseFile', this.licenseFile as Blob, (this.licenseFile as File).name);
-    if (this.idProofFile) fd.append('idProofFile', this.idProofFile as Blob, (this.idProofFile as File).name);
+   
+    let payload = {
+      name: this.basicForm.get('name')?.value,
+      phoneNumber: this.basicForm.get('phoneNumber')?.value,
+      email: this.basicForm.get('email')?.value,
+      pharmacyName: this.addressForm.get('pharmacyName')?.value,
+      address1: this.addressForm.get('address1')?.value,
+      address2: this.addressForm.get('address2')?.value,
+      city: this.addressForm.get('city')?.value,
+      state: this.addressForm.get('state')?.value,
+      pincode: this.addressForm.get('pincode')?.value,
+      country: this.addressForm.get('country')?.value,
+      termsAccepted: this.termsAcceptedInDialog,
+      licenseFile: this.documentsForm.get('licenseFile')?.value,
+      idProofFile: this.documentsForm.get('idProofFile')?.value
+    }
+
     this.submitting = true;
     this.uploadProgress = 0;
-    this.http.post(API_URL + ENDPOINTS.SUBMIT_KYC_DOCUMENTS, { fd }, {
+
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    this.http.post(API_URL + ENDPOINTS.SUBMIT_KYC_DOCUMENTS, payload, {
+      headers,
       reportProgress: true,
       observe: 'events'
     }).subscribe({
@@ -164,7 +205,6 @@ export class CompleteVerification {
           duration: 3000,
           panelClass: ['snackbar-error']
         });
-        this.router.navigate(['/verification-under-process']);
       }
     });
   }
