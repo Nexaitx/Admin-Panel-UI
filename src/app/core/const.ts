@@ -122,4 +122,7 @@ export const ENDPOINTS = {
     DELETE_ADDRESS: '/api/admin/addresses/',
     GET_ADDRESSES: '/api/admin/addresses',
 
+    // prescriptions
+    GET_PRESCRIPTIONS: '/api/admin/prescriptions',
+
 };

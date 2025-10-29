@@ -25,6 +25,12 @@ a:hover .material-icons {
   color: #fff !important;
 }
 
+@media (hover: none) {
+    .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover
+    {
+      background-color: #67d3d7;
+    }
+}
 .active-link span,
 a:hover span {
   color: #fff !important;
