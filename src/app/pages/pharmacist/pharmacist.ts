@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { API_URL, ENDPOINTS } from '../../core/const';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -71,7 +71,7 @@ export class Pharmacist {
   userForm: FormGroup;
   isEdit: boolean = false;
   submittingVerification: boolean = false;
-  toggleChecked: boolean = false;
+  toggleChecked: any = '';
   verification: boolean = false;
   dialog = inject(MatDialog);
   @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
@@ -225,33 +225,77 @@ export class Pharmacist {
     }
   }
 
-  submitVerification() {
-    console.log(this.selectedUser)
-    if (!this.selectedUser || !this.selectedUser?.admin_id) {
-      this.snackBar.open('Admin id missing.', 'Close', { duration: 3000, panelClass: ['snackbar-error'] });
-      return;
-    }
+ submitVerification() {
+    console.log(this.toggleChecked);
+    
+    // --- 1. Safely retrieve adminId and check for null/undefined ---
     const adminId = this.selectedUser?.admin_id;
-    const url = `${API_URL}${ENDPOINTS.UPDATE_VERIFICATION_ACCESS}/${adminId}/toggle-status`;
+
+    if (!adminId) {
+        // Re-enable the necessary safety check
+        this.snackBar.open('Admin ID is missing. Cannot proceed with update.', 'Close', { 
+            duration: 3000, 
+            panelClass: ['snackbar-error'] 
+        });
+        return;
+    }
+    
+    const newStatus = this.toggleChecked; // e.g., 'PENDING', 'VERIFIED', etc.
+
+    // --- 2. Define HttpHeaders (Crucial for Authorization) ---
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      // Assuming your backend expects a Bearer token
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    } else {
+        // If token is required but missing, stop and inform the user/console.
+        console.error('Authorization token is missing.');
+        this.snackBar.open('Authentication error. Please log in again.', 'Close', { duration: 3000, panelClass: ['snackbar-error'] });
+        return;
+    }
+
+    // --- 3. Define the query parameters using HttpParams (Already correct) ---
+    let params = new HttpParams().set('status', newStatus);
+    
+    // --- 4. Define the base URL (Already correct) ---
+    const url = `${API_URL}${ENDPOINTS.UPDATE_VERIFICATION_ACCESS}/${adminId}/update-status`;
+
     this.submittingVerification = true;
 
-    this.http.put(url, null).subscribe({
-      next: (res: any) => {
-        this.submittingVerification = false;
-        if (res.active === false) {
-          this.snackBar.open(`${this.selectedUser.name} not Verified.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+    // --- 5. Make the API call including both headers and parameters ---
+    this.http.put(url, null, { headers, params }).subscribe({
+        next: (res: any) => {
+            this.submittingVerification = false;
+            
+            // Adjusting success message logic to be clearer
+            if (newStatus === 'VERIFIED' || res.active === true) {
+                 this.snackBar.open(`${this.selectedUser.name} Verified successfully.`, 'Close', { 
+                     duration: 3000, 
+                     panelClass: ['snackbar-success'] 
+                 });
+            } else {
+                 this.snackBar.open(`${this.selectedUser.name} status set to ${newStatus}.`, 'Close', { 
+                     duration: 3000, 
+                     panelClass: ['snackbar-success'] 
+                 });
+            }
+            // Optionally reload user list or table here
+        },
+        error: (err: any) => {
+            console.error('API Error:', err);
+            this.submittingVerification = false;
+            
+            // Provide more detail on the error if possible (e.g., from error.message or error.status)
+            const errorMessage = err.error?.message || 'Failed to update verification status. Try again later.';
+
+            this.snackBar.open(errorMessage, 'Close', { 
+                duration: 5000, 
+                panelClass: ['snackbar-error'] 
+            });
         }
-        else {
-          this.snackBar.open(`${this.selectedUser.name} Verified successfully.`, 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
-        }
-      },
-      error: (err: any) => {
-        console.error(err);
-        this.submittingVerification = false;
-        this.snackBar.open('Failed to verified. Try again later.', 'Close', { duration: 4000, panelClass: ['snackbar-error'] });
-      }
     });
-  }
+}
 
 
   openDialog(m: any) {

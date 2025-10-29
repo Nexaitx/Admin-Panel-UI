@@ -1,20 +1,24 @@
-<div class="container-fluid d-flex justify-content-center mt-5">
-
-    <mat-card class="example-card w-50" appearance="outlined">
-
-        <mat-card-content>
-            <div class="d-flex justify-content-center align-items-center py-5 my-4">
-            <mat-icon>
-                history_toggle_off
-            </mat-icon>
-            <h1 class="ps-3">
-                KYC Process Under Review!
-            </h1>
-            </div>
-        </mat-card-content>
-        <mat-card-actions class="justify-content-center">
-            <button matButton="tonal" (click)="logout()">Login</button>
-        </mat-card-actions>
-    </mat-card>
-
+<div class="container-fluid">
+    <div class="logout text-end">
+        <button mat-icon-button (click)="logout()" class="logout" matTooltip="Logout" matTooltipPosition="below">
+            <mat-icon style="font-size: larger;">logout</mat-icon>
+        </button>
+    </div>
+    <div class="container-fluid d-flex justify-content-center mt-5">
+        <mat-card class="example-card w-50 pt-5" appearance="outlined">
+            <mat-card-content>
+                <div class="d-flex justify-content-center align-items-center pt-5 mt-4">
+                    <mat-icon>
+                        history_toggle_off
+                    </mat-icon>
+                    <h1 class="ps-3">
+                        KYC Process Under Review!
+                    </h1>
+                </div>
+                <h4 class="text-center mb-4">Documents submitted successfully! Waiting for admin review.</h4>
+            </mat-card-content>
+            <mat-card-actions class="justify-content-center">
+            </mat-card-actions>
+        </mat-card>
+    </div>
 </div>

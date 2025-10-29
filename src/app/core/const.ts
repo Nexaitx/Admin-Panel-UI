@@ -78,7 +78,7 @@ export const ENDPOINTS = {
     GET_SCHEDULED_CALL: '/getDietScheduleCall',
 
 
-    UPDATE_VERIFICATION_ACCESS: '/activestatus',
+    UPDATE_VERIFICATION_ACCESS: '/documentverification',
     GET_ADMIN_BY_ID: '/getAdminById/',
     UPDATE_MEDICINE_PERMISSION: '/api/admin-management/givepharmacist/',
     // get pharmacy dashboard

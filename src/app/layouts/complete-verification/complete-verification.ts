@@ -42,32 +42,23 @@ export class CompleteVerification {
   private http = inject(HttpClient);
   private _snackBar = inject(MatSnackBar);
 
-  documentsForm!: FormGroup;
   addressForm!: FormGroup;
-
-
-  // files storage
   licenseFile: File | null = null;
   idProofFile: File | null = null;
   licenseName = '';
   idName = '';
 
-  // upload state
   submitting = false;
   uploadProgress: number | null = null;
-  // replace with your real endpoint
 
   public dialog = inject(MatDialog);
   termsAcceptedInDialog: any = false;
   @ViewChild('termsDialog') termsDialog!: TemplateRef<any>;
 
   constructor() {
-    this.documentsForm = this.fb.group({
-      licenseFile: [null, Validators.required],
-      idProofFile: [null],
-    });
-
     this.addressForm = this.fb.group({
+       licenseFile: [null, Validators.required],
+      idProofFile: [null],
       pharmacyName: ['', Validators.required],
       address1: ['', Validators.required],
       address2: [''],
@@ -81,9 +72,18 @@ export class CompleteVerification {
 
   ngOnInit() {
     let user = JSON.parse(localStorage.getItem('userProfile') || '{}');
-    if (user.active === true) {
+    if(user.documentVerification === 'VERIFIED') {
       this.router.navigate(['/app/pharmacist-dashboard']);
     }
+    this.http.get(API_URL + ENDPOINTS.GET_ADMIN_BY_ID + user.admin_id ).subscribe((res: any)=> {
+      const response = res?.documentVerification;
+      if(response === 'PEDNING' || 'UNDER_REVIEW') {
+        this.router.navigate(['/verification-under-process']);
+      }
+      if(response === 'VERIFIED') {
+        this.router.navigate(['/app/pharmacist-dashboard']);
+      }
+    })
   }
 
   openTermsDialog() {
@@ -108,11 +108,12 @@ export class CompleteVerification {
   }
 
   onFileSelected(event: Event, which: 'license' | 'id') {
+    console.log(event);
     const input = event.target as HTMLInputElement;
+    console.log(event.target)
     if (!input.files || input.files.length === 0) return;
     const file = input.files[0];
-    // simple client-side validations
-    const maxBytes = 5 * 1024 * 1024; // 5MB
+    const maxBytes = 5 * 1024 * 1024;
     const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
     if (file.size > maxBytes) {
       alert('File too large. Max 5 MB');
@@ -127,36 +128,41 @@ export class CompleteVerification {
     if (which === 'license') {
       this.licenseFile = file;
       this.licenseName = file.name;
-      this.documentsForm.get('license')?.setValue(file);
+      this.addressForm.get('licenseFile')?.setValue(file.name);
     } else {
       this.idProofFile = file;
       this.idName = file.name;
-      this.documentsForm.get('id')?.setValue(file);
+
+      this.addressForm.get('idProofFile')?.setValue(file.name);
     }
   }
-  // enforce that at least license + one id (PAN/Aadhaar) present
   documentsUploaded(): boolean {
     return !!this.licenseFile && !!(this.idProofFile);
-    // If you'd like to accept either PAN OR Aadhaar, change above logic to allow either id.
   }
 
-  submit() {
+   submit() {
     if (this.addressForm.invalid || !this.licenseFile) {
       alert('Please complete required fields and upload the license.');
       return;
     }
-   
-    let payload = {
-      pharmacyName: this.addressForm.get('pharmacyName')?.value,
-      address1: this.addressForm.get('address1')?.value,
-      address2: this.addressForm.get('address2')?.value,
-      city: this.addressForm.get('city')?.value,
-      state: this.addressForm.get('state')?.value,
-      pincode: this.addressForm.get('pincode')?.value,
-      country: this.addressForm.get('country')?.value,
-      termsAccepted: this.termsAcceptedInDialog,
-      licenseFile: this.documentsForm.get('licenseFile')?.value,
-      idProofFile: this.documentsForm.get('idProofFile')?.value
+
+    const formData = new FormData();
+
+    formData.append('pharmacyName', this.addressForm.get('pharmacyName')?.value || '');
+    formData.append('address1', this.addressForm.get('address1')?.value || '');
+    formData.append('address2', this.addressForm.get('address2')?.value || '');
+    formData.append('city', this.addressForm.get('city')?.value || '');
+    formData.append('state', this.addressForm.get('state')?.value || '');
+    formData.append('pincode', this.addressForm.get('pincode')?.value || '');
+    formData.append('country', this.addressForm.get('country')?.value || '');
+    formData.append('termsAccepted', String(this.termsAcceptedInDialog)); // Convert boolean to string
+
+    if (this.licenseFile) {
+      formData.append('licenseFile', this.licenseFile, this.licenseName);
+    }
+
+    if (this.idProofFile) {
+      formData.append('idProofFile', this.idProofFile, this.idName);
     }
 
     this.submitting = true;
@@ -168,7 +174,8 @@ export class CompleteVerification {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
-    this.http.post(API_URL + ENDPOINTS.SUBMIT_KYC_DOCUMENTS, payload, {
+    // 5. Send the formData object instead of the JSON payload
+    this.http.post(API_URL + ENDPOINTS.SUBMIT_KYC_DOCUMENTS, formData, { // **KEY CHANGE: Use formData here**
       headers,
       reportProgress: true,
       observe: 'events'

@@ -79,11 +79,10 @@ export class Login {
             panelClass: ['snackbar-success']
           });
           const perm = res?.profile?.role?.permissions;
-          console.log(perm);
           if (perm.includes('Admin Dashboard')) {
             this.router.navigate(['/app/admin-dashboard']);
           }
-          else if (perm.includes('Pharmacist Dashboard') && res?.profile?.active === true) {
+          else if (perm.includes('Pharmacist Dashboard') && res?.profile?.documentVerification === 'VERIFIED') {
 
             this.router.navigate(['/app/pharmacist-dashboard']);
           }
@@ -93,14 +92,6 @@ export class Login {
           else {
             this.router.navigate(['/complete-verification']);
           }
-          // } else if (role === 'Doctor') {
-          // this.router.navigate(['/app/doctor-dashboard']); }
-
-          //  else if (role === 'Dietician') {
-          // this.router.navigate(['/app/dietician-dashboard']);
-          // } else {
-          // this.router.navigate(['/app/default-dashboard']);
-          // }
         }
       },
         error => {

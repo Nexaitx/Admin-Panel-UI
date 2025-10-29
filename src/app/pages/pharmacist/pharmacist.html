@@ -43,8 +43,16 @@
                 </div>
 
             </div>
-
-            <mat-slide-toggle [(ngModel)]="toggleChecked">Mark as verified</mat-slide-toggle>
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="toggleChecked">
+                    <mat-option value="PENDING">PENDING</mat-option>
+                    <mat-option value="UNDER_REVIEW">UNDER_REVIEW</mat-option>
+                    <mat-option value="VERIFIED">VERIFIED</mat-option>
+                    <mat-option value="CANCELLED">CANCELLED</mat-option>
+                </mat-select>
+            </mat-form-field>
+             <!-- <mat-slide-toggle [(ngModel)]="toggleChecked">Mark as verified</mat-slide-toggle> -->
             <div class="d-flex justify-content-between">
                 <button mat-button (click)="closeUserDrawer()">Close</button>
                 <button mat-raised-button color="primary" (click)="submitVerification()">
@@ -220,7 +228,8 @@
         </mat-dialog-content>
         <mat-dialog-actions align="end">
             <button mat-button mat-dialog-close>Cancel</button>
-            <button mat-flat-button color="primary" (click)="updateMedicinePermission(); dialog.closeAll()">Save</button>
+            <button mat-flat-button color="primary"
+                (click)="updateMedicinePermission(); dialog.closeAll()">Save</button>
         </mat-dialog-actions>
     </ng-template>
 </mat-drawer-container>
