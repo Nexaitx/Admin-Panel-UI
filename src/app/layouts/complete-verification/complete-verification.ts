@@ -42,7 +42,6 @@ export class CompleteVerification {
   private http = inject(HttpClient);
   private _snackBar = inject(MatSnackBar);
 
-  basicForm!: FormGroup;
   documentsForm!: FormGroup;
   addressForm!: FormGroup;
 
@@ -63,13 +62,6 @@ export class CompleteVerification {
   @ViewChild('termsDialog') termsDialog!: TemplateRef<any>;
 
   constructor() {
-    this.basicForm = this.fb.group({
-      name: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
-      email: ['', Validators.required]
-    });
-
-
     this.documentsForm = this.fb.group({
       licenseFile: [null, Validators.required],
       idProofFile: [null],
@@ -155,9 +147,6 @@ export class CompleteVerification {
     }
    
     let payload = {
-      name: this.basicForm.get('name')?.value,
-      phoneNumber: this.basicForm.get('phoneNumber')?.value,
-      email: this.basicForm.get('email')?.value,
       pharmacyName: this.addressForm.get('pharmacyName')?.value,
       address1: this.addressForm.get('address1')?.value,
       address2: this.addressForm.get('address2')?.value,

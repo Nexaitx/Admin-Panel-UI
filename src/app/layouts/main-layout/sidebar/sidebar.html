@@ -192,7 +192,11 @@
         </span>
     </a>
 
-    
+    <a *ngIf="hasPermission('Account')" mat-list-item routerLink="/app/account" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">group</mat-icon><span>Account</span>
+        </span>
+    </a>
 
     <a *ngIf="hasPermission('Roles')" mat-list-item routerLink="/app/roles" routerLinkActive="active-link">
         <span class="sidebar-item-content">

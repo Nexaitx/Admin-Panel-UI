@@ -112,7 +112,14 @@ export const ENDPOINTS = {
     UPDATE_DISCOUNT_MEDICINE: '/api/admin/medicines/toggle', // Update discount and get actual price / remove price
     GET_DISCOUNTED_MEDICINES: '/api/admin/medicine-reports/my-managed-with-details', // Get all discounted medicines
 
-    GET_SEARCH_OTC_MEDICINES: '/api/products/search', // search in otc medicines
-    GET_SEARCH_PRESCRIBED_MEDICINES: '/api/medicines/search', // search in prescribed/drug medicines
-    GET_SEARCH_MY_MEDICINES: '/api/medicines/search-by-name', // search in manually added medicines by pharma admin
+    GET_SEARCH_OTC_MEDICINES: '/api/products/search',
+    GET_SEARCH_PRESCRIBED_MEDICINES: '/api/medicines/search',
+    GET_SEARCH_MY_MEDICINES: '/api/medicines/search-by-name',
+
+    //Account
+    ADD_ADDRESS: '/api/admin/addresses',
+    UPDATE_ADDRESS: '/api/admin/addresses/',
+    DELETE_ADDRESS: '/api/admin/addresses/',
+    GET_ADDRESSES: '/api/admin/addresses',
+
 };

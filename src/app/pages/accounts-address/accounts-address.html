@@ -1,0 +1,146 @@
+<mat-drawer-container class="h-100">
+
+    <mat-drawer #drawer mode="over" class="w-75" position="end" [opened]="isDrawerOpen"
+        (closedStart)="onDrawerClosed()">
+        <div class="drawer-content p-3">
+            <h2> {{isEdit ? 'Update' : 'Add'}} Company Address</h2>
+            <form [formGroup]="addAddressForm" (ngSubmit)="onSubmit()">
+                <div class="row my-3">
+
+                    <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Company Name</mat-label>
+                        <input matInput formControlName="companyName" placeholder="Enter company name">
+                        <mat-error *ngIf="addAddressForm.get('companyName')?.hasError('required')">
+                            Company Name is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Company Address</mat-label>
+                        <textarea matInput formControlName="companyAddress"
+                            placeholder="Enter company address"></textarea>
+                        <mat-error *ngIf="addAddressForm.get('companyAddress')?.hasError('required')">
+                            Company Address is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>City</mat-label>
+                        <input matInput formControlName="city" placeholder="Enter city">
+                        <mat-error *ngIf="addAddressForm.get('city')?.hasError('required')">
+                            City is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>State</mat-label>
+                        <input matInput formControlName="state" placeholder="Enter state">
+                        <mat-error *ngIf="addAddressForm.get('state')?.hasError('required')">
+                            State is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Pincode</mat-label>
+                        <input matInput formControlName="pincode" placeholder="Enter pincode">
+                        <mat-error *ngIf="addAddressForm.get('pincode')?.hasError('required')">
+                            Pincode is required
+                        </mat-error>
+                        <mat-error *ngIf="addAddressForm.get('pincode')?.hasError('pattern')">
+                            Pincode must be numeric (5-10 digits)
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Address Type</mat-label>
+                        <mat-select formControlName="addressType">
+                            <mat-option value="Pharmacy">Pharmacy</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="addAddressForm.get('addressType')?.hasError('required')">
+                            Address Type is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-checkbox formControlName="isPrimary">Is Primary Address?</mat-checkbox>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                    <button mat-raised-button color="primary" type="button" (click)="closeDrawer()">Close</button>
+                    <button matButton="tonal" color="primary" [disabled]="!addAddressForm.valid">Save</button>
+                </div>
+            </form>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="toolbar d-flex align-items-baseline mb-2">
+            <mat-icon>filter_list</mat-icon>
+
+            <mat-form-field appearance="outline" class="mx-2 small-select">
+                <mat-label>Search Address</mat-label>
+                <input matInput (keyup)="applyCartFilter($event)" placeholder="Search by city, name, etc.">
+            </mat-form-field>
+
+            <button matButton="tonal" (click)="isEdit= false ;onOpen()">Create</button>
+
+            <mat-paginator class="ms-auto" #cartPaginator [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+
+        <section>
+            <table mat-table [dataSource]="addresses" matSort #cartSort="matSort">
+
+                <ng-container matColumnDef="companyName" sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Company Name </th>
+                    <td mat-cell *matCellDef="let item"> {{ item.companyName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="companyAddress">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Company Address </th>
+                    <td mat-cell *matCellDef="let item"> {{ item.companyAddress }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="pincode">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Pin Code </th>
+                    <td mat-cell *matCellDef="let item"> {{ item.pincode }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="addressType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Company Type </th>
+                    <td mat-cell *matCellDef="let item"> {{ item.addressType || 'N/A' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="adminName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Authorised Person </th>
+                    <td mat-cell *matCellDef="let item"> {{ item.adminName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="createdAt">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
+                    <td mat-cell *matCellDef="let item"> {{ item.createdAt | date: 'mediumDate' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions" sticky>
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #actionMenu="matMenu">
+                            <button mat-menu-item (click)="selectedRecord= element; isEdit= true; onOpen()">
+                                <mat-icon>edit</mat-icon>
+                                <span>Edit</span>
+                            </button>
+                            <button mat-menu-item (click)="deleteElement(element)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Delete</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="cartColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: cartColumns;"></tr>
+            </table>
+        </section>
+
+    </mat-drawer-content>
+</mat-drawer-container>

@@ -7,42 +7,7 @@
 
     <mat-card class="verif-card">
         <h2>Pharmacist Verification</h2>
-
-
         <mat-horizontal-stepper linear #stepper *ngIf="uploadProgress === null">
-
-            <!-- STEP 1: Basic verification (you can add OTP verification outside this form) -->
-            <mat-step [stepControl]="basicForm">
-                <form [formGroup]="basicForm">
-                    <ng-template matStepLabel>Basic Info</ng-template>
-
-                    <mat-form-field appearance="outline" class="full-width my-2">
-                        <mat-label>Full name</mat-label>
-                        <input matInput formControlName="name" placeholder="e.g. John Doe" required>
-                        <mat-error *ngIf="basicForm.get('name')?.hasError('required')">Full name is
-                            required</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>phoneNumber</mat-label>
-                        <input matInput formControlName="phoneNumber" placeholder="Enter phoneNumber" required>
-                        <mat-error *ngIf="basicForm.get('phoneNumber')?.hasError('required')">phoneNumber is
-                            required</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Email</mat-label>
-                        <input matInput formControlName="email" placeholder="Enter email" required>
-                        <mat-error *ngIf="basicForm.get('email')?.hasError('required')">Email is required</mat-error>
-                    </mat-form-field>
-
-                    <div class="step-actions">
-                        <button mat-button matStepperNext>Next</button>
-                        <!-- <button mat-button matStepperNext [disabled]="basicForm.invalid">Next</button> -->
-                    </div>
-                </form>
-            </mat-step>
-
             <mat-step [stepControl]="documentsForm">
                 <form [formGroup]="documentsForm">
                     <ng-template matStepLabel>Upload Documents</ng-template>
