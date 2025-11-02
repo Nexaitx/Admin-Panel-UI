@@ -124,5 +124,6 @@ export const ENDPOINTS = {
 
     // prescriptions
     GET_PRESCRIPTIONS: '/api/admin/prescriptions',
-
+    GET_PRESCRIPTION_STATUSES: '/api/admin/prescriptions/statuses',
+    UPDATE_PRESCRIPTION_STATUS: '/api/admin/prescriptions/', //{prescriptionId}/status
 };

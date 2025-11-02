@@ -48,12 +48,12 @@ export class Prescriptions {
   fb = inject(FormBuilder)
   prescriptions = new MatTableDataSource<any>([]);
   @ViewChild('drawer') drawer!: MatDrawer;
-  addAddressForm!: FormGroup;
+  prescriptionForm!: FormGroup;
   isDrawerOpen = false;
   selectedRecord: any;
   snackBar = inject(MatSnackBar);
   dialog = inject(MatDialog);
-  addressTypes: any;
+  statuses: any;
   isEdit: boolean = false;
 
   cartColumns: string[] = [
@@ -61,18 +61,14 @@ export class Prescriptions {
   ];
 
   constructor() {
-    this.addAddressForm = this.fb.group({
-      companyName: ['', Validators.required],
-      companyAddress: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      pincode: ['', [Validators.required, Validators.pattern('^[0-9]{5,10}$')]],
-      isPrimary: [false],
-      addressType: ['', Validators.required]
-    })
+    this.prescriptionForm = this.fb.group({
+      status: ['', Validators.required],
+      remarks: ['']
+    });
   }
 
   ngOnInit() {
+    this.getPrescriptionStatuses();
     this.getprescriptions();
   }
 
@@ -98,6 +94,18 @@ export class Prescriptions {
       this.prescriptions.data = res.data;
     });
   }
+
+  getPrescriptionStatuses() {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    this.http.get(API_URL + ENDPOINTS.GET_PRESCRIPTION_STATUSES, { headers }).subscribe((res: any) => {
+      this.statuses = res.data;
+    });
+  }
+
   applyCartFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.prescriptions.filter = filterValue.trim().toLowerCase();
@@ -109,7 +117,7 @@ export class Prescriptions {
 
   onOpen() {
     if (this.isEdit) {
-      this.addAddressForm.patchValue(this.selectedRecord);
+      this.prescriptionForm.patchValue(this.selectedRecord);
     }
     this.isDrawerOpen = true;
   }
@@ -124,7 +132,7 @@ export class Prescriptions {
 
   onSubmit() {
     console.log(this.selectedRecord)
-    if (this.addAddressForm.valid) {
+    if (this.prescriptionForm.valid) {
       const token = localStorage.getItem('token');
       let headers = new HttpHeaders();
       if (token) {
@@ -132,7 +140,7 @@ export class Prescriptions {
       }
 
       if (this.isEdit) {
-        this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ADDRESS}${this.selectedRecord?.id}`, this.addAddressForm.value, { headers }).subscribe((res: any) => {
+        this.http.put(`${API_URL}${ENDPOINTS.UPDATE_PRESCRIPTION_STATUS}${this.selectedRecord?.prescriptionId}/status`, this.prescriptionForm.value, { headers }).subscribe((res: any) => {
           this.getprescriptions();
           this.snackBar.open('Address succesfully Updated', 'Close', {
             duration: 3000,
@@ -148,8 +156,8 @@ export class Prescriptions {
         );
       }
       else {
-        this.http.post(API_URL + ENDPOINTS.ADD_ADDRESS, this.addAddressForm.value, { headers }).subscribe((res: any) => {
-          this.addAddressForm.reset();
+        this.http.post(API_URL + ENDPOINTS.ADD_ADDRESS, this.prescriptionForm.value, { headers }).subscribe((res: any) => {
+          this.prescriptionForm.reset();
           this.getprescriptions();
           this.snackBar.open('Company Address added successfully', 'Close', {
             duration: 3000,
