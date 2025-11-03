@@ -18,6 +18,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatRadioModule } from '@angular/material/radio';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-pharma-medicines',
@@ -35,7 +38,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     ReactiveFormsModule,
     MatMenuModule,
     MatDatepickerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatRadioModule,
+    MatCheckboxModule
   ],
   templateUrl: './pharma-medicines.html',
   styleUrl: './pharma-medicines.scss',
@@ -47,7 +52,9 @@ export class PharmaMedicines {
 
   @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild('discountDialog') discountDialog!: TemplateRef<any>; // Reference to dialog template
+  @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
+  @ViewChild('mrpDialog') mrpDialog!: TemplateRef<any>;
+  @ViewChild('availabilityDialog') availabilityDialog!: TemplateRef<any>;
 
   medicineForm!: FormGroup;
   discountForm!: FormGroup;
@@ -56,28 +63,25 @@ export class PharmaMedicines {
   editingMedicineId: number | null = null;
 
   locations = ['State A', 'State B', 'City C', 'City D'];
-
+  selection = new SelectionModel<any>(true, []);
   medicines: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [
-    's_no',
-    'breadcrumbs', 'countryOfOrigin', 'directionsForUse', 'expiration', 'id',
-    'imageUrls', 'information', 'keyBenefits', 'keyIngredients',
-    'manufacturerAddress', 'manufacturerDetails', 'manufacturers',
-    'marketerDetails', 'mrp', 'name', 'packageInfo', 'packaging',
-    'productForm', 'productHighlights', 'qty', 'safetyInformation', 'type', 'actions'
+    'select', 's_no',
+    'id',
+    'name', 'mrp', 'type',
+    'productForm', 'qty', 'actions'
   ];
 
   displayedManualMedicineColumns: string[] = [
-    's_no',
-    'medicineId', 'imageUrls', 'name', 'category', 'price', 'mrp',
-    'discountPercentage', 'quantityInStock', 'expiryDate', 'prescription_required',
-    'active', 'addedByPharmacistName', 'actions'
+    'select', 's_no',
+    'medicineId', 'name', 'category', 'price', 'mrp',
+    'discountPercentage', 'quantityInStock', 'active', 'actions'
   ];
 
 
   displayedDiscountedMedicineColumns: string[] = [
-    's_no',
+    'select', 's_no',
     'productId', 'productName', 'productType', 'originalPrice', 'discountPrice',
     'discountPercentage', 'isAvailable', 'managedAt', 'updatedAt', 'adminId',
     'adminName', 'adminEmail', 'adminPhoneNumber', 'adminCreatedAt', 'actions'
@@ -141,6 +145,27 @@ export class PharmaMedicines {
       this.onMedicineTypeChange(this.selectedMedicineType);
     });
   }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
 
   get images(): FormArray {
     return this.medicineForm.get('images') as FormArray;
@@ -667,6 +692,54 @@ export class PharmaMedicines {
         this.saveDiscount();
       }
     });
+  }
+
+  openAvailabilityDialog(m: any) {
+    this.selectedMedicine = m;
+    // this.discountForm.patchValue({
+    //   productId: m.productId || m.id,
+    //   productType: m.productType || m.type,
+    //   isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
+    //   discountPercentage: m.discountPercentage || 0
+    // });
+
+    const dialogRef = this.dialog.open(this.availabilityDialog, {
+      width: '400px',
+      // data: { form: this.discountForm }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // this.saveDiscount();
+      }
+    });
+  }
+
+  openMRPDialog(m: any) {
+    this.selectedMedicine = m;
+    // this.discountForm.patchValue({
+    //   productId: m.productId || m.id,
+    //   productType: m.productType || m.type,
+    //   isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
+    //   discountPercentage: m.discountPercentage || 0
+    // });
+
+    const dialogRef = this.dialog.open(this.mrpDialog, {
+      width: '400px',
+      // data: { form: this.discountForm }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // this.saveDiscount();
+      }
+    });
+  }
+
+  saveMRP() {
+  }
+
+  saveAvailability() {
   }
 
   saveDiscount() {

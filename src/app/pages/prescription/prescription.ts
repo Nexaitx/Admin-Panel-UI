@@ -79,8 +79,6 @@ export class Prescriptions {
     const numRows = this.prescriptions.data.length;
     return numSelected === numRows;
   }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
   toggleAllRows() {
     if (this.isAllSelected()) {
       this.selection.clear();
@@ -89,8 +87,6 @@ export class Prescriptions {
 
     this.selection.select(...this.prescriptions.data);
   }
-
-  /** The label for the checkbox on the passed row */
   checkboxLabel(row?: any): string {
     if (!row) {
       return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
