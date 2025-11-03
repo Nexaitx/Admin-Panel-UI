@@ -70,7 +70,7 @@ export class PharmaMedicines {
     'select', 's_no',
     'id',
     'name', 'mrp', 'type',
-    'productForm', 'qty', 'actions'
+    'productForm', 'actions'
   ];
 
   displayedManualMedicineColumns: string[] = [
