@@ -60,6 +60,7 @@ export class PharmaMedicines {
   medicines: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [
+    's_no',
     'breadcrumbs', 'countryOfOrigin', 'directionsForUse', 'expiration', 'id',
     'imageUrls', 'information', 'keyBenefits', 'keyIngredients',
     'manufacturerAddress', 'manufacturerDetails', 'manufacturers',
@@ -68,6 +69,7 @@ export class PharmaMedicines {
   ];
 
   displayedManualMedicineColumns: string[] = [
+    's_no',
     'medicineId', 'imageUrls', 'name', 'category', 'price', 'mrp',
     'discountPercentage', 'quantityInStock', 'expiryDate', 'prescription_required',
     'active', 'addedByPharmacistName', 'actions'
@@ -75,6 +77,7 @@ export class PharmaMedicines {
 
 
   displayedDiscountedMedicineColumns: string[] = [
+    's_no',
     'productId', 'productName', 'productType', 'originalPrice', 'discountPrice',
     'discountPercentage', 'isAvailable', 'managedAt', 'updatedAt', 'adminId',
     'adminName', 'adminEmail', 'adminPhoneNumber', 'adminCreatedAt', 'actions'

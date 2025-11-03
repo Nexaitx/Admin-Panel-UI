@@ -51,7 +51,7 @@ export class ClientIndividual {
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['userName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
+  displayedColumns: string[] = ['s_no', 'userName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
 
   @ViewChild(MatSort) sort!: MatSort;

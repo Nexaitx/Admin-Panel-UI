@@ -43,6 +43,7 @@ export class Staff {
   selectedStaff: any = null;
 
   displayedColumns: string[] = [
+    's_no',
     'staffId',
     'name',
     'category',

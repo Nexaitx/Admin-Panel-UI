@@ -49,6 +49,7 @@ export class Roles {
   @ViewChild('userDrawer') userDrawer!: MatDrawer;
 
   displayedColumns: string[] = [
+    's_no',
     'roleType',
     'actions'
   ];

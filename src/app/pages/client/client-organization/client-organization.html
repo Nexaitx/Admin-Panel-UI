@@ -36,6 +36,13 @@
     </div>
     <section class="tableScroll-container w-100" tabindex="0">
       <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="s_no" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+        
         <ng-container matColumnDef="organizationName" sticky="organizationName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
           <td mat-cell *matCellDef="let element"> {{element.organizationName}} </td>
@@ -49,7 +56,7 @@
         <ng-container matColumnDef="phoneNumber">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
           <td mat-cell *matCellDef="let element"> {{element?.phoneNumber}} </td>
-        </ng-container>       
+        </ng-container>
 
         <ng-container matColumnDef="address">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>

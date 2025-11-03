@@ -65,7 +65,7 @@ export class Pharmacist {
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
   permission: boolean = false;
-  displayedColumns: string[] = ['name', 'email', 'actions'];
+  displayedColumns: string[] = ['s_no', 'name', 'email', 'actions'];
 
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;

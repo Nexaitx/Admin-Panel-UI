@@ -55,6 +55,7 @@ export class SubscriptionPlan implements AfterViewInit {
   @ViewChild('userDrawer') userDrawer!: MatDrawer;
 
   displayedColumns: string[] = [
+    's_no',
     'planType',
     'tenure',
     'title',

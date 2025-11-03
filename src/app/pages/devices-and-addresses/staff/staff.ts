@@ -38,6 +38,7 @@ export class Staff {
   @Input() device: string = 'staffDevicesAndAddresses';
 
   displayedColumns: string[] = [
+    's_no',
     'staffId',
     'staffName',
     'ipAddress',

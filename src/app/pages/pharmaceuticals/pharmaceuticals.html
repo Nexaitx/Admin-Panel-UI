@@ -73,6 +73,12 @@
           </div>
           <section>
             <table mat-table [dataSource]="cartOrders" matSort #cartSort="matSort">
+              <ng-container matColumnDef="s_no" sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        {{ i + 1 }}
+                    </td>
+                </ng-container>
 
               <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Cart ID </th>
@@ -179,6 +185,12 @@
           <!-- Processed orders table -->
           <section>
             <table mat-table [dataSource]="processedOrders" matSort #processedSort="matSort">
+              <ng-container matColumnDef="s_no" sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        {{ i + 1 }}
+                    </td>
+                </ng-container>
               <!-- All original columns -->
               <ng-container matColumnDef="orderId" sticky="true">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Order ID </th>

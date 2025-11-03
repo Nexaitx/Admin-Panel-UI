@@ -18,6 +18,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
+import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-prescription',
@@ -55,9 +56,10 @@ export class Prescriptions {
   dialog = inject(MatDialog);
   statuses: any;
   isEdit: boolean = false;
+  selection = new SelectionModel<any>(true, []);
 
   cartColumns: string[] = [
-    'prescriptionId', 'medicineId', 'medicineName', 'medicineType', 'userId', 'userName', 'userPhoneNumber', 'address', 'actions'
+    'select', 's_no', 'prescriptionId', 'medicineId', 'medicineName', 'medicineType', 'userId', 'userName', 'userPhoneNumber', 'address', 'actions'
   ];
 
   constructor() {
@@ -71,6 +73,32 @@ export class Prescriptions {
     this.getPrescriptionStatuses();
     this.getprescriptions();
   }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.prescriptions.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.prescriptions.data);
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+
 
   getprescriptions() {
     const page = 0;

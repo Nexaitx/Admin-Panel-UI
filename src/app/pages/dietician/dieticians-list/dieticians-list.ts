@@ -56,7 +56,7 @@ export class DieticiansList {
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
 
-  displayedColumns: string[] = ['name', 'email', 'phone', 'contact', 'aadhaar', 'actions'];
+  displayedColumns: string[] = ['s_no', 'name', 'email', 'phone', 'contact', 'aadhaar', 'actions'];
 
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;

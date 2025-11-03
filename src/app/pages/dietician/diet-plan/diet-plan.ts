@@ -49,7 +49,7 @@ export class DietPlan {
   selectedValue: string = '';
   dietPlanForm: FormGroup;
 
-  displayedColumns: string[] = ['planType', 'title', 'dietPreference', 'gender', 'minAge', 'maxAge', 'activityLevel', 'active', 'actions'];
+  displayedColumns: string[] = ['s_no', 'planType', 'title', 'dietPreference', 'gender', 'minAge', 'maxAge', 'activityLevel', 'active', 'actions'];
 
   dietPlans: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 

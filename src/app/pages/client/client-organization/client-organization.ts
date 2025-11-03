@@ -48,7 +48,7 @@ export class ClientOrganization {
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['organizationName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
+  displayedColumns: string[] = ['s_no', 'organizationName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
 
   @ViewChild(MatSort) sort!: MatSort;

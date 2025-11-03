@@ -41,6 +41,7 @@ export class User {
   @Input() device: string = 'userDevicesAndAddresses';
 
   displayedColumns: string[] = [
+    's_no',
     'userId',
     'userName',
     'ipAddress',

@@ -231,6 +231,12 @@
     <section>
       @if(selectedMedicineType != 'manually-added-medicines' && !checkedToggle) {
       <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="s_no" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
         <ng-container matColumnDef="breadcrumbs" sticky>
           <th mat-header-cell *matHeaderCellDef>Breadcrumbs</th>
           <td mat-cell *matCellDef="let m">{{ m?.breadcrumbs }}</td>
@@ -342,6 +348,12 @@
       </table>
       } @else if (checkedToggle) {
       <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="s_no" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
         <ng-container matColumnDef="productId" sticky>
           <th mat-header-cell *matHeaderCellDef>Product ID</th>
           <td mat-cell *matCellDef="let m">{{ m?.productId }}</td>
@@ -419,7 +431,12 @@
       </table>
       } @else {
       <table mat-table [dataSource]="dataSource" matSort>
-
+        <ng-container matColumnDef="s_no" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
         <!-- ID -->
         <ng-container matColumnDef="medicineId">
           <th mat-header-cell *matHeaderCellDef>ID</th>
