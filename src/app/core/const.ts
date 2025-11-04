@@ -126,4 +126,10 @@ export const ENDPOINTS = {
     GET_PRESCRIPTIONS: '/api/admin/prescriptions',
     GET_PRESCRIPTION_STATUSES: '/api/admin/prescriptions/statuses',
     UPDATE_PRESCRIPTION_STATUS: '/api/admin/prescriptions/', //{prescriptionId}/status
+
+    // bulk/SINGLE update medicines
+    BULK_AVAILABILITY_TOGGLE: '/api/medicines/bulk-show-in-app', 
+    BULK_DISCOUNT: '/api/admin/medicines/bulk/discount',
+
+
 };

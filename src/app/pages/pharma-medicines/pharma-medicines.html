@@ -223,12 +223,13 @@
         Check Discounted Medicines
       </mat-slide-toggle>
 
-      <button class="col-md-2  col-sm-5 col-6" matButton="tonal" [disabled]="selection.selected.length===0">
+      <button class="col-md-2  col-sm-5 col-6" matButton="tonal" [disabled]="selection.selected.length===0"
+        (click)="openAvailabilityDialog()">
         Bulk Availability Update</button>
 
-      <button class="col-md-2 mx-2 col-sm-5 col-6" matButton="tonal" [disabled]="selection.selected.length===0">
+      <button class="col-md-2 mx-2 col-sm-5 col-6" matButton="tonal" [disabled]="selection.selected.length===0"
+        (click)="openDiscountDialog()">
         Bulk Discount Update</button>
-
 
     </div>
     <div class="d-flex justify-content-between">
@@ -275,7 +276,7 @@
         </ng-container> -->
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>Product ID</th>
-          <td mat-cell *matCellDef="let m">{{ m?.id  || m?.productId }} </td>
+          <td mat-cell *matCellDef="let m">{{ m?.id || m?.productId }} </td>
         </ng-container>
 
         <ng-container matColumnDef="name">
@@ -360,7 +361,7 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #actionsMenu="matMenu">
-              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog()">
                 <mat-icon>app_registration</mat-icon>
                 <span>Update Discount</span>
               </button>
@@ -370,7 +371,7 @@
                 <span>Update MRP</span>
               </button>
 
-              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog(m)">
+              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog()">
                 <mat-icon>offline_pin</mat-icon>
                 <span>Update Availability</span>
               </button>
@@ -465,7 +466,7 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #actionsMenu="matMenu">
-              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog()">
                 <mat-icon>app_registration</mat-icon>
                 <span>Update Discount</span>
               </button>
@@ -475,7 +476,7 @@
                 <span>Update MRP</span>
               </button>
 
-              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog(m)">
+              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog()">
                 <mat-icon>offline_pin</mat-icon>
                 <span>Update Availability</span>
               </button>
@@ -578,7 +579,7 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #actionsMenu="matMenu">
-              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog(m)">
+              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog()">
                 <mat-icon>app_registration</mat-icon>
                 <span>Update Discount</span>
               </button>
@@ -588,7 +589,7 @@
                 <span>Update MRP</span>
               </button>
 
-              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog(m)">
+              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog()">
                 <mat-icon>offline_pin</mat-icon>
                 <span>Update Availability</span>
               </button>
@@ -630,10 +631,6 @@
             Discount cannot exceed 100%
           </mat-error>
         </mat-form-field>
-
-        <mat-slide-toggle formControlName="isAvailable" class="mb-3">
-          Is Available
-        </mat-slide-toggle>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">

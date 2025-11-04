@@ -614,30 +614,6 @@ export class PharmaMedicines {
     });
   }
 
-  // toggleDiscountedMedicines(event: any) {
-  //   // Use the event.checked value directly to update the component property
-  //   this.checkedToggle = event.checked;
-
-  //   if (this.checkedToggle) { // Toggle is ON
-  //     this.selectedMedicineType = '';
-  //     const token = localStorage.getItem('token');
-  //     let headers = new HttpHeaders();
-  //     if (token) {
-  //       headers = headers.set('Authorization', `Bearer ${token}`);
-  //     }
-  //     this.dataSource.data = [];
-  //     this.http.get(`${API_URL + ENDPOINTS.GET_DISCOUNTED_MEDICINES}`, { headers })
-  //       .subscribe((data: any) => {
-  //         this.medicines = data || [];
-  //         this.dataSource.data = this.medicines;
-  //       });
-  //   } else { // Toggle is OFF
-  //     // If the toggle is turned off, revert to the default manually-added medicines view
-  //     // or whatever was last selected/should be the default
-  //     const lastSelectedType = this.selectedMedicineType || 'manually-added-medicines';
-  //     this.onMedicineTypeChange(lastSelectedType);
-  //   }
-  // }
   toggleDiscountedMedicines(event: any) {
     const checked = event.checked;
     this.checkedToggle = checked;
@@ -664,7 +640,6 @@ export class PharmaMedicines {
             this.paginator.length = data.totalElements;
           }
         }, error => {
-          console.error('Error fetching discounted medicines:', error);
           this.showError('Failed to load discounted medicines');
         });
     } else {
@@ -673,14 +648,14 @@ export class PharmaMedicines {
     }
   }
 
-  openDiscountDialog(m: any) {
-    this.selectedMedicine = m;
-    this.discountForm.patchValue({
-      productId: m.productId || m.id,
-      productType: m.productType || m.type,
-      isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
-      discountPercentage: m.discountPercentage || 0
-    });
+  openDiscountDialog() {
+    // this.selectedMedicine = m;
+    // this.discountForm.patchValue({
+    //   productId: m.productId || m.id,
+    //   productType: m.productType || m.type,
+    //   isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
+    //   discountPercentage: m.discountPercentage || 0
+    // });
 
     const dialogRef = this.dialog.open(this.discountDialog, {
       width: '400px',
@@ -694,44 +669,26 @@ export class PharmaMedicines {
     });
   }
 
-  openAvailabilityDialog(m: any) {
-    this.selectedMedicine = m;
-    // this.discountForm.patchValue({
-    //   productId: m.productId || m.id,
-    //   productType: m.productType || m.type,
-    //   isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
-    //   discountPercentage: m.discountPercentage || 0
-    // });
-
+  openAvailabilityDialog() {
     const dialogRef = this.dialog.open(this.availabilityDialog, {
       width: '400px',
-      // data: { form: this.discountForm }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // this.saveDiscount();
+        this.saveAvailability();
       }
     });
   }
 
   openMRPDialog(m: any) {
-    this.selectedMedicine = m;
-    // this.discountForm.patchValue({
-    //   productId: m.productId || m.id,
-    //   productType: m.productType || m.type,
-    //   isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
-    //   discountPercentage: m.discountPercentage || 0
-    // });
-
     const dialogRef = this.dialog.open(this.mrpDialog, {
       width: '400px',
-      // data: { form: this.discountForm }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // this.saveDiscount();
+        this.saveMRP();
       }
     });
   }
@@ -740,6 +697,20 @@ export class PharmaMedicines {
   }
 
   saveAvailability() {
+    const medId = this.selection?.selected.map(med => med.productId || med.medicineId || med.id);
+    let payload = {
+      showInApp: true,
+      id: medId
+    }
+    console.log('Payload for availability toggle:', payload);
+    // this.http.post(`${API_URL}${ENDPOINTS.BULK_AVAILABILITY_TOGGLE}`, payload)
+    //   .subscribe(response => {
+    //     this.dataSource.data = this.medicines;
+    //     this.showSuccess('Availability updated successfully');
+    //   }, error => {
+    //     console.error('Error updating availability:', error);
+    //     this.showError('Failed to update availability');
+    //   });
   }
 
   saveDiscount() {
@@ -752,20 +723,19 @@ export class PharmaMedicines {
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
+    const medId = this.selection?.selected.map(med => med.productId || med.medicineId || med.id);
 
     const payload = {
-      productId: this.selectedMedicine?.productId || this.selectedMedicine?.medicineId,
-      productType: null,
-      isAvailable: this.discountForm.value.isAvailable,
+      productId: medId,
       discountPercentage: this.discountForm.value.discountPercentage
     };
-    this.http.post(`${API_URL}${ENDPOINTS.UPDATE_DISCOUNT_MEDICINE}`, payload, { headers })
+    console.log('Payload for discount update:', payload);
+    this.http.post(`${API_URL}${ENDPOINTS.BULK_DISCOUNT}`, payload, { headers })
       .subscribe(response => {
         this.toggleDiscountedMedicines({ checked: true });
         this.dataSource.data = this.medicines;
         this.showSuccess('Discount updated successfully');
       }, error => {
-        console.error('Error updating discount:', error);
         this.showError('Failed to update discount');
       });
   }
