@@ -150,6 +150,16 @@
                     <mat-icon>healing</mat-icon><span>Medicines</span>
                 </span>
             </a>
+             <a mat-list-item routerLink="/app/pharmaceutical/medicines" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>healing</mat-icon><span>My Available Medicine</span>
+                </span>
+            </a>
+             <a mat-list-item routerLink="/app/pharmaceutical/medicines" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>healing</mat-icon><span>Other Pharmacy Prod</span>
+                </span>
+            </a>
         </mat-nav-list>
     </mat-expansion-panel>
 
@@ -191,6 +201,7 @@
             <mat-icon>pin_drop</mat-icon><span>Orders Locate</span>
         </span>
     </a>
+
     <a *ngIf="hasPermission('Prescriptions')" mat-list-item routerLink="/app/prescription"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">

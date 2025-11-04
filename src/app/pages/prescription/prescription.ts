@@ -94,8 +94,6 @@ export class Prescriptions {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
-
-
   getprescriptions() {
     const page = 0;
     const size = 10;
@@ -166,16 +164,15 @@ export class Prescriptions {
       if (this.isEdit) {
         this.http.put(`${API_URL}${ENDPOINTS.UPDATE_PRESCRIPTION_STATUS}${this.selectedRecord?.prescriptionId}/status`, this.prescriptionForm.value, { headers }).subscribe((res: any) => {
           this.getprescriptions();
-          this.snackBar.open('Address succesfully Updated', 'Close', {
+          this.snackBar.open('Prescription Status successfully Updated', 'Close', {
             duration: 3000,
             panelClass: ['snackbar-success']
           });
         },
           err =>
-            this.snackBar.open('Failed to update Address', 'Close', {
+            this.snackBar.open('Failed to update Prescription Status', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-error']
-
             })
         );
       }
@@ -183,7 +180,7 @@ export class Prescriptions {
         this.http.post(API_URL + ENDPOINTS.ADD_ADDRESS, this.prescriptionForm.value, { headers }).subscribe((res: any) => {
           this.prescriptionForm.reset();
           this.getprescriptions();
-          this.snackBar.open('Company Address added successfully', 'Close', {
+          this.snackBar.open('Prescription Status added successfully', 'Close', {
             duration: 3000,
             panelClass: ['snackbar-success']
           });
@@ -191,7 +188,7 @@ export class Prescriptions {
       }
     }
     else {
-      this.snackBar.open('Failed to add Address', 'Close', {
+      this.snackBar.open('Failed to add Prescription Status', 'Close', {
         duration: 3000,
         panelClass: ['snackbar-error']
       });
@@ -203,7 +200,7 @@ export class Prescriptions {
       width: '400px',
       data: {
         title: 'Confirm Delete',
-        message: `Are you sure you want to delete Address?`,
+        message: `Are you sure you want to delete Prescription Status?`,
         cancelButtonText: 'Cancel',
         confirmButtonText: 'Delete'
       }
@@ -219,12 +216,12 @@ export class Prescriptions {
         this.http.delete(`${API_URL + ENDPOINTS.DELETE_ADDRESS}${m?.id}`, { headers })
           .subscribe(() => {
             this.prescriptions.data = this.prescriptions.data.filter(x => x?.medicineId !== m?.medicineId);
-            this.snackBar.open('Company Address deleted successfully', 'Close', {
+            this.snackBar.open('Prescription deleted successfully', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-success']
             });
           }, error => {
-            this.snackBar.open('Failed to Address', 'Close', {
+            this.snackBar.open('Failed to delete Prescription', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-error']
             });

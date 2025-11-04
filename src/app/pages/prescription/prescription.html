@@ -4,6 +4,10 @@
         (closedStart)="onDrawerClosed()">
         <div class="drawer-content p-3">
             <h2> Verify Prescription</h2>
+
+            <div>
+                <img [src]="this.selectedRecord?.fileUrl" alt="">
+            </div>
             <form [formGroup]="prescriptionForm" (ngSubmit)="onSubmit()">
                 <div class="row my-3">
                     <div>

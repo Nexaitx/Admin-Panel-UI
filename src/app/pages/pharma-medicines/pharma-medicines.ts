@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -21,6 +21,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-pharma-medicines',
@@ -40,7 +41,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatDatepickerModule,
     MatDialogModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule,
+    FormsModule
   ],
   templateUrl: './pharma-medicines.html',
   styleUrl: './pharma-medicines.scss',
@@ -66,26 +69,28 @@ export class PharmaMedicines {
   selection = new SelectionModel<any>(true, []);
   medicines: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = [
-    'select', 's_no',
-    'id',
-    'name', 'mrp', 'type',
-    'productForm', 'actions'
-  ];
+  editingRow: any = null;
+
+  // displayedColumns: string[] = [
+  //   'select', 's_no',
+  //   'id',
+  //   'name', 'mrp', 'type',
+  //   'productForm', 'actions'
+  // ];
 
   displayedManualMedicineColumns: string[] = [
     'select', 's_no',
-    'medicineId', 'name', 'category', 'price', 'mrp',
-    'discountPercentage', 'quantityInStock', 'active', 'actions'
+    'medicineId', 'name', 'category', 'quantityInStock', 'mrp',
+    'discountPercentage',  'price', 'active', 'actions'
   ];
 
 
-  displayedDiscountedMedicineColumns: string[] = [
-    'select', 's_no',
-    'productId', 'productName', 'productType', 'originalPrice', 'discountPrice',
-    'discountPercentage', 'isAvailable', 'managedAt', 'updatedAt', 'adminId',
-    'adminName', 'adminEmail', 'adminPhoneNumber', 'adminCreatedAt', 'actions'
-  ];
+  // displayedDiscountedMedicineColumns: string[] = [
+  //   'select', 's_no',
+  //   'productId', 'productName', 'productType', 'originalPrice', 'discountPrice',
+  //   'discountPercentage', 'isAvailable', 'managedAt', 'updatedAt', 'adminId',
+  //   'adminName', 'adminEmail', 'adminPhoneNumber', 'adminCreatedAt', 'actions'
+  // ];
 
   http = inject(HttpClient);
   dialog = inject(MatDialog);
@@ -145,6 +150,22 @@ export class PharmaMedicines {
       this.onMedicineTypeChange(this.selectedMedicineType);
     });
   }
+
+  onEdit(row: any) {
+  this.editingRow = row;
+  this.selectedMedicine = row;
+  // maybe patch form here if you’re using a form
+  // this.prescriptionForm.patchValue({...row});
+}
+
+onSave(row: any) {
+  // if (this.prescriptionForm.valid) {
+    // call your update logic here (API, etc)
+    // after save success:
+    this.editingRow = null;
+    // this.getprescriptions();  // refresh data
+  }
+// }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;

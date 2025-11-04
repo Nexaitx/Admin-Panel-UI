@@ -1,6 +1,5 @@
 <mat-drawer-container class="med-container" autosize>
   <mat-drawer class="w-75 p-4" #drawer mode="over" position="end" [disableClose]="false">
-    <!-- <div class="drawer-form"> -->
     <h3>{{ editing ? 'Edit Medicine Request' : 'Add Medicine Request' }}</h3>
     <form [formGroup]="medicineForm" (ngSubmit)="onSubmit()">
       <div class="row">
@@ -195,27 +194,27 @@
         </button>
       </div>
     </form>
-    <!-- </div> -->
   </mat-drawer>
 
   <mat-drawer-content>
     <div class="row mt-2">
-      <!-- <div class="col-md-1">
-        <mat-icon>filter_list</mat-icon>
-      </div> -->
-      <mat-form-field appearance="outline" class="small-select col-md-3">
+      <mat-form-field appearance="outline" class="small-select col-md-2">
         <mat-label>Select Orders</mat-label>
         <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
           <mat-option value="" disabled>Select Medicine Type</mat-option>
-          <mat-option value="manually-added-medicines">Manually Added Medicines</mat-option>
+          <mat-option value="manually-added-medicines">Ethical Medicines</mat-option>
           <mat-option value="otc">OTC Medicines</mat-option>
           <mat-option value="medicines">Generic Medicines</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-2 small-select">
-        <mat-label>Search Orders</mat-label>
-        <input matInput (keyup)="applySearchFilter($event)" placeholder="Search by medicine">
+      <mat-form-field appearance="outline" class="small-select col-md-2">
+        <mat-label>Select Availability</mat-label>
+        <mat-select>
+          <mat-option value="" disabled>Select Availability</mat-option>
+          <mat-option value="true">Available medicines</mat-option>
+          <mat-option value="false">Non Available medicines</mat-option>
+        </mat-select>
       </mat-form-field>
 
       <mat-slide-toggle class="col-md-2 col-sm-5 col-6 mb-3" [checked]="checkedToggle"
@@ -233,260 +232,19 @@
 
     </div>
     <div class="d-flex justify-content-between">
-      <button class="" matButton="tonal" (click)="editing = false; openCreate()">
-        Add Medicine request</button>
+      <div>
+        <button class="" matButton="tonal" (click)="editing = false; openCreate()">
+          Add Medicine request</button>
+
+        <mat-form-field appearance="outline" class="ms-2">
+          <mat-label>Search Orders</mat-label>
+          <input matInput (keyup)="applySearchFilter($event)" placeholder="Search by medicine">
+        </mat-form-field>
+      </div>
+
       <mat-paginator [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons></mat-paginator>
     </div>
     <section>
-      @if(selectedMedicineType != 'manually-added-medicines' && !checkedToggle) {
-      <table mat-table [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="select" sticky>
-          <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? toggleAllRows() : null" [checked]="selection.hasValue() && isAllSelected()"
-              [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-            </mat-checkbox>
-          </th>
-          <td mat-cell *matCellDef="let row" sticky>
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-              [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
-            </mat-checkbox>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="s_no" sticky>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
-          <td mat-cell *matCellDef="let element; let i = index">
-            {{ i + 1 }}
-          </td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="breadcrumbs" sticky>
-          <th mat-header-cell *matHeaderCellDef>Breadcrumbs</th>
-          <td mat-cell *matCellDef="let m">{{ m?.breadcrumbs }}</td>
-        </ng-container>
-        <ng-container matColumnDef="countryOfOrigin">
-          <th mat-header-cell *matHeaderCellDef>Country of Origin</th>
-          <td mat-cell *matCellDef="let m">{{ m?.countryOfOrigin }}</td>
-        </ng-container>
-        <ng-container matColumnDef="directionsForUse">
-          <th mat-header-cell *matHeaderCellDef>Directions For Use</th>
-          <td mat-cell *matCellDef="let m">{{ m?.directionsForUse }}</td>
-        </ng-container>
-        <ng-container matColumnDef="expiration">
-          <th mat-header-cell *matHeaderCellDef>Expiration</th>
-          <td mat-cell *matCellDef="let m">{{ m?.expiration }}</td>
-        </ng-container> -->
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>Product ID</th>
-          <td mat-cell *matCellDef="let m">{{ m?.id || m?.productId }} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Medicine Name</th>
-          <td mat-cell *matCellDef="let m">{{ m?.name || m?.productName }}</td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="imageUrls">
-          <th mat-header-cell *matHeaderCellDef>Images</th>
-          <td mat-cell *matCellDef="let m">
-            <ng-container *ngFor="let url of m?.imageUrls">
-              <img [src]="url" alt="image" width="50" style="margin-right:4px;" />
-            </ng-container>
-          </td>
-        </ng-container> 
-       <ng-container matColumnDef="information">
-          <th mat-header-cell *matHeaderCellDef>Information</th>
-          <td mat-cell *matCellDef="let m">{{ m?.information }}</td>
-        </ng-container>
-         <ng-container matColumnDef="keyBenefits">
-          <th mat-header-cell *matHeaderCellDef>Key Benefits</th>
-          <td mat-cell *matCellDef="let m">{{ m?.keyBenefits }}</td>
-        </ng-container> 
-        <ng-container matColumnDef="keyIngredients">
-          <th mat-header-cell *matHeaderCellDef>Key Ingredients</th>
-          <td mat-cell *matCellDef="let m">{{ m?.keyIngredients }}</td>
-        </ng-container>
-        <ng-container matColumnDef="manufacturerAddress">
-          <th mat-header-cell *matHeaderCellDef>Manufacturer Address</th>
-          <td mat-cell *matCellDef="let m">{{ m?.manufacturerAddress }}</td>
-        </ng-container>
-        <ng-container matColumnDef="manufacturerDetails">
-          <th mat-header-cell *matHeaderCellDef>Manufacturer Details</th>
-          <td mat-cell *matCellDef="let m">{{ m?.manufacturerDetails }}</td>
-        </ng-container>
-        <ng-container matColumnDef="manufacturers">
-          <th mat-header-cell *matHeaderCellDef>Manufacturers</th>
-          <td mat-cell *matCellDef="let m">{{ m?.manufacturers }}</td>
-        </ng-container>
-        <ng-container matColumnDef="marketerDetails">
-          <th mat-header-cell *matHeaderCellDef>Marketer Details</th>
-          <td mat-cell *matCellDef="let m">{{ m?.marketerDetails }}</td>
-        </ng-container> -->
-        <ng-container matColumnDef="mrp">
-          <th mat-header-cell *matHeaderCellDef>MRP</th>
-          <td mat-cell *matCellDef="let m">{{ m?.mrp }}</td>
-        </ng-container>
-
-        <!-- <ng-container matColumnDef="packageInfo">
-          <th mat-header-cell *matHeaderCellDef>Package Info</th>
-          <td mat-cell *matCellDef="let m">{{ m?.packageInfo }}</td>
-        </ng-container>
-        <ng-container matColumnDef="packaging">
-          <th mat-header-cell *matHeaderCellDef>Packaging</th>
-          <td mat-cell *matCellDef="let m">{{ m?.packaging }}</td>
-        </ng-container> -->
-
-        <!-- <ng-container matColumnDef="productHighlights">
-          <th mat-header-cell *matHeaderCellDef>Product Highlights</th>
-          <td mat-cell *matCellDef="let m">{{ m?.productHighlights }}</td>
-        </ng-container> -->
-
-        <!-- <ng-container matColumnDef="safetyInformation">
-          <th mat-header-cell *matHeaderCellDef>Safety Information</th>
-          <td mat-cell *matCellDef="let m">{{ m?.safetyInformation }}</td>
-        </ng-container> -->
-        <ng-container matColumnDef="productForm">
-          <th mat-header-cell *matHeaderCellDef>Product Form</th>
-          <td mat-cell *matCellDef="let m">{{ m?.productForm }}</td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef>Quantity</th>
-          <td mat-cell *matCellDef="let m">{{ m?.qty }}</td>
-        </ng-container> -->
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let m">{{ m?.type || m?.medicineType }}</td>
-        </ng-container>
-        <ng-container matColumnDef="actions" stickyEnd>
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let m">
-            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #actionsMenu="matMenu">
-              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog()">
-                <mat-icon>app_registration</mat-icon>
-                <span>Update Discount</span>
-              </button>
-
-              <button mat-menu-item (click)="selectedMedicine = m; openMRPDialog(m)">
-                <mat-icon>currency_rupee</mat-icon>
-                <span>Update MRP</span>
-              </button>
-
-              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog()">
-                <mat-icon>offline_pin</mat-icon>
-                <span>Update Availability</span>
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      } @else if (checkedToggle) {
-      <table mat-table [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="select" sticky>
-          <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? toggleAllRows() : null" [checked]="selection.hasValue() && isAllSelected()"
-              [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-            </mat-checkbox>
-          </th>
-          <td mat-cell *matCellDef="let row" sticky>
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-              [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
-            </mat-checkbox>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="s_no" sticky>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
-          <td mat-cell *matCellDef="let element; let i = index">
-            {{ i + 1 }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="productId" sticky>
-          <th mat-header-cell *matHeaderCellDef>Product ID</th>
-          <td mat-cell *matCellDef="let m">{{ m?.productId }}</td>
-        </ng-container>
-        <ng-container matColumnDef="productName" sticky>
-          <th mat-header-cell *matHeaderCellDef>Product Name</th>
-          <td mat-cell *matCellDef="let m">{{ m?.productName }}</td>
-        </ng-container>
-        <ng-container matColumnDef="productType">
-          <th mat-header-cell *matHeaderCellDef>Product Type</th>
-          <td mat-cell *matCellDef="let m">{{ m?.productType }}</td>
-        </ng-container>
-        <ng-container matColumnDef="originalPrice">
-          <th mat-header-cell *matHeaderCellDef>Original Price</th>
-          <td mat-cell *matCellDef="let m">{{ m?.originalPrice }}</td>
-        </ng-container>
-        <ng-container matColumnDef="discountPrice">
-          <th mat-header-cell *matHeaderCellDef>Discount Price</th>
-          <td mat-cell *matCellDef="let m">{{ m?.discountPrice }}</td>
-        </ng-container>
-        <ng-container matColumnDef="discountPercentage">
-          <th mat-header-cell *matHeaderCellDef>Discount Percentage</th>
-          <td mat-cell *matCellDef="let m">{{ m?.discountPercentage }}</td>
-        </ng-container>
-        <ng-container matColumnDef="isAvailable">
-          <th mat-header-cell *matHeaderCellDef>Is Available</th>
-          <td mat-cell *matCellDef="let m"><mat-icon [style.color]="m?.isAvailable ? 'green' : 'red'">
-              {{ m?.isAvailable ? 'check' : 'cancel' }}
-            </mat-icon></td>
-        </ng-container>
-        <ng-container matColumnDef="managedAt">
-          <th mat-header-cell *matHeaderCellDef>Managed At</th>
-          <td mat-cell *matCellDef="let m">{{ m?.managedAt | date: 'mediumDate' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="updatedAt">
-          <th mat-header-cell *matHeaderCellDef>Updated At</th>
-          <td mat-cell *matCellDef="let m">{{ m?.updatedAt | date: 'mediumDate' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="adminId">
-          <th mat-header-cell *matHeaderCellDef>Admin ID</th>
-          <td mat-cell *matCellDef="let m">{{ m?.adminId }}</td>
-        </ng-container>
-        <ng-container matColumnDef="adminName">
-          <th mat-header-cell *matHeaderCellDef>Admin Name</th>
-          <td mat-cell *matCellDef="let m">{{ m?.adminName }}</td>
-        </ng-container>
-        <ng-container matColumnDef="adminEmail">
-          <th mat-header-cell *matHeaderCellDef>Admin Email</th>
-          <td mat-cell *matCellDef="let m">{{ m?.adminEmail }}</td>
-        </ng-container>
-        <ng-container matColumnDef="adminPhoneNumber">
-          <th mat-header-cell *matHeaderCellDef>Admin Phone Number</th>
-          <td mat-cell *matCellDef="let m">{{ m?.adminPhoneNumber }}</td>
-        </ng-container>
-        <ng-container matColumnDef="adminCreatedAt">
-          <th mat-header-cell *matHeaderCellDef>Admin Created At</th>
-          <td mat-cell *matCellDef="let m">{{ m?.adminCreatedAt | date: 'mediumDate' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="actions" stickyEnd>
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let m">
-            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #actionsMenu="matMenu">
-              <button mat-menu-item (click)="selectedMedicine = m; openDiscountDialog()">
-                <mat-icon>app_registration</mat-icon>
-                <span>Update Discount</span>
-              </button>
-
-              <button mat-menu-item (click)="selectedMedicine = m; openMRPDialog(m)">
-                <mat-icon>currency_rupee</mat-icon>
-                <span>Update MRP</span>
-              </button>
-
-              <button mat-menu-item (click)="selectedMedicine = m; openAvailabilityDialog()">
-                <mat-icon>offline_pin</mat-icon>
-                <span>Update Availability</span>
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedDiscountedMedicineColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedDiscountedMedicineColumns;"></tr>
-      </table>
-      } @else {
       <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="select" sticky>
           <th mat-header-cell *matHeaderCellDef>
@@ -507,75 +265,60 @@
             {{ i + 1 }}
           </td>
         </ng-container>
-        <!-- ID -->
+
         <ng-container matColumnDef="medicineId">
           <th mat-header-cell *matHeaderCellDef>Product ID</th>
-          <td mat-cell *matCellDef="let m">{{ m.medicineId }}</td>
+          <td mat-cell *matCellDef="let m">{{ m.medicineId || m?.productId }}</td>
         </ng-container>
-
-        <!-- <ng-container matColumnDef="imageUrls">
-          <th mat-header-cell *matHeaderCellDef>Images</th>
-          <td mat-cell *matCellDef="let m">
-            <ng-container *ngFor="let url of m.imageUrls">
-              <img [src]="url" width="50" style="margin-right:4px;" />
-            </ng-container>
-          </td>
-        </ng-container> -->
 
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Medicine Name</th>
-          <td mat-cell *matCellDef="let m">{{ m.name }}</td>
+          <td mat-cell *matCellDef="let m">{{ m.name || m?.productName }}</td>
         </ng-container>
 
-        <!-- Category -->
         <ng-container matColumnDef="category">
           <th mat-header-cell *matHeaderCellDef>Category</th>
-          <td mat-cell *matCellDef="let m">{{ m.category }}</td>
+          <td mat-cell *matCellDef="let m">{{ m.category || m?.medicineType }}</td>
         </ng-container>
 
-        <!-- Price -->
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Price</th>
-          <td mat-cell *matCellDef="let m">{{ m.price }}</td>
+        <ng-container matColumnDef="quantityInStock">
+          <th mat-header-cell *matHeaderCellDef>Unit</th>
+          <td mat-cell *matCellDef="let m">{{ m.quantityInStock }}</td>
         </ng-container>
 
-        <!-- MRP -->
         <ng-container matColumnDef="mrp">
           <th mat-header-cell *matHeaderCellDef>MRP</th>
           <td mat-cell *matCellDef="let m">{{ m.mrp || '—' }}</td>
         </ng-container>
+
+       
+
         <ng-container matColumnDef="discountPercentage">
           <th mat-header-cell *matHeaderCellDef>Discount %</th>
           <td mat-cell *matCellDef="let m">{{ m.discountPercentage || '—' }}</td>
         </ng-container>
-        <ng-container matColumnDef="quantityInStock">
-          <th mat-header-cell *matHeaderCellDef>Stock</th>
-          <td mat-cell *matCellDef="let m">{{ m.quantityInStock }}</td>
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Vitoxyz Price</th>
+          <td mat-cell *matCellDef="let m">{{ m.price }}</td>
         </ng-container>
-        <!-- <ng-container matColumnDef="expiryDate">
-          <th mat-header-cell *matHeaderCellDef>Expiry Date</th>
-          <td mat-cell *matCellDef="let m">{{ m.expiryDate | date: 'mediumDate' }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="prescription_required">
-          <th mat-header-cell *matHeaderCellDef>Prescription</th>
-          <td mat-cell *matCellDef="let m">{{ m.prescription_required ? 'Yes' : 'No' }}</td>
-        </ng-container> -->
 
         <ng-container matColumnDef="active">
           <th mat-header-cell *matHeaderCellDef>Status</th>
           <td mat-cell *matCellDef="let m">{{ m.active ? 'Active' : 'Inactive' }}</td>
         </ng-container>
 
-        <!-- <ng-container matColumnDef="addedByPharmacistName">
-          <th mat-header-cell *matHeaderCellDef>Added By</th>
-          <td mat-cell *matCellDef="let m">{{ m.addedByPharmacistName }}</td>
-        </ng-container> -->
-
         <ng-container matColumnDef="actions" stickyEnd>
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let m">
-            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
+            <div class="d-flex">
+              <button mat-icon-button *ngIf="editingRow !== m" (click)="onEdit(m)" matTooltip="Edit Medicine">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="editingRow === m" (click)="onSave(m)" matTooltip="Submit Changes">
+                <mat-icon>check</mat-icon>
+              </button>
+            </div>
+            <!-- <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{row: m}">
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #actionsMenu="matMenu">
@@ -602,15 +345,13 @@
                 <mat-icon>delete</mat-icon>
                 <span>Delete</span>
               </button>
-            </mat-menu>
+            </mat-menu> -->
           </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedManualMedicineColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedManualMedicineColumns;"></tr>
       </table>
-
-      }
     </section>
   </mat-drawer-content>
 

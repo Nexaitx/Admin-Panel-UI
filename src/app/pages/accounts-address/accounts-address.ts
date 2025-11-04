@@ -54,6 +54,7 @@ export class AccountsAddress {
   dialog = inject(MatDialog);
   addressTypes: any;
   isEdit: boolean = false;
+  userDetails: any;
 
   cartColumns: string[] = [
     'companyName', 'companyAddress', 'pincode', 'addressType', 'adminName', 'createdAt', 'actions'
@@ -72,9 +73,20 @@ export class AccountsAddress {
   }
 
   ngOnInit() {
+    this.getUserDetails();
     this.getAddresses();
   }
 
+  getUserDetails() {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    this.http.get(API_URL + ENDPOINTS.GET_LOGGED_IN_USER_DETAILS, { headers }).subscribe((res: any) => {
+      this.userDetails = res.data;
+    });
+  }
   getAddresses() {
     const token = localStorage.getItem('token');
     let headers = new HttpHeaders();
@@ -86,6 +98,7 @@ export class AccountsAddress {
       this.addresses.data = res.data;
     })
   }
+
   applyCartFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.addresses.filter = filterValue.trim().toLowerCase();
