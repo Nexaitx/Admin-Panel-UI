@@ -58,7 +58,7 @@
     <mat-tab-group (selectedTabChange)="onTabChange($event)" [(selectedIndex)]="activeTabIndex"
       animationDuration="300ms">
 
-      <mat-tab label="Orders in Cart">
+      <!-- <mat-tab label="Orders in Cart">
         <div class="tab-content pt-3">
           <div class="toolbar d-flex align-items-baseline mb-2">
             <mat-icon>filter_list</mat-icon>
@@ -86,8 +86,8 @@
               </ng-container>
 
               <ng-container matColumnDef="productName">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Name </th>
-                <td mat-cell *matCellDef="let item"> {{ item.productName }} </td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Cart Items </th>
+                <td mat-cell *matCellDef="let item"> <a href="google.com" target="_blank" rel="noopener noreferrer">{{ item.productName }}</a> </td>
               </ng-container>
 
               <ng-container matColumnDef="productType">
@@ -157,7 +157,7 @@
           </section>
 
         </div>
-      </mat-tab>
+      </mat-tab> -->
 
       <mat-tab label="Processed Orders">
         <div class="tab-content pt-3">
@@ -186,11 +186,11 @@
           <section>
             <table mat-table [dataSource]="processedOrders" matSort #processedSort="matSort">
               <ng-container matColumnDef="s_no" sticky>
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
-                    <td mat-cell *matCellDef="let element; let i = index">
-                        {{ i + 1 }}
-                    </td>
-                </ng-container>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
               <!-- All original columns -->
               <ng-container matColumnDef="orderId" sticky="true">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Order ID </th>
@@ -202,9 +202,14 @@
                 <td mat-cell *matCellDef="let item"> {{ item.orderNumber }} </td>
               </ng-container>
 
-              <ng-container matColumnDef="userId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> User ID </th>
-                <td mat-cell *matCellDef="let item"> {{ item.userId }} </td>
+              <ng-container matColumnDef="orderItems" sticky="true">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Items </th>
+                <td mat-cell *matCellDef="let item"> View Items </td>
+              </ng-container>
+
+              <ng-container matColumnDef="orderValue">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Value </th>
+                <td mat-cell *matCellDef="let item"> 950 </td>
               </ng-container>
 
               <ng-container matColumnDef="userName">
@@ -218,7 +223,7 @@
               </ng-container>
 
               <ng-container matColumnDef="userEmail">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
                 <td mat-cell *matCellDef="let item"> {{ item.userEmail }} </td>
               </ng-container>
 
@@ -233,13 +238,52 @@
               </ng-container>
 
               <ng-container matColumnDef="expectedDeliveryDate">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Delivery Date </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> ETA </th>
                 <td mat-cell *matCellDef="let item"> {{ item.expectedDeliveryDate | date: 'medium' }} </td>
               </ng-container>
 
+              <ng-container matColumnDef="packingStatus">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Packing Status </th>
+                <td mat-cell *matCellDef="let item"> Pending </td>
+              </ng-container>
+
+              <ng-container matColumnDef="dispatchStatus">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch Status </th>
+                <td mat-cell *matCellDef="let item"> Pending </td>
+              </ng-container>
+              <ng-container matColumnDef="orderStatus">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Status </th>
+                <td mat-cell *matCellDef="let item"> Pending </td>
+              </ng-container>
+              <ng-container matColumnDef="deliveryStatus">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Delivery Status </th>
+                <td mat-cell *matCellDef="let item"> Pending </td>
+              </ng-container>
+              <ng-container matColumnDef="returnStatus">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Return Status </th>
+                <td mat-cell *matCellDef="let item"> Pending </td>
+              </ng-container>
+              <ng-container matColumnDef="returnConfirmationStatus">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Return Confirmation Status </th>
+                <td mat-cell *matCellDef="let item"> Pending </td>
+              </ng-container>
+              
+              <ng-container matColumnDef="generic">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Generic </th>
+                <td mat-cell *matCellDef="let item"> 200 </td>
+              </ng-container>
+              <ng-container matColumnDef="ethical">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Ethical </th>
+                <td mat-cell *matCellDef="let item"> 150 </td>
+              </ng-container>
+              <ng-container matColumnDef="otc">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> OTC </th>
+                <td mat-cell *matCellDef="let item"> 100 </td>
+              </ng-container>
+
               <ng-container matColumnDef="finalAmount">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Final Amount </th>
-                <td mat-cell *matCellDef="let item">{{ item.finalAmount | number:'1.2-2' }} </td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Vitoxyz Amount </th>
+                <td mat-cell *matCellDef="let item"> </td>
               </ng-container>
 
               <ng-container matColumnDef="status">

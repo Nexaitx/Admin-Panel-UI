@@ -41,9 +41,12 @@ import { MatListModule } from '@angular/material/list';
 export class Pharmaceuticals implements AfterViewInit {
   processedColumns: string[] = [
     's_no',
-    'orderId', 'orderNumber', 'userId', 'userName', 'userPhone',
+    'orderId', 'orderNumber', 'orderItems', 'orderValue', 'status', 'userName', 'userPhone',
     'userEmail', 'paymentStatus', 'orderDate', 'expectedDeliveryDate',
-    'finalAmount', 'status', 'taxAmount', 'totalAmount', 'actions'
+    'packingStatus', 'dispatchStatus', 'orderStatus', 'deliveryStatus',  'returnStatus',
+    'returnConfirmationStatus', 
+    'generic', 'ethical', 'otc',
+    'finalAmount',  'taxAmount', 'totalAmount', 'actions' 
   ];
 
   cartColumns: string[] = [
