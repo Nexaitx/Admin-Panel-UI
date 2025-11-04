@@ -15,6 +15,7 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-pharmaceuticals',
@@ -41,12 +42,12 @@ import { MatListModule } from '@angular/material/list';
 export class Pharmaceuticals implements AfterViewInit {
   processedColumns: string[] = [
     's_no',
-    'orderId', 'orderNumber', 'orderItems', 'orderValue', 'status', 'userName', 'userPhone',
+    'orderNumber', 'orderItems', 'orderValue', 'status', 'userName', 'userPhone',
     'userEmail', 'paymentStatus', 'orderDate', 'expectedDeliveryDate',
-    'packingStatus', 'dispatchStatus', 'orderStatus', 'deliveryStatus',  'returnStatus',
-    'returnConfirmationStatus', 
-    'generic', 'ethical', 'otc',
-    'finalAmount',  'taxAmount', 'totalAmount', 'actions' 
+    'packingStatus', 'dispatchStatus', 'orderStatus', 'deliveryStatus', 'returnStatus',
+    'returnConfirmationStatus',
+    // 'generic', 'ethical', 'otc',
+    // 'finalAmount',  'taxAmount', 'totalAmount', 'actions' 
   ];
 
   cartColumns: string[] = [
@@ -70,10 +71,21 @@ export class Pharmaceuticals implements AfterViewInit {
   @ViewChild('processedPaginator') processedPaginator!: MatPaginator;
   @ViewChild('cartSort') cartSort!: MatSort;
   @ViewChild('processedSort') processedSort!: MatSort;
+  snackBar = inject(MatSnackBar);
+
 
   http = inject(HttpClient);
   datePipe = inject(DatePipe);
-  // currencyPipe = inject(CurrencyPipe);
+
+  packingStatuses = [
+    { value: 'PENDING', viewValue: 'Pending' },
+    { value: 'PACKED', viewValue: 'Packed' },
+  ];
+
+  dispatchStatuses = [
+    { value: 'PENDING', viewValue: 'Pending' },
+    { value: 'DISPATCHED', viewValue: 'Dispatched' },
+  ];
 
   ngAfterViewInit() {
     this.cartOrders.paginator = this.cartPaginator;
@@ -88,6 +100,31 @@ export class Pharmaceuticals implements AfterViewInit {
   ngOnInit() {
     this.getOrderStatuses();
   }
+
+  onPackingStatusChange(item: any) {
+    // Call your service/API to update status e.g.:
+    // this.http.put(`${API_URL}${ENDPOINTS.UPDATE_PRESCRIPTION_STATUS}${item.prescriptionId}/packing-status`, { packingStatus: item.packingStatus }, { headers }).subscribe(
+    //   res => {
+    this.snackBar.open('Packing status updated successfully', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+    // },
+    // err => {
+    //   this.snackBar.open('Failed to update packing status','Close',{duration:3000, panelClass:['snackbar-error']});
+    // }
+    // );
+  }
+
+  onDispatchStatusChange(item: any) {
+    // Call your service/API to update status e.g.:
+    // this.http.put(`${API_URL}${ENDPOINTS.UPDATE_PRESCRIPTION_STATUS}${item.prescriptionId}/packing-status`, { packingStatus: item.packingStatus }, { headers }).subscribe(
+    //   res => {
+    this.snackBar.open('Dispatch status updated successfully', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+    // },
+    // err => {
+    //   this.snackBar.open('Failed to update packing status','Close',{duration:3000, panelClass:['snackbar-error']});
+    // }
+    // );
+  }
+
 
   getOrderStatuses() {
     const token = localStorage.getItem('token');
@@ -148,7 +185,10 @@ export class Pharmaceuticals implements AfterViewInit {
     if (!this.user.pan) {
       const params = { orderStatus: newType };
       this.http.get(API_URL + ENDPOINTS.GET_ORDERS_BY_STATUS, { params, headers }).subscribe((data: any) => {
-        this.processedOrders.data = data;
+        this.processedOrders.data = data.map((item: any) => ({
+          ...item,
+          packingStatus: item.packingStatus || 'PENDING'
+        }));
       });
     }
     else {
@@ -156,7 +196,10 @@ export class Pharmaceuticals implements AfterViewInit {
       const url = `${API_URL}${ENDPOINTS.GET_ORDERS_BY_STATUS_ADMIN}${encodeURIComponent(newType)}`;
       this.http.get(url)
         .subscribe((data: any) => {
-          this.processedOrders.data = data;
+          this.processedOrders.data = data.map((item: any) => ({
+            ...item,
+            packingStatus: item.packingStatus || 'PENDING'
+          }));
         });
     }
   }
