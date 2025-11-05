@@ -1,10 +1,11 @@
 <div class="container-fluid py-3">
-    <h4 class="semibold mb-0">Welcome Back, {{userProfile?.fullName}}!</h4>
-    <p class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</p>
-
+    <div class="ps-2">
+        <h4 class="semibold mb-0">Welcome Back, {{userProfile?.fullName}}!</h4>
+        <p class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</p>
+    </div>
     <div class="row p-2 mt-3">
         <!-- Personal Info Card -->
-        <div class="col-md-4">
+        <div class="col-md-4 d-none">
             <mat-card class="example-card bg-white shadow h-auto" appearance="outlined">
                 <mat-card-header>
                     <mat-card-title class="d-flex">
@@ -28,7 +29,7 @@
         </div>
 
         <!-- Radial Bar Chart for Medicine Counts -->
-        <div class="col-md-4 mb-2">
+        <div class="col-md-6 mb-2">
             <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
                 <mat-card-header>
                     <mat-card-title>Medicine Counts</mat-card-title>
@@ -38,19 +39,14 @@
                 </mat-card-header>
                 <hr class="mb-0">
                 <mat-card-content>
-                    <apx-chart
-            #radialChart
-            [series]="radialChartOptions.series"
-            [chart]="radialChartOptions.chart"
-            [labels]="radialChartOptions.labels"
-            [plotOptions]="radialChartOptions.plotOptions"
-          ></apx-chart>
+                    <apx-chart #radialChart [series]="radialChartOptions.series" [chart]="radialChartOptions.chart"
+                        [labels]="radialChartOptions.labels" [plotOptions]="radialChartOptions.plotOptions"></apx-chart>
                 </mat-card-content>
             </mat-card>
         </div>
 
         <!-- Pie Chart for My Products -->
-        <div class="col-md-4 mb-2">
+        <div class="col-md-6 mb-2">
             <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
                 <mat-card-header>
                     <mat-card-title>My Products Distribution</mat-card-title>
@@ -68,7 +64,7 @@
         </div>
 
         <!-- Bar Chart for Orders -->
-        <div class="col-md-6 mb-2">
+        <div class="col-md-12 mb-2">
             <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
                 <mat-card-header>
                     <mat-card-title>Order Statistics</mat-card-title>
@@ -85,8 +81,45 @@
             </mat-card>
         </div>
 
+        <div class="col-md-6">
+            <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Accounts</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">Accounts Overview</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr class="mb-0">
+                <mat-card-content class="example-card-footer m-1">
+                    <!-- <div id="chart"> -->
+                    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
+                        [labels]="chartOptions.labels" [title]="chartOptions.title" [theme]="chartOptions.theme"
+                        [responsive]="chartOptions.responsive"></apx-chart>
+                    <!-- </div> -->
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="col-md-6">
+            <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Orders</mat-card-title>
+                    <mat-card-subtitle>
+                        <small class="text-muted mb-0 mt-1">Orders Overview</small>
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <hr class="mb-0">
+                <mat-card-content class="example-card-footer m-1">
+                    <apx-chart [series]="ordersOptions.series" [chart]="ordersOptions.chart"
+                        [dataLabels]="ordersOptions.dataLabels" [plotOptions]="ordersOptions.plotOptions"
+                        [xaxis]="ordersOptions.xaxis" [colors]="ordersOptions.colors" [title]="ordersOptions.title"
+                        [legend]="ordersOptions.legend"></apx-chart>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
         <!-- My Products Card -->
-        <div class="col-md-6 mb-2">
+        <div class="col-md-6 mb-2 d-none">
             <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
                 <mat-card-header>
                     <mat-card-title>My Products</mat-card-title>

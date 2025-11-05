@@ -15,12 +15,15 @@ import {
   ApexLegend,
   NgApexchartsModule,
   ChartComponent,
+  ApexResponsive,
+  ApexTheme,
+  ApexTitleSubtitle
 } from 'ng-apexcharts';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-import { catchError, of } from 'rxjs';
 
 export type RadialChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -43,6 +46,26 @@ export type BarChartOptions = {
   xaxis: ApexXAxis;
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
+};
+
+export type ChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  labels: any;
+  theme: ApexTheme;
+  title: ApexTitleSubtitle;
+};
+
+export type ordersOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  xaxis: ApexXAxis;
+  colors: string[];
+  legend: ApexLegend;
+  title: ApexTitleSubtitle;
 };
 
 @Component({
@@ -68,10 +91,13 @@ export class PharmacistDashboard {
   @ViewChild('radialChart') radialChart!: ChartComponent;
   @ViewChild('pieChart') pieChart!: ChartComponent;
   @ViewChild('barChart') barChart!: ChartComponent;
+  @ViewChild('chart') chart!: ChartComponent;
 
   public radialChartOptions!: RadialChartOptions;
   public pieChartOptions!: PieChartOptions;
   public barChartOptions!: BarChartOptions;
+  public chartOptions!: ChartOptions;
+  public ordersOptions!: ordersOptions;
 
   columns = [
     {
@@ -130,18 +156,18 @@ export class PharmacistDashboard {
             value: {
               fontSize: '16px',
               formatter: (val: number) => {
-              const seriesValue = Number(val); // Convert val to number
-              console.log('Formatter - val:', val, 'seriesValue:', seriesValue); // Debug formatter
-              return Number.isFinite(seriesValue) ? seriesValue.toFixed(0) : '0';
-            },
+                const seriesValue = Number(val); // Convert val to number
+                console.log('Formatter - val:', val, 'seriesValue:', seriesValue); // Debug formatter
+                return Number.isFinite(seriesValue) ? seriesValue.toFixed(0) : '0';
+              },
             },
             total: {
               show: true,
               label: 'Total',
               formatter: () => {
-              const total = Number(this.allMedicineCount?.totalProducts) || 0;
-              return Number.isFinite(total) ? total.toFixed(0) : '0';
-            },
+                const total = Number(this.allMedicineCount?.totalProducts) || 0;
+                return Number.isFinite(total) ? total.toFixed(0) : '0';
+              },
             },
           },
         },
@@ -183,6 +209,98 @@ export class PharmacistDashboard {
         },
       },
     };
+
+    this.chartOptions = {
+      series: [25, 15, 44, 55],
+      chart: {
+        height: 280,
+        width: "100%",
+        type: "pie"
+      },
+      labels: [
+        "Return Value",
+        "Dispatch Value",
+        "Vitoxyz Share",
+        "My Payout",
+      ],
+      theme: {
+        monochrome: {
+          enabled: true
+        }
+      },
+      title: {
+        text: ""
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ]
+    };
+
+     this.ordersOptions = {
+      series: [
+        {
+          name: "",
+          data: [200, 330, 548, 740]
+        }
+      ],
+      chart: {
+        type: "bar",
+        height: 350
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 0,
+          horizontal: true,
+          distributed: true,
+          barHeight: "80%",
+          isFunnel: true
+        }
+      },
+      colors: [
+        // "#F44F5E",
+        // "#E55A89",
+        // "#D863B1",
+        // "#CA6CD8",
+        "#B57BED",
+        "#8D95EB",
+        "#62ACEA",
+        "#4BC3E6"
+      ],
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return opt.w.globals.labels[opt.dataPointIndex];
+        },
+        dropShadow: {
+          enabled: true
+        }
+      },
+      title: {
+        text: "",
+        align: "center"
+      },
+      xaxis: {
+        categories: [
+          "New Orders",
+          "Pending Orders",
+          "Approved Orders",
+          "Returned Orders"
+        ]
+      },
+      legend: {
+        show: false
+      }
+    };
   }
 
   ngOnInit() {
@@ -216,7 +334,7 @@ export class PharmacistDashboard {
       this.allMedicineCount = res;
       this.updateRadialChart();
     });
-    
+
 
     this.http.get(API_URL + ENDPOINTS.GET_COUNT_OF_MY_PRODUCTS, { headers }).subscribe((res: any) => {
       this.medicineCountOfMyProduct = res;
@@ -229,7 +347,7 @@ export class PharmacistDashboard {
     });
   }
 
- updateRadialChart() {
+  updateRadialChart() {
     if (this.allMedicineCount) {
       const series = [
         Number(this.allMedicineCount.medicineCount) || 0,
