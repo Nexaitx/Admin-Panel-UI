@@ -106,7 +106,7 @@
     <div class="tab-content pt-3">
       <div class="toolbar d-flex align-items-center mb-2">
         <mat-icon>filter_list</mat-icon>
-        <mat-form-field appearance="outline" class="ms-2 small-select">
+        <!-- <mat-form-field appearance="outline" class="ms-2 small-select">
           <mat-label>Filter by Status</mat-label>
           <mat-select [(value)]="selectedOrderType" (selectionChange)="onOrderTypeChange($event.value)">
             @for (type of orderStatuses; track type) {
@@ -115,7 +115,7 @@
             </mat-option>
             }
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
         <mat-form-field appearance="outline" class="ms-2 small-select">
           <mat-label>Search Orders</mat-label>
           <input matInput (keyup)="applyProcessedFilter($event)" placeholder="Search by order ID, customer, etc.">
@@ -130,180 +130,227 @@
           <ng-container matColumnDef="s_no" sticky>
             <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
             <td mat-cell *matCellDef="let element; let i = index">
-              {{ i + 1 }}
+              {{ processedOrders.data.length - i }}
             </td>
           </ng-container>
-          <!-- All original columns -->
-          <!-- <ng-container matColumnDef="orderId" sticky="true">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Order ID </th>
-                <td mat-cell *matCellDef="let item"> {{ item.orderId }} </td>
-              </ng-container> -->
 
           <ng-container matColumnDef="orderNumber" sticky="true">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Number </th>
             <td mat-cell *matCellDef="let item"> {{ item.orderNumber }} </td>
           </ng-container>
 
-          <ng-container matColumnDef="orderItems" sticky="true">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Items </th>
-            <td mat-cell *matCellDef="let item"> View Items </td>
-          </ng-container>
-
-          <ng-container matColumnDef="orderValue">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Value </th>
-            <td mat-cell *matCellDef="let item"> 950 </td>
-          </ng-container>
-
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Status </th>
-            <td mat-cell *matCellDef="let item"> {{ item.status }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="userName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> User Name </th>
-            <td mat-cell *matCellDef="let item"> {{ item.userName }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="userPhone">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
-            <td mat-cell *matCellDef="let item"> {{ item.userPhone }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="userEmail">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
-            <td mat-cell *matCellDef="let item"> {{ item.userEmail }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="paymentStatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Payment Status </th>
-            <td mat-cell *matCellDef="let item"> {{ item.paymentStatus }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="orderDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Date </th>
-            <td mat-cell *matCellDef="let item"> {{ item.orderDate | date: 'mediumDate' }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="expectedDeliveryDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> ETA </th>
-            <td mat-cell *matCellDef="let item"> {{ item.expectedDeliveryDate | date: 'mediumDate' }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="packingStatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Packing&nbsp;Status </th>
+          <ng-container matColumnDef="viewOrder" sticky="true">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> View&nbsp;Order </th>
             <td mat-cell *matCellDef="let item">
-              <!-- <mat-form-field appearance="outline" style="width:100%;"> -->
-              <select class="form-select form-select-sm w-100" [(value)]="item.packingStatus"
-                (selectionChange)="onPackingStatusChange(item)">
-                <option *ngFor="let s of packingStatuses" [value]="s.value">
-                  {{ s.viewValue }}
-                </option>
-              </select>
-              <!-- </mat-form-field> -->
+              <div class="d-flex view" (click)="selectedHeading = 'View Order'; onViewAction()">
+                <mat-icon>visibility</mat-icon>
+                <span> View </span>
+              </div>
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="dispatchStatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch&nbsp;Status </th>
+          <ng-container matColumnDef="viewBill">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> View&nbsp;Bill </th>
             <td mat-cell *matCellDef="let item">
-              <select class="form-select form-select-sm w-100" [(value)]="item.dispatchStatus"
-                (selectionChange)="onDispatchStatusChange(item)">
-                <option *ngFor="let s of dispatchStatuses" [value]="s.value">
-                  {{ s.viewValue }}</option>
-              </select>
+              <div class="d-flex view" (click)="selectedHeading = 'View Bill'; onViewAction()">
+                <mat-icon>visibility</mat-icon>
+                <span> View </span>
+              </div>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="orderStatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Order&nbsp;Status </th>
             <td mat-cell *matCellDef="let item">
-              <select class="form-select form-select-sm w-100" [(value)]="item.dispatchStatus"
-                (selectionChange)="onDispatchStatusChange(item)">
-                <option *ngFor="let s of dispatchStatuses" [value]="s.value">
-                  {{ s.viewValue }}</option>
+              <select class="form-select form-select-sm w-100" [(ngModel)]="item.orderStatus" [ngClass]="{
+    'status-pending': item.orderStatus === 'Pending',
+    'status-approved': item.orderStatus === 'Approved',
+    'status-rejected': item.orderStatus === 'Rejected'
+  }">
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
               </select>
             </td>
           </ng-container>
+
+          <ng-container matColumnDef="totalItems">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total&nbsp;Items </th>
+            <td mat-cell *matCellDef="let item"> 10 </td>
+          </ng-container>
+
+          <ng-container matColumnDef="packingStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Packing&nbsp;Status </th>
+            <td mat-cell *matCellDef="let item">
+              <select class="form-select form-select-sm w-auto" [(ngModel)]="item.packingStatus" [ngClass]="{
+    'status-pending': item.packingStatus === 'Pending',
+    'status-packed': item.packingStatus === 'Packed'
+  }">
+                <option value="Pending">Pending</option>
+                <option value="Packed">Packed</option>
+              </select>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dispatchStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch&nbsp;Status </th>
+            <td mat-cell *matCellDef="let item">
+              <select class="form-select form-select-sm w-100" [(value)]="item.dispatchStatus" [ngClass]="{
+    'status-pending': item.dispatchStatus === 'Pending',
+    'status-dispatched': item.dispatchStatus === 'Dispatched'
+  }">
+                <option value="Pending">Pending</option>
+                <option value="Dispatched">Dispatched</option>
+              </select>
+            </td>
+          </ng-container>
+
+
           <ng-container matColumnDef="deliveryStatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Delivery&nbsp;Status </th>
-            <td mat-cell *matCellDef="let item">
-              <select class="form-select form-select-sm w-100" [(value)]="item.dispatchStatus"
-                (selectionChange)="onDispatchStatusChange(item)">
-                <option *ngFor="let s of dispatchStatuses" [value]="s.value">
-                  {{ s.viewValue }}</option>
-              </select>
-            </td>
+            <td mat-cell *matCellDef="let item">Pending</td>
           </ng-container>
-          <ng-container matColumnDef="returnStatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Return&nbsp;Status </th>
-            <td mat-cell *matCellDef="let item">
-              <select class="form-select form-select-sm w-100" [(value)]="item.dispatchStatus"
-                (selectionChange)="onDispatchStatusChange(item)">
-                <option *ngFor="let s of dispatchStatuses" [value]="s.value">
-                  {{ s.viewValue }}</option>
-              </select>
-            </td>
-          </ng-container>
+
           <ng-container matColumnDef="returnConfirmationStatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Return&nbsp;Confirmation&nbsp;Status </th>
             <td mat-cell *matCellDef="let item">
-              <select class="form-select form-select-sm w-100" [(value)]="item.dispatchStatus"
-                (selectionChange)="onDispatchStatusChange(item)">
-                <option *ngFor="let s of dispatchStatuses" [value]="s.value">
-                  {{ s.viewValue }}</option>
+              <select class="form-select form-select-sm w-100" [(ngModel)]="item.returnConfirmationStatus" [ngClass]="{
+    'status-pending': item.returnConfirmationStatus === 'Pending',
+    'status-received': item.returnConfirmationStatus === 'Received'
+  }">
+                <option value="Pending">Pending</option>
+                <option value="Received">Received</option>
               </select>
             </td>
           </ng-container>
 
-          <!-- <ng-container matColumnDef="generic">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Generic </th>
-                <td mat-cell *matCellDef="let item"> 200 </td>
-              </ng-container>
-              <ng-container matColumnDef="ethical">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Ethical </th>
-                <td mat-cell *matCellDef="let item"> 150 </td>
-              </ng-container>
-              <ng-container matColumnDef="otc">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> OTC </th>
-                <td mat-cell *matCellDef="let item"> 100 </td>
-              </ng-container>
+          <ng-container matColumnDef="vitoxyzReturnAdmin">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Vitoxyz&nbsp;Return&nbsp;(Admin) </th>
+            <td mat-cell *matCellDef="let item">
+              <select class="form-select form-select-sm w-100" [disabled]="user?.role?.roleType !== 'Admin'"
+              [(ngModel)]="item.vitoxyzReturnAdmin" [ngClass]="{
+    'status-pending': item.vitoxyzReturnAdmin === 'Pending',
+    'status-received': item.vitoxyzReturnAdmin === 'Received'
+  }">
+                <option value="Pending">Pending</option>
+                <option value="Received">Received</option>
+              </select>
+            </td>
+          </ng-container>
 
-              <ng-container matColumnDef="finalAmount">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Vitoxyz Amount </th>
-                <td mat-cell *matCellDef="let item"> </td>
-              </ng-container>
+          <ng-container matColumnDef="generic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Generic&nbsp;Summary</th>
+            <td mat-cell *matCellDef="let item" (click)="selectedHeading = 'View Generic Summary'; onViewAction()">
+              <div class="d-flex view" (click)="selectedHeading = 'View Generic Summary'">
+                <mat-icon>visibility</mat-icon>
+                <span> View&nbsp;(Total&nbsp;200) </span>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="ethical">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ethical&nbsp;Summary</th>
+            <td mat-cell *matCellDef="let item" (click)="selectedHeading = 'View Ethical Summary'; onViewAction()">
+              <div class="d-flex view" (click)="selectedHeading = 'View Ethical Summary'">
+                <mat-icon>visibility</mat-icon>
+                <span> View&nbsp;(Total&nbsp;200) </span>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="otc">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> OTC&nbsp;Summary</th>
+            <td mat-cell *matCellDef="let item" (click)="selectedHeading = 'View OTC Summary'; onViewAction()">
+              <div class="d-flex view" (click)="selectedHeading = 'View OTC Summary'">
+                <mat-icon>visibility</mat-icon>
+                <span> View&nbsp;(Total&nbsp;200) </span>
+              </div>
+            </td>
+          </ng-container>
 
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-                <td mat-cell *matCellDef="let item"> {{ item.status }} </td>
-              </ng-container>
+          <ng-container matColumnDef="grossPayout">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Gross&nbsp;Payout </th>
+            <td mat-cell *matCellDef="let item"> </td>
+          </ng-container>
 
-              <ng-container matColumnDef="taxAmount">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Tax </th>
-                <td mat-cell *matCellDef="let item"> {{ item.taxAmount | number:'1.2-2' }} </td>
-              </ng-container>
+          <ng-container matColumnDef="returnAmount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Return&nbsp;Amount </th>
+            <td mat-cell *matCellDef="let item"> </td>
+          </ng-container>
 
-              <ng-container matColumnDef="totalAmount">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
-                <td mat-cell *matCellDef="let item"> {{ item.totalAmount | number:'1.2-2' }} </td>
-              </ng-container>
+          <ng-container matColumnDef="vitoxyzReturnAmount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Vitoxyz&nbsp;Return&nbsp;Amount </th>
+            <td mat-cell *matCellDef="let item"> 50 </td>
+          </ng-container>
 
-              <ng-container matColumnDef="actions" stickyEnd>
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let item">
-                  <button mat-icon-button color="primary" (click)="onView(item)">
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-                </td>
-              </ng-container> -->
+          <ng-container matColumnDef="finalOut">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Final&nbsp;Payout </th>
+            <td mat-cell *matCellDef="let item"> 100 </td>
+          </ng-container>
+          <ng-container matColumnDef="inputGST">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Input&nbsp;GST(By&nbsp;Category) </th>
+            <td mat-cell *matCellDef="let item" (click)="selectedHeading = 'View Input GST'; onViewAction()">
+              <div class="d-flex view" (click)="selectedHeading = 'View Input GST'">
+                <mat-icon>visibility</mat-icon>
+                <span> View (Total&nbsp;200) </span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef> Account&nbsp;Action </th>
+            <td mat-cell *matCellDef="let item">
+              <select class="form-select form-select-sm w-100" [(ngModel)]="item.actions" [ngClass]="{
+    'status-dispute': item.actions === 'Dispute',
+    'status-verified': item.actions === 'Verified'
+  }">
+                <option value="Dispute">Dispute</option>
+                <option value="Verified">Verified</option>
+              </select>
+            </td>
+          </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="processedColumns; sticky: true"></tr>
           <tr mat-row *matRowDef="let row; columns: processedColumns;"></tr>
         </table>
       </section>
-
-
     </div>
   </mat-tab>
 
 </mat-tab-group>
+
+<ng-template #viewDialog>
+  <h2 mat-dialog-title>{{selectedHeading}}</h2>
+  <mat-dialog-content>
+    <!-- <p>Order Number: 113345</p>
+    <p>Customer Name: John Doe</p>
+    <p>Order Status: Pending</p>
+    <p>Total Amount: 100</p> -->
+    <table>
+      <thead>
+        <th>S No.</th>
+        <th>Product Name</th>
+        <th>Category</th>
+        <th>Quantity</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            1
+          </td>
+          <td>
+            Paracetamol
+          </td>
+          <td>
+            Analgesics
+          </td>
+          <td>
+            100
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" (click)="onPrint(); dialog.closeAll()">Print</button>
+  </mat-dialog-actions>
+</ng-template>

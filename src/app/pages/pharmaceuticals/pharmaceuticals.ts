@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, inject, ViewChild, AfterViewInit, TemplateRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
@@ -16,6 +16,8 @@ import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-pharmaceuticals',
@@ -33,7 +35,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     CommonModule,
     MatCardModule,
     MatListModule,
-    MatSidenavModule
+    MatSidenavModule,
+    FormsModule,
+    MatDialogModule
   ],
   providers: [DatePipe],
   templateUrl: './pharmaceuticals.html',
@@ -42,12 +46,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class Pharmaceuticals implements AfterViewInit {
   processedColumns: string[] = [
     's_no',
-    'orderNumber', 'orderItems', 'orderValue', 'status', 'userName', 'userPhone',
-    'userEmail', 'paymentStatus', 'orderDate', 'expectedDeliveryDate',
-    'packingStatus', 'dispatchStatus', 'orderStatus', 'deliveryStatus', 'returnStatus',
+    'orderNumber', 'viewOrder', 'viewBill', 'orderStatus',
+    'totalItems',
+    'packingStatus', 'dispatchStatus', 'deliveryStatus',
     'returnConfirmationStatus',
-    // 'generic', 'ethical', 'otc',
-    // 'finalAmount',  'taxAmount', 'totalAmount', 'actions' 
+    'vitoxyzReturnAdmin',
+    'generic', 'ethical', 'otc',
+    'grossPayout',
+    'returnAmount', 'vitoxyzReturnAmount', 'finalOut', 'inputGST', 'actions'
   ];
 
   cartColumns: string[] = [
@@ -72,21 +78,13 @@ export class Pharmaceuticals implements AfterViewInit {
   @ViewChild('cartSort') cartSort!: MatSort;
   @ViewChild('processedSort') processedSort!: MatSort;
   snackBar = inject(MatSnackBar);
-
+  dialog = inject(MatDialog);
+  @ViewChild('viewDialog') viewDialog!: TemplateRef<any>;
+  // orderStatus: string = 'Pending';
 
   http = inject(HttpClient);
   datePipe = inject(DatePipe);
-
-  packingStatuses = [
-    { value: 'PENDING', viewValue: 'Pending' },
-    { value: 'PACKED', viewValue: 'Packed' },
-  ];
-
-  dispatchStatuses = [
-    { value: 'PENDING', viewValue: 'Pending' },
-    { value: 'DISPATCHED', viewValue: 'Dispatched' },
-  ];
-
+  selectedHeading: string = '';
   ngAfterViewInit() {
     this.cartOrders.paginator = this.cartPaginator;
     this.cartOrders.sort = this.cartSort;
@@ -100,31 +98,20 @@ export class Pharmaceuticals implements AfterViewInit {
   ngOnInit() {
     this.getOrderStatuses();
   }
+  onViewAction(): void {
+    const dialogRef = this.dialog.open(this.viewDialog, {
+      width: '800px',
+    });
 
-  onPackingStatusChange(item: any) {
-    // Call your service/API to update status e.g.:
-    // this.http.put(`${API_URL}${ENDPOINTS.UPDATE_PRESCRIPTION_STATUS}${item.prescriptionId}/packing-status`, { packingStatus: item.packingStatus }, { headers }).subscribe(
-    //   res => {
-    this.snackBar.open('Packing status updated successfully', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
-    // },
-    // err => {
-    //   this.snackBar.open('Failed to update packing status','Close',{duration:3000, panelClass:['snackbar-error']});
-    // }
-    // );
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+      }
+    });
   }
-
-  onDispatchStatusChange(item: any) {
-    // Call your service/API to update status e.g.:
-    // this.http.put(`${API_URL}${ENDPOINTS.UPDATE_PRESCRIPTION_STATUS}${item.prescriptionId}/packing-status`, { packingStatus: item.packingStatus }, { headers }).subscribe(
-    //   res => {
-    this.snackBar.open('Dispatch status updated successfully', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
-    // },
-    // err => {
-    //   this.snackBar.open('Failed to update packing status','Close',{duration:3000, panelClass:['snackbar-error']});
-    // }
-    // );
+  onPrint(): void {
+    // Uses the browser's print function to print the dialog content
+    window.print();
   }
-
 
   getOrderStatuses() {
     const token = localStorage.getItem('token');
@@ -132,16 +119,19 @@ export class Pharmaceuticals implements AfterViewInit {
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
-    if (!this.user.pan) {
-      this.http.get(`${API_URL}${ENDPOINTS.GET_ORDER_STATUSES}`, { headers }).subscribe((data: any) => {
-        this.orderStatuses = data.statuses;
-      });
-    }
-    else {
-      this.http.get(`${API_URL}${ENDPOINTS.GET_ALL_ORDER_STATUS}`, { headers }).subscribe((data: any) => {
-        this.orderStatuses = data.statuses;
-      });
-    }
+    // if (!this.user.pan) {
+    //   this.http.get(`${API_URL}${ENDPOINTS.GET_ORDER_STATUSES}`, { headers }).subscribe((data: any) => {
+    //     this.orderStatuses = data.statuses;
+    //   });
+    // }
+    // else {
+    this.http.get(`${API_URL}${ENDPOINTS.GET_ALL_ORDER_STATUS}`, { headers }).subscribe((data: any) => {
+      this.orderStatuses = data.statuses.map((item: any) => ({
+        ...item,
+        orderStatus: item.orderStatus || 'Pending'
+      }));
+    });
+    // }
   }
 
   onTabChange(event: any) {
@@ -187,8 +177,15 @@ export class Pharmaceuticals implements AfterViewInit {
       this.http.get(API_URL + ENDPOINTS.GET_ORDERS_BY_STATUS, { params, headers }).subscribe((data: any) => {
         this.processedOrders.data = data.map((item: any) => ({
           ...item,
-          packingStatus: item.packingStatus || 'PENDING'
+          packingStatus: item.packingStatus || 'Pending',
+          orderStatus: item.orderStatus || 'Pending',
+          dispatchStatus: item.dispatchStatus || 'Pending',
+          deliveryStatus: item.deliveryStatus || 'Pending',
+          returnConfirmationStatus: item.returnConfirmationStatus || 'Pending',
+          vitoxyzReturnAdmin: item.vitoxyzReturnAdmin || 'Pending',
+            actions: item.actions || 'Dispute'
         }));
+        console.log(this.processedOrders.data)
       });
     }
     else {
@@ -198,7 +195,13 @@ export class Pharmaceuticals implements AfterViewInit {
         .subscribe((data: any) => {
           this.processedOrders.data = data.map((item: any) => ({
             ...item,
-            packingStatus: item.packingStatus || 'PENDING'
+            packingStatus: item.packingStatus || 'Pending',
+            orderStatus: item.orderStatus || 'Pending',
+            dispatchStatus: item.dispatchStatus || 'Pending',
+            deliveryStatus: item.deliveryStatus || 'Pending',
+            returnConfirmationStatus: item.returnConfirmationStatus || 'Pending',
+            vitoxyzReturnAdmin: item.vitoxyzReturnAdmin || 'Pending',
+            actions: item.actions || 'Dispute'
           }));
         });
     }
