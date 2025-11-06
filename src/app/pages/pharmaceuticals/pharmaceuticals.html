@@ -195,7 +195,7 @@
           <ng-container matColumnDef="dispatchStatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch&nbsp;Status </th>
             <td mat-cell *matCellDef="let item">
-              <select class="form-select form-select-sm w-100" [(value)]="item.dispatchStatus" [ngClass]="{
+              <select class="form-select form-select-sm w-100" [(ngModel)]="item.dispatchStatus" [ngClass]="{
     'status-pending': item.dispatchStatus === 'Pending',
     'status-dispatched': item.dispatchStatus === 'Dispatched'
   }">
@@ -204,7 +204,6 @@
               </select>
             </td>
           </ng-container>
-
 
           <ng-container matColumnDef="deliveryStatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Delivery&nbsp;Status </th>

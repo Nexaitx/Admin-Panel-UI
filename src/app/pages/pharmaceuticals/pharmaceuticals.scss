@@ -58,24 +58,22 @@ select {
   box-shadow: none !important;
 }
 
-/* pharmaceuticals.scss */
-
 .status-pending {
-  background-color: #fff3cd !important; /* Light yellow for Pending (Bootstrap warning color) */
+  background-color: #fff3cd !important;
   border-color: #ffc107;
   color: #383d41;
   border-radius: 20px !important;
 }
 
 .status-approved, .status-packed, .status-dispatched, .status-received, .status-verified {
-  background-color: #d4edda !important; /* Light green for Approved (Bootstrap success color) */
+  background-color: #d4edda !important;
   border-color: #28a745;
   border-radius: 20px !important;
   color: #155724;
 }
 
 .status-rejected, .status-dispute {
-  background-color: #f8d7da !important; /* Light red for Rejected (Bootstrap danger color) */
+  background-color: #f8d7da !important;
   border-color: #dc3545;
   border-radius: 20px !important;
   color: #721c24;
