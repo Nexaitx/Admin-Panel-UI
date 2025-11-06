@@ -86,6 +86,21 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'pharmaceutical/my-available-medicine',
+                loadComponent: () => import('./pages/my-available-products/my-available-products').then(m => m.MyAvailableProducts),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'pharmaceutical/other-pharmacists-available-products',
+                loadComponent: () => import('./pages/other-pharma-available-products/other-pharma-available-products').then(m => m.OtherPharmaAvailableProducts),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'pharmaceutical/all-pharmacists-available-products',
+                loadComponent: () => import('./pages/all-pharma-available-products/all-pharma-available-products').then(m => m.AllPharmaAvailableProducts),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'manage-accounts',
                 loadChildren: () => import('./pages/manage-accounts/manage-accounts-module').then(m => m.ManageAccountsModule),
                 canActivate: [authGuard],

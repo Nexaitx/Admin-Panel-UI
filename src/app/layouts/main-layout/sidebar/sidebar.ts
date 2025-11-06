@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router';
 export class Sidebar {
   userProfile = JSON.parse(localStorage.getItem('permissions') || '{}');
   permissions: string[] = [];
+  role = JSON.parse(localStorage.getItem('userProfile') || '{}').role?.roleType || '';
 
   constructor() {
     this.loadFromStorage();

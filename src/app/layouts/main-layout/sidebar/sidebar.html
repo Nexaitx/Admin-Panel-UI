@@ -131,7 +131,7 @@
         </span>
     </a>
 
-    <mat-expansion-panel mat-list-item class="mat-elevation-z0" *ngIf="hasPermission('Pharma')">
+    <mat-expansion-panel mat-list-item class="mat-elevation-z0" *ngIf="hasPermission('Pharma') && role === 'Admin'">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <mat-icon>apps</mat-icon><span>Pharma</span>
@@ -150,19 +150,42 @@
                     <mat-icon>healing</mat-icon><span>Medicines</span>
                 </span>
             </a>
-             <a mat-list-item routerLink="/app/pharmaceutical/medicines" routerLinkActive="active-link">
+
+            <a mat-list-item routerLink="/app/pharmaceutical/all-pharmacists-available-products"
+                routerLinkActive="active-link">
                 <span class="sidebar-item-content">
-                    <mat-icon>healing</mat-icon><span>My Available Medicine</span>
-                </span>
-            </a>
-             <a mat-list-item routerLink="/app/pharmaceutical/medicines" routerLinkActive="active-link">
-                <span class="sidebar-item-content">
-                    <mat-icon>healing</mat-icon><span>Other Pharmacy Prod</span>
+                    <mat-icon>healing</mat-icon><span>All Available Products</span>
                 </span>
             </a>
         </mat-nav-list>
     </mat-expansion-panel>
 
+    @if(hasPermission('Pharma') && role === 'Pharmacist') {
+    <a mat-list-item routerLink="/app/pharmaceutical/bookings" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">receipt_long</mat-icon><span>Pharma Bookings</span>
+        </span>
+    </a>
+
+    <a mat-list-item routerLink="/app/pharmaceutical/medicines" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">medications</mat-icon><span>Medicines</span>
+        </span>
+    </a>
+
+    <a mat-list-item routerLink="/app/pharmaceutical/my-available-medicine" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">health_and_safety</mat-icon><span>My Available Products</span>
+        </span>
+    </a>
+
+    <a mat-list-item routerLink="/app/pharmaceutical/other-pharmacists-available-products"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">safety_divider</mat-icon><span>Other Available Products</span>
+        </span>
+    </a>
+    }
 
     <a *ngIf="hasPermission('Diet Users')" mat-list-item routerLink="/app/diet-users" routerLinkActive="active-link">
         <span class="sidebar-item-content">
@@ -205,7 +228,7 @@
     <a *ngIf="hasPermission('Prescriptions')" mat-list-item routerLink="/app/prescription"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <mat-icon class="material-icons">group</mat-icon><span>Prescriptions</span>
+            <mat-icon class="material-icons">local_pharmacy</mat-icon><span>Prescriptions</span>
         </span>
     </a>
     <a *ngIf="hasPermission('Account')" mat-list-item routerLink="/app/account" routerLinkActive="active-link">
