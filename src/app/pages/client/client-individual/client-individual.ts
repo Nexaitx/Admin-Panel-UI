@@ -12,8 +12,10 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSelectModule } from '@angular/material/select';
 
 interface TableUser {
+  userId: number;
   userName: string;
   email: string;
   phoneNumber: string;
@@ -21,7 +23,6 @@ interface TableUser {
   address: string;
   city: string;
   signupDate: string;
-  user_id: number;
   aadhaarUrl?: string;
   originalUser: any;
 }
@@ -39,20 +40,27 @@ interface TableUser {
     MatButtonModule,
     CommonModule,
     MatMenuModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatSelectModule
   ],
   templateUrl: './client-individual.html',
   styleUrl: './client-individual.scss',
   providers: [DatePipe]
 })
 export class ClientIndividual {
- http = inject(HttpClient);
+  http = inject(HttpClient);
   @Input() client: any;
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['s_no', 'userName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
+  displayedColumns: string[] = ['s_no', 'userId', 'userName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
+  cities: any[] = [
+    { value: 'chandigarh', viewValue: 'Chandigarh' },
+    { value: 'delhi', viewValue: 'Delhi' },
+    { value: 'jaipur', viewValue: 'Jaipur' },
+    { value: 'other', viewValue: 'Other' }
+  ];
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -65,14 +73,15 @@ export class ClientIndividual {
     this.getUsers();
 
     this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      const dataStr = `${data.userName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
+      const dataStr = `${data.userId} ${data.userName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.sort.sort({ id: 'addedDate', start: 'desc', disableClear: true });
   }
 
   applyFilter(event: Event) {
@@ -85,12 +94,12 @@ export class ClientIndividual {
   }
 
   editElement(element: TableUser) {
-    alert(`Editing: ${element.userName} (User ID: ${element.user_id})`);
+    alert(`Editing: ${element.userName} (User ID: ${element.userId})`);
   }
 
   deleteElement(element: TableUser) {
-    console.log(`Delete ${element.userName} (ID: ${element.user_id})`);
-    alert(`Deleting: ${element.userName} (User ID: ${element.user_id})`);
+    console.log(`Delete ${element.userName} (ID: ${element.userId})`);
+    alert(`Deleting: ${element.userName} (User ID: ${element.userId})`);
   }
 
   openUserDrawer(element: TableUser) {
@@ -105,7 +114,7 @@ export class ClientIndividual {
 
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: TableUser[] = users.map(user => ({
-      user_id: user.user_id,
+      userId: user.userId,
       userName: user.userName,
       email: user.email,
       phoneNumber: user.phoneNumber,

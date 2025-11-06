@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSelectModule } from '@angular/material/select';
 
 interface TableUser {
   organizationName: string;
@@ -21,7 +22,7 @@ interface TableUser {
   address: string;
   city: string;
   signupDate: string;
-  user_id: number;
+  userId: number;
   aadhaarUrl?: string;
   originalUser: any;
 }
@@ -37,7 +38,9 @@ interface TableUser {
     MatButtonModule,
     CommonModule,
     MatMenuModule,
-    MatSidenavModule],
+    MatSidenavModule,
+    MatSelectModule
+  ],
   templateUrl: './client-organization.html',
   styleUrl: './client-organization.scss',
   providers: [DatePipe]
@@ -48,8 +51,14 @@ export class ClientOrganization {
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['s_no', 'organizationName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
+  displayedColumns: string[] = ['s_no', 'userId', 'organizationName', 'phoneNumber', 'email',  'address', 'city','GST/udhyam', 'aadhaar', 'signupDate', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
+  cities: any[] = [
+    { value: 'chandigarh', viewValue: 'Chandigarh' },
+    { value: 'delhi', viewValue: 'Delhi' },
+    { value: 'jaipur', viewValue: 'Jaipur' },
+    { value: 'other', viewValue: 'Other' }
+  ];
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -62,7 +71,7 @@ export class ClientOrganization {
     this.getOrganizations();
 
     this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      const dataStr = `${data.organizationName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
+      const dataStr = `${data.userId} ${data.organizationName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -70,6 +79,8 @@ export class ClientOrganization {
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+    this.sort.sort({ id: 'addedDate', start: 'desc', disableClear: true });
+
   }
 
   applyFilter(event: Event) {
@@ -82,12 +93,12 @@ export class ClientOrganization {
   }
 
   editElement(element: TableUser) {
-    alert(`Editing: ${element.organizationName} (User ID: ${element.user_id})`);
+    alert(`Editing: ${element.organizationName} (User ID: ${element.userId})`);
   }
 
   deleteElement(element: TableUser) {
-    console.log(`Delete ${element.organizationName} (ID: ${element.user_id})`);
-    alert(`Deleting: ${element.organizationName} (User ID: ${element.user_id})`);
+    console.log(`Delete ${element.organizationName} (ID: ${element.userId})`);
+    alert(`Deleting: ${element.organizationName} (User ID: ${element.userId})`);
   }
 
   openUserDrawer(element: TableUser) {
@@ -102,7 +113,7 @@ export class ClientOrganization {
 
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: TableUser[] = users.map(user => ({
-      user_id: user.user_id,
+      userId: user.userId,
       organizationName: user.organizationName,
       email: user.email,
       phoneNumber: user.phoneNumber,

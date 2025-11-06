@@ -24,10 +24,18 @@
   </mat-drawer>
 
   <div>
-    <div class="row mt-3">
+    <div class="row mt-2">
       <mat-form-field appearance="outline" class="col-md-3">
         <mat-label>Search All Clients</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllClients>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="col-md-3">
+        <mat-label>Select City</mat-label>
+        <mat-select>
+          @for (city of cities; track city) {
+          <mat-option [value]="city.value">{{city.viewValue}}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
       <div class="col-md-6 ms-auto">
         <mat-paginator [pageSizeOptions]="[5, 10, 20, 100]" aria-label="Select page of clients">
@@ -39,10 +47,15 @@
         <ng-container matColumnDef="s_no" sticky>
           <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
           <td mat-cell *matCellDef="let element; let i = index">
-            {{ i + 1 }}
+            {{ paginator.length - (paginator.pageIndex * paginator.pageSize + i) }}
           </td>
         </ng-container>
-        
+
+        <ng-container matColumnDef="userId" sticky="userId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> User&nbsp;ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.userId}} </td>
+        </ng-container>
+
         <ng-container matColumnDef="organizationName" sticky="organizationName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
           <td mat-cell *matCellDef="let element"> {{element.organizationName}} </td>
@@ -68,9 +81,9 @@
           <td mat-cell *matCellDef="let element"> {{element.city}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="signupDate" sticky="signupDate">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
-          <td mat-cell *matCellDef="let element"> {{element.signupDate}} </td>
+        <ng-container matColumnDef="GST/udhyam">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> GST/Udhyam </th>
+          <td mat-cell *matCellDef="let element"> {{element.GSTudhyam}} </td>
         </ng-container>
 
         <ng-container matColumnDef="aadhaar">
@@ -79,6 +92,11 @@
             <span *ngIf="element.aadhaar" class="true">Verified</span>
             <span *ngIf="!element.aadhaar" class="false">Not&nbsp;Verified</span>
           </td>
+        </ng-container>
+
+        <ng-container matColumnDef="signupDate" sticky="signupDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
+          <td mat-cell *matCellDef="let element"> {{element.signupDate}} </td>
         </ng-container>
 
         <ng-container matColumnDef="actions" sticky="actions">
