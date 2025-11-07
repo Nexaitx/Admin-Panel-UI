@@ -31,23 +31,61 @@
   </mat-drawer>
   <div>
     <div class="row mt-2">
-      <mat-form-field appearance="outline" class="col-md-3">
-        <mat-label>Search All Staff</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllStaffs>
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
+    <mat-label>Search All Staff</mat-label>
+    <input matInput (keyup)="applyGlobalFilter($event)" placeholder="Search..." #inputAllStaffs>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="col-md-3 small-select">
+    <mat-label>Select City</mat-label>
+    <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedCity">
+      @for (city of cities; track city) {
+        <mat-option [value]="city.value">{{city.viewValue}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
+    <mat-label>Sub Category</mat-label>
+    <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedSubcategory">
+      @for (subcat of subcategories; track subcat) {
+        <mat-option [value]="subcat.value">{{subcat.viewValue}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="col-md-3 small-select">
+    <mat-label>Experience</mat-label>
+    <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedExperience">
+      @for (exp of experiences; track exp) {
+        <mat-option [value]="exp.value">{{exp.viewValue}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="row">
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
+          <mat-label>Shift Type</mat-label>
+          <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedShiftType">
+              @for (shift of shiftTypes; track shift) {
+                  <mat-option [value]="shift.value">{{shift.viewValue}}</mat-option>
+              }
+          </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-3">
-        <mat-label>Select City</mat-label>
-        <mat-select>
-          @for (city of cities; track city) {
-          <mat-option [value]="city.value">{{city.viewValue}}</mat-option>
-          }
-        </mat-select>
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
+          <mat-label>Duty Time</mat-label>
+          <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedDutyTime">
+              @for (time of dutyTimes; track time) {
+                  <mat-option [value]="time.value">{{time.viewValue}}</mat-option>
+              }
+          </mat-select>
       </mat-form-field>
 
       <div class="col-md-6 ms-auto">
-        <mat-paginator [pageSizeOptions]="[5, 10, 20, 100]" aria-label="Select page of staff">
+        <mat-paginator class="small-select" [pageSizeOptions]="[5, 10, 20, 100]" aria-label="Select page of staff">
         </mat-paginator>
+      </div>
       </div>
     </div>
 

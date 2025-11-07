@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-staff-individual',
@@ -30,7 +31,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatMenuModule,
     MatSidenavModule,
     MatTooltipModule,
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
   ],
   templateUrl: './staff-individual.html',
   styleUrl: './staff-individual.scss',
@@ -65,11 +67,42 @@ export class StaffIndividual {
 
   dataSource: MatTableDataSource<any>;
   cities: any[] = [
+    { value: '', viewValue: 'All Cities' },
     { value: 'chandigarh', viewValue: 'Chandigarh' },
     { value: 'delhi', viewValue: 'Delhi' },
     { value: 'jaipur', viewValue: 'Jaipur' },
     { value: 'other', viewValue: 'Other' }
   ];
+  subcategories = [
+    { value: '', viewValue: 'All Subcategories' },
+    { value: 'Pediatric', viewValue: 'Pediatric' },
+    { value: 'Geriatric', viewValue: 'Geriatric' }
+  ];
+
+  experiences = [
+    { value: '', viewValue: 'All Experience' },
+    { value: '1-3 years', viewValue: '1-3 years' },
+    { value: '3-5 years', viewValue: '3-5 years' }
+  ];
+
+  shiftTypes = [
+    { value: '', viewValue: 'All Shifts' },
+    { value: 'Day', viewValue: 'Day Shift' },
+    { value: 'Night', viewValue: 'Night Shift' }
+  ];
+
+  dutyTimes = [
+    { value: '', viewValue: 'All Times' },
+    { value: '9-5', viewValue: '9:00 AM - 5:00 PM' },
+    { value: '6-2', viewValue: '6:00 PM - 2:00 AM' }
+  ];
+
+  globalFilterValue: string = '';
+  selectedCity: string = '';
+  selectedSubcategory: string = '';
+  selectedExperience: string = '';
+  selectedShiftType: string = '';
+  selectedDutyTime: string = '';
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -92,14 +125,61 @@ export class StaffIndividual {
     this.sort.sort({ id: 'addedDate', start: 'desc', disableClear: true });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  createFilter(): (data: any, filter: string) => boolean {
+    let filterFunction = (data: any, filter: string): boolean => {
+      const searchTerms = JSON.parse(filter);
+      const globalMatch = !searchTerms.globalFilterValue ||
+        data.name.toLowerCase().includes(searchTerms.globalFilterValue) ||
+        data.staffId.toLowerCase().includes(searchTerms.globalFilterValue) ||
+        data.email.toLowerCase().includes(searchTerms.globalFilterValue); // Add more fields as needed for global search
+
+      const cityMatch = !searchTerms.selectedCity || data.city === searchTerms.selectedCity;
+      const subcategoryMatch = !searchTerms.selectedSubcategory || data.subcategory === searchTerms.selectedSubcategory;
+      const experienceMatch = !searchTerms.selectedExperience || data.experience === searchTerms.selectedExperience;
+      const shiftTypeMatch = !searchTerms.selectedShiftType || data.shiftType === searchTerms.selectedShiftType;
+      // You may need more complex logic for dutyTime, e.g., checking if a range is included
+      const dutyTimeMatch = !searchTerms.selectedDutyTime || data.dutyTime === searchTerms.selectedDutyTime; 
+
+      return globalMatch && cityMatch && subcategoryMatch && experienceMatch && shiftTypeMatch && dutyTimeMatch;
+    }
+    return filterFunction;
+  }
+  
+  // Function for the Global Search input (text input)
+  applyGlobalFilter(event: Event) {
+    this.globalFilterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.applyFilter();
+  }
+
+  // Main function to apply all filters (called by mat-select changes and applyGlobalFilter)
+  applyFilter() {
+    // Create an object containing all current filter values
+    const filterObject = {
+      globalFilterValue: this.globalFilterValue,
+      selectedCity: this.selectedCity,
+      selectedSubcategory: this.selectedSubcategory,
+      selectedExperience: this.selectedExperience,
+      selectedShiftType: this.selectedShiftType,
+      selectedDutyTime: this.selectedDutyTime
+    };
+
+    // Set the filter property to the stringified JSON object
+    this.dataSource.filter = JSON.stringify(filterObject);
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
+
+
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
 
   editElement(element: any) {
     console.log(`Edit ${element.name} (ID: ${element.staffId})`);

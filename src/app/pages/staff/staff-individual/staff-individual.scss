@@ -1,0 +1,30 @@
+:host {
+  ::ng-deep {
+    .small-select .mat-mdc-form-field-infix {
+      min-height: 40px !important;
+      padding-top: 8px !important;
+      padding-bottom: 0 !important;
+    }
+
+    .small-select .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+      height: 100% !important;
+    }
+
+    .small-select .mat-mdc-form-field-wrapper {
+      height: 40px !important;
+    }
+
+    .small-select .mat-mdc-form-field-flex {
+      align-items: center;
+      /* to center children vertically */
+    }
+
+    .small-select .mat-mdc-select-min-line {
+      font-size: 14px !important;
+    }
+
+    .small-select .mat-mdc-floating-label {
+      padding-bottom: 15px;
+    }
+  }
+}
