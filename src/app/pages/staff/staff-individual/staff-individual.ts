@@ -58,6 +58,8 @@ export class StaffIndividual {
     'experience',
     'category',
     'subcategory',
+    'dutyTimeStart',
+    'dutyTimeEnd',
     'shiftType',
     'price',
     'rating',
@@ -131,7 +133,7 @@ export class StaffIndividual {
       const globalMatch = !searchTerms.globalFilterValue ||
         data.name.toLowerCase().includes(searchTerms.globalFilterValue) ||
         data.staffId.toLowerCase().includes(searchTerms.globalFilterValue) ||
-        data.email.toLowerCase().includes(searchTerms.globalFilterValue); // Add more fields as needed for global search
+        data.email.toLowerCase().includes(searchTerms.globalFilterValue);
 
       const cityMatch = !searchTerms.selectedCity || data.city === searchTerms.selectedCity;
       const subcategoryMatch = !searchTerms.selectedSubcategory || data.subcategory === searchTerms.selectedSubcategory;
@@ -163,7 +165,6 @@ export class StaffIndividual {
       selectedDutyTime: this.selectedDutyTime
     };
 
-    // Set the filter property to the stringified JSON object
     this.dataSource.filter = JSON.stringify(filterObject);
 
     if (this.dataSource.paginator) {

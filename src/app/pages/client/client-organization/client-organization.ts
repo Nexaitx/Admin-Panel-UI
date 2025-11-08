@@ -51,7 +51,7 @@ export class ClientOrganization {
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['s_no', 'userId', 'organizationName', 'phoneNumber', 'email',  'address', 'city','GST/udhyam', 'aadhaar', 'signupDate', 'actions'];
+  displayedColumns: string[] = ['s_no', 'userId', 'organizationName', 'phoneNumber', 'email',  'address', 'city','GST', 'aadhaar', 'signupDate', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
   cities: any[] = [
     { value: 'chandigarh', viewValue: 'Chandigarh' },
@@ -69,7 +69,6 @@ export class ClientOrganization {
 
   ngOnInit(): void {
     this.getOrganizations();
-
     this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
       const dataStr = `${data.userId} ${data.organizationName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());

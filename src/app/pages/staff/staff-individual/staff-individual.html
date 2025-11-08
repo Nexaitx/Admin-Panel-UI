@@ -5,7 +5,7 @@
       <p>Name: {{ selectedStaff.name }}</p>
       <p>Category: {{ selectedStaff.category }}</p>
 
-      <p><u>Degree Certificate Attachment: </u></p>
+      <p><u>Education Certificate Attachment: </u></p>
       @if(selectedStaff?.originalStaff?.degreeUrl){
       <div class="w-100 mb-3"><img class="attachments" [src]="selectedStaff?.originalStaff?.degreeUrl"
           alt="{{ selectedStaff.degree }}'s photo"></div>
@@ -149,9 +149,25 @@
           <td mat-cell *matCellDef="let element"> {{element.subcategory}} </td>
         </ng-container>
 
+        <ng-container matColumnDef="dutyTimeStart">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Duty&nbsp;Preferred&nbsp;Time&nbsp;Start </th>
+          <td mat-cell *matCellDef="let element"> {{element.dutyTimeStart}} </td>
+        </ng-container>
+        <ng-container matColumnDef="dutyTimeEnd">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Duty&nbsp;Preferred&nbsp;Time&nbsp;End </th>
+          <td mat-cell *matCellDef="let element"> {{element.dutyTimeEnd}} </td>
+        </ng-container>
+
         <ng-container matColumnDef="shiftType">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Shift Type </th>
-          <td mat-cell *matCellDef="let element"> {{element.shiftType}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;Shift&nbsp;Type&nbsp;</th>
+          <td mat-cell *matCellDef="let element">
+          <select class="form-select form-select-sm">
+            <option value="">2 hours</option>
+            <option value="">4 hours</option>
+            <option value="">8 hours</option>
+            <option value="">12 hours</option>
+          </select>  
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="price">
