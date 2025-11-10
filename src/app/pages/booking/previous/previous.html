@@ -6,75 +6,157 @@
     </mat-form-field>
     <div class="scrollableTable overflow-x-auto">
         <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="select" sticky>
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" sticky>
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
 
-            <!-- Booking ID Column -->
+            <ng-container matColumnDef="s_no" sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> S&nbsp;No </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                    {{ i + 1 }}
+                </td>
+            </ng-container>
+
             <ng-container matColumnDef="bookingId" sticky="true">
-                <th mat-header-cell *matHeaderCellDef>Booking ID</th>
+                <th mat-header-cell *matHeaderCellDef>Booking&nbsp;ID</th>
                 <td mat-cell *matCellDef="let element">{{element.bookingId}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="bookingNo" sticky="true">
+                <th mat-header-cell *matHeaderCellDef>Booking&nbsp;Number</th>
+                <td mat-cell *matCellDef="let element">{{element.bookingNo}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="staffId">
+                <th mat-header-cell *matHeaderCellDef>Staff&nbsp;ID</th>
+                <td mat-cell *matCellDef="let element">{{element.staffId}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="staffDetails">
+                <th mat-header-cell *matHeaderCellDef>Staff&nbsp;Details</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="d-flex view" (click)="onViewAction()">
+                        <mat-icon>visibility</mat-icon>
+                        <span> Staff&nbsp;Details</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="rating">
+                <th mat-header-cell *matHeaderCellDef>Rating</th>
+                <td mat-cell *matCellDef="let element">{{element.rating || '-'}}</td>
+            </ng-container>
+
+            <!-- City Column -->
+            <ng-container matColumnDef="city">
+                <th mat-header-cell *matHeaderCellDef>City</th>
+                <td mat-cell *matCellDef="let element">{{element.city || '-'}}</td>
+            </ng-container>
+
+
+
+            <ng-container matColumnDef="viewBooking">
+                <th mat-header-cell *matHeaderCellDef>View Booking</th>
+                <td mat-cell *matCellDef="let item">
+                    <div class="d-flex view" (click)="onViewAction()">
+                        <mat-icon>visibility</mat-icon>
+                        <span> View&nbsp;Booking</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="bookingStatus">
+                <th mat-header-cell *matHeaderCellDef>Booking&nbsp;Status</th>
+                <td mat-cell *matCellDef="let element">{{element.bookingStatus || '-'}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="viewBill">
+                <th mat-header-cell *matHeaderCellDef>View Bill</th>
+                <td mat-cell *matCellDef="let item">
+                    <div class="d-flex view" (click)="onViewAction()">
+                        <mat-icon>visibility</mat-icon>
+                        <span> View&nbsp;Bill</span>
+                    </div>
+                </td>
             </ng-container>
 
             <!-- Start Date Column -->
             <ng-container matColumnDef="startDate">
-                <th mat-header-cell *matHeaderCellDef>Start Date</th>
+                <th mat-header-cell *matHeaderCellDef>Duty&nbsp;Start&nbsp;Date</th>
                 <td mat-cell *matCellDef="let element">{{element.startDate | date:'mediumDate'}}</td>
             </ng-container>
 
             <!-- End Date Column -->
             <ng-container matColumnDef="endDate">
-                <th mat-header-cell *matHeaderCellDef>End Date</th>
+                <th mat-header-cell *matHeaderCellDef>Duty&nbsp;End&nbsp;Date</th>
                 <td mat-cell *matCellDef="let element">{{element.endDate ? (element.endDate | date:'mediumDate') : '-'}}
                 </td>
             </ng-container>
 
-            <!-- Status Column -->
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Status</th>
+            <ng-container matColumnDef="shiftType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;Shift&nbsp;Type&nbsp;</th>
                 <td mat-cell *matCellDef="let element">
-                    <span class="px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
-                        'bg-green-100 text-green-800': element.status === 'accept',
-                        'bg-red-100 text-red-800': element.status === 'reject',
-                        'bg-yellow-100 text-yellow-800': element.status === 'pending'
-                      }">
-                        {{element.status}}
-                    </span>
+                    <select class="form-select form-select-sm">
+                        <option value="">2 to 4 hours</option>
+                        <option value="">4 to 6 hours</option>
+                        <option value="">6 to 8 hours</option>
+                        <option value="">8 to 12 hours</option>
+                        <option value="">24 hours</option>
+                        <option value="">Weekly</option>
+                        <option value="">Monthly</option>
+                    </select>
                 </td>
             </ng-container>
 
-            <!-- User Name Column -->
-            <ng-container matColumnDef="userName">
-                <th mat-header-cell *matHeaderCellDef>User Name</th>
-                <td mat-cell *matCellDef="let element">{{element.userName}}</td>
-            </ng-container>
-
-            <!-- User Phone Column -->
-            <ng-container matColumnDef="userPhone">
-                <th mat-header-cell *matHeaderCellDef>User Phone</th>
-                <td mat-cell *matCellDef="let element">{{element.userPhone}}</td>
-            </ng-container>
-
-            <!-- Staff Name Column -->
-            <ng-container matColumnDef="staffName">
-                <th mat-header-cell *matHeaderCellDef>Staff Name</th>
-                <td mat-cell *matCellDef="let element">{{element.staffName}}</td>
-            </ng-container>
-
-            <!-- Staff Phone Column -->
-            <ng-container matColumnDef="staffPhone">
-                <th mat-header-cell *matHeaderCellDef>Staff Phone</th>
-                <td mat-cell *matCellDef="let element">{{element.staffPhone}}</td>
-            </ng-container>
-
-            <!-- Duties Column -->
-            <ng-container matColumnDef="duties">
-                <th mat-header-cell *matHeaderCellDef>Duties</th>
-                <td mat-cell *matCellDef="let element">{{element.duties || '-'}}</td>
-            </ng-container>
-
-            <!-- Price Column -->
             <ng-container matColumnDef="price">
                 <th mat-header-cell *matHeaderCellDef>Price</th>
                 <td mat-cell *matCellDef="let element">{{element.price || '-'}}</td>
             </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Payment&nbsp;Status</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="px-2 py-1 rounded-pill border-0 font-medium" [ngClass]="{
+                        'bg-green text-green': element.status === 'ACCEPTED',
+                        'bg-red text-red': element.status === 'REJECTED',
+                        'bg-yellow text-yellow': element.status === 'PENDING'
+                      }">
+                        {{element.status | titlecase}}
+                    </span>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #actionMenu="matMenu">
+                            <button mat-menu-item>
+                                <mat-icon>close_small</mat-icon>
+                                <span>Duty Cancelled</span>
+                            </button>
+
+                            <button mat-menu-item>
+                                <mat-icon>replay</mat-icon>
+                                <span>Re-Assign Duty</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
 
             <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: columnsToDisplay;" class="hover:bg-gray-100 transition-colors">
@@ -88,3 +170,78 @@
         No bookings to display.
     </div>
 </div>
+
+<ng-template #viewDialog>
+    <div class="d-flex justify-content-between">
+        <div>
+            <!-- <h2 mat-dialog-title>{{selectedHeading}}</h2> -->
+        </div>
+        <div class="m-2">
+            <button matIconButton mat-dialog-close><mat-icon>
+                    close
+                </mat-icon></button>
+        </div>
+    </div>
+    <mat-dialog-content>
+        <p>Order Number: 113345</p>
+        <table>
+            <thead>
+                <th>S No.</th>
+                <th>Booking ID</th>
+                <th>Staff Name</th>
+                <th>Customer Name</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        BK009879
+                    </td>
+                    <td>
+                        John Doe
+                    </td>
+                    <td>
+                        XYZ
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        BK009879
+                    </td>
+                    <td>
+                        John Doe
+                    </td>
+                    <td>
+                        XYZ
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        BK009879
+                    </td>
+                    <td>
+                        John Doe
+                    </td>
+                    <td>
+                        XYZ
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button>Download</button>
+
+        <button mat-flat-button color="primary" (click)="dialog.closeAll()">Print</button>
+    </mat-dialog-actions>
+</ng-template>

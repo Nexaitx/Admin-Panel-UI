@@ -70,6 +70,8 @@ export class PharmaMedicines {
   medicines: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
   editingRow: any = null;
+  selectedAvailability: string = '';
+
 
   // displayedColumns: string[] = [
   //   'select', 's_no',
@@ -81,7 +83,7 @@ export class PharmaMedicines {
   displayedManualMedicineColumns: string[] = [
     'select', 's_no',
     'medicineId', 'name', 'category', 'quantityInStock', 'mrp',
-    'discountPercentage',  'price', 'active', 'actions'
+    'discountPercentage', 'price', 'active', 'actions'
   ];
 
 
@@ -151,27 +153,42 @@ export class PharmaMedicines {
     });
   }
 
-  onEdit(row: any) {
-  this.editingRow = row;
-  this.selectedMedicine = row;
-  // maybe patch form here if you’re using a form
-  // this.prescriptionForm.patchValue({...row});
-}
+  onAvailabilityChange(value: string) {
+    this.selectedAvailability = value;
+    if(this.selectedAvailability === 'true') {
+      // this.http.get(`${API_URL + ENDPOINTS.GET_MY_AVAILABLE_MEDICINES}`)
+      //   .subscribe((data: any) => {
+      //     this.medicines = data || [];
+      //     this.dataSource.data = this.medicines;
+      //   }, error => {
+      //     console.error('Error fetching available medicines:', error);
+      //     this.showError('Failed to load available medicines');
+      //   });
+    }
+  }
 
-onSave(row: any) {
-  // if (this.prescriptionForm.valid) {
+  onEdit(row: any) {
+    this.editingRow = row;
+    this.selectedMedicine = row;
+    // maybe patch form here if you’re using a form
+    // this.prescriptionForm.patchValue({...row});
+  }
+
+  onSave(row: any) {
+    // if (this.prescriptionForm.valid) {
     // call your update logic here (API, etc)
     // after save success:
     this.editingRow = null;
     // this.getprescriptions();  // refresh data
   }
-// }
+  // }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
   }
+  
   toggleAllRows() {
     if (this.isAllSelected()) {
       this.selection.clear();
@@ -180,6 +197,7 @@ onSave(row: any) {
 
     this.selection.select(...this.dataSource.data);
   }
+
   checkboxLabel(row?: any): string {
     if (!row) {
       return `${this.isAllSelected() ? 'deselect' : 'select'} all`;

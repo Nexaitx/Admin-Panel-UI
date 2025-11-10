@@ -1,16 +1,3 @@
-<!-- <mat-tab-group>
-  <mat-tab label="Dieticians">
-    <app-dieticians-list></app-dieticians-list>
-  </mat-tab>
-  <mat-tab label="Diet Plans">
-    <app-diet-plan></app-diet-plan>
-  </mat-tab>
-
-  <mat-tab label="Subscription Plans">
-    <app-subscription-plan></app-subscription-plan>
-  </mat-tab>
-</mat-tab-group> -->
-
 <mat-drawer-container class="drawer-container">
     <mat-drawer class="w-75 p-3" #userDrawer mode="over" [(opened)]="isDrawerOpen" position="end">
         <h2> {{ verification ? 'Pharmacist Verification' : 'Pharmacist Details' }}</h2>
@@ -144,7 +131,7 @@
     <div>
         <div class="table-controls d-flex">
             <mat-form-field class="full-width-input">
-                <mat-label>Search Dietician</mat-label>
+                <mat-label>Search All Pharmacist</mat-label>
                 <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllUsers>
             </mat-form-field>
 
@@ -157,19 +144,19 @@
         <div class="table-container">
             <table mat-table [dataSource]="dataSource" matSort>
                 <ng-container matColumnDef="s_no" sticky>
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> S&nbsp;No.&nbsp;</th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
                     <td mat-cell *matCellDef="let element; let i = index">
                         {{ i + 1 }}
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="dieticianId">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Dietician&nbsp;ID </th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Dietician ID </th>
                     <td mat-cell *matCellDef="let element"> {{element.dieticianId}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Dietician&nbsp;Name </th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Dietician Name </th>
                     <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                 </ng-container>
 
@@ -200,7 +187,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="createdOn">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Created&nbsp;On </th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
                     <td mat-cell *matCellDef="let element"> {{element.createdOn | date:'medium'}} </td>
                 </ng-container>
 

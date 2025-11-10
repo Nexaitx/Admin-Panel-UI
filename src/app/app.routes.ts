@@ -110,6 +110,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/booking/booking').then(m => m.Booking),
                 canActivate: [authGuard],
             },
+             {
+                path: 'diet-subscription',
+                loadComponent: () => import('./pages/diet-bookings/diet-bookings').then(m => m.DietBookings),
+                canActivate: [authGuard],
+            },
             {
                 path: 'account',
                 loadComponent: () => import('./pages/accounts-address/accounts-address').then(m => m.AccountsAddress),

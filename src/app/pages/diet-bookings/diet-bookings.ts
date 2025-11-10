@@ -31,9 +31,9 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
 };
 
 @Component({
-  selector: 'app-dietician',
+  selector: 'app-diet-bookings',
   imports: [
-     MatCardModule,
+    MatCardModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -53,11 +53,11 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
     MatRadioModule,
     FormsModule
   ],
-  templateUrl: './dietician.html',
-  styleUrl: './dietician.scss'
+  templateUrl: './diet-bookings.html',
+  styleUrl: './diet-bookings.scss'
 })
-export class Dietician {
-http = inject(HttpClient);
+export class DietBookings {
+  http = inject(HttpClient);
   fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   accounts: any[] = [];

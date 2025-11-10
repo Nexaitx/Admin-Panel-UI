@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, inject, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -9,6 +9,10 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-previous',
@@ -20,7 +24,11 @@ import { MatInputModule } from '@angular/material/input';
     MatSortModule,
     MatInputModule,
     DatePipe,
-    MatButtonModule],
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatMenuModule
+  ],
   templateUrl: './previous.html',
   styleUrl: './previous.scss'
 })
@@ -28,10 +36,13 @@ export class Previous {
   @Input() booking: any;
   http = inject(HttpClient);
   dataSource = new MatTableDataSource<any>();
-  columnsToDisplay = ['bookingId', 'startDate', 'endDate', 'status', 'userName', 'userPhone', 'staffName', 'staffPhone', 'duties', 'price'];
+  columnsToDisplay = ['select', 's_no', 'bookingId', 'bookingNo', 'viewBooking', 'viewBill', 'bookingStatus', 'staffId', 'staffDetails', 'rating', 'startDate', 'endDate', 'shiftType', 'price', 'status', 'actions'];
   isLoading = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  selection = new SelectionModel<any>(true, []);
+  @ViewChild('viewDialog') viewDialog!: TemplateRef<any>;
+  dialog = inject(MatDialog);
 
   constructor() { }
 
@@ -43,6 +54,21 @@ export class Previous {
     this.dataSource.sort = this.sort;
   }
 
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -52,6 +78,16 @@ export class Previous {
     }
   }
 
+  onViewAction(): void {
+    const dialogRef = this.dialog.open(this.viewDialog, {
+      width: '800px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+      }
+    });
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['booking'] && changes['booking'].currentValue) {
       this.fetchData();
@@ -61,7 +97,7 @@ export class Previous {
   fetchData(): void {
     let endpoint = '';
     this.isLoading = true;
-      endpoint = ENDPOINTS.GET_PREVIOUS_BOOKINGS;
+    endpoint = ENDPOINTS.GET_PREVIOUS_BOOKINGS;
     if (endpoint) {
       this.http.get<any[]>(API_URL + endpoint).subscribe({
         next: (res: any[]) => {

@@ -51,7 +51,7 @@ export class ClientOrganization {
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['s_no', 'userId', 'organizationName', 'phoneNumber', 'email',  'address', 'city','GST', 'aadhaar', 'signupDate', 'actions'];
+  displayedColumns: string[] = ['s_no', 'userId', 'organizationName', 'phoneNumber', 'email',  'address', 'city','documentVerified', 'signupDate', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
   cities: any[] = [
     { value: 'chandigarh', viewValue: 'Chandigarh' },

@@ -1,4 +1,4 @@
-import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, TemplateRef, viewChild, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -65,7 +65,7 @@ export class Pharmacist {
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
   permission: boolean = false;
-  displayedColumns: string[] = ['s_no', 'name', 'email', 'actions'];
+  displayedColumns: string[] = ['s_no', 'pharmaId', 'pharmacyName', 'name', 'phone', 'email', 'address', 'city', 'rating', 'verified', 'createdOn', 'actions'];
 
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;
@@ -75,6 +75,7 @@ export class Pharmacist {
   verification: boolean = false;
   dialog = inject(MatDialog);
   @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
+  @ViewChild('verificationDialog') verificationDialog!: TemplateRef<any>;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -225,21 +226,21 @@ export class Pharmacist {
     }
   }
 
- submitVerification() {
+  submitVerification() {
     console.log(this.toggleChecked);
-    
+
     // --- 1. Safely retrieve adminId and check for null/undefined ---
     const adminId = this.selectedUser?.admin_id;
 
     if (!adminId) {
-        // Re-enable the necessary safety check
-        this.snackBar.open('Admin ID is missing. Cannot proceed with update.', 'Close', { 
-            duration: 3000, 
-            panelClass: ['snackbar-error'] 
-        });
-        return;
+      // Re-enable the necessary safety check
+      this.snackBar.open('Admin ID is missing. Cannot proceed with update.', 'Close', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
     }
-    
+
     const newStatus = this.toggleChecked; // e.g., 'PENDING', 'VERIFIED', etc.
 
     // --- 2. Define HttpHeaders (Crucial for Authorization) ---
@@ -249,15 +250,15 @@ export class Pharmacist {
       // Assuming your backend expects a Bearer token
       headers = headers.set('Authorization', `Bearer ${token}`);
     } else {
-        // If token is required but missing, stop and inform the user/console.
-        console.error('Authorization token is missing.');
-        this.snackBar.open('Authentication error. Please log in again.', 'Close', { duration: 3000, panelClass: ['snackbar-error'] });
-        return;
+      // If token is required but missing, stop and inform the user/console.
+      console.error('Authorization token is missing.');
+      this.snackBar.open('Authentication error. Please log in again.', 'Close', { duration: 3000, panelClass: ['snackbar-error'] });
+      return;
     }
 
     // --- 3. Define the query parameters using HttpParams (Already correct) ---
     let params = new HttpParams().set('status', newStatus);
-    
+
     // --- 4. Define the base URL (Already correct) ---
     const url = `${API_URL}${ENDPOINTS.UPDATE_VERIFICATION_ACCESS}/${adminId}/update-status`;
 
@@ -265,37 +266,37 @@ export class Pharmacist {
 
     // --- 5. Make the API call including both headers and parameters ---
     this.http.put(url, null, { headers, params }).subscribe({
-        next: (res: any) => {
-            this.submittingVerification = false;
-            
-            // Adjusting success message logic to be clearer
-            if (newStatus === 'VERIFIED' || res.active === true) {
-                 this.snackBar.open(`${this.selectedUser.name} Verified successfully.`, 'Close', { 
-                     duration: 3000, 
-                     panelClass: ['snackbar-success'] 
-                 });
-            } else {
-                 this.snackBar.open(`${this.selectedUser.name} status set to ${newStatus}.`, 'Close', { 
-                     duration: 3000, 
-                     panelClass: ['snackbar-success'] 
-                 });
-            }
-            // Optionally reload user list or table here
-        },
-        error: (err: any) => {
-            console.error('API Error:', err);
-            this.submittingVerification = false;
-            
-            // Provide more detail on the error if possible (e.g., from error.message or error.status)
-            const errorMessage = err.error?.message || 'Failed to update verification status. Try again later.';
+      next: (res: any) => {
+        this.submittingVerification = false;
 
-            this.snackBar.open(errorMessage, 'Close', { 
-                duration: 5000, 
-                panelClass: ['snackbar-error'] 
-            });
+        // Adjusting success message logic to be clearer
+        if (newStatus === 'VERIFIED' || res.active === true) {
+          this.snackBar.open(`${this.selectedUser.name} Verified successfully.`, 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-success']
+          });
+        } else {
+          this.snackBar.open(`${this.selectedUser.name} status set to ${newStatus}.`, 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-success']
+          });
         }
+        // Optionally reload user list or table here
+      },
+      error: (err: any) => {
+        console.error('API Error:', err);
+        this.submittingVerification = false;
+
+        // Provide more detail on the error if possible (e.g., from error.message or error.status)
+        const errorMessage = err.error?.message || 'Failed to update verification status. Try again later.';
+
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          panelClass: ['snackbar-error']
+        });
+      }
     });
-}
+  }
 
 
   openDialog(m: any) {
@@ -304,6 +305,17 @@ export class Pharmacist {
     });
     const dialogRef = this.dialog.open(this.discountDialog, {
       width: '400px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  openVerificationDialog(m: any) {
+    const dialogRef = this.dialog.open(this.verificationDialog, {
+      width: '800px',
+      minWidth: '800px',
       data: {}
     });
 

@@ -210,7 +210,7 @@
 
       <mat-form-field appearance="outline" class="small-select col-md-2">
         <mat-label>Select Availability</mat-label>
-        <mat-select>
+        <mat-select ([value)]="selectedAvailability" (selectionChange)="onAvailabilityChange($event.value)">
           <mat-option value="" disabled>Select Availability</mat-option>
           <mat-option value="true">Available medicines</mat-option>
           <mat-option value="false">Non Available medicines</mat-option>

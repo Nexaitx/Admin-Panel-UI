@@ -1,0 +1,23 @@
+.view {
+  gap: 4px;
+  align-items: flex-start;
+  cursor: pointer;
+  mat-icon {
+    font-size: 18px;
+    margin-right: -5px;
+  }
+}
+.bg-green {
+  background-color: #d1fae5;
+  color: #065f46;
+} 
+
+.bg-red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.bg-yellow {
+  background-color: #fef3c7;
+  color: #92400e;
+}

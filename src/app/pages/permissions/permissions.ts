@@ -27,7 +27,7 @@ export class Permissions {
     'Manage', 'Bookings', 'Duty Logs', 'GPS Monitoring', 'GPS Deviation',
     'Bulk Assignment', 'Overtime Duties', 'Overtime Approvals', 'Devices & Addresses',
     'Roles', 'Pharma', 'Account', 'Prescriptions', 'Permissions', 'Diet Plans', 'Diet Subscription Plans',
-    'Ledgers', 'Diet Bookings', 'Dietician Reports', 'Settings'
+    'Ledgers', 'Diet Bookings', 'Dietician Reports', 'Diet Subscription', 'Settings'
   ];
 
   constructor() {

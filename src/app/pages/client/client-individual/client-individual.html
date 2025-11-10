@@ -48,7 +48,7 @@
         <ng-container matColumnDef="s_no" sticky>
           <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
           <td mat-cell *matCellDef="let element; let i = index">
-           {{ paginator.length - (paginator.pageIndex * paginator.pageSize + i) }}
+            {{ paginator.length - (paginator.pageIndex * paginator.pageSize + i) }}
           </td>
         </ng-container>
 
@@ -62,7 +62,7 @@
           <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="email" sticky="email">
+        <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
           <td mat-cell *matCellDef="let element"> {{element.email}} </td>
         </ng-container>
@@ -77,12 +77,12 @@
           <td mat-cell *matCellDef="let element"> {{element.address}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="city" sticky="city">
+        <ng-container matColumnDef="city">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> City </th>
           <td mat-cell *matCellDef="let element"> {{element.city}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="signupDate" sticky="signupDate">
+        <ng-container matColumnDef="signupDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
           <td mat-cell *matCellDef="let element"> {{element.signupDate}} </td>
         </ng-container>
@@ -111,8 +111,8 @@
                 <span>View</span>
               </button>
               <button mat-menu-item (click)="deleteElement(element)">
-                <mat-icon>delete</mat-icon>
-                <span>Delete</span>
+                <mat-icon>download</mat-icon>
+                <span>Download</span>
               </button>
             </mat-menu>
           </td>
