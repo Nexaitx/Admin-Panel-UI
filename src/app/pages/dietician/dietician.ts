@@ -33,7 +33,7 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
 @Component({
   selector: 'app-dietician',
   imports: [
-     MatCardModule,
+    MatCardModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -57,7 +57,7 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
   styleUrl: './dietician.scss'
 })
 export class Dietician {
-http = inject(HttpClient);
+  http = inject(HttpClient);
   fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   accounts: any[] = [];
@@ -77,6 +77,8 @@ http = inject(HttpClient);
   @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('verificationDialog') verificationDialog!: TemplateRef<any>;
+
 
   constructor() {
     this.dataSource = new MatTableDataSource<any>([]);
@@ -112,6 +114,17 @@ http = inject(HttpClient);
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+
+  openVerificationDialog(m: any) {
+    const dialogRef = this.dialog.open(this.verificationDialog, {
+      width: '800px',
+      minWidth: '800px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   applyFilter(event: Event) {

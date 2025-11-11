@@ -131,5 +131,8 @@ export const ENDPOINTS = {
     BULK_AVAILABILITY_TOGGLE: '/api/medicines/bulk-show-in-app', 
     BULK_DISCOUNT: '/api/admin/medicines/bulk/discount',
 
+    // available/non-available medicines
+    GET_MY_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/pharmacist/my/available',
+
 
 };

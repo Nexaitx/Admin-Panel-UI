@@ -198,7 +198,7 @@
 
   <mat-drawer-content>
     <div class="row mt-2">
-      <mat-form-field appearance="outline" class="small-select col-md-2">
+      <mat-form-field appearance="outline" class="small-select col-md-3">
         <mat-label>Select Orders</mat-label>
         <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
           <mat-option value="" disabled>Select Medicine Type</mat-option>
@@ -210,7 +210,7 @@
 
       <mat-form-field appearance="outline" class="small-select col-md-2">
         <mat-label>Select Availability</mat-label>
-        <mat-select ([value)]="selectedAvailability" (selectionChange)="onAvailabilityChange($event.value)">
+        <mat-select [(value)]="selectedAvailability" (selectionChange)="onAvailabilityChange($event.value)">
           <mat-option value="" disabled>Select Availability</mat-option>
           <mat-option value="true">Available medicines</mat-option>
           <mat-option value="false">Non Available medicines</mat-option>
@@ -233,13 +233,15 @@
     </div>
     <div class="d-flex justify-content-between">
       <div>
-        <button class="" matButton="tonal" (click)="editing = false; openCreate()">
-          Add Medicine request</button>
-
-        <mat-form-field appearance="outline" class="ms-2">
+        
+        <mat-form-field appearance="outline">
           <mat-label>Search Orders</mat-label>
           <input matInput (keyup)="applySearchFilter($event)" placeholder="Search by medicine">
         </mat-form-field>
+
+        <button class="ms-2" matButton="tonal" (click)="editing = false; openCreate()">
+          Add Medicine request</button>
+
       </div>
 
       <mat-paginator [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons></mat-paginator>

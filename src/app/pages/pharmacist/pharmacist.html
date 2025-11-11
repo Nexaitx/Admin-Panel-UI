@@ -131,7 +131,7 @@
     <div>
         <div class="table-controls d-flex">
             <mat-form-field class="full-width-input">
-                <mat-label>Search All Pharmacist</mat-label>
+                <mat-label>Search Pharmacist</mat-label>
                 <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllUsers>
             </mat-form-field>
 
@@ -192,7 +192,7 @@
                 <ng-container matColumnDef="verified">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Verified </th>
                     <td mat-cell *matCellDef="let element">
-                        <div [ngClass]="{'verified': element.verified, 'not-verified': !element.verified}"
+                        <div  class="text-light rounded-pill text-center" [ngClass]="{'verified': element.verified, 'not-verified': !element.verified}"
                             (click)="openVerificationDialog(element)">{{element.verified ? 'Yes' : 'No'}}</div>
                     </td>
                 </ng-container>

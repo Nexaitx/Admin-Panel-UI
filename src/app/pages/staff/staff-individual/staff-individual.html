@@ -31,12 +31,7 @@
   </mat-drawer>
   <div>
     <div class="row mt-2">
-      <mat-form-field appearance="outline" class="col-md-3 small-select">
-        <mat-label>Search All Staff</mat-label>
-        <input matInput (keyup)="applyGlobalFilter($event)" placeholder="Search..." #inputAllStaffs>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="col-md-3 small-select">
+      <mat-form-field appearance="outline" class="col-md-2 small-select">
         <mat-label>Select City</mat-label>
         <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedCity">
           @for (city of cities; track city) {
@@ -63,29 +58,35 @@
         </mat-select>
       </mat-form-field>
 
-      <div class="row">
-        <mat-form-field appearance="outline" class="col-md-3 small-select">
-          <mat-label>Shift Type</mat-label>
-          <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedShiftType">
-            @for (shift of shiftTypes; track shift) {
-            <mat-option [value]="shift.value">{{shift.viewValue}}</mat-option>
-            }
-          </mat-select>
+      <mat-form-field appearance="outline" class="col-md-2 small-select">
+        <mat-label>Shift Type</mat-label>
+        <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedShiftType">
+          <mat-option value="">2 to 4 hours</mat-option>
+          <mat-option value="">4 to 6 hours</mat-option>
+          <mat-option value="">6 to 8 hours</mat-option>
+          <mat-option value="">8 to 12 hours</mat-option>
+          <mat-option value="">24 hours</mat-option>
+          <mat-option value="">Weekly</mat-option>
+          <mat-option value="">Monthly</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md-2 small-select">
+        <mat-label>Pick a Duty Time</mat-label>
+        <input matInput [matTimepicker]="picker">
+        <mat-timepicker-toggle matIconSuffix [for]="picker" (selectionChange)="applyFilter()" [(ngModel)]="selectedDutyTime" />
+        <mat-timepicker #picker />
+      </mat-form-field>
+
+
+      <div class="col-md-12 ms-auto d-flex justify-content-between mb-2">
+        <mat-form-field appearance="outline" class="small-select">
+          <mat-label>Search All Staff</mat-label>
+          <input matInput (keyup)="applyGlobalFilter($event)" placeholder="Search..." #inputAllStaffs>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="col-md-3 small-select">
-          <mat-label>Duty Time</mat-label>
-          <mat-select (selectionChange)="applyFilter()" [(ngModel)]="selectedDutyTime">
-            @for (time of dutyTimes; track time) {
-            <mat-option [value]="time.value">{{time.viewValue}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <div class="col-md-6 ms-auto">
-          <mat-paginator class="small-select" [pageSizeOptions]="[5, 10, 20, 100]" aria-label="Select page of staff">
-          </mat-paginator>
-        </div>
+        <mat-paginator class="small-select" [pageSizeOptions]="[5, 10, 20, 100]" aria-label="Select page of staff">
+        </mat-paginator>
       </div>
     </div>
 
@@ -161,13 +162,14 @@
         <ng-container matColumnDef="shiftType">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;Shift&nbsp;Type&nbsp;</th>
           <td mat-cell *matCellDef="let element">
-            <select class="form-select form-select-sm">
-              <option value="">2 hours</option>
-              <option value="">4 hours</option>
-              <option value="">8 hours</option>
-              <option value="">12 hours</option>
+            <select class="form-select form-select-sm" style="width:120px">
+              <option value="">2 to 4 hours</option>
+              <option value="">4 to 6 hours</option>
+              <option value="">6 to 8 hours</option>
+              <option value="">8 to 12 hours</option>
               <option value="">24 hours</option>
-              <option value="">1 Month</option>
+              <option value="">Weekly</option>
+              <option value="">Monthly</option>
             </select>
           </td>
         </ng-container>

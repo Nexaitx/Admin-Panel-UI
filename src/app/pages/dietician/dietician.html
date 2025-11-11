@@ -196,7 +196,11 @@
 
                 <ng-container matColumnDef="verified">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Verified </th>
-                    <td mat-cell *matCellDef="let element"> {{element.verified ? 'Yes' : 'No'}} </td>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="text-light rounded-pill text-center" [ngClass]="{'verified': element.verified, 'not-verified': !element.verified}"
+                            (click)="openVerificationDialog(element)">{{element.verified ? 'Yes' : 'No'}}</div>
+                    </td>
+                    <!-- <td mat-cell *matCellDef="let element"> {{element.verified ? 'Yes' : 'No'}} </td> -->
                 </ng-container>
 
                 <ng-container matColumnDef="createdOn">
@@ -271,6 +275,61 @@
             <button mat-button mat-dialog-close>Cancel</button>
             <button mat-flat-button color="primary"
                 (click)="updateMedicinePermission(); dialog.closeAll()">Save</button>
+        </mat-dialog-actions>
+    </ng-template>
+
+    <ng-template #verificationDialog>
+        <h2 mat-dialog-title>Verification</h2>
+        <mat-dialog-content>
+            <div>
+                <label>Do you want to verify this dietician's Aadhaar?</label>
+                <div class="text-center">
+                    <img class="w-75" src="https://www.shutterstock.com/image-vector/dummy-aadhar-card-unique-identity-260nw-1661857771.jpg"
+                        alt="">
+                </div>
+                <label>Do you want to verify this Document?</label>
+                <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+                    <mat-radio-button [value]="true">Yes</mat-radio-button>
+                    <mat-radio-button [value]="false">No</mat-radio-button>
+                </mat-radio-group>
+
+            </div>
+            <hr>
+
+            <div>
+                <label>Do you want to verify this dietician's PAN?</label>
+                <div class="text-center">
+                    <img class="w-75" src="data:image/jpeg;base64,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"
+                        alt="">
+                </div>
+                <label>Do you want to verify this Document?</label>
+                <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+                    <mat-radio-button [value]="true">Yes</mat-radio-button>
+                    <mat-radio-button [value]="false">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <hr>
+
+            <div>
+                <label>Do you want to verify this dietician's Degree?</label>
+                <div class="text-center">
+                    <img class="w-75" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlVETdtxEc3I9-3GLpzcQTokSx3w45lhQBAg&s" alt="">
+                </div>
+                <label>Do you want to verify this Document?</label>
+                <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+                    <mat-radio-button [value]="true">Yes</mat-radio-button>
+                    <mat-radio-button [value]="false">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <hr>
+            
+
+
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-button mat-dialog-close>Cancel</button>
+            <!-- <button mat-flat-button color="primary"
+                (click)="updateMedicinePermission(); dialog.closeAll()">Save</button> -->
         </mat-dialog-actions>
     </ng-template>
 </mat-drawer-container>

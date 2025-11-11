@@ -25,6 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-pharma-medicines',
+  standalone: true,
   imports: [
     CommonModule,
     MatTableModule,
@@ -46,7 +47,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FormsModule
   ],
   templateUrl: './pharma-medicines.html',
-  styleUrl: './pharma-medicines.scss',
+  styleUrls: ['./pharma-medicines.scss'],
   providers: [provideNativeDateAdapter()],
 })
 export class PharmaMedicines {
@@ -531,6 +532,12 @@ export class PharmaMedicines {
   // }
 
   onMedicineTypeChange(selectedValue: string) {
+    // Clear UI selection and editing state when switching medicine type
+    this.selection.clear();
+    this.selectedMedicine = null;
+    this.editingRow = null;
+    this.editing = false;
+    this.selectedAvailability = '';
     this.selectedMedicineType = selectedValue;
     this.checkedToggle = false;
     const token = localStorage.getItem('token');
@@ -549,6 +556,7 @@ export class PharmaMedicines {
 
     if (selectedValue === 'otc') {
       this.dataSource.data = [];
+      if (this.paginator) { this.paginator.firstPage(); }
       this.http.get(API_URL + ENDPOINTS.GET_OTC_MEDICINES, { headers, params })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
@@ -569,6 +577,7 @@ export class PharmaMedicines {
 
     if (selectedValue === 'medicines') {
       this.dataSource.data = [];
+      if (this.paginator) { this.paginator.firstPage(); }
       this.http.get(API_URL + ENDPOINTS.GET_PRESCRIBED_MEDICINES, { headers, params })
         .subscribe((data: any) => {
           this.medicines = data.data.content || [];
@@ -589,6 +598,7 @@ export class PharmaMedicines {
 
     if (selectedValue === 'manually-added-medicines') {
       this.dataSource.data = [];
+      if (this.paginator) { this.paginator.firstPage(); }
       this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers, params })
         .subscribe((data: any) => {
           this.medicines = data?.medicines || [];

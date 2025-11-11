@@ -1,4 +1,4 @@
-import { Component, inject, Input, input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, input, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -15,9 +15,12 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-staff-individual',
+  providers: [DatePipe, provideNativeDateAdapter()],
   imports: [
     CommonModule,
     MatCardModule,
@@ -32,11 +35,12 @@ import { FormsModule } from '@angular/forms';
     MatSidenavModule,
     MatTooltipModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    MatTimepickerModule
   ],
   templateUrl: './staff-individual.html',
   styleUrl: './staff-individual.scss',
-  providers: [DatePipe]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StaffIndividual {
   title = 'Staff List';
@@ -140,13 +144,13 @@ export class StaffIndividual {
       const experienceMatch = !searchTerms.selectedExperience || data.experience === searchTerms.selectedExperience;
       const shiftTypeMatch = !searchTerms.selectedShiftType || data.shiftType === searchTerms.selectedShiftType;
       // You may need more complex logic for dutyTime, e.g., checking if a range is included
-      const dutyTimeMatch = !searchTerms.selectedDutyTime || data.dutyTime === searchTerms.selectedDutyTime; 
+      const dutyTimeMatch = !searchTerms.selectedDutyTime || data.dutyTime === searchTerms.selectedDutyTime;
 
       return globalMatch && cityMatch && subcategoryMatch && experienceMatch && shiftTypeMatch && dutyTimeMatch;
     }
     return filterFunction;
   }
-  
+
   // Function for the Global Search input (text input)
   applyGlobalFilter(event: Event) {
     this.globalFilterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
