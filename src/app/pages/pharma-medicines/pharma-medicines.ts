@@ -56,12 +56,8 @@ export class PharmaMedicines {
 
   @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
-  @ViewChild('mrpDialog') mrpDialog!: TemplateRef<any>;
-  @ViewChild('availabilityDialog') availabilityDialog!: TemplateRef<any>;
+  @ViewChild('bulkDialog') bulkDialog!: TemplateRef<any>;
 
-  medicineForm!: FormGroup;
-  discountForm!: FormGroup;
   editing: boolean = false;
   checkedToggle: boolean = false;
   editingMedicineId: number | null = null;
@@ -72,28 +68,19 @@ export class PharmaMedicines {
   dataSource = new MatTableDataSource<any>([]);
   editingRow: any = null;
   selectedAvailability: string = '';
-
-
-  // displayedColumns: string[] = [
-  //   'select', 's_no',
-  //   'id',
-  //   'name', 'mrp', 'type',
-  //   'productForm', 'actions'
-  // ];
+  availaibilityDiscount!: FormGroup;
+  bulkDiscount: number | null = null;
+  bulkStatus: boolean | null = null;
+  dialogBulkDiscount: number | null = null;
+  dialogBulkStatus: boolean | null = null;
+  dialogSelectedCount: number = 0;
+  medicineForm!: FormGroup;
 
   displayedManualMedicineColumns: string[] = [
     'select', 's_no',
     'medicineId', 'name', 'category', 'quantityInStock', 'mrp',
     'discountPercentage', 'price', 'active', 'actions'
   ];
-
-
-  // displayedDiscountedMedicineColumns: string[] = [
-  //   'select', 's_no',
-  //   'productId', 'productName', 'productType', 'originalPrice', 'discountPrice',
-  //   'discountPercentage', 'isAvailable', 'managedAt', 'updatedAt', 'adminId',
-  //   'adminName', 'adminEmail', 'adminPhoneNumber', 'adminCreatedAt', 'actions'
-  // ];
 
   http = inject(HttpClient);
   dialog = inject(MatDialog);
@@ -133,12 +120,11 @@ export class PharmaMedicines {
       setFirstImageAsPrimary: [false]
     });
 
-    this.discountForm = this.fb.group({
-      productId: [{ value: null, disabled: true }, Validators.required],
-      productType: [null],
+    this.availaibilityDiscount = this.fb.group({
+      productId: [''],
       isAvailable: [true],
-      discountPercentage: [0, [Validators.min(0), Validators.max(100)]]
-    });
+      discountPercentage: []
+    })
   }
 
   ngOnInit() {
@@ -147,7 +133,6 @@ export class PharmaMedicines {
   }
 
   ngAfterViewInit() {
-    // Initialize paginator and listen for page changes
     this.dataSource.paginator = this.paginator;
     this.paginator.page.subscribe(() => {
       this.onMedicineTypeChange(this.selectedMedicineType);
@@ -156,7 +141,7 @@ export class PharmaMedicines {
 
   onAvailabilityChange(value: string) {
     this.selectedAvailability = value;
-    if(this.selectedAvailability === 'true') {
+    if (this.selectedAvailability === 'true') {
       // this.http.get(`${API_URL + ENDPOINTS.GET_MY_AVAILABLE_MEDICINES}`)
       //   .subscribe((data: any) => {
       //     this.medicines = data || [];
@@ -169,34 +154,77 @@ export class PharmaMedicines {
   }
 
   onEdit(row: any) {
+    this.dataSource.data.forEach(r => {
+      if (r !== row) {
+        r._editing = false;
+        delete r._editedDiscount;
+        delete r._editedAvailable;
+      }
+    });
+
     this.editingRow = row;
     this.selectedMedicine = row;
-    // maybe patch form here if you’re using a form
-    // this.prescriptionForm.patchValue({...row});
+    row._editing = true;
+    row._editedDiscount = row.discountPercentage ?? 0;
+    row._editedAvailable = (row.showInApp ?? row.active) ?? false;
   }
 
   onSave(row: any) {
-    // if (this.prescriptionForm.valid) {
-    // call your update logic here (API, etc)
-    // after save success:
-    this.editingRow = null;
-    // this.getprescriptions();  // refresh data
+    const productId = row.productId ?? row.medicineId ?? row.id;
+    const isAvailable = typeof row._editedAvailable === 'boolean' ? row._editedAvailable : !!(row.showInApp ?? row.active);
+    const discountPercentage = Number(row._editedDiscount ?? row.discountPercentage ?? 0);
+
+    const payload = { medicines: [{ productId: String(productId), isAvailable, discountPercentage }] };
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) { headers = headers.set('Authorization', `Bearer ${token}`); }
+
+    this.http.post(API_URL + ENDPOINTS.UPDATE_BULK_AVAILABILITY_DISCOUNT, payload, { headers })
+      .subscribe({
+        next: () => {
+          row.discountPercentage = discountPercentage;
+          const avail = isAvailable;
+          if ('showInApp' in row) { row.showInApp = avail; }
+          if ('active' in row) { row.active = avail; }
+          row._editing = false;
+          delete row._editedDiscount;
+          delete row._editedAvailable;
+          this.dataSource.data = [...this.dataSource.data];
+          this.editingRow = null;
+          this.showSuccess('Medicine updated successfully');
+        },
+        error: (err) => {
+          console.error('Update failed', err);
+          this.showError('Failed to update medicine');
+        }
+      });
   }
-  // }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
   }
-  
+
   toggleAllRows() {
     if (this.isAllSelected()) {
       this.selection.clear();
+      this.dataSource.data.forEach(r => {
+        r._editing = false;
+        delete r._editedDiscount;
+        delete r._editedAvailable;
+      });
       return;
     }
 
-    this.selection.select(...this.dataSource.data);
+    // select all and enable editing fields
+    this.selection.clear();
+    this.dataSource.data.forEach(r => {
+      this.selection.select(r);
+      // Initialize temporary edited values for bulk actions but DO NOT enable inline edit mode.
+      r._editedDiscount = r.discountPercentage ?? 0;
+      r._editedAvailable = (r.showInApp ?? r.active) ?? true;
+    });
   }
 
   checkboxLabel(row?: any): string {
@@ -206,6 +234,102 @@ export class PharmaMedicines {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
+  onToggleChange(row: any, checked: boolean) {
+    row._editedAvailable = !!checked;
+  }
+
+
+  clearBulkFields() {
+    this.bulkDiscount = null;
+    this.bulkStatus = null;
+  }
+
+  openBulkDialog() {
+    const selected = this.selection.selected || [];
+    if (!selected.length) {
+      this.showError('No products selected');
+      return;
+    }
+    this.dialogBulkDiscount = this.bulkDiscount;
+    this.dialogBulkStatus = this.bulkStatus;
+    this.dialogSelectedCount = selected.length;
+
+    const ref = this.dialog.open(this.bulkDialog, { width: '800px' });
+    ref.afterClosed().subscribe((result: any) => {
+      if (!result || !result.confirmed) { return; }
+      const medicines = selected.map(m => {
+        const productId = m.productId ?? m.medicineId ?? m.id;
+        const isAvailable = (result.status === null || result.status === undefined) ? (typeof m._editedAvailable === 'boolean' ? m._editedAvailable : !!(m.showInApp ?? m.active)) : !!result.status;
+        const discountPercentage = (result.discount === null || result.discount === undefined || result.discount === '') ? Number(m._editedDiscount ?? m.discountPercentage ?? 0) : Number(result.discount);
+        return { productId: String(productId), isAvailable, discountPercentage };
+      });
+
+      const payload = { medicines };
+      const token = localStorage.getItem('token');
+      let headers = new HttpHeaders();
+      if (token) { headers = headers.set('Authorization', `Bearer ${token}`); }
+
+      this.http.post(API_URL + ENDPOINTS.UPDATE_BULK_AVAILABILITY_DISCOUNT, payload, { headers })
+        .subscribe({
+          next: () => {
+            selected.forEach((m, idx) => {
+              const p = medicines[idx];
+              m.discountPercentage = Number(p.discountPercentage);
+              const avail = p.isAvailable;
+              if ('showInApp' in m) { m.showInApp = avail; }
+              if ('active' in m) { m.active = avail; }
+              m._editing = false;
+              delete m._editedDiscount;
+              delete m._editedAvailable;
+            });
+            this.dataSource.data = [...this.dataSource.data];
+            this.selection.clear();
+            this.clearBulkFields();
+            this.showSuccess('Bulk updates saved successfully');
+          },
+          error: (err) => {
+            console.error('Bulk update failed', err);
+            this.showError('Failed to save bulk updates');
+          }
+        });
+    });
+  }
+
+  toggleSelection(row: any) {
+    const wasSelected = this.selection.isSelected(row);
+    if (wasSelected) {
+      this.selection.deselect(row);
+      // When deselecting, remove temporary edited values but keep any inline edit state unchanged.
+      delete row._editedDiscount;
+      delete row._editedAvailable;
+    } else {
+      this.selection.select(row);
+      // Initialize temporary edited values for bulk actions; do NOT enable inline editing here.
+      row._editedDiscount = row.discountPercentage ?? 0;
+      row._editedAvailable = (row.showInApp ?? row.active) ?? true;
+    }
+  }
+
+  applyBulkValues() {
+    const selected = this.selection.selected || [];
+    if (!selected.length) {
+      this.showError('No products selected');
+      return;
+    }
+
+    selected.forEach(m => {
+      if (this.bulkDiscount !== null && this.bulkDiscount !== undefined) {
+        m._editedDiscount = Number(this.bulkDiscount);
+      }
+      if (this.bulkStatus !== null && this.bulkStatus !== undefined) {
+        m._editedAvailable = !!this.bulkStatus;
+      }
+      // Do NOT enable inline editing; updates should come from dialog/Save flow
+    });
+
+    this.dataSource.data = [...this.dataSource.data];
+    this.showSuccess('Applied bulk values to selected rows. Click "Bulk Update" to confirm and persist.');
+  }
 
   get images(): FormArray {
     return this.medicineForm.get('images') as FormArray;
@@ -228,51 +352,6 @@ export class PharmaMedicines {
     this.images.removeAt(index);
   }
 
-  // applySearchFilter(event: Event) {
-  //   if (this.selectedMedicineType === 'otc') {
-  //     const payload = {
-  //       q: (event.target as HTMLInputElement).value,
-  //       page: 0,
-  //       size: 10
-  //     };
-  //     this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_OTC_MEDICINES}`, { params: payload })
-  //       .subscribe((data: any) => {
-  //         this.medicines = data.data.content || [];
-  //         this.dataSource.data = this.medicines;
-  //       });
-  //   }
-  //   if (this.selectedMedicineType === 'medicines') {
-  //     const payload = {
-  //       q: (event.target as HTMLInputElement).value,
-  //       page: 0,
-  //       size: 10
-  //     };
-  //     this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_PRESCRIBED_MEDICINES}`, { params: payload })
-  //       .subscribe((data: any) => {
-  //         this.medicines = data.data.content || [];
-  //         this.dataSource.data = this.medicines;
-  //       });
-  //   }
-  //   if (this.selectedMedicineType === 'manually-added-medicines') {
-  //     const token = localStorage.getItem('token');
-  //     let headers = new HttpHeaders();
-  //     if (token) {
-  //       headers = headers.set('Authorization', `Bearer ${token}`);
-  //     }
-  //     const payload = {
-  //       name: (event.target as HTMLInputElement).value,
-  //       page: 0,
-  //       size: 10,
-  //       sortBy: 'name',
-  //       sortDirection: 'asc'
-  //     };
-  //     this.http.get(`${API_URL + ENDPOINTS.GET_SEARCH_MY_MEDICINES}`, { params: payload, headers })
-  //       .subscribe((data: any) => {
-  //         this.medicines = data?.data?.medicines || [];
-  //         this.dataSource.data = this.medicines;
-  //       });
-  //   }
-  // }
   applySearchFilter(event: Event) {
     const searchValue = (event.target as HTMLInputElement).value;
     const page = this.paginator ? this.paginator.pageIndex : 0;
@@ -354,16 +433,11 @@ export class PharmaMedicines {
     this.editing = true;
     this.editingMedicineId = m.id ?? null;
 
-    // Clear existing images FormArray
     while (this.images.length) {
       this.images.removeAt(0);
     }
-
-    // Populate images FormArray with existing image URLs
     if (m.imageUrls && Array.isArray(m.imageUrls)) {
-      m.imageUrls.forEach((url: string) => {
-        this.images.push(this.fb.control(url));
-      });
+      m.imageUrls.forEach((url: string) => this.images.push(this.fb.control(url)));
     }
 
     // Patch other form values
@@ -490,49 +564,7 @@ export class PharmaMedicines {
     this.drawer.close();
   }
 
-  // onMedicineTypeChange(selectedValue: string) {
-  //   this.selectedMedicineType = selectedValue;
-  //   this.checkedToggle = false;
-  //   const token = localStorage.getItem('token');
-  //   let headers = new HttpHeaders();
-  //   if (token) {
-  //     headers = headers.set('Authorization', `Bearer ${token}`);
-  //   }
-  //   const params = {
-  //     page: this.currentPage.toString(),
-  //     size: this.pageSize.toString()
-  //   };
-
-  //   if (selectedValue === 'otc') {
-  //     this.dataSource.data = [];
-  //     this.http.get(API_URL + ENDPOINTS.GET_OTC_MEDICINES, { headers, params })
-  //       .subscribe((data: any) => {
-  //         this.medicines = data.data.content || [];
-  //         this.dataSource.data = this.medicines;
-  //       });
-  //   }
-
-  //   if (selectedValue === 'medicines') {
-  //     this.dataSource.data = [];
-  //     this.http.get(API_URL + ENDPOINTS.GET_PRESCRIBED_MEDICINES, { headers, params })
-  //       .subscribe((data: any) => {
-  //         this.medicines = data.data.content || [];
-  //         this.dataSource.data = this.medicines;
-  //       });
-  //   }
-
-  //   if (selectedValue === 'manually-added-medicines') {
-  //     this.dataSource.data = [];
-  //     this.http.get(API_URL + ENDPOINTS.GET_MY_MEDICINES, { headers, params })
-  //       .subscribe((data: any) => {
-  //         this.medicines = data?.medicines || [];
-  //         this.dataSource.data = this.medicines;
-  //       });
-  //   }
-  // }
-
   onMedicineTypeChange(selectedValue: string) {
-    // Clear UI selection and editing state when switching medicine type
     this.selection.clear();
     this.selectedMedicine = null;
     this.editingRow = null;
@@ -697,95 +729,50 @@ export class PharmaMedicines {
     }
   }
 
-  openDiscountDialog() {
-    // this.selectedMedicine = m;
-    // this.discountForm.patchValue({
-    //   productId: m.productId || m.id,
-    //   productType: m.productType || m.type,
-    //   isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
-    //   discountPercentage: m.discountPercentage || 0
-    // });
-
-    const dialogRef = this.dialog.open(this.discountDialog, {
-      width: '400px',
-      data: { form: this.discountForm }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.saveDiscount();
-      }
-    });
-  }
-
-  openAvailabilityDialog() {
-    const dialogRef = this.dialog.open(this.availabilityDialog, {
-      width: '400px',
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.saveAvailability();
-      }
-    });
-  }
-
-  openMRPDialog(m: any) {
-    const dialogRef = this.dialog.open(this.mrpDialog, {
-      width: '400px',
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.saveMRP();
-      }
-    });
-  }
-
-  saveMRP() {
-  }
-
-  saveAvailability() {
-    const medId = this.selection?.selected.map(med => med.productId || med.medicineId || med.id);
-    let payload = {
-      showInApp: true,
-      id: medId
-    }
-    console.log('Payload for availability toggle:', payload);
-    // this.http.post(`${API_URL}${ENDPOINTS.BULK_AVAILABILITY_TOGGLE}`, payload)
-    //   .subscribe(response => {
-    //     this.dataSource.data = this.medicines;
-    //     this.showSuccess('Availability updated successfully');
-    //   }, error => {
-    //     console.error('Error updating availability:', error);
-    //     this.showError('Failed to update availability');
-    //   });
-  }
-
-  saveDiscount() {
-    if (this.discountForm.invalid) {
+  saveBulkEdits() {
+    const selected = this.selection.selected || [];
+    if (!selected.length) {
+      this.showError('No products selected');
       return;
     }
 
+    const medicines = selected.map(m => {
+      const productId = m.productId ?? m.medicineId ?? m.id;
+      const isAvailable = typeof m._editedAvailable === 'boolean' ? m._editedAvailable : !!(m.showInApp ?? m.active);
+      const discountPercentage = Number(m._editedDiscount ?? m.discountPercentage ?? 0);
+      return {
+        productId: String(productId),
+        isAvailable,
+        discountPercentage
+      };
+    });
+
+    const payload = { medicines };
     const token = localStorage.getItem('token');
     let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-    const medId = this.selection?.selected.map(med => med.productId || med.medicineId || med.id);
+    if (token) { headers = headers.set('Authorization', `Bearer ${token}`); }
 
-    const payload = {
-      productId: medId,
-      discountPercentage: this.discountForm.value.discountPercentage
-    };
-    console.log('Payload for discount update:', payload);
-    this.http.post(`${API_URL}${ENDPOINTS.BULK_DISCOUNT}`, payload, { headers })
-      .subscribe(response => {
-        this.toggleDiscountedMedicines({ checked: true });
-        this.dataSource.data = this.medicines;
-        this.showSuccess('Discount updated successfully');
-      }, error => {
-        this.showError('Failed to update discount');
+    this.http.post(API_URL + ENDPOINTS.UPDATE_BULK_AVAILABILITY_DISCOUNT, payload, { headers })
+      .subscribe({
+        next: (res: any) => {
+          // reflect changes locally
+          selected.forEach(m => {
+            m.discountPercentage = Number(m._editedDiscount ?? m.discountPercentage ?? 0);
+            const avail = (m._editedAvailable === undefined) ? (m.showInApp ?? m.active) : m._editedAvailable;
+            if ('showInApp' in m) { m.showInApp = avail; }
+            if ('active' in m) { m.active = avail; }
+            m._editing = false;
+            delete m._editedDiscount;
+            delete m._editedAvailable;
+          });
+          this.dataSource.data = [...this.dataSource.data];
+          this.selection.clear();
+          this.showSuccess('Bulk updates saved successfully');
+        },
+        error: (err) => {
+          console.error('Bulk update failed', err);
+          this.showError('Failed to save bulk updates');
+        }
       });
   }
 }

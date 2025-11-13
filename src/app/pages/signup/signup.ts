@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { MatSelectModule } from '@angular/material/select';
@@ -48,7 +48,6 @@ export const passwordMatchValidator = (
     MatIconModule,
     MatCardModule,
     MatSnackBarModule,
-    RouterLink,
   ],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',

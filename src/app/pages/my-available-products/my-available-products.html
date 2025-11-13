@@ -1,14 +1,35 @@
-<div class="toolbar d-flex align-items-baseline mb-2">
-  <mat-icon>filter_list</mat-icon>
-  <mat-form-field appearance="outline" class="ms-2 small-select">
+<div class="toolbar row">
+  <!-- <mat-icon>filter_list</mat-icon> -->
+  <mat-form-field appearance="outline" class="col-md-2 small-select">
     <mat-label>Search Products</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Search by name, category…">
   </mat-form-field>
-  <mat-paginator class="ms-auto" #paginator [pageSizeOptions]="[5,10,20,100]" showFirstLastButtons></mat-paginator>
+
+  <button class="col-md-2" matButton="tonal" [disabled]="selection.selected.length===0"
+    (click)="openAvailabilityDialog()">
+    Bulk Availability Update</button>
+
+  <button class="col-md-2" matButton="tonal" [disabled]="selection.selected.length===0" (click)="openDiscountDialog()">
+    Bulk Discount Update</button>
+
+  <mat-paginator class="col-md-6" #paginator [pageSizeOptions]="[5,10,20,100]" showFirstLastButtons></mat-paginator>
 </div>
 
 <section>
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <ng-container matColumnDef="select" sticky>
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? toggleAllRows() : null" [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row" sticky>
+        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="s_no">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
       <td mat-cell *matCellDef="let element; let i = index">
@@ -18,7 +39,7 @@
 
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Product ID </th>
-      <td mat-cell *matCellDef="let item"> {{ item.id }} </td>
+      <td mat-cell *matCellDef="let item"> {{ item.productId }} </td>
     </ng-container>
 
     <ng-container matColumnDef="name">
@@ -66,3 +87,38 @@
 
   </table>
 </section>
+
+<ng-template #discountDialog>
+  <h2 mat-dialog-title>Update Discount</h2>
+  <mat-dialog-content>
+    <form [formGroup]="discountForm">
+      <mat-form-field appearance="outline" class="w-100 mt-3">
+        <mat-label>Discount Percentage</mat-label>
+        <input matInput type="number" formControlName="discountPercentage" min="0" max="100" />
+        <mat-error *ngIf="discountForm.get('discountPercentage')?.hasError('min')">
+          Discount must be at least 0%
+        </mat-error>
+        <mat-error *ngIf="discountForm.get('discountPercentage')?.hasError('max')">
+          Discount cannot exceed 100%
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" [disabled]="discountForm.invalid"
+      (click)="saveDiscount(); dialog.closeAll()">Save</button>
+  </mat-dialog-actions>
+</ng-template>
+
+
+<ng-template #availabilityDialog>
+  <h2 mat-dialog-title>Update Availability</h2>
+  <mat-dialog-content>
+    <p>Do you want to make the selected products unavailable?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close="false">No</button>
+    <button mat-flat-button color="primary" [mat-dialog-close]="true">Yes</button>
+  </mat-dialog-actions>
+</ng-template>

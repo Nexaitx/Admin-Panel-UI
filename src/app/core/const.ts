@@ -128,11 +128,14 @@ export const ENDPOINTS = {
     UPDATE_PRESCRIPTION_STATUS: '/api/admin/prescriptions/', //{prescriptionId}/status
 
     // bulk/SINGLE update medicines
-    BULK_AVAILABILITY_TOGGLE: '/api/medicines/bulk-show-in-app', 
+    BULK_AVAILABILITY_TOGGLE: '/api/medicines/bulk-show-in-app',
     BULK_DISCOUNT: '/api/admin/medicines/bulk/discount',
 
     // available/non-available medicines
     GET_MY_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/pharmacist/my/available',
+    GET_OTHER_PHARMACIST_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/otherpharmacist/highest-discount',
+    UPDATE_BULK_AVAILABILITY_DISCOUNT: '/api/pharmacists/medicines/bulk/disscountandisavailable',
 
-
+    
+    UPDATE_MEDICINE_AVAILABILITY: '/api/pharmacists/medicines/pharmacist/myvailable/bulktoggle',
 };

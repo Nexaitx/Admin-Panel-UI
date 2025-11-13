@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Auth } from '../../core/services/auth';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterLink } from '@angular/router'; // Import RouterLink
+import { Router } from '@angular/router'; // Import RouterLink
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -27,8 +27,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    MatCardModule,
-    RouterLink // Import RouterLink for declarative navigation in template
+    MatCardModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'

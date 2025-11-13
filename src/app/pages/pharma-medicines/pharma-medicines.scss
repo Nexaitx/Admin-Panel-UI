@@ -1,7 +1,13 @@
 section {
-   height: 400px;
+  height: 400px;
   overflow: auto;
 }
+
 table {
   width: 100%;
+}
+
+.btn-height-adjust {
+  height: 30px;
+  width: 40px;
 }
