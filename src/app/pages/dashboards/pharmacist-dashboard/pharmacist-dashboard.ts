@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { API_URL, ENDPOINTS } from '../../../core/const';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -71,7 +71,6 @@ export type ordersOptions = {
 @Component({
   selector: 'app-pharmacist-dashboard',
   imports: [
-    RouterLink,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,

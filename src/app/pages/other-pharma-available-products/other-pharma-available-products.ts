@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,11 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
 import { MatMenuModule } from '@angular/material/menu';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-other-pharma-available-products',
@@ -21,15 +26,25 @@ import { MatMenuModule } from '@angular/material/menu';
     MatPaginatorModule,
     MatMenuModule,
     CommonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatRadioModule,
+    FormsModule,
     MatButtonModule],
   templateUrl: './other-pharma-available-products.html',
   styleUrl: './other-pharma-available-products.scss',
   providers: [DatePipe]
 })
 export class OtherPharmaAvailableProducts {
-  displayedColumns: string[] = ['s_no', 'id', 'name', 'category', 'stockQty', 'price', 'addedDate', 'actions'];
+  displayedColumns: string[] = ['select', 's_no', 'id', 'name', 'category', 'stockQty', 'otherPharmacistDiscPercentage', 'price', 'discount','vitoxyzPrice', 'status', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
   http = inject(HttpClient);
+  selection = new SelectionModel<any>(true, []);
+  @ViewChild('availabilityDialog') availabilityDialog!: TemplateRef<any>;
+  dialog = inject(MatDialog);
+  dialogBulkDiscount: number | null = null;
+  dialogSelectedCount: number = 0;
+  dialogBulkStatus: boolean | null = null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -62,7 +77,27 @@ export class OtherPharmaAvailableProducts {
       this.dataSource.paginator.firstPage();
     }
   }
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
 
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
   onView(product: any) {
     // your logic to view details of product
     console.log('Viewing', product);
@@ -73,5 +108,16 @@ export class OtherPharmaAvailableProducts {
       this.dataSource.data = res;
       console.log(this.dataSource.data);
     })
+  }
+
+  openAvailabilityDialog() {
+    const dialogRef = this.dialog.open(this.availabilityDialog, {
+      width: '800px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // result will be true (Yes) or false (No) or undefined (dismiss)
+      if (result === true || result === false) {
+      }
+    });
   }
 }

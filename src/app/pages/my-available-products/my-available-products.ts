@@ -16,7 +16,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
@@ -36,14 +36,15 @@ import { MatRadioModule } from '@angular/material/radio';
     MatCheckboxModule,
     MatDialogModule,
     ReactiveFormsModule,
-    MatRadioModule
+    MatRadioModule,
+    FormsModule,
   ],
   templateUrl: './my-available-products.html',
   styleUrls: ['./my-available-products.scss'],
   providers: [DatePipe]
 })
 export class MyAvailableProducts {
-  displayedColumns: string[] = ['select', 's_no', 'id', 'name', 'category', 'stockQty', 'price', 'addedDate', 'actions'];
+  displayedColumns: string[] = ['select', 's_no', 'id', 'name', 'category', 'stockQty', 'price',  'vitoxyzPrice', 'status', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
   selection = new SelectionModel<any>(true, []);
   http = inject(HttpClient);
@@ -54,6 +55,9 @@ export class MyAvailableProducts {
   @ViewChild('availabilityDialog') availabilityDialog!: TemplateRef<any>;
   dialog = inject(MatDialog);
   snackBar = inject(MatSnackBar);
+  dialogBulkDiscount: number | null = null;
+  dialogSelectedCount: number = 0;
+  dialogBulkStatus: boolean | null = null;
 
   discountForm !: FormGroup;
   availableForm !: FormGroup;
@@ -163,7 +167,7 @@ export class MyAvailableProducts {
 
   openDiscountDialog() {
     const dialogRef = this.dialog.open(this.discountDialog, {
-      width: '400px',
+      width: '800px',
       data: { form: this.discountForm }
     });
 
@@ -176,7 +180,7 @@ export class MyAvailableProducts {
 
   openAvailabilityDialog() {
     const dialogRef = this.dialog.open(this.availabilityDialog, {
-      width: '400px',
+      width: '800px',
     });
     dialogRef.afterClosed().subscribe(result => {
       // result will be true (Yes) or false (No) or undefined (dismiss)

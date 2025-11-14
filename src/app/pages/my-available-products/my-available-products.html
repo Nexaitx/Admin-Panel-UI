@@ -7,10 +7,10 @@
 
   <button class="col-md-2" matButton="tonal" [disabled]="selection.selected.length===0"
     (click)="openAvailabilityDialog()">
-    Bulk Availability Update</button>
+    Bulk Update</button>
 
-  <button class="col-md-2" matButton="tonal" [disabled]="selection.selected.length===0" (click)="openDiscountDialog()">
-    Bulk Discount Update</button>
+  <!-- <button class="col-md-2" matButton="tonal" [disabled]="selection.selected.length===0" (click)="openDiscountDialog()">
+    Bulk Discount Update</button> -->
 
   <mat-paginator class="col-md-6" #paginator [pageSizeOptions]="[5,10,20,100]" showFirstLastButtons></mat-paginator>
 </div>
@@ -31,14 +31,14 @@
     </ng-container>
 
     <ng-container matColumnDef="s_no">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="ps-0"> S.No </th>
       <td mat-cell *matCellDef="let element; let i = index">
         {{ dataSource.data.length - (paginator.pageIndex * paginator.pageSize) - i }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Product ID </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Product&nbsp;ID </th>
       <td mat-cell *matCellDef="let item"> {{ item.productId }} </td>
     </ng-container>
 
@@ -53,17 +53,27 @@
     </ng-container>
 
     <ng-container matColumnDef="stockQty">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Stock Qty </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Unit </th>
       <td mat-cell *matCellDef="let item"> {{ item.stockQty }} </td>
     </ng-container>
 
     <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> MRP </th>
       <td mat-cell *matCellDef="let item"> {{ item.discountPrice }} </td>
     </ng-container>
 
     <ng-container matColumnDef="addedDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Added Date </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Discount&nbsp;% </th>
+      <td mat-cell *matCellDef="let item"> {{ item.createdAt | date:'mediumDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="vitoxyzPrice">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Vitoxyz&nbsp;Price </th>
+      <td mat-cell *matCellDef="let item"> {{ item.createdAt | date:'mediumDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
       <td mat-cell *matCellDef="let item"> {{ item.createdAt | date:'mediumDate' }} </td>
     </ng-container>
 
@@ -113,12 +123,25 @@
 
 
 <ng-template #availabilityDialog>
-  <h2 mat-dialog-title>Update Availability</h2>
-  <mat-dialog-content>
-    <p>Do you want to make the selected products unavailable?</p>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close="false">No</button>
-    <button mat-flat-button color="primary" [mat-dialog-close]="true">Yes</button>
-  </mat-dialog-actions>
+  <h2 mat-dialog-title>Confirm Bulk Update</h2>
+        <mat-dialog-content class="py-2">
+          <p>You're updating <strong>{{ dialogSelectedCount }}</strong> selected product(s).</p>
+
+          <mat-form-field appearance="outline" style="width:100%">
+            <mat-label>Discount % (leave empty to keep current/edit value)</mat-label>
+            <input matInput type="number" [(ngModel)]="dialogBulkDiscount" placeholder="e.g. 10" />
+          </mat-form-field>
+
+          <mat-label class="me-2">Selected Medicines Availability</mat-label><br>
+          <mat-radio-group [(ngModel)]="dialogBulkStatus" [ngModelOptions]="{standalone: true}"
+            class="d-flex align-items-center">
+            <mat-radio-button [value]="true" class="me-2">Available</mat-radio-button>
+            <mat-radio-button [value]="false">Unavailable</mat-radio-button>
+          </mat-radio-group>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+          <button mat-button mat-dialog-close>Cancel</button>
+          <button mat-flat-button color="primary"
+            [mat-dialog-close]="true">Confirm</button>
+        </mat-dialog-actions>
 </ng-template>
