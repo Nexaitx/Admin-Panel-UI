@@ -177,6 +177,15 @@ export class OtherPharmaAvailableProducts {
       });
   }
 
+  onCancel(row: any) {
+    if (!row) { return; }
+    delete row._editedDiscount;
+    delete row._editedAvailable;
+    row._editing = false;
+    if (this.editingRow === row) { this.editingRow = null; }
+    this.dataSource.data = [...this.dataSource.data];
+  }
+
   private showSuccess(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 3000,

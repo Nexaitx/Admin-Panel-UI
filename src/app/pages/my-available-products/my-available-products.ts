@@ -242,6 +242,18 @@ export class MyAvailableProducts {
       });
   }
 
+  onCancel(row: any) {
+    // revert any temporary edited values and exit edit mode
+    if (!row) { return; }
+    delete row._editedDiscount;
+    delete row._editedAvailable;
+    row._editing = false;
+    // clear editingRow reference
+    if (this.editingRow === row) { this.editingRow = null; }
+    // refresh table data to update UI
+    this.dataSource.data = [...this.dataSource.data];
+  }
+
    private showSuccess(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 3000,

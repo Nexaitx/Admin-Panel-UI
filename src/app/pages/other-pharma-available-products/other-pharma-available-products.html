@@ -44,7 +44,7 @@
 
     <ng-container matColumnDef="category">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
-      <td mat-cell *matCellDef="let item"> {{ item.category }} </td>
+      <td mat-cell *matCellDef="let item"> {{ item?.productType || item.category }} </td>
     </ng-container>
 
     <ng-container matColumnDef="stockQty">
@@ -54,22 +54,25 @@
 
     <ng-container matColumnDef="otherPharmacistDiscPercentage">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Other&nbsp;Pharmacist&nbsp;Discount&nbsp;Percentage </th>
-      <td mat-cell *matCellDef="let item"> {{ item.otherPharmacistDiscPercentage }} </td>
+      <td mat-cell *matCellDef="let item"> {{ item.effectiveDiscountPercentage }} </td>
     </ng-container>
 
     <ng-container matColumnDef="price">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> MRP </th>
-      <td mat-cell *matCellDef="let item"> {{ item.discountPrice }} </td>
+      <td mat-cell *matCellDef="let item"> {{ item.mrp }} </td>
     </ng-container>
 
     <ng-container matColumnDef="discount">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Discount&nbsp;% </th>
-      <td mat-cell *matCellDef="let item"> {{ item.discount }} </td>
+      <td mat-cell *matCellDef="let item"> <ng-container *ngIf="item._editing; else readDiscount">
+              <input matInput type="number" [(ngModel)]="item._editedDiscount" style="width:100px" />
+            </ng-container>
+            <ng-template #readDiscount>{{ item.discountPercentage || '—' }}</ng-template> </td>
     </ng-container>
 
     <ng-container matColumnDef="vitoxyzPrice">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Vitoxyz&nbsp;Price </th>
-      <td mat-cell *matCellDef="let item"> {{ item.vitoxyzPrice }} </td>
+      <td mat-cell *matCellDef="let item"> {{ item.vitoxyzPrice || item?.discountPrice}} </td>
     </ng-container>
 
     <ng-container matColumnDef="status">
@@ -91,6 +94,9 @@
           </button>
           <button matButton="tonal" *ngIf="editingRow === m" (click)="onSave(m)" class="btn-sm btn-height-adjust">
             Submit
+          </button>
+          <button matButton="tonal" *ngIf="editingRow === m" (click)="onCancel(m)" class="btn-sm btn-height-adjust ms-2">
+            Cancel
           </button>
         </div>
       </td>

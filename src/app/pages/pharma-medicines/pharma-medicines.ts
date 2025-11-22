@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { API_URL, ENDPOINTS } from '../../core/const';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -141,16 +141,20 @@ export class PharmaMedicines {
 
   onAvailabilityChange(value: string) {
     this.selectedAvailability = value;
-    if (this.selectedAvailability === 'true') {
-      // this.http.get(`${API_URL + ENDPOINTS.GET_MY_AVAILABLE_MEDICINES}`)
-      //   .subscribe((data: any) => {
-      //     this.medicines = data || [];
-      //     this.dataSource.data = this.medicines;
-      //   }, error => {
-      //     console.error('Error fetching available medicines:', error);
-      //     this.showError('Failed to load available medicines');
-      //   });
-    }
+    // if (this.selectedAvailability === 'true') {
+    const params = new HttpParams()
+      .set('isAvailable', String(this.selectedAvailability))
+      .set('page', String(0))
+      .set('size', String(50));
+
+    this.http.get(API_URL + ENDPOINTS.GET_AVAILABLE_TOGGLE, { params })
+      .subscribe((data: any) => {
+        this.dataSource.data = data.discountRecords;
+      }, error => {
+        console.error('Error fetching available medicines:', error);
+        this.showError('Failed to load available medicines');
+      });
+    // }
   }
 
   onEdit(row: any) {
@@ -236,6 +240,17 @@ export class PharmaMedicines {
 
   onToggleChange(row: any, checked: boolean) {
     row._editedAvailable = !!checked;
+  }
+
+  onCancel(row: any) {
+    if (!row) { return; }
+    // revert any temporary edited values and exit edit mode
+    delete row._editedDiscount;
+    delete row._editedAvailable;
+    row._editing = false;
+    if (this.editingRow === row) { this.editingRow = null; }
+    // refresh table data to update UI
+    this.dataSource.data = [...this.dataSource.data];
   }
 
 

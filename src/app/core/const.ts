@@ -135,7 +135,7 @@ export const ENDPOINTS = {
     GET_MY_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/pharmacist/my/available',
     GET_OTHER_PHARMACIST_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/otherpharmacist/highest-discount',
     UPDATE_BULK_AVAILABILITY_DISCOUNT: '/api/pharmacists/medicines/bulk/disscountandisavailable',
-
+    GET_AVAILABLE_TOGGLE: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
 
     // Super Admin: Available medicines
     GET_ALL_PHARMACY_AVAILABLE_MEDICINE: '/api/medicines/getmedicine/bypharmacist/',  
