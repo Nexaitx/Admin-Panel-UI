@@ -177,14 +177,10 @@
             </div>
           </div>
           <button type="button" class="my-2" mat-button (click)="addImageControl()">
-            <i class="bi bi-plus"></i> Add More Image
+            <i class="bi bi-plus"></i> Add Image
           </button>
         </div>
 
-        <!-- Set First Image As Primary -->
-        <mat-slide-toggle class="col-md-6 mb-3" formControlName="setFirstImageAsPrimary">
-          Set First Image As Primary
-        </mat-slide-toggle>
       </div>
 
       <div class="button-row d-flex justify-content-between mt-4">
@@ -202,7 +198,7 @@
         <mat-label>Select Orders</mat-label>
         <mat-select [(value)]="selectedMedicineType" (selectionChange)="onMedicineTypeChange($event.value)">
           <mat-option value="" disabled>Select Medicine Type</mat-option>
-          <mat-option value="manually-added-medicines">Ethical Medicines</mat-option>
+          <mat-option value="">Ethical Medicines</mat-option>
           <mat-option value="otc">OTC Medicines</mat-option>
           <mat-option value="medicines">Generic Medicines</mat-option>
         </mat-select>

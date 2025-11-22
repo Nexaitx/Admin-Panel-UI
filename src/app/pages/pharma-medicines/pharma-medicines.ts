@@ -51,7 +51,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   providers: [provideNativeDateAdapter()],
 })
 export class PharmaMedicines {
-  selectedMedicineType: string = 'manually-added-medicines';
+  selectedMedicineType: string = '';
   selectedMedicine: any;
 
   @ViewChild('drawer') drawer!: MatDrawer;

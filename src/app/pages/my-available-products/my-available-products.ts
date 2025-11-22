@@ -18,6 +18,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-my-available-products',
@@ -38,17 +39,19 @@ import { MatRadioModule } from '@angular/material/radio';
     ReactiveFormsModule,
     MatRadioModule,
     FormsModule,
+    MatSlideToggleModule
   ],
   templateUrl: './my-available-products.html',
   styleUrls: ['./my-available-products.scss'],
   providers: [DatePipe]
 })
 export class MyAvailableProducts {
-  displayedColumns: string[] = ['select', 's_no', 'id', 'name', 'category', 'stockQty', 'price',  'vitoxyzPrice', 'status', 'actions'];
+  displayedColumns: string[] = ['select', 's_no', 'id', 'name', 'category', 'stockQty', 'price', 'discount', 'vitoxyzPrice', 'status', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
   selection = new SelectionModel<any>(true, []);
   http = inject(HttpClient);
-
+  editingRow: any = null;
+  selectedMedicine: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
@@ -58,7 +61,6 @@ export class MyAvailableProducts {
   dialogBulkDiscount: number | null = null;
   dialogSelectedCount: number = 0;
   dialogBulkStatus: boolean | null = null;
-
   discountForm !: FormGroup;
   availableForm !: FormGroup;
   fb = inject(FormBuilder);
@@ -100,9 +102,8 @@ export class MyAvailableProducts {
 
     const body = {
       productIds: medIds,
-      setAvailable: !makeUnavailable
+      setAvailable: this.dialogBulkStatus
     };
-
     this.http.post(API_URL + ENDPOINTS.UPDATE_MEDICINE_AVAILABILITY, body, { headers }).subscribe({
       next: (res: any) => {
         if (makeUnavailable) {
@@ -187,6 +188,71 @@ export class MyAvailableProducts {
       if (result === true || result === false) {
         this.saveAvailability(result as boolean);
       }
+    });
+  }
+
+  onEdit(row: any) {
+    this.dataSource.data.forEach(r => {
+      if (r !== row) {
+        r._editing = false;
+        delete r._editedDiscount;
+        delete r._editedAvailable;
+      }
+    });
+
+    this.editingRow = row;
+    this.selectedMedicine = row;
+    row._editing = true;
+    row._editedDiscount = row.discountPercentage ?? 0;
+    row._editedAvailable = (row.showInApp ?? row.active) ?? false;
+  }
+
+  onToggleChange(row: any, checked: boolean) {
+    row._editedAvailable = !!checked;
+  }
+
+  onSave(row: any) {
+    const productId = row.productId ?? row.medicineId ?? row.id;
+    const isAvailable = typeof row._editedAvailable === 'boolean' ? row._editedAvailable : !!(row.showInApp ?? row.active);
+    const discountPercentage = Number(row._editedDiscount ?? row.discountPercentage ?? 0);
+
+    const payload = { medicines: [{ productId: String(productId), isAvailable, discountPercentage }] };
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) { headers = headers.set('Authorization', `Bearer ${token}`); }
+
+    this.http.post(API_URL + ENDPOINTS.UPDATE_BULK_AVAILABILITY_DISCOUNT, payload, { headers })
+      .subscribe({
+        next: () => {
+          row.discountPercentage = discountPercentage;
+          const avail = isAvailable;
+          if ('showInApp' in row) { row.showInApp = avail; }
+          if ('active' in row) { row.active = avail; }
+          row._editing = false;
+          delete row._editedDiscount;
+          delete row._editedAvailable;
+          this.dataSource.data = [...this.dataSource.data];
+          this.editingRow = null;
+          this.showSuccess('Medicine updated successfully');
+        },
+        error: (err) => {
+          console.error('Update failed', err);
+          this.showError('Failed to update medicine');
+        }
+      });
+  }
+
+   private showSuccess(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: ['snackbar-success']
+    });
+  }
+
+  private showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['snackbar-error']
     });
   }
 }
