@@ -141,6 +141,11 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'active-staff',
+                loadComponent: () => import('./pages/active-staffs/active-staffs').then(m => m.ActiveStaffs),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'gps-live-monitoring',
                 loadComponent: () => import('./pages/gps-live-monitoring/gps-live-monitoring').then(m => m.GPSLiveMonitoring),
                 canActivate: [authGuard],

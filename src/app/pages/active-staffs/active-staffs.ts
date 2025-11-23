@@ -12,8 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 
 @Component({
-  selector: 'app-duty-logs',
-  imports: [CommonModule,
+  selector: 'app-active-staffs',
+  imports: [
+    CommonModule,
     MatTableModule,
     MatIconModule,
     MatFormFieldModule,
@@ -21,14 +22,15 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
     MatSortModule,
     MatInputModule,
     MatButtonModule,
-    MatSidenavModule],
-  templateUrl: './duty-logs.html',
-  styleUrl: './duty-logs.scss'
+    MatSidenavModule
+  ],
+  templateUrl: './active-staffs.html',
+  styleUrl: './active-staffs.scss'
 })
-export class DutyLogs {
-  http = inject(HttpClient);
+export class ActiveStaffs {
+http = inject(HttpClient);
   dataSource = new MatTableDataSource<any>();
-  columnsToDisplay = ['staffId', 'staffName', 'userId', 'userName', 'actions'];
+  columnsToDisplay = ['staffId', 'staffName', 'phone', 'email', 'gender', 'category', 'subcategory', 'duties', 'price', 'experience', 'qualification', 'profession', 'actions'];
   isLoading = false;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -56,7 +58,7 @@ export class DutyLogs {
 
   fetchData(): void {
     this.isLoading = true;
-    const endpoint = ENDPOINTS.GET_DUTY_LOGS;
+    const endpoint = ENDPOINTS.GET_ACTIVE_STAFFS;
 
     this.http.get<any[]>(API_URL + endpoint).subscribe({
       next: (res: any) => {
@@ -70,5 +72,4 @@ export class DutyLogs {
       }
     });
   }
-
 }

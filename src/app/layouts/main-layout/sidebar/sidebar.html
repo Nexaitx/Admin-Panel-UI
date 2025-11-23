@@ -87,6 +87,12 @@
             <mat-icon class="material-icons">assignment</mat-icon><span>Duty Logs</span>
         </span>
     </a>
+    <a *ngIf="hasPermission('Active Staff')" mat-list-item routerLink="/app/active-staff" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">spellcheck</mat-icon><span>Active Staff</span>
+        </span>
+    </a>
+
     <a *ngIf="hasPermission('GPS Monitoring')" mat-list-item routerLink="/app/gps-live-monitoring"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
