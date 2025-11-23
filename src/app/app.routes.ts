@@ -101,6 +101,16 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'pharmaceutical/top-discounts',
+                loadComponent: () => import('./pages/top-discounted-medicines/top-discounted-medicines').then(m => m.TopDiscountedMedicines),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'pharmaceutical/vitoxyz-available-products',
+                loadComponent: () => import('./pages/vitoxyz-available-products/vitoxyz-available-products').then(m => m.VitoxyzAvailableProducts),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'manage-accounts',
                 loadChildren: () => import('./pages/manage-accounts/manage-accounts-module').then(m => m.ManageAccountsModule),
                 canActivate: [authGuard],

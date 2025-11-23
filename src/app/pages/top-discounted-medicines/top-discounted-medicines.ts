@@ -17,9 +17,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
-  selector: 'app-all-pharma-available-products',
+  selector: 'app-top-discounted-medicines',
   imports: [
     MatIconModule,
     MatTableModule,
@@ -34,14 +34,15 @@ import { MatIconModule } from '@angular/material/icon';
     MatRadioModule,
     FormsModule,
     MatButtonModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatTooltipModule
   ],
-  templateUrl: './all-pharma-available-products.html',
-  styleUrl: './all-pharma-available-products.scss'
+  templateUrl: './top-discounted-medicines.html',
+  styleUrl: './top-discounted-medicines.scss'
 })
-export class AllPharmaAvailableProducts {
-  http = inject(HttpClient);
-  displayedColumns: string[] = ['select', 's_no', 'id', 'name', 'category', 'stockQty', 'price', 'discount', 'vitoxyzPrice', 'status', 'actions'];
+export class TopDiscountedMedicines {
+ http = inject(HttpClient);
+  displayedColumns: string[] = ['select', 's_no', 'id', 'name', 'category', 'stockQty', 'price', 'discount', 'vitoxyzPrice', 'status', 'active', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
   selection = new SelectionModel<any>(true, []);
   @ViewChild('availabilityDialog') availabilityDialog!: TemplateRef<any>;
@@ -56,7 +57,7 @@ export class AllPharmaAvailableProducts {
   snackBar = inject(MatSnackBar);
 
   ngOnInit() {
-    this.getAllAvailableProducts();
+    this.getTopDiscounts();
   }
 
   ngAfterViewInit(): void {
@@ -72,7 +73,7 @@ export class AllPharmaAvailableProducts {
     };
 
     if (this.paginator) {
-      this.paginator.page.subscribe(() => this.getAllAvailableProducts());
+      this.paginator.page.subscribe(() => this.getTopDiscounts());
     }
   }
 
@@ -82,7 +83,7 @@ export class AllPharmaAvailableProducts {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
-      this.getAllAvailableProducts();
+      this.getTopDiscounts();
     }
   }
   isAllSelected() {
@@ -193,21 +194,17 @@ export class AllPharmaAvailableProducts {
       panelClass: ['snackbar-error']
     });
   }
-  getAllAvailableProducts() {
-    const page = this.paginator ? this.paginator.pageIndex : 0;
-    const size = this.paginator ? (this.paginator.pageSize || 10) : 10;
+  getTopDiscounts() {
+    const page = this.paginator ? this.paginator.pageSize : 10;
     const params = new HttpParams()
-      .set('page', String(page))
-      .set('size', String(size))
-      .set('sortDirection', String('desc'));
+      .set('count', String(page));
 
-    this.http.get(API_URL + ENDPOINTS.ALL_AVAILABLE_MEDICINE, { params }).subscribe((res: any) => {
-      // support both paged responses (res.content) or plain arrays
-      if (res && Array.isArray(res)) {
-        this.dataSource.data = res;
+    this.http.get(API_URL + ENDPOINTS.TOP_DISCOUNTED_MEDICINES, { params }).subscribe((res: any) => {
+      if (res && Array.isArray(res.discountRecords)) {
+        this.dataSource.data = res.discountRecords.reverse();
         if (this.paginator) { this.paginator.length = res.length; }
-      } else if (res && res.content) {
-        this.dataSource.data = Array.isArray(res.content) ? res.content : [];
+      } else if (res && res.discountRecords) {
+        this.dataSource.data = Array.isArray(res.discountRecords) ? res.discountRecords.reverse() : [];
         if (this.paginator && typeof res.totalElements === 'number') {
           this.paginator.length = res.totalElements;
         }
