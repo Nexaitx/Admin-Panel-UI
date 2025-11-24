@@ -4,8 +4,31 @@
     <input matInput (keyup)="applyFilter($event)" placeholder="Search by name, category…">
   </mat-form-field>
 
-  <button class="col-md-2" matButton="tonal" [disabled]="selection.selected.length===0" (click)="openAvailabilityDialog()">
-    Bulk Update</button>
+  <mat-form-field appearance="outline" class="small-select col-md-3">
+    <mat-label>Select by Medicine</mat-label>
+    <mat-select [(ngModel)]="selectedMedicineId" (selectionChange)="onMedicineChange($event.value)">
+      <mat-option value="" disabled>Select Medicine</mat-option>
+      <mat-option *ngFor="let m of medicines" [value]="m.productId ?? m.id">{{ m.productName ?? m.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="small-select col-md-3">
+    <mat-label>Select by Pharmacist</mat-label>
+    <mat-select [(ngModel)]="selectedPharmacist" (selectionChange)="onPharmacistChange($event.value)">
+      <mat-option value="" disabled>Select Pharmacist</mat-option>
+      <mat-option *ngFor="let p of pharmacists" [value]="p.id">{{p.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!--show toggle if pharmacist selected -->
+  <mat-slide-toggle *ngIf="showPharmacistToggle" class="col-md-3 col-sm-5 col-6 mb-3" [checked]="pharmacistToggleChecked"
+        (change)="onPharmacistToggleChange($event)">
+    Show only active products for selected pharmacist
+  </mat-slide-toggle>
+
+  <button class="col-md-2" matButton="tonal" [disabled]="selection.selected.length===0"
+    (click)="openAvailabilityDialog()">
+    Bulk Disable</button>
 
   <mat-paginator class="col-md-7" #paginator [pageSizeOptions]="[10,20,100]" showFirstLastButtons></mat-paginator>
 </div>
@@ -59,10 +82,7 @@
 
     <ng-container matColumnDef="discount">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Discount&nbsp;% </th>
-      <td mat-cell *matCellDef="let item"> <ng-container *ngIf="item._editing; else readDiscount">
-              <input matInput type="number" [(ngModel)]="item._editedDiscount" style="width:100px" />
-            </ng-container>
-            <ng-template #readDiscount>{{ item.discountPercentage || '—' }}</ng-template> </td>
+      <td mat-cell *matCellDef="let item"> {{ item.discountPercentage || '—' }} </td>
     </ng-container>
 
     <ng-container matColumnDef="vitoxyzPrice">
@@ -73,10 +93,7 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
       <td mat-cell *matCellDef="let m">
-        <mat-slide-toggle
-          [checked]="m._editing ? (m._editedAvailable ?? (m.showInApp ?? m.active)) : (m.showInApp ?? m.active)"
-          [disabled]="!m._editing" (change)="onToggleChange(m, $event.checked)">
-        </mat-slide-toggle>
+
       </td>
     </ng-container>
 
@@ -84,15 +101,11 @@
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let m">
         <div class="d-flex">
-          <button matButton="tonal" *ngIf="editingRow !== m" (click)="onEdit(m)" class="btn-sm btn-height-adjust">
-            Edit
+          <button matButton="tonal" (click)="selectedMedicine = m; openAvailabilityDialog()"
+            class="btn-sm btn-height-adjust">
+            Update
           </button>
-          <button matButton="tonal" *ngIf="editingRow === m" (click)="onSave(m)" class="btn-sm btn-height-adjust">
-            Submit
-          </button>
-          <button matButton="tonal" *ngIf="editingRow === m" (click)="onCancel(m)" class="btn-sm btn-height-adjust ms-2">
-            Cancel
-          </button>
+
         </div>
       </td>
     </ng-container>
@@ -104,24 +117,15 @@
 </section>
 
 <ng-template #availabilityDialog>
-  <h2 mat-dialog-title>Confirm Bulk Update</h2>
+  <h2 mat-dialog-title>Confirm Bulk Disable</h2>
   <mat-dialog-content class="py-2">
-    <p>You're updating <strong>{{ dialogSelectedCount }}</strong> selected product(s).</p>
 
-    <mat-form-field appearance="outline" style="width:100%">
-      <mat-label>Discount % (leave empty to keep current/edit value)</mat-label>
-      <input matInput type="number" [(ngModel)]="dialogBulkDiscount" placeholder="e.g. 10" />
-    </mat-form-field>
+    Are you sure? You want to make the selected Products Disable Permanently? <br>
+    <span class="text-danger">This Action can not be undone. </span>
 
-    <mat-label class="me-2">Selected Medicines Availability</mat-label><br>
-    <mat-radio-group [(ngModel)]="dialogBulkStatus" [ngModelOptions]="{standalone: true}"
-      class="d-flex align-items-center">
-      <mat-radio-button [value]="true" class="me-2">Available</mat-radio-button>
-      <mat-radio-button [value]="false">Unavailable</mat-radio-button>
-    </mat-radio-group>
   </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-flat-button color="primary" [mat-dialog-close]="true">Confirm</button>
+  <mat-dialog-actions class="d-flex justify-content-between">
+    <button mat-button mat-dialog-close type="button">No</button>
+    <button mat-flat-button color="primary" (click)="onDisableMedicine()" [mat-dialog-close]="true">Yes</button>
   </mat-dialog-actions>
 </ng-template>

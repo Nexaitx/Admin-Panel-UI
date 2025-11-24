@@ -139,10 +139,14 @@ export const ENDPOINTS = {
     GET_AVAILABLE_TOGGLE: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
     
     ALL_AVAILABLE_MEDICINE: '/api/medicines/allmedicine/pharmacistdiscountadded',
+    DISABLE_MEDICINE_PERMANENTLY: '/api/medicines/disable/anymedicine',
+    GET_PHARMACIST_MEDICINE: '/api/medicines/pharmacists/',
+    GET_PHARMACISTS_MEDICINE: '/api/medicines/getallpharmacists/byproductid/',
+
     TOP_DISCOUNTED_MEDICINES: '/api/medicines/pharmacistsmedicine/top-discounted',
 
     // Super Admin: Available medicines
-    GET_ALL_PHARMACY_AVAILABLE_MEDICINE: '/api/medicines/getmedicine/bypharmacist/',  
+    GET_ALL_PHARMACY_AVAILABLE_MEDICINE: '/api/medicines/getmedicine/bypharmacist/',
 
     UPDATE_MEDICINE_AVAILABILITY: '/api/pharmacists/medicines/pharmacist/myvailable/bulktoggle',
 };
