@@ -149,4 +149,7 @@ export const ENDPOINTS = {
     GET_ALL_PHARMACY_AVAILABLE_MEDICINE: '/api/medicines/getmedicine/bypharmacist/',
 
     UPDATE_MEDICINE_AVAILABILITY: '/api/pharmacists/medicines/pharmacist/myvailable/bulktoggle',
+    
+    // push-notifications
+    SUBSCRIBEAPI:'/api/admin/subscribe',
 };

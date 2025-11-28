@@ -4,13 +4,110 @@ mat-toolbar {
     z-index: 9999;
     top: 0;
 
+    .notification-wrapper {
+    margin-left: 16px;
+    display: flex;
+    align-items: center;
+  }
     .logout {
         margin-left: auto;
         display: flex;
         align-items: center;
+        gap: 20px;
     }
 }
+.notifications-menu {
+  min-width: 320px;
+  max-width: 420px;
+  padding: 0;
 
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    font-weight: 600;
+  }
+
+  .mark-read-btn {
+    min-width: 0;
+    font-size: 12px;
+    text-transform: none;
+  }
+
+  .notifications-list {
+    max-height: 360px;
+    overflow: auto;
+  }
+
+  .notification-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-left: auto;
+  }
+
+  .notification-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .time {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    white-space: nowrap;
+  }
+
+  .message {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .no-notif {
+    padding: 12px 16px;
+    color: rgba(0,0,0,0.6);
+  }
+
+  .view-all {
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    background: #2e9e4a;
+    margin: 8px;
+    border-radius: 4px;
+  }
+}
+
+/* Optional: customize badge color to green like your screenshot */
+.mat-badge-content {
+  background-color: #30c070 !important; /* green */
+  color: #fff !important;
+  font-weight: 600;
+}
 mat-icon {
     color: #0BBBC1 !important;
 }

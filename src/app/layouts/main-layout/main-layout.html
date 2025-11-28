@@ -2,14 +2,76 @@
     <button mat-icon-button [style.margin-left]="sidenav.opened ? '260px' : '0'" (click)="sidenav.toggle()" >
         <mat-icon>menu</mat-icon>
     </button>
-     
+
     <div class="logout">
+          <!-- <button
+      mat-icon-button
+      matBadge="{{ unreadCount }}"
+      [matBadgeHidden]="unreadCount === 0"
+      matBadgeOverlap="false"
+      matBadgePosition="above after"
+      matBadgeColor="accent"
+      matTooltip="Notifications"
+      matTooltipPosition="below"
+      (click)="goToStaffBooking()"
+      aria-label="Notifications"
+    >
+      <mat-icon>notifications</mat-icon>
+    </button> -->
+      <button
+    mat-icon-button
+    [matMenuTriggerFor]="notificationsMenu"
+    #notifTrigger="matMenuTrigger"
+    matTooltip="Notifications"
+    matTooltipPosition="below"
+    [matBadge]="unreadCount > 0 ? unreadCount : null"
+    matBadgePosition="above after"
+    matBadgeOverlap="false"
+    matBadgeColor="primary"
+    [matBadgeHidden]="unreadCount === 0">
+    <mat-icon>notifications</mat-icon>
+  </button>
         <button mat-icon-button (click)="logout()" class="logout" matTooltip="Logout" matTooltipPosition="below">
             <mat-icon>logout</mat-icon>
         </button>
     </div>
 </mat-toolbar>
+<!-- NOTIFICATION MENU -->
+<mat-menu #notificationsMenu="matMenu" class="notifications-menu">
+  <div class="menu-header">
+    <span>Notifications</span>
+    <button mat-button class="mark-read-btn" (click)="markAllRead($event)">Mark all read</button>
+  </div>
 
+  <mat-divider></mat-divider>
+
+  <div class="notifications-list" *ngIf="notifications.length; else emptyState">
+    <ng-container *ngFor="let n of notifications; let i = index">
+      <button mat-menu-item class="notification-item" (click)="openNotification(n, $event)">
+        <img *ngIf="n.avatar" class="avatar" [src]="n.avatar" />
+        <div class="notification-body">
+          <div class="title-row">
+            <strong>{{ n.title }}</strong>
+            <span class="time">{{ n.time }}</span>
+          </div>
+          <div class="msg">{{ n.message }}</div>
+        </div>
+        <img *ngIf="n.thumb" class="thumb" [src]="n.thumb" />
+      </button>
+      <mat-divider *ngIf="i !== notifications.length - 1"></mat-divider>
+    </ng-container>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="no-notif">No notifications</div>
+  </ng-template>
+
+  <mat-divider></mat-divider>
+
+  <button mat-menu-item class="view-all-btn" (click)="viewAll($event)">
+    View All
+  </button>
+</mat-menu>
 <mat-drawer-container autosize class="main-layout">
     <mat-drawer #sidenav mode="side" opened class="sidebar border-top">
         <app-sidebar></app-sidebar>
