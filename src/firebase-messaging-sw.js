@@ -6,7 +6,7 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-comp
 
 // Replace with your config; these values are placeholders and should match
 // the `environment.firebase` you set in your Angular environment files.
-const firebaseConfig = {  
+const firebaseConfig = {
   apiKey: "AIzaSyA7T4I991z3Cl-5tlPyz79igpLkKWaNzDI",
   authDomain: "nexaitxclient.firebaseapp.com",
   projectId: "nexaitxclient",
