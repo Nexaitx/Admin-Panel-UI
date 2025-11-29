@@ -1,4 +1,6 @@
-export const API_URL = 'https://vitoxyzcrm-bosc.onrender.com';
+// export const API_URL = 'https://vitoxyzcrm-bosc.onrender.com';
+export const API_URL = 'http://localhost:8081';
+
 export const ENDPOINTS = {
 
     // Authorization

@@ -1,4 +1,47 @@
+
+<!--  staff-individual.html -->
+<div class="notification-header mb-3 p-3 bg-light rounded">
+  <div class="d-flex justify-content-between align-items-center">
+    <h2 class="mb-0">Staff Management</h2>
+    
+    <div class="notification-controls">
+      <button mat-raised-button color="primary" (click)="manualCheckForNewStaff()" class="me-2">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+      
+      <button mat-raised-button color="accent" (click)="requestNotificationPermission()" class="me-2">
+        <mat-icon>notifications</mat-icon>
+        Enable Notifications
+      </button>
+      
+      <button mat-raised-button color="warn" (click)="testNotificationSystem()" class="me-2">
+        <mat-icon>bug_report</mat-icon>
+        Test Notifications
+      </button>
+      
+      <button mat-raised-button (click)="getFCMTokenStatus()">
+        <mat-icon>token</mat-icon>
+        Check FCM
+      </button>
+    </div>
+  </div>
+  
+  
+  <!-- Notification status indicator -->
+  <div *ngIf="hasNewStaff | async" class="mt-2">
+    <div class="alert alert-success d-flex align-items-center">
+      <mat-icon class="me-2">notifications_active</mat-icon>
+      <span>New staff notifications are active! New staff will appear automatically.</span>
+    </div>
+  </div>
+</div>
+
+
+
 <mat-drawer-container class="drawer-container bg-white">
+
+  
   <mat-drawer class="w-75 p-2 pt-0" #staffDrawer mode="over" [(opened)]="isDrawerOpen" position="end">
     <h2>Staff Details</h2>
     <div *ngIf="selectedStaff">
