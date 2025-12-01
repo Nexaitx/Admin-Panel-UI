@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, input, ViewChild, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, input, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -18,6 +18,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'app-staff-individual',
@@ -37,7 +39,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatTooltipModule,
     MatSelectModule,
     FormsModule,
-    MatTimepickerModule
+    MatTimepickerModule,
+    MatDialogModule,
+    MatRadioModule
   ],
   templateUrl: './staff-individual.html',
   styleUrl: './staff-individual.scss',
@@ -71,6 +75,9 @@ export class StaffIndividual implements OnDestroy {
     'verified',
     'actions'
   ];
+  verification: boolean = false;
+  @ViewChild('verificationDialog') verificationDialog!: TemplateRef<any>;
+  dialog = inject(MatDialog);
 
   dataSource: MatTableDataSource<any>;
   cities: any[] = [
@@ -118,7 +125,6 @@ export class StaffIndividual implements OnDestroy {
     this.dataSource = new MatTableDataSource<any>([]);
   }
 
-  // subscription to push messages
   private _pushSub: any;
 
   ngOnInit() {
@@ -127,21 +133,20 @@ export class StaffIndividual implements OnDestroy {
       const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.email} ${data.phoneNumber} ${data.rating} ${data.verified}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
-      // Subscribe to push messages from the service worker and refresh the table
-      try {
-        this._pushSub = pushMessages$.subscribe((msg: any) => {
-          // msg is expected to be { from: 'service-worker', payload: {...} } or the payload itself
-          const payload = msg && msg.payload ? msg.payload : msg;
-          const title = payload?.notification?.title || payload?.data?.title || payload?.title;
-          console.log('[staff-individual] received push payload:', payload);
-          if (title === 'new added Staff') {
-            console.log('[staff-individual] detected new added Staff notification — refreshing list');
-            this.getStaffs();
-          }
-        });
-      } catch (e) {
-        console.warn('Failed to subscribe to push messages', e);
-      }
+    try {
+      this._pushSub = pushMessages$.subscribe((msg: any) => {
+        // msg is expected to be { from: 'service-worker', payload: {...} } or the payload itself
+        const payload = msg && msg.payload ? msg.payload : msg;
+        const title = payload?.notification?.title || payload?.data?.title || payload?.title;
+        console.log('[staff-individual] received push payload:', payload);
+        if (title === 'new added Staff') {
+          console.log('[staff-individual] detected new added Staff notification — refreshing list');
+          this.getStaffs();
+        }
+      });
+    } catch (e) {
+      console.warn('Failed to subscribe to push messages', e);
+    }
   }
 
   ngOnDestroy(): void {
@@ -149,7 +154,7 @@ export class StaffIndividual implements OnDestroy {
       if (this._pushSub && typeof this._pushSub.unsubscribe === 'function') {
         this._pushSub.unsubscribe();
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   ngAfterViewInit(): void {
@@ -167,10 +172,9 @@ export class StaffIndividual implements OnDestroy {
         data.email.toLowerCase().includes(searchTerms.globalFilterValue);
 
       const cityMatch = !searchTerms.selectedCity || data.city === searchTerms.selectedCity;
-      const subcategoryMatch = !searchTerms.selectedSubcategory || data.subcategory === searchTerms.selectedSubcategory;
+      const subcategoryMatch = !searchTerms.selectedSubcategory || data.subCategory === searchTerms.selectedSubcategory;
       const experienceMatch = !searchTerms.selectedExperience || data.experience === searchTerms.selectedExperience;
       const shiftTypeMatch = !searchTerms.selectedShiftType || data.shiftType === searchTerms.selectedShiftType;
-      // You may need more complex logic for dutyTime, e.g., checking if a range is included
       const dutyTimeMatch = !searchTerms.selectedDutyTime || data.dutyTime === searchTerms.selectedDutyTime;
 
       return globalMatch && cityMatch && subcategoryMatch && experienceMatch && shiftTypeMatch && dutyTimeMatch;
@@ -178,15 +182,12 @@ export class StaffIndividual implements OnDestroy {
     return filterFunction;
   }
 
-  // Function for the Global Search input (text input)
   applyGlobalFilter(event: Event) {
     this.globalFilterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     this.applyFilter();
   }
 
-  // Main function to apply all filters (called by mat-select changes and applyGlobalFilter)
   applyFilter() {
-    // Create an object containing all current filter values
     const filterObject = {
       globalFilterValue: this.globalFilterValue,
       selectedCity: this.selectedCity,
@@ -203,24 +204,12 @@ export class StaffIndividual implements OnDestroy {
     }
   }
 
-
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
-
   editElement(element: any) {
     console.log(`Edit ${element.name} (ID: ${element.staffId})`);
     alert(`Editing: ${element.name} (Staff ID: ${element.staffId})`);
-    // Implement your edit logic here
   }
 
   openStaffDrawer(element: any) {
-    // You can use a boolean flag and a selectedStaff property to control the drawer
     this.selectedStaff = element;
     console.log('Selected Staff:', this.selectedStaff);
     this.isDrawerOpen = true;
@@ -233,51 +222,37 @@ export class StaffIndividual implements OnDestroy {
   deleteElement(element: any) {
     console.log(`Delete ${element.name} (ID: ${element.staffId})`);
     alert(`Deleting: ${element.name} (Staff ID: ${element.staffId})`);
-    // Implement your delete logic here
   }
 
   getStaffs() {
-    // Assuming ENDPOINTS.GET_STAFFS is the correct endpoint for staff data
     this.http.get(API_URL + ENDPOINTS.GET_STAFFS).subscribe({
       next: (res: any) => {
-        this.staffs = res;
-        this.mapAndSetDataSource(this.staffs);
+        this.dataSource.data = res;
+        if (this.sort) {
+          this.dataSource.sort = this.sort;
+        }
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+        }
       },
       error: (err) => {
         console.error('Error fetching staffs:', err);
-        // Handle error display
       }
     });
   }
 
-  mapAndSetDataSource(staffs: any[]): void {
-    const mappedStaffs: any[] = staffs.map(staff => ({
-      staffId: staff.staffId,
-      name: staff.name,
-      category: staff.category,
-      experience: staff.experience,
-      price: staff.price, // Directly using price
-      gender: staff.gender,
-      shiftType: staff.shiftType,
-      profession: staff.profession,
-      email: staff.email,
-      phoneNumber: staff.phoneNumber,
-      rating: staff.rating,
-      verified: staff.verified,
-      originalStaff: staff // Keep the original object
-    }));
-
-    this.dataSource.data = mappedStaffs;
-
-    if (this.sort) {
-      this.dataSource.sort = this.sort;
-    }
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
-  }
-
   refreshData() {
     this.ngOnInit();
+  }
+
+  openVerificationDialog(m: any) {
+    const dialogRef = this.dialog.open(this.verificationDialog, {
+      width: '800px',
+      minWidth: '800px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 }

@@ -70,9 +70,20 @@ export async function initPushNotifications(): Promise<void> {
       }
 
       // handle messages when app is in the foreground
-      onMessage(messaging, (payload) => {
-        console.log('Foreground message received: ', payload);
+            onMessage(messaging, (payload) => {
+        console.log('Foreground message received:', payload);
+        pushMessages$.next(payload);
+        // Show a visual notification even in foreground
+        if (payload.notification) {
+          const { title, body } = payload.notification;
+          if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(title || 'Message', { body });
+          }
+        }
       });
+      // messaging, (payload) => {
+      //   console.log('Foreground message received: ', payload);
+      // });
     } else {
       console.warn('Service workers are not supported in this browser.');
     }

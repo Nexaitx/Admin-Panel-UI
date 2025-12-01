@@ -56,8 +56,8 @@ export class MainLayout {
       title: 'John Doe reacted to your post',
       message: 'Great post!',
       time: '10 mins ago',
-      avatar: 'assets/avatars/john.jpg',
-      thumb: 'assets/thumbs/post1.jpg',
+      avatar: '',
+      thumb: '',
       read: false
     },
     {
@@ -65,8 +65,8 @@ export class MainLayout {
       title: 'Richard Miles reacted to your post',
       message: 'Nice work',
       time: '1 day ago',
-      avatar: 'assets/avatars/richard.jpg',
-      thumb: 'assets/thumbs/post2.jpg',
+      avatar: '',
+      thumb: '',
       read: false
     },
     {
@@ -74,8 +74,8 @@ export class MainLayout {
       title: 'Brian Cumin reacted to your post',
       message: 'Love it',
       time: '1 day ago',
-      avatar: 'assets/avatars/brian.jpg',
-      thumb: 'assets/thumbs/post3.jpg',
+      avatar: '',
+      thumb: '',
       read: true
     }
   ];

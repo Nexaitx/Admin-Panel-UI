@@ -30,11 +30,11 @@ messaging.onBackgroundMessage(function(payload) {
 
   const notification = payload.notification || {};
   const title = notification.title || 'New Notification';
-  const options = {
-    body: notification.body || '',
-    icon: notification.icon || '/assets/images/icon-192.png',
-    data: payload.data || {}
-  };
+ const options = {
+  body: notification.body || '',
+  icon: notification.icon || '/icons/icon-192.png',  // Updated path
+  data: payload.data || {}
+};
 
   // show the notification
   self.registration.showNotification(title, options);

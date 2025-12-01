@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+
 html {
   @include mat.theme((color: mat.$cyan-palette,
       typography: (brand-family: Open Sans,
@@ -172,6 +173,17 @@ mat-nav-list .active-link {
   min-height: 80vh !important;
 }
 
-.mat-mdc-header-row, mat-drawer h2 {
+.mat-mdc-header-row,
+mat-drawer h2 {
   background: #e4fafb !important
+}
+
+.verified {
+  cursor: pointer;
+  background-color: rgb(92, 227, 132);
+}
+
+.not-verified {
+  cursor: pointer;
+  background-color: lightcoral;
 }
