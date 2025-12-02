@@ -16,6 +16,9 @@ export const ENDPOINTS = {
     GET_STAFFS: '/getAllStaff',
     GET_DUTY_LOGS: '/getDutyLog',
     GET_ACTIVE_STAFFS: '/active-staffs',
+    GET_STAFF_FILTER: '/api/staff/filter',
+    GET_SUB_CATEGORIES: '/api/staff/subcategories',
+    GET_STATES: '/api/staff/states',
 
     // Doctors
     GET_DOCTORS: '/getAllDoctor',

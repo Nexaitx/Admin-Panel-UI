@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { API_URL, ENDPOINTS } from '../../../core/const';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 import { pushMessages$ } from '../../../core/services/push-notification';
 import { MatMenuModule } from '@angular/material/menu';
@@ -51,6 +51,7 @@ export class StaffIndividual implements OnDestroy {
   title = 'Staff List';
   http = inject(HttpClient);
   staffs: any[] = [];
+  allStaffs: any[] = []; // Keep a copy of all staff for filtering
   isDrawerOpen = false;
   selectedStaff: any = null;
   @Input() staff: any;
@@ -80,23 +81,14 @@ export class StaffIndividual implements OnDestroy {
   dialog = inject(MatDialog);
 
   dataSource: MatTableDataSource<any>;
-  cities: any[] = [
-    { value: '', viewValue: 'All Cities' },
-    { value: 'chandigarh', viewValue: 'Chandigarh' },
-    { value: 'delhi', viewValue: 'Delhi' },
-    { value: 'jaipur', viewValue: 'Jaipur' },
-    { value: 'other', viewValue: 'Other' }
-  ];
-  subcategories = [
-    { value: '', viewValue: 'All Subcategories' },
-    { value: 'Pediatric', viewValue: 'Pediatric' },
-    { value: 'Geriatric', viewValue: 'Geriatric' }
-  ];
+  states: any;
+  subcategories: any;
 
   experiences = [
     { value: '', viewValue: 'All Experience' },
     { value: '1-3 years', viewValue: '1-3 years' },
-    { value: '3-5 years', viewValue: '3-5 years' }
+    { value: '3-5 years', viewValue: '3-5 years' },
+    { value: '5+ years', viewValue: '5+ years' }
   ];
 
   shiftTypes = [
@@ -112,8 +104,8 @@ export class StaffIndividual implements OnDestroy {
   ];
 
   globalFilterValue: string = '';
-  selectedCity: string = '';
-  selectedSubcategory: string = '';
+  selectedCity: any;
+  selectedSubcategory: any;
   selectedExperience: string = '';
   selectedShiftType: string = '';
   selectedDutyTime: string = '';
@@ -128,6 +120,8 @@ export class StaffIndividual implements OnDestroy {
   private _pushSub: any;
 
   ngOnInit() {
+    this.getStates();
+    this.getSubCategories();
     this.getStaffs();
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
       const dataStr = `${data.staffId} ${data.name} ${data.category} ${data.experience} ${data.price} ${data.gender} ${data.shiftType} ${data.profession} ${data.email} ${data.phoneNumber} ${data.rating} ${data.verified}`.toLowerCase();
@@ -138,9 +132,7 @@ export class StaffIndividual implements OnDestroy {
         // msg is expected to be { from: 'service-worker', payload: {...} } or the payload itself
         const payload = msg && msg.payload ? msg.payload : msg;
         const title = payload?.notification?.title || payload?.data?.title || payload?.title;
-        console.log('[staff-individual] received push payload:', payload);
         if (title === 'new added Staff') {
-          console.log('[staff-individual] detected new added Staff notification — refreshing list');
           this.getStaffs();
         }
       });
@@ -155,12 +147,72 @@ export class StaffIndividual implements OnDestroy {
         this._pushSub.unsubscribe();
       }
     } catch (e) { }
+
+    // Ensure the UI selects the first option by default for the filters
+    if (this.states && this.states.length) { this.selectedCity = this.states[0]; }
+    if (this.subcategories && this.subcategories.length) { this.selectedSubcategory = this.subcategories; }
+    if (this.experiences && this.experiences.length) { this.selectedExperience = this.experiences[0].value; }
+    if (this.shiftTypes && this.shiftTypes.length) { this.selectedShiftType = this.shiftTypes[0].value; }
+    if (this.dutyTimes && this.dutyTimes.length) { this.selectedDutyTime = this.dutyTimes[0].value; }
   }
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.sort.sort({ id: 'addedDate', start: 'desc', disableClear: true });
+  }
+
+  getSubCategories() {
+    this.http.get(API_URL + ENDPOINTS.GET_SUB_CATEGORIES).subscribe({
+      next: (res: any) => {
+        this.subcategories = res;
+      },
+      error: (err) => {
+        console.error('Error fetching subcategories:', err);
+      }
+    });
+  }
+
+  getStates() {
+    this.http.get(API_URL + ENDPOINTS.GET_STATES).subscribe({
+      next: (res: any) => {
+        this.states = res;
+      },
+      error: (err) => {
+        console.error('Error fetching states:', err);
+      }
+    });
+  }
+
+  getStaffByFilter() {
+    let params = new HttpParams();
+
+    // Only add params if they have been explicitly selected (non-empty values)
+    if (this.selectedCity) {
+      params = params.set('state', String(this.selectedCity));
+    }
+    if (this.selectedSubcategory) {
+      params = params.set('subCategory', String(this.selectedSubcategory));
+    }
+    if (this.selectedExperience && this.selectedExperience.trim() !== '') {
+      params = params.set('minExperience', this.selectedExperience);
+    }
+    if (this.selectedShiftType && this.selectedShiftType.trim() !== '') {
+      params = params.set('shiftType', this.selectedShiftType);
+    }
+    if (this.selectedDutyTime && this.selectedDutyTime.trim() !== '') {
+      params = params.set('preferredTimeSlot', this.selectedDutyTime);
+    }
+
+    this.http.get(API_URL + ENDPOINTS.GET_STAFF_FILTER, { params }).subscribe({
+      next: (res: any) => {
+        const reversed = Array.isArray(res) ? [...res].reverse() : res;
+        this.dataSource.data = reversed;
+      },
+      error: (err) => {
+        console.error('Error fetching filtered staffs:', err);
+      }
+    });
   }
 
   createFilter(): (data: any, filter: string) => boolean {
@@ -182,25 +234,12 @@ export class StaffIndividual implements OnDestroy {
     return filterFunction;
   }
 
-  applyGlobalFilter(event: Event) {
-    this.globalFilterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.applyFilter();
-  }
-
-  applyFilter() {
-    const filterObject = {
-      globalFilterValue: this.globalFilterValue,
-      selectedCity: this.selectedCity,
-      selectedSubcategory: this.selectedSubcategory,
-      selectedExperience: this.selectedExperience,
-      selectedShiftType: this.selectedShiftType,
-      selectedDutyTime: this.selectedDutyTime
-    };
-
-    this.dataSource.filter = JSON.stringify(filterObject);
-
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase().trim();
+    this.dataSource.filter = filterValue;
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+      this.getStaffs();
     }
   }
 
@@ -211,7 +250,6 @@ export class StaffIndividual implements OnDestroy {
 
   openStaffDrawer(element: any) {
     this.selectedStaff = element;
-    console.log('Selected Staff:', this.selectedStaff);
     this.isDrawerOpen = true;
   }
 
@@ -227,7 +265,9 @@ export class StaffIndividual implements OnDestroy {
   getStaffs() {
     this.http.get(API_URL + ENDPOINTS.GET_STAFFS).subscribe({
       next: (res: any) => {
-        this.dataSource.data = res;
+        const reversed = Array.isArray(res) ? [...res].reverse() : res;
+        this.allStaffs = reversed; // Store reversed data
+        this.dataSource.data = reversed;
         if (this.sort) {
           this.dataSource.sort = this.sort;
         }
@@ -247,8 +287,8 @@ export class StaffIndividual implements OnDestroy {
 
   openVerificationDialog(m: any) {
     const dialogRef = this.dialog.open(this.verificationDialog, {
-      width: '800px',
-      minWidth: '800px',
+      width: '850px',
+      minWidth: '850px',
       data: {}
     });
 

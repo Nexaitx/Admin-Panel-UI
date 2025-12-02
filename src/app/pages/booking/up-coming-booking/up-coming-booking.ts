@@ -74,7 +74,7 @@ export class UpComingBooking {
     if (endpoint) {
       this.http.get<any[]>(API_URL + endpoint).subscribe({
         next: (res: any[]) => {
-          this.dataSource.data = res;
+          this.dataSource.data = res.reverse();
           this.isLoading = false;
         },
         error: (err) => {
