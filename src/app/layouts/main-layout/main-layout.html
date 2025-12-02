@@ -5,12 +5,14 @@
 
   <div class="logout">
 
-    <button mat-icon-button [matMenuTriggerFor]="notificationsMenu" #notifTrigger="matMenuTrigger"
-      matTooltip="Notifications" matTooltipPosition="below" [matBadge]="unreadCount > 0 ? unreadCount : null"
-      matBadgePosition="above after" matBadgeOverlap="false" matBadgeColor="primary"
-      [matBadgeHidden]="unreadCount === 0">
+    <span class="position-relative" [matMenuTriggerFor]="notificationsMenu" #notifTrigger="matMenuTrigger"
+      matTooltip="Notifications" matTooltipPosition="below">
       <mat-icon>notifications</mat-icon>
-    </button>
+      <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+        <span class="visually-hidden">New alerts</span>
+      </span>
+    </span>
+
     <button mat-icon-button (click)="logout()" class="logout" matTooltip="Logout" matTooltipPosition="below">
       <mat-icon>logout</mat-icon>
     </button>
