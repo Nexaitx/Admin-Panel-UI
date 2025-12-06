@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, input, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -51,7 +51,7 @@ export class StaffIndividual implements OnDestroy {
   title = 'Staff List';
   http = inject(HttpClient);
   staffs: any[] = [];
-  allStaffs: any[] = []; // Keep a copy of all staff for filtering
+  allStaffs: any[] = [];
   isDrawerOpen = false;
   selectedStaff: any = null;
   @Input() staff: any;
@@ -86,15 +86,12 @@ export class StaffIndividual implements OnDestroy {
 
   experiences = [
     { value: '', viewValue: 'All Experience' },
-    { value: '1-3 years', viewValue: '1-3 years' },
-    { value: '3-5 years', viewValue: '3-5 years' },
-    { value: '5+ years', viewValue: '5+ years' }
-  ];
-
-  shiftTypes = [
-    { value: '', viewValue: 'All Shifts' },
-    { value: 'Day', viewValue: 'Day Shift' },
-    { value: 'Night', viewValue: 'Night Shift' }
+    // Use numeric values for API compatibility (min experience in years)
+    { value: '1', viewValue: '1 year' },
+    { value: '2', viewValue: '2 years' },
+    { value: '3', viewValue: '3 years' },
+    { value: '4', viewValue: '4 years' },
+    { value: '5', viewValue: '5+ years' }
   ];
 
   dutyTimes = [
@@ -129,7 +126,6 @@ export class StaffIndividual implements OnDestroy {
     };
     try {
       this._pushSub = pushMessages$.subscribe((msg: any) => {
-        // msg is expected to be { from: 'service-worker', payload: {...} } or the payload itself
         const payload = msg && msg.payload ? msg.payload : msg;
         const title = payload?.notification?.title || payload?.data?.title || payload?.title;
         if (title === 'new added Staff') {
@@ -152,7 +148,6 @@ export class StaffIndividual implements OnDestroy {
     if (this.states && this.states.length) { this.selectedCity = this.states[0]; }
     if (this.subcategories && this.subcategories.length) { this.selectedSubcategory = this.subcategories; }
     if (this.experiences && this.experiences.length) { this.selectedExperience = this.experiences[0].value; }
-    if (this.shiftTypes && this.shiftTypes.length) { this.selectedShiftType = this.shiftTypes[0].value; }
     if (this.dutyTimes && this.dutyTimes.length) { this.selectedDutyTime = this.dutyTimes[0].value; }
   }
 
@@ -195,13 +190,13 @@ export class StaffIndividual implements OnDestroy {
       params = params.set('subCategory', String(this.selectedSubcategory));
     }
     if (this.selectedExperience && this.selectedExperience.trim() !== '') {
-      params = params.set('minExperience', this.selectedExperience);
+      params = params.set('experience', this.selectedExperience);
     }
     if (this.selectedShiftType && this.selectedShiftType.trim() !== '') {
-      params = params.set('shiftType', this.selectedShiftType);
+      params = params.set('preferredTimeSlot', this.selectedShiftType);
     }
     if (this.selectedDutyTime && this.selectedDutyTime.trim() !== '') {
-      params = params.set('preferredTimeSlot', this.selectedDutyTime);
+      params = params.set('startTime', this.selectedDutyTime);
     }
 
     this.http.get(API_URL + ENDPOINTS.GET_STAFF_FILTER, { params }).subscribe({

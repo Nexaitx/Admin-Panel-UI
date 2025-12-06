@@ -1,7 +1,7 @@
 <mat-sidenav-container class="h-screen w-full">
     <mat-sidenav #sidenav mode="over" position="end" class="w-75">
         <div class="flex justify-between items-center mb-6 border-b pb-2">
-            <h4 class="text-xl font-semibold">Staff Duty Logs</h4>
+            <h4 class="text-xl font-semibold">Staff Duty Assigned</h4>
             <button mat-icon-button (click)="sidenav.close()">
                 <mat-icon>close</mat-icon>
             </button>
@@ -16,61 +16,33 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-        <div>
-            <h5>Duty Logs</h5>
-            <div class="d-flex justify-content-between align-items-center">
-                <mat-form-field appearance="outline">
-                    <mat-label>Search Duty Logs</mat-label>
-                    <input matInput (keyup)="applyFilter($event)" placeholder="e.g. Staff ID" #input
-                        class="rounded-md">
-                    <mat-icon matSuffix>search</mat-icon>
-                </mat-form-field>
-                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of alerts"
-                    ></mat-paginator>
-            </div>
-            <div class="scrollableTable overflow-x-auto">
-                <table mat-table [dataSource]="dataSource" class="bg-white" matSort>
+        <mat-tab-group>
+            <mat-tab label="Previously Assigned Duty">
+                <div>
+                    <!-- <div class="scrollableTable overflow-x-auto"> -->
+                        <app-common-table [columns]="commonColumnsPreviouslyAssignedDuty" [data]="dataSource.data"
+                            [pageSizeOptions]="[5,10,25,100]" [showCreate]="false" (view)="onRowView($event)"
+                            (save)="onRowSave($event)" (delete)="onRowDelete($event)">
+                        </app-common-table>
+                    <!-- </div> -->
+                </div>
+            </mat-tab>
 
-                    <ng-container matColumnDef="staffId">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Id</th>
-                        <td mat-cell *matCellDef="let element">{{element.staffId}}</td>
-                    </ng-container>
+            <mat-tab label="Ongoing Assigned Duty">
+                <div>
+                    <app-common-table [columns]="commonColumnsOngoingAssignedDuty" [data]="dataSource.data" (view)="onRowView($event)"
+                        (save)="onRowSave($event)" (delete)="onRowDelete($event)">
+                    </app-common-table>
+                </div>
+            </mat-tab>
 
-                    <ng-container matColumnDef="staffName">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Name</th>
-                        <td mat-cell *matCellDef="let element">{{element.staffName}}</td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="userId">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>User Id</th>
-                        <td mat-cell *matCellDef="let element">{{element.userId}}</td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="userName">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name</th>
-                        <td mat-cell *matCellDef="let element">{{element.userName}}</td>
-                    </ng-container>
-
-
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
-                        <td mat-cell *matCellDef="let element">
-                            <button mat-icon-button color="primary" >
-                                <mat-icon>visibility</mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                        class="hover:bg-gray-100 transition-colors">
-                    </tr>
-                </table>
-            </div>
-
-            <div *ngIf="dataSource.data.length === 0 && !isLoading" class="p-8 text-center text-gray-500">
-                No alerts to display.
-            </div>
-        </div>
+            <mat-tab label="Upcoming Assigned Duty">
+                <div>
+                    <app-common-table [columns]="commonColumnsUpcomingAssignedDuty" [data]="dataSource.data" (view)="onRowView($event)"
+                        (save)="onRowSave($event)" (delete)="onRowDelete($event)">
+                    </app-common-table>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
     </mat-sidenav-content>
 </mat-sidenav-container>

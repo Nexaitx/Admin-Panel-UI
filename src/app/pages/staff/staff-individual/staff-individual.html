@@ -51,7 +51,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-3 small-select">
+      <mat-form-field appearance="outline" class="col-md-2 small-select">
         <mat-label>Experience</mat-label>
         <mat-select (selectionChange)="getStaffByFilter()" [(ngModel)]="selectedExperience">
           @for (exp of experiences; track exp) {
@@ -60,16 +60,16 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-2 small-select">
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
         <mat-label>Shift Type</mat-label>
         <mat-select (selectionChange)="getStaffByFilter()" [(ngModel)]="selectedShiftType">
-          <mat-option value="">2 to 4 hours</mat-option>
-          <mat-option value="">4 to 6 hours</mat-option>
-          <mat-option value="">6 to 8 hours</mat-option>
-          <mat-option value="">8 to 12 hours</mat-option>
-          <mat-option value="">24 hours</mat-option>
-          <mat-option value="">Weekly</mat-option>
-          <mat-option value="">Monthly</mat-option>
+          <mat-option value="" [disabled]>Select Shift Type</mat-option>
+          <mat-option value="2">8 hours</mat-option>
+          <mat-option value="4">12 hours</mat-option>
+          <mat-option value="24">24 hours</mat-option>
+          <mat-option value="Weekly">Monthly (8 Hours, 4 Holidays)</mat-option>
+          <mat-option value="Monthly">Monthly (12 Hours, 4 Holidays)</mat-option>
+          <mat-option value="Monthly">Monthly (24 Hours, 4 Holidays)</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -181,13 +181,13 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;Shift&nbsp;Type&nbsp;</th>
           <td mat-cell *matCellDef="let element">
             <select class="form-select form-select-sm" style="width:120px">
-              <option value="">2 to 4 hours</option>
-              <option value="">4 to 6 hours</option>
-              <option value="">6 to 8 hours</option>
-              <option value="">8 to 12 hours</option>
-              <option value="">24 hours</option>
-              <option value="">Weekly</option>
-              <option value="">Monthly</option>
+              <option value="">8 Hours</option>
+              <option value="">12 Hours</option>
+              <option value="">24 Hours</option>
+              <option value="">Monthly (8 Hours, 4 Holidays)</option>
+              <option value="">Monthly (8 Hours, 4 Holidays)</option>
+              <option value="">Monthly (12 Hours, 4 Holidays)</option>
+              <option value="">Monthly (24 Hours, 4 Holidays)</option>
             </select>
           </td>
         </ng-container>
@@ -249,7 +249,7 @@
             [src]="selectedStaff?.adharUrl" alt="Aadhaar Card">
         </div>
         <label>Do you want to verify this Document?</label>
-        <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+        <mat-radio-group aria-label="Select an option"  name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
         </mat-radio-group>
@@ -264,7 +264,7 @@
             [src]="selectedStaff?.panUrl" alt="PAN Card">
         </div>
         <label>Do you want to verify this Document?</label>
-        <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+        <mat-radio-group aria-label="Select an option"  name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
         </mat-radio-group>
@@ -278,7 +278,7 @@
             [src]="selectedStaff?.degreeUrl" alt="Degree Certificate">
         </div>
         <label>Do you want to verify this Document?</label>
-        <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+        <mat-radio-group aria-label="Select an option"  name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
         </mat-radio-group>
@@ -292,7 +292,7 @@
             [src]="selectedStaff?.medicalLicenseUrl" alt="Medical License">
         </div>
         <label>Do you want to verify this Document?</label>
-        <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+        <mat-radio-group aria-label="Select an option"  name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
         </mat-radio-group>
@@ -306,7 +306,7 @@
             [src]="selectedStaff?.policeVerificationUrl" alt="Police Verification">
         </div>
         <label>Do you want to verify this Document?</label>
-        <mat-radio-group aria-label="Select an option" [(ngModel)]="verification" name="verification">
+        <mat-radio-group aria-label="Select an option"  name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
         </mat-radio-group>

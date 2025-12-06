@@ -136,7 +136,7 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
-                path: 'duty-logs',
+                path: 'duty-assigned',
                 loadComponent: () => import('./pages/duty-logs/duty-logs').then(m => m.DutyLogs),
                 canActivate: [authGuard],
             },

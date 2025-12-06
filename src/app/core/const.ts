@@ -16,7 +16,7 @@ export const ENDPOINTS = {
     GET_STAFFS: '/getAllStaff',
     GET_DUTY_LOGS: '/getDutyLog',
     GET_ACTIVE_STAFFS: '/active-staffs',
-    GET_STAFF_FILTER: '/api/staff/filter',
+    GET_STAFF_FILTER: '/api/staff/filter/advanced',
     GET_SUB_CATEGORIES: '/api/staff/subcategories',
     GET_STATES: '/api/staff/states',
 
@@ -51,9 +51,10 @@ export const ENDPOINTS = {
     GET_LOGGED_IN_USER_DETAILS: '/profile',
 
     // Get Bookings
-    GET_PREVIOUS_BOOKINGS: '/getPastBookings',
-    GET_ONGOING_BOOKINGS: '/getOnGoingBookings',
-    GET_UPCOMING_BOOKINGS: '/getUpcomingBookings',
+    GET_PREVIOUS_BOOKINGS: '/api/admin/bookings/past',
+    GET_ONGOING_BOOKINGS: '/api/admin/bookings/ongoing',
+    GET_UPCOMING_BOOKINGS: '/api/admin/bookings/upcoming',
+
     GET_BULK_BOOKINGS: '/getAcceptedUserBookings',
 
     // GPS

@@ -1,0 +1,98 @@
+<div class="common-table">
+  <div class="ct-header d-flex justify-content-between items-center mb-3">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search" [value]="filterValue">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div class="ct-actions">
+      <button *ngIf="showCreate" mat-flat-button color="primary" (click)="onCreate()">{{createLabel}}</button>
+    </div>
+  </div>
+
+  <div class="scrollableTable overflow-x-auto">
+    <table mat-table [dataSource]="dataSource" matSort class="w-full">
+
+      <!-- dynamic columns -->
+      <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
+
+  <th mat-header-cell *matHeaderCellDef>
+    <ng-container *ngIf="col.sortable; else unsortableHeader">
+      <span mat-sort-header>{{col.header}}</span>
+    </ng-container>
+    
+    <ng-template #unsortableHeader>
+      <span>{{col.header}}</span>
+    </ng-template>
+
+  </th>
+
+  <td mat-cell *matCellDef="let element">
+    <ng-container [ngSwitch]="col.type || 'text'">
+      <span *ngSwitchCase="'date'">{{element[col.key] | date}}</span>
+      <span *ngSwitchCase="'boolean'">{{element[col.key] ? 'Yes' : 'No'}}</span>
+      <span *ngSwitchDefault>{{element[col.key]}}</span>
+    </ng-container>
+  </td>
+
+</ng-container>
+
+      <!-- actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button [matMenuTriggerFor]="actionMenu" (click)="setActiveRow(element)">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-100"></tr>
+    </table>
+  </div>
+
+  <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+
+  <!-- action menu (single menu, row passed by click handlers) -->
+  <mat-menu #actionMenu="matMenu" (closed)="clearActiveRow()">
+    <button mat-menu-item (click)="handleView()">
+      <mat-icon>visibility</mat-icon>
+      <span>Show</span>
+    </button>
+    <button mat-menu-item (click)="handleEdit()">
+      <mat-icon>edit</mat-icon>
+      <span>Edit</span>
+    </button>
+    <button mat-menu-item (click)="handleDelete()">
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+  </mat-menu>
+
+  <!-- edit/create dialog template -->
+  <ng-template #editDialog let-data>
+    <h2 mat-dialog-title>{{data?.isNew ? 'Create' : 'Edit'}} Record</h2>
+    <mat-dialog-content>
+      <div class="grid gap-3">
+        <div *ngFor="let col of columns" class="field">
+          <label class="block text-sm font-medium text-gray-700">{{col.header}}</label>
+          <ng-container [ngSwitch]="col.type || 'text'">
+            <input *ngSwitchCase="'text'" matInput [(ngModel)]="data.row[col.key]" />
+            <input *ngSwitchCase="'number'" type="number" matInput [(ngModel)]="data.row[col.key]" />
+            <input *ngSwitchCase="'date'" type="date" matInput [(ngModel)]="data.row[col.key]" />
+            <select *ngSwitchCase="'select'" matNativeControl [(ngModel)]="data.row[col.key]">
+              <option *ngFor="let opt of (col.options || [])" [value]="opt.value">{{opt.label}}</option>
+            </select>
+            <input *ngSwitchDefault matInput [(ngModel)]="data.row[col.key]" />
+          </ng-container>
+        </div>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="cancelEdit()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="saveEdit(data.row, data?.isNew)">Save</button>
+    </mat-dialog-actions>
+  </ng-template>
+</div>

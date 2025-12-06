@@ -10,7 +10,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-
+import { MatTabsModule } from '@angular/material/tabs';
+import { CommonTableComponent, ColumnDef } from '../../shared/common-table/common-table.component';
 @Component({
   selector: 'app-duty-logs',
   imports: [CommonModule,
@@ -21,7 +22,9 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
     MatSortModule,
     MatInputModule,
     MatButtonModule,
-    MatSidenavModule],
+    MatSidenavModule,
+    MatTabsModule,
+    CommonTableComponent],
   templateUrl: './duty-logs.html',
   styleUrl: './duty-logs.scss'
 })
@@ -29,6 +32,31 @@ export class DutyLogs {
   http = inject(HttpClient);
   dataSource = new MatTableDataSource<any>();
   columnsToDisplay = ['staffId', 'staffName', 'userId', 'userName', 'actions'];
+  // Common table column defs
+  commonColumnsPreviouslyAssignedDuty: ColumnDef[] = [
+    { key: 'staffId', header: 'Staff Id', sortable: true },
+    { key: 'staffName', header: 'Staff Name', sortable: true },
+    { key: 'userId', header: 'User Id' },
+    { key: 'userName', header: 'User Name' },
+    {key: 'bookingId', header: 'Booking Id', sortable: true },
+  ];
+
+  commonColumnsOngoingAssignedDuty: ColumnDef[] = [
+    { key: 'staffId', header: 'Staff Id', sortable: true },
+    { key: 'staffName', header: 'Staff Name', sortable: true },
+    { key: 'userId', header: 'User Id' },
+    { key: 'userName', header: 'User Name' },
+    { key: 'dutyStart', header: 'Duty Start', sortable: true, type: 'date' },
+    { key: 'dutyEnd', header: 'Duty End', sortable: true, type: 'date' }
+  ];
+
+  commonColumnsUpcomingAssignedDuty: ColumnDef[] = [
+    { key: 'staffId', header: 'Staff Id', sortable: true },
+    { key: 'staffName', header: 'Staff Name', sortable: true },
+    { key: 'userId', header: 'User Id' },
+    { key: 'userName', header: 'User Name' },
+    { key: 'bookingDate', header: 'Booking Date', sortable: true, type: 'date' }
+  ];
   isLoading = false;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -69,6 +97,29 @@ export class DutyLogs {
         this.isLoading = false;
       }
     });
+  }
+
+  // handlers from common-table
+  onRowView(row: any) {
+    this.selectedStaff = row;
+    this.onViewAction();
+  }
+
+  onRowDelete(row: any) {
+    console.log('Delete row requested', row);
+    // implement deletion API call here if required and refresh
+    // example: this.http.delete(API_URL + ENDPOINTS.DELETE_DUTY + '/' + row.id).subscribe(()=> this.fetchData())
+  }
+
+  onRowSave(payload: any) {
+    console.log('Save requested', payload);
+    // payload = { row, isNew }
+    // implement create/update api here then refresh
+    this.fetchData();
+  }
+
+  onViewAction() {
+    this.sidenav.open();
   }
 
 }

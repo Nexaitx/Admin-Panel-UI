@@ -7,22 +7,83 @@
     <div class="scrollableTable overflow-x-auto">
         <table mat-table [dataSource]="dataSource" matSort>
 
-            <!-- Booking ID Column -->
-            <ng-container matColumnDef="bookingId" sticky="true">
-                <th mat-header-cell *matHeaderCellDef>Booking ID</th>
-                <td mat-cell *matCellDef="let element">{{element.bookingId}}</td>
+            <!-- Serial No Column -->
+            <ng-container matColumnDef="serial_no" sticky="true">
+                <th mat-header-cell *matHeaderCellDef>S.No</th>
+                <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
             </ng-container>
 
-            <!-- Start Date Column -->
-            <ng-container matColumnDef="startDate">
-                <th mat-header-cell *matHeaderCellDef>Start Date</th>
-                <td mat-cell *matCellDef="let element">{{element.startDate | date:'mediumDate'}}</td>
+            <!-- Booking No Column -->
+            <ng-container matColumnDef="booking_no">
+                <th mat-header-cell *matHeaderCellDef>Booking&nbsp;No</th>
+                <td mat-cell *matCellDef="let element">{{element.bookingId || element.booking_no || '-'}}</td>
             </ng-container>
 
-            <!-- End Date Column -->
-            <ng-container matColumnDef="endDate">
-                <th mat-header-cell *matHeaderCellDef>End Date</th>
-                <td mat-cell *matCellDef="let element">{{element.endDate ? (element.endDate | date:'mediumDate') : '-'}}
+            <!-- Shift Date Column -->
+            <ng-container matColumnDef="shift_date">
+                <th mat-header-cell *matHeaderCellDef>Shift&nbsp;Date</th>
+                <td mat-cell *matCellDef="let element">{{element.shiftDate ? (element.shiftDate | date:'mediumDate') : (element.startDate ? (element.startDate | date:'mediumDate') : '-')}}</td>
+            </ng-container>
+
+            <!-- Shift Start Column -->
+            <ng-container matColumnDef="shift_start">
+                <th mat-header-cell *matHeaderCellDef>Shift&nbsp;Start</th>
+                <td mat-cell *matCellDef="let element">{{`${element.startTimeHour}:${element.startTimeMinute}${element.startTimeAmPm}` || '-'}}</td>
+            </ng-container>
+
+            <!-- Shift End Column -->
+            <ng-container matColumnDef="shift_end">
+                <th mat-header-cell *matHeaderCellDef>Shift&nbsp;End</th>
+                <td mat-cell *matCellDef="let element">{{`${element.endTimeHour}:${element.endTimeMinute}${element.endTimeAmPm}` || '-'}}</td>
+            </ng-container>
+
+            <!-- User Name Column -->
+            <ng-container matColumnDef="user_name">
+                <th mat-header-cell *matHeaderCellDef>User&nbsp;Name</th>
+                <td mat-cell *matCellDef="let element">{{element.userName || element.user_name || '-'}}</td>
+            </ng-container>
+
+            <!-- User Phone Column -->
+            <ng-container matColumnDef="user_phone">
+                <th mat-header-cell *matHeaderCellDef>User&nbsp;Phone</th>
+                <td mat-cell *matCellDef="let element">{{element.userPhoneNumber || element.user_phone || '-'}}</td>
+            </ng-container>
+
+            <!-- Staff Name Column -->
+            <ng-container matColumnDef="staff_name">
+                <th mat-header-cell *matHeaderCellDef>Staff&nbsp;Name</th>
+                <td mat-cell *matCellDef="let element">{{element.staffName || element.staff_name || '-'}}</td>
+            </ng-container>
+
+            <!-- Staff Phone Column -->
+            <ng-container matColumnDef="staff_phone">
+                <th mat-header-cell *matHeaderCellDef>Staff&nbsp;Phone</th>
+                <td mat-cell *matCellDef="let element">{{element.staffPhoneNumber || '-'}}</td>
+            </ng-container>
+
+            <!-- Subcategory Column -->
+            <ng-container matColumnDef="subcategory">
+                <th mat-header-cell *matHeaderCellDef>Subcategory</th>
+                <td mat-cell *matCellDef="let element">{{element.staffSubCategory || '-' | titlecase}}</td>
+            </ng-container>
+
+            <!-- Shift Total Price Column -->
+            <ng-container matColumnDef="shift_total_price">
+                <th mat-header-cell *matHeaderCellDef>Total&nbsp;Price</th>
+                <td mat-cell *matCellDef="let element">₹{{element.shiftTotalPrice || element.price || element.shift_total_price || '-'}}</td>
+            </ng-container>
+
+            <!-- Payment Status Column -->
+            <ng-container matColumnDef="payment_status">
+                <th mat-header-cell *matHeaderCellDef>Payment&nbsp;Status</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="px-2 py-1 rounded-pill text-xs font-medium" [ngClass]="{
+                        'bg-green text-green-800': element.paymentStatus === 'SUCCESS' || element.paymentStatus === 'success',
+                        'bg-yellow text-yellow-800': element.paymentStatus === 'pending',
+                        'bg-red text-red-800': element.paymentStatus === 'NOT_PAID'
+                      }">
+                        {{element.paymentStatus || element.payment_status || '-' | titlecase}}
+                    </span>
                 </td>
             </ng-container>
 
@@ -30,50 +91,36 @@
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>Status</th>
                 <td mat-cell *matCellDef="let element">
-                    <span class="px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
-                        'bg-green-100 text-green-800': element.status === 'accept',
-                        'bg-red-100 text-red-800': element.status === 'reject',
-                        'bg-yellow-100 text-yellow-800': element.status === 'pending'
+                    <span class="px-2 py-1 rounded-pill text-xs font-medium" [ngClass]="{
+                        'bg-green text-green-800': element.status === 'accept' || element.status === 'ACCEPT',
+                        'bg-skyblue text-sky-800': element.status === 'Confirmed' || element.status === 'CONFIRMED',
+                        'bg-red text-red-800': element.status === 'reject' || element.status === 'cancelled',
+                        'bg-yellow text-yellow-800': element.status === 'pending',
+                        'bg-blue text-blue-800': element.status === 'ongoing'
                       }">
-                        {{element.status}}
+                        {{element.status || '-' | titlecase}}
                     </span>
                 </td>
             </ng-container>
 
-            <!-- User Name Column -->
-            <ng-container matColumnDef="userName">
-                <th mat-header-cell *matHeaderCellDef>User Name</th>
-                <td mat-cell *matCellDef="let element">{{element.userName}}</td>
-            </ng-container>
-
-            <!-- User Phone Column -->
-            <ng-container matColumnDef="userPhone">
-                <th mat-header-cell *matHeaderCellDef>User Phone</th>
-                <td mat-cell *matCellDef="let element">{{element.userPhone}}</td>
-            </ng-container>
-
-            <!-- Staff Name Column -->
-            <ng-container matColumnDef="staffName">
-                <th mat-header-cell *matHeaderCellDef>Staff Name</th>
-                <td mat-cell *matCellDef="let element">{{element.staffName}}</td>
-            </ng-container>
-
-            <!-- Staff Phone Column -->
-            <ng-container matColumnDef="staffPhone">
-                <th mat-header-cell *matHeaderCellDef>Staff Phone</th>
-                <td mat-cell *matCellDef="let element">{{element.staffPhone}}</td>
-            </ng-container>
-
-            <!-- Duties Column -->
-            <ng-container matColumnDef="duties">
-                <th mat-header-cell *matHeaderCellDef>Duties</th>
-                <td mat-cell *matCellDef="let element">{{element.duties || '-'}}</td>
-            </ng-container>
-
-            <!-- Price Column -->
-            <ng-container matColumnDef="price">
-                <th mat-header-cell *matHeaderCellDef>Price</th>
-                <td mat-cell *matCellDef="let element">{{element.price || '-'}}</td>
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #actionMenu="matMenu">
+                        <button mat-menu-item>
+                            <mat-icon>visibility</mat-icon>
+                            <span>Show</span>
+                        </button>
+                        <button mat-menu-item>
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit</span>
+                        </button>
+                    </mat-menu>
+                </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
@@ -81,7 +128,7 @@
             </tr>
         </table>
     </div>
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of bookings"
+    <mat-paginator [pageSizeOptions]="[10, 25, 100]" aria-label="Select page of bookings"
         class="mt-4 rounded-lg shadow-sm"></mat-paginator>
 
     <div *ngIf="dataSource.data.length === 0" class="p-8 text-center text-gray-500">

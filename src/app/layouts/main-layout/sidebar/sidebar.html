@@ -1,5 +1,5 @@
 <mat-nav-list>
-    <div class="pb-1 border-bottom">
+    <div class="pb-1 mb-1 border-bottom">
         <img src="./assets/images/logo-light.png" alt="Vitoxyz Logo">
     </div>
     <a mat-list-item routerLink="/app/admin-dashboard" *ngIf="hasPermission('Admin Dashboard')"
@@ -82,14 +82,14 @@
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Duty Logs')" mat-list-item routerLink="/app/duty-logs" routerLinkActive="active-link">
+    <a *ngIf="hasPermission('Duty Assigned')" mat-list-item routerLink="/app/duty-assigned" routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <mat-icon class="material-icons">assignment</mat-icon><span>Duty Logs</span>
+            <mat-icon class="material-icons">assignment</mat-icon><span>Duty Assigned</span>
         </span>
     </a>
     <a *ngIf="hasPermission('Active Staff')" mat-list-item routerLink="/app/active-staff" routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <mat-icon class="material-icons">spellcheck</mat-icon><span>Active Staff</span>
+            <mat-icon class="material-icons">spellcheck</mat-icon><span>OnGoing Duty</span>
         </span>
     </a>
 
@@ -110,7 +110,7 @@
     <a *ngIf="hasPermission('Bulk Assignment')" mat-list-item routerLink="/app/bulk-assignments"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <mat-icon class="material-icons">group</mat-icon><span>Bulk Assignments</span>
+            <mat-icon class="material-icons">group</mat-icon><span>Bulk Bookings</span>
         </span>
     </a>
     <a *ngIf="hasPermission('Overtime Duties')" mat-list-item routerLink="/app/override-Duties"
