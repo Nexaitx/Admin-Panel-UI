@@ -137,6 +137,49 @@ private handleIncomingMessage(payload: any): void {
     }
   }
 
+  /**
+   * Request permission and get FCM token directly
+   * Returns the token string or null if failed
+   */
+  async requestPermissionAndGetToken(): Promise<string | null> {
+    if (!this.messaging || !this.isSupported) {
+      console.warn('Firebase messaging not available');
+      return null;
+    }
+
+    try {
+      this.tokenRequested = true;
+
+      // Check current permission status
+      if (Notification.permission === 'granted') {
+        console.log('✅ Notification permission already granted');
+        const token = await this.getFCMToken();
+        return token;
+      }
+
+      if (Notification.permission === 'denied') {
+        console.warn('❌ Notification permission denied by user');
+        return null;
+      }
+
+      // Request permission
+      console.log('🔄 Requesting notification permission...');
+      const permission = await Notification.requestPermission();
+      
+      if (permission === 'granted') {
+        console.log('✅ Notification permission granted');
+        const token = await this.getFCMToken();
+        return token;
+      } else {
+        console.log('❌ Notification permission denied:', permission);
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ Error requesting notification permission:', error);
+      return null;
+    }
+  }
+
    private async getFCMToken1(): Promise<string | null> {
     if (!this.messaging) {
       console.error('❌ Messaging not available for token generation');
@@ -562,6 +605,13 @@ private handleIncomingMessage(payload: any): void {
 
   private getCurrentUser(): any {
     try {
+      // Get token from localStorage (stored by Auth service)
+      const token = localStorage.getItem('token');
+      if (token) {
+        return { token: token };
+      }
+      
+      // Fallback to currentUser if it exists
       const userData = localStorage.getItem('currentUser');
       return userData ? JSON.parse(userData) : null;
     } catch {
