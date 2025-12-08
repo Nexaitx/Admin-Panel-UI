@@ -1,5 +1,6 @@
 export const environment = {
-    apiUrl: 'https://vitoxyzcrm-bosc.onrender.com',
+    // apiUrl: 'https://vitoxyzcrm-bosc.onrender.com',
+    apiUrl:'http://localhost:8081/',
     // Add your Firebase config here (replace placeholders)
     firebase: {
       apiKey: "AIzaSyCXe_uurDqHTnVXipvTCCLjx7wtiCV0flw",
