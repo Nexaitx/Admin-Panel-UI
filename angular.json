@@ -64,17 +64,25 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5MB"
+                  "maximumWarning": "500MB",
+                  "maximumError": "20MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4mg",
-                  "maximumError": "8kB"
+                  "maximumWarning": "200KB",
+                  "maximumError": "400KB"
                 }
               ],
               "outputHashing": "all",
-              "serviceWorker": "ngsw-config.json"
+              "serviceWorker": "ngsw-config.json",
+              "optimization": {
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "scripts": true,
+                "fonts": true
+              }
             },
             "development": {
               "optimization": false,

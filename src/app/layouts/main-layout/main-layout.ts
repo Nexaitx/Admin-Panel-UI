@@ -9,7 +9,6 @@ import { Auth } from '../../core/services/auth';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
-import { Support } from '../../pages/support/support';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDivider } from "@angular/material/divider";
 
@@ -25,7 +24,6 @@ import { MatDivider } from "@angular/material/divider";
     MatTooltipModule,
     MatMenuModule,
     CommonModule,
-    Support,
     MatBadgeModule,
     MatDivider
 ],
