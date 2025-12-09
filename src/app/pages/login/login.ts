@@ -172,7 +172,7 @@ export class Login {
   private async sendFCMTokenToBackend(fcmToken: string, authToken: string): Promise<void> {
     try {
       const response: any = await this.http.post(
-        API_URL + '/update-fcm-token',
+        API_URL + ENDPOINTS.UPDATE_FCM_TOKEN,
         { 
           fcmToken: fcmToken,
           timestamp: new Date().toISOString()
@@ -220,12 +220,8 @@ export class Login {
     // Get FCM status from service
     const fcmStatus = this.firebaseService.getFCMStatus();
     
-    if (fcmStatus.fullToken) {
-    } else {
-    }
-        
-    // Also show in snackbar for user info
-    if (fcmStatus.fullToken) {
+    // Show in snackbar for user info if token exists
+    if (fcmStatus.fcmToken) {
       this._snackBar.open('Notification token saved successfully!', 'OK', {
         horizontalPosition: 'end',
         verticalPosition: 'top',
@@ -239,18 +235,14 @@ export class Login {
     try {
       const hasPermission = await this.firebaseService.requestPermission();
       
-      if (hasPermission) {
-        const fcmStatus = this.firebaseService.getFCMStatus();
-        
-        if (fcmStatus.fullToken) {
-          const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-          if (currentUser?.token) {
-            await this.sendFCMTokenToBackend(fcmStatus.fullToken, currentUser.token);
-          }
+      if (hasPermission && this.firebaseService.fcmToken) {
+        const token = localStorage.getItem('token');
+        if (token) {
+          await this.sendFCMTokenToBackend(this.firebaseService.fcmToken, token);
         }
       }
     } catch (error) {
-      console.error(' FCM Test Error:', error);
+      console.error('❌ FCM Test Error:', error);
     }
   }
 

@@ -11,6 +11,7 @@ import {
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { API_URL, ENDPOINTS } from '../const';
 
 @Injectable({
   providedIn: 'root'
@@ -555,7 +556,25 @@ private handleIncomingMessage(payload: any): void {
     
     if (pendingToken && currentUser?.token) {
       console.log('🔄 Sending pending FCM token to backend...');
-      // this.sendTokenToBackend(pendingToken);
+      
+      this.http.post(
+        `${environment.apiUrl}${ENDPOINTS.UPDATE_FCM_TOKEN}`,
+        { fcmToken: pendingToken },
+        {
+          headers: {
+            'Authorization': `Bearer ${currentUser.token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      ).subscribe({
+        next: (response: any) => {
+          console.log('✅ Pending FCM token sent to backend successfully');
+          localStorage.removeItem('pending_fcm_token');
+        },
+        error: (error) => {
+          console.error('❌ Error sending pending FCM token to backend:', error);
+        }
+      });
     } else {
       console.log('ℹ No pending token or user not logged in');
     }
