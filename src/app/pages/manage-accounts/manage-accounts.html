@@ -18,8 +18,6 @@
 </div>
 
 <table mat-table [dataSource]="dataSource">
-
-  <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>
     <td mat-cell *matCellDef="let user">{{ user.name }}</td>
