@@ -128,7 +128,7 @@ export class StaffIndividual implements OnDestroy {
       this._pushSub = pushMessages$.subscribe((msg: any) => {
         const payload = msg && msg.payload ? msg.payload : msg;
         const title = payload?.notification?.title || payload?.data?.title || payload?.title;
-        if (title === 'new added Staff') {
+        if (title === 'New Staff Registered') {
           this.getStaffs();
         }
       });

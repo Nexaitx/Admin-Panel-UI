@@ -250,7 +250,7 @@ private handleIncomingMessage(payload: any): void {
         this.setupTokenRefresh();
         
         // Send token to backend
-        this.sendTokenToBackend(token);
+        // this.sendTokenToBackend(token);
         return token;
       } else {
         console.log('❌ No FCM token available');
@@ -281,7 +281,7 @@ private handleIncomingMessage(payload: any): void {
  public sendFCMTokenAfterLogin(): void {
     if (this.fcmToken) {
       console.log('🔄 Sending existing FCM token after login...');
-      this.sendTokenToBackend(this.fcmToken);
+      // this.sendTokenToBackend(this.fcmToken);
     } else {
       console.log('🔄 No FCM token available, requesting new one...');
       this.requestPermission();
@@ -311,7 +311,7 @@ private handleIncomingMessage(payload: any): void {
         this.setupTokenRefresh();
         
         // Try to send token to backend immediately
-        this.sendTokenToBackend(token);
+        // this.sendTokenToBackend(token);
         return token;
       } else {
         console.log('❌ No FCM token available');
@@ -343,7 +343,7 @@ private handleIncomingMessage(payload: any): void {
       if (token && token !== this.fcmToken) {
         console.log('🔄 FCM Token refreshed');
         this.fcmToken = token;
-        this.sendTokenToBackend(token);
+        // this.sendTokenToBackend(token);
       }
       return token;
     } catch (error) {
@@ -495,49 +495,48 @@ private handleIncomingMessage(payload: any): void {
     // Example: this.router.navigate(['/staff', staffId]);
   }
 
-  private sendTokenToBackend(token: string): void {
-    console.log('📤 Starting FCM Token Backend Submission...');
+  // private sendTokenToBackend(token: string): void {
+  //   console.log('📤 Starting FCM Token Backend Submission...');
     
-    try {
-      const currentUser = this.getCurrentUser();
-      console.log('🔍 Current User Status:', currentUser ? 'Logged In' : 'Not Logged In');
+  //   try {
+  //     const currentUser = this.getCurrentUser();
+  //     console.log('🔍 Current User Status:', currentUser ? 'Logged In' : 'Not Logged In');
       
-      if (currentUser?.token) {
-        console.log('✅ User is logged in, sending token to backend...');
-        console.log('🔑 Auth Token Available:', currentUser.token.substring(0, 20) + '...');
-        console.log('🌐 Backend URL:', `${environment.apiUrl}/update-fcm-token`);
+  //     if (currentUser?.token) {
+  //       console.log('✅ User is logged in, sending token to backend...');
+  //       console.log('🔑 Auth Token Available:', currentUser.token.substring(0, 20) + '...');
         
-        this.http.post(
-          `${environment.apiUrl}/update-fcm-token`,
-          { fcmToken: token },
-          { 
-            headers: { 
-              'Authorization': `Bearer ${currentUser.token}`,
-              'Content-Type': 'application/json'
-            } 
-          }
-        ).subscribe({
-          next: (response: any) => {
-            console.log('✅ FCM token sent to backend successfully');
-            console.log('📊 Backend Response:', response);
-            localStorage.removeItem('pending_fcm_token');
-          },
-          error: (error) => {
-            console.error('❌ Error sending FCM token to backend:', error);
-            console.error('📊 Error Status:', error.status);
-            console.error('📊 Error Message:', error.message);
-            this.storeTokenForRetry(token);
-          }
-        });
-      } else {
-        console.warn('⚠ No user logged in, storing token for retry');
-        this.storeTokenForRetry(token);
-      }
-    } catch (error) {
-      console.error('💥 Error in sendTokenToBackend:', error);
-      this.storeTokenForRetry(token);
-    }
-  }
+  //       this.http.post(
+  //         `${environment.apiUrl}/update-fcm-token`,
+  //         { fcmToken: token },
+  //         { 
+  //           headers: { 
+  //             'Authorization': `Bearer ${currentUser.token}`,
+  //             'Content-Type': 'application/json'
+  //           } 
+  //         }
+  //       ).subscribe({
+  //         next: (response: any) => {
+  //           console.log('✅ FCM token sent to backend successfully');
+  //           console.log('📊 Backend Response:', response);
+  //           localStorage.removeItem('pending_fcm_token');
+  //         },
+  //         error: (error) => {
+  //           console.error('❌ Error sending FCM token to backend:', error);
+  //           console.error('📊 Error Status:', error.status);
+  //           console.error('📊 Error Message:', error.message);
+  //           this.storeTokenForRetry(token);
+  //         }
+  //       });
+  //     } else {
+  //       console.warn('⚠ No user logged in, storing token for retry');
+  //       this.storeTokenForRetry(token);
+  //     }
+  //   } catch (error) {
+  //     console.error('💥 Error in sendTokenToBackend:', error);
+  //     this.storeTokenForRetry(token);
+  //   }
+  // }
 
 
   private storeTokenForRetry(token: string): void {
@@ -556,7 +555,7 @@ private handleIncomingMessage(payload: any): void {
     
     if (pendingToken && currentUser?.token) {
       console.log('🔄 Sending pending FCM token to backend...');
-      this.sendTokenToBackend(pendingToken);
+      // this.sendTokenToBackend(pendingToken);
     } else {
       console.log('ℹ No pending token or user not logged in');
     }

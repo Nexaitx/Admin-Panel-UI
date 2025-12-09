@@ -70,7 +70,6 @@ export class Login {
 
     try {
       // Step 1: Login 
-      console.log('Step 1: Performing login...');
       const loginResponse: any = await this.http.post(
         API_URL + ENDPOINTS.LOGIN, 
         this.loginForm.value
@@ -78,7 +77,6 @@ export class Login {
       
       if (loginResponse) {
         // Step 2: User data save
-        console.log(' Login successful');
         this.auth.login(
           loginResponse?.token, 
           loginResponse?.profile?.role?.permissions, 
@@ -86,7 +84,6 @@ export class Login {
         );
         
         // Step 3: FCM token handle
-        console.log(' Step 3: Handling FCM token...');
         await this.handleFCMToken(loginResponse.token);
         
         // Step 4: Success message show
@@ -98,7 +95,6 @@ export class Login {
         });
 
         // Step 5: Navigate 
-        console.log(' Step 5: Navigating...');
         await this.navigateBasedOnPermissions(loginResponse);
         
         // Step 6: Debug logs show 
@@ -107,7 +103,6 @@ export class Login {
         }, 1000);
       }
     } catch (error: any) {
-      console.error('Login error:', error);
       this._snackBar.open(
         error.error?.message || 'Login failed. Please check your credentials.', 
         'Error', 
@@ -126,29 +121,23 @@ export class Login {
   private async handleFCMToken(authToken: string): Promise<void> {
     try {
       // Check current notification permission status
-      console.log(` Current notification permission: ${Notification.permission}`);
       
       if (Notification.permission === 'granted') {
         // Permission already granted
-        console.log(' Notification permission already granted');
         
         // Check if we already have FCM token
         if (this.firebaseService.fcmToken) {
-          console.log(' Already have FCM token, sending to backend...');
           await this.sendFCMTokenToBackend(this.firebaseService.fcmToken, authToken);
         } else {
           // Get token from Firebase Service
-          console.log(' No FCM token, getting from Firebase Service...');
           await this.firebaseService.requestPermission();
           
           if (this.firebaseService.fcmToken) {
-            console.log(' Got FCM token after permission');
             await this.sendFCMTokenToBackend(this.firebaseService.fcmToken, authToken);
           }
         }
       } else if (Notification.permission === 'default') {
         // Permission not decided yet, ask user
-        console.log(' Notification permission not decided, requesting...');
         
         // Show a snackbar to inform user about notification permission
         this._snackBar.open('Please allow notifications for better experience', 'OK', {
@@ -161,12 +150,10 @@ export class Login {
         const hasPermission = await this.firebaseService.requestPermission();
         
         if (hasPermission && this.firebaseService.fcmToken) {
-          console.log(' Permission granted, sending token to backend');
           await this.sendFCMTokenToBackend(this.firebaseService.fcmToken, authToken);
         }
       } else {
         // Permission denied
-        console.log(' Notification permission denied by user');
         this._snackBar.open('Notifications are disabled. Enable in browser settings.', 'Info', {
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -175,7 +162,6 @@ export class Login {
       }
       
       // Check for pending tokens
-      console.log(' Checking for pending tokens...');
       this.firebaseService.sendPendingToken();
       
     } catch (error) {
@@ -185,11 +171,6 @@ export class Login {
 
   private async sendFCMTokenToBackend(fcmToken: string, authToken: string): Promise<void> {
     try {
-      console.log(' Sending FCM token to backend...');
-      console.log(' FCM Token (first 20 chars):', fcmToken.substring(0, 20) + '...');
-      console.log(' Full FCM Token for debugging:', fcmToken);
-      console.log(' Backend URL:', API_URL + '/update-fcm-token');
-      
       const response: any = await this.http.post(
         API_URL + '/update-fcm-token',
         { 
@@ -202,22 +183,14 @@ export class Login {
             'Content-Type': 'application/json'
           } 
         }
-      ).toPromise();
-
-      console.log(' FCM token sent to backend successfully:', response);
-      
+      ).toPromise();      
       // Remove pending token if exists
       localStorage.removeItem('pending_fcm_token');
       
     } catch (error: any) {
-      console.error(' Error sending FCM token to backend:', error);
-      console.error(' Status Code:', error.status);
-      console.error(' Error Message:', error.message);
-      console.error(' Error Details:', error.error);
       
       // Store token for retry later
       localStorage.setItem('pending_fcm_token', fcmToken);
-      console.log(' Token stored for retry');
       
       // Show error message to user
       this._snackBar.open('Failed to save notification token. Will retry later.', 'OK', {
@@ -247,23 +220,10 @@ export class Login {
     // Get FCM status from service
     const fcmStatus = this.firebaseService.getFCMStatus();
     
-    console.log(' ========== FCM DEBUG INFO ==========');
-    console.log('FCM Supported:', fcmStatus.isSupported);
-    console.log(' FCM Initialized:', fcmStatus.isInitialized);
-    console.log(' Messaging Available:', fcmStatus.hasMessaging);
-    console.log('Notification Permission:', fcmStatus.notificationPermission);
-    console.log(' Service Worker Supported:', fcmStatus.serviceWorker);
-    console.log(' FCM Token Available:', !!fcmStatus.fullToken);
-    
     if (fcmStatus.fullToken) {
-      console.log(' FCM Token Obtained:', fcmStatus.fullToken);
-      console.log(' FCM Token (first 20 chars):', fcmStatus.fullToken.substring(0, 20) + '...');
     } else {
-      console.log(' No FCM Token Available');
     }
-    
-    console.log(' =====================================');
-    
+        
     // Also show in snackbar for user info
     if (fcmStatus.fullToken) {
       this._snackBar.open('Notification token saved successfully!', 'OK', {
@@ -277,17 +237,12 @@ export class Login {
   // Optional: Add a debug button in template for manual testing
   async testFCMToken(): Promise<void> {
     try {
-      console.log(' Manual FCM Token Test');
-      
       const hasPermission = await this.firebaseService.requestPermission();
       
       if (hasPermission) {
         const fcmStatus = this.firebaseService.getFCMStatus();
         
         if (fcmStatus.fullToken) {
-          console.log(' FCM Token:', fcmStatus.fullToken);
-          
-          // Send to backend if user is logged in
           const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
           if (currentUser?.token) {
             await this.sendFCMTokenToBackend(fcmStatus.fullToken, currentUser.token);
