@@ -82,6 +82,12 @@
         </span>
     </a>
 
+    <a mat-list-item *ngIf="hasPermission('Booking Payments')" routerLink="/app/booking-payments" routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">event</mat-icon><span>Bookings Payments</span>
+        </span>
+    </a>
+
     <a *ngIf="hasPermission('Duty Assigned')" mat-list-item routerLink="/app/duty-assigned" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">assignment</mat-icon><span>Duty Assigned</span>

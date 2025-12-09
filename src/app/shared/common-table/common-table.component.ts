@@ -13,13 +13,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 export interface ColumnDef {
-  key: string;           // property name in row object
-  header: string;        // header label
-  sortable?: boolean;    // enable sorting
-  editable?: boolean;    // allow editing in dialog
-  type?: 'text'|'number'|'date'|'select'|'boolean';
-  options?: Array<{value:any,label:string}>; // for select
-  width?: string;
+  key: string;            // property name in row object
+  header: string;         // header label
+  sortable?: boolean;     // enable sorting
+  editable?: boolean;     // allow editing in dialog
+  type?: 'text'|'number'|'date'|'select'|'boolean'|'action';
+  options?: Array<{value:any,label:string}>; // for select
+  width?: string;
 }
 
 @Component({
@@ -48,6 +48,7 @@ export class CommonTableComponent implements OnInit, OnChanges {
   @Input() pageSizeOptions: number[] = [5,10,25,100];
   @Input() showCreate = false;
   @Input() createLabel = 'Create';
+  @Input() showActions = true;
 
   @Output() view = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>();
@@ -94,10 +95,11 @@ export class CommonTableComponent implements OnInit, OnChanges {
   }
 
   private buildDisplayedColumns() {
-    this.displayedColumns = this.columns.map(c => c.key);
-    if (!this.displayedColumns.includes('actions')) {
-      this.displayedColumns.push('actions');
-    }
+    // Serial column is always the first column
+    const baseColumns = ['serial', ...this.columns.map(c => c.key)];
+    const needsActions = this.showActions && !baseColumns.includes('actions');
+
+    this.displayedColumns = needsActions ? [...baseColumns, 'actions'] : baseColumns;
   }
 
   private setData(d: any[]) {
@@ -140,7 +142,7 @@ export class CommonTableComponent implements OnInit, OnChanges {
     // Deep clone the row for editing so changes aren't reflected in the table before saving
     this.editRow = JSON.parse(JSON.stringify(row));
     this.editing = true;
-    this.dialog.open(this.editDialog, { width: '700px', data: { row: this.editRow, isNew } });
+    this.dialog.open(this.editDialog, { width: '800px', minWidth: '800px', data: { row: this.editRow, isNew } });
   }
 
   // Open dialog for creation

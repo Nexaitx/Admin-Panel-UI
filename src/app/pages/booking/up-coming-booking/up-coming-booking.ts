@@ -53,8 +53,8 @@ export class UpComingBooking implements OnDestroy {
       this._pushSub = pushMessages$.subscribe((msg: any) => {
         const payload = msg && msg.payload ? msg.payload : msg;
         const title = payload?.notification?.title || payload?.data?.title || payload?.title || '';
-        const t = String(title).toLowerCase();
-        if (title || title === 'booking' || t.includes('booking') || t.includes('new')) {
+        console.log(title);
+        if (title || title === 'booking') {
           this.fetchData();
         }
       });

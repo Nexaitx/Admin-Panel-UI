@@ -120,6 +120,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/booking/booking').then(m => m.Booking),
                 canActivate: [authGuard],
             },
+            {
+                path: 'booking-payments',
+                loadComponent: () => import('./pages/booking-payments/booking-payments').then(m => m.BookingPayments),
+                canActivate: [authGuard],
+            },
              {
                 path: 'diet-subscription',
                 loadComponent: () => import('./pages/diet-bookings/diet-bookings').then(m => m.DietBookings),

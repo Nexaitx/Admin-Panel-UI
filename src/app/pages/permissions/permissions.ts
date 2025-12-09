@@ -24,7 +24,7 @@ export class Permissions {
   http = inject(HttpClient);
   roles: any[] = [];
   basePermissionsList: string[] = [
-    'Manage', 'Bookings', 'Duty Assigned', 'Active Staff', 'GPS Monitoring', 'GPS Deviation',
+    'Manage', 'Bookings', 'Booking Payments', 'Duty Assigned', 'Active Staff', 'GPS Monitoring', 'GPS Deviation',
     'Bulk Assignment', 'Overtime Duties', 'Overtime Approvals', 'Devices & Addresses',
     'Roles', 'Pharma', 'Account', 'Prescriptions', 'Permissions', 'Diet Plans', 'Diet Subscription Plans',
     'Ledgers', 'Diet Bookings', 'Dietician Reports', 'Diet Subscription', 'Settings'

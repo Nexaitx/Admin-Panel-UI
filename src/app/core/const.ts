@@ -159,4 +159,6 @@ export const ENDPOINTS = {
     // push-notifications
     SUBSCRIBEAPI:'/api/admin/subscribe',
     UPDATE_FCM_TOKEN: '/update-fcm-token',
+
+    GET_BOOKING_PAYMENTS: '/api/admin/payments/all',
 };
