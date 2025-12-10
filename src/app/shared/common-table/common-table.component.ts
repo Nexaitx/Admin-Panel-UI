@@ -116,6 +116,12 @@ export class CommonTableComponent implements OnInit, OnChanges {
     if (this.dataSource.paginator) { this.dataSource.paginator.firstPage(); }
   }
 
+  resetPagination() {
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+  }
+
   // --- Action Menu Management ---
   setActiveRow(row: any) { this.activeRow = row; }
   clearActiveRow() { this.activeRow = null; }

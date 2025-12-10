@@ -76,24 +76,70 @@
         </mat-nav-list>
     </mat-expansion-panel>
 
-    <a mat-list-item *ngIf="hasPermission('Bookings')" routerLink="/app/bookings" routerLinkActive="active-link">
+    <mat-expansion-panel mat-list-item class="mat-elevation-z0">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon>track_changes</mat-icon><span>Bookings & Payments</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-nav-list dense>
+            <a mat-list-item routerLink="/app/bookings" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>event</mat-icon><span>Staff Bookings</span>
+                </span>
+            </a>
+
+            <a mat-list-item routerLink="/app/bulk-bookings" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>group</mat-icon><span>Bulk Bookings</span>
+                </span>
+            </a>
+
+
+            <a mat-list-item routerLink="/app/duty-assigned" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>assignment</mat-icon><span>Duty Assigned</span>
+                </span>
+            </a>
+
+            <a mat-list-item routerLink="/app/booking-payments" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>payment</mat-icon><span>Payments</span>
+                </span>
+            </a>
+        </mat-nav-list>
+    </mat-expansion-panel>
+
+
+    <!-- <a mat-list-item *ngIf="hasPermission('Bookings')" routerLink="/app/bookings" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">event</mat-icon><span>Staff Bookings</span>
         </span>
-    </a>
+    </a> -->
 
-    <a mat-list-item *ngIf="hasPermission('Booking Payments')" routerLink="/app/booking-payments" routerLinkActive="active-link">
+    <!-- <a *ngIf="hasPermission('Bulk Assignment')" mat-list-item routerLink="/app/bulk-bookings"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <mat-icon class="material-icons">event</mat-icon><span>Bookings Payments</span>
+            <mat-icon class="material-icons">group</mat-icon><span>Bulk Bookings</span>
         </span>
-    </a>
+    </a> -->
 
-    <a *ngIf="hasPermission('Duty Assigned')" mat-list-item routerLink="/app/duty-assigned" routerLinkActive="active-link">
+    <!-- <a mat-list-item *ngIf="hasPermission('Booking Payments')" routerLink="/app/booking-payments"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">payment</mat-icon><span>Bookings Payments</span>
+        </span>
+    </a> -->
+
+    <!-- <a *ngIf="hasPermission('Duty Assigned')" mat-list-item routerLink="/app/duty-assigned"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">assignment</mat-icon><span>Duty Assigned</span>
         </span>
-    </a>
-    <a *ngIf="hasPermission('Active Staff')" mat-list-item routerLink="/app/active-staff" routerLinkActive="active-link">
+    </a> -->
+    <a *ngIf="hasPermission('Active Staff')" mat-list-item routerLink="/app/active-staff"
+        routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">spellcheck</mat-icon><span>OnGoing Duty</span>
         </span>
@@ -113,12 +159,7 @@
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Bulk Assignment')" mat-list-item routerLink="/app/bulk-assignments"
-        routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">group</mat-icon><span>Bulk Bookings</span>
-        </span>
-    </a>
+
     <a *ngIf="hasPermission('Overtime Duties')" mat-list-item routerLink="/app/override-Duties"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
@@ -171,15 +212,13 @@
                 </span>
             </a>
 
-            <a mat-list-item routerLink="/app/pharmaceutical/top-discounts"
-                routerLinkActive="active-link">
+            <a mat-list-item routerLink="/app/pharmaceutical/top-discounts" routerLinkActive="active-link">
                 <span class="sidebar-item-content">
                     <mat-icon>leaderboard</mat-icon><span>Top Discounts</span>
                 </span>
             </a>
 
-             <a mat-list-item routerLink="/app/pharmaceutical/vitoxyz-available-products"
-                routerLinkActive="active-link">
+            <a mat-list-item routerLink="/app/pharmaceutical/vitoxyz-available-products" routerLinkActive="active-link">
                 <span class="sidebar-item-content">
                     <mat-icon>addchart</mat-icon><span>Available Products</span>
                 </span>

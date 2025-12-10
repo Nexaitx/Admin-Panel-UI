@@ -156,7 +156,7 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
-                path: 'bulk-assignments',
+                path: 'bulk-bookings',
                 loadComponent: () => import('./pages/bulk-assignment/bulk-assignment').then(m => m.BulkAssignment),
                 canActivate: [authGuard],
             },

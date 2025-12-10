@@ -1,3 +1,14 @@
+
+<div class="flex items-center gap-4 mb-3">
+  <mat-form-field appearance="outline" class="min-w-[220px]">
+    <mat-label>Status</mat-label>
+    <mat-select [value]="selectedStatus" (selectionChange)="filterData($event.value)">
+      <mat-option [value]="null">All</mat-option>
+      <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
 <app-common-table [columns]="commonColumns"
   [data]="dataSource.data"
   [pageSizeOptions]="[5,10,25,100]"

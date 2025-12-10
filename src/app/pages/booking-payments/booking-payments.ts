@@ -8,6 +8,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-booking-payments',
@@ -16,7 +18,9 @@ import { MatTableModule } from '@angular/material/table';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTableModule],
+    MatTableModule,
+    MatSelectModule,
+    MatFormFieldModule],
   templateUrl: './booking-payments.html',
   styleUrl: './booking-payments.scss',
 })
@@ -24,8 +28,11 @@ export class BookingPayments {
   http = inject(HttpClient);
   dialog = inject(MatDialog);
   dataSource = new MatTableDataSource<any>();
+  @ViewChild(CommonTableComponent) commonTable!: CommonTableComponent;
   selectedRecord: any;
   selectedBookingDetails: any[] = [];
+  statuses: any[] = [];
+  selectedStatus: string | null = null;
   private allBookingDetailsColumns: ColumnDef[] = [
     { key: 'bookingId', header: 'Booking Id' },
     { key: 'bookingPrice', header: 'Booking Price' },
@@ -72,7 +79,28 @@ export class BookingPayments {
   ];
 
   ngOnInit(): void {
+    this.getPaymentStatuses();
     this.fetchData();
+  }
+
+  getPaymentStatuses() {
+    this.http.get(API_URL + ENDPOINTS.GET_PAYMENT_STATUSES).subscribe((res: any) => {
+      this.statuses = res;
+    })
+  }
+
+  filterData(status: string | null) {
+    this.selectedStatus = status;
+    const pageSize = this.commonTable?.paginator?.pageSize || 5;
+    const payload = {
+      status: status || null,
+      page: 0,
+      size: pageSize
+    }
+    this.http.post(API_URL + ENDPOINTS.GET_PAYMENT_BY_FILTER, { payload }).subscribe((res: any) => {
+      this.dataSource.data = res.content;
+      this.commonTable?.resetPagination();
+    })
   }
 
   fetchData(): void {

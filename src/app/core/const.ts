@@ -161,4 +161,6 @@ export const ENDPOINTS = {
     UPDATE_FCM_TOKEN: '/update-fcm-token',
 
     GET_BOOKING_PAYMENTS: '/api/admin/payments/all',
+    GET_PAYMENT_STATUSES: '/api/admin/payments/statuses',
+    GET_PAYMENT_BY_FILTER: '/api/admin/payments/filter'
 };
