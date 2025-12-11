@@ -16,28 +16,21 @@
   </div>
 
   <div class="scrollableTable overflow-x-auto">
-    <table mat-table [dataSource]="dataSource" matSort class="w-full">
+    <table mat-table [dataSource]="dataSource" matSort class="w-100">
 
       <!-- serial number column -->
       <ng-container matColumnDef="serial" sticky>
         <th mat-header-cell *matHeaderCellDef>S.No</th>
         <td mat-cell *matCellDef="let element; let i = index">
-          <!-- {{ ((paginator?.pageIndex || 0) * (paginator?.pageSize || dataSource.data.length || 0)) + i + 1 }} -->
+          {{ (paginator.pageIndex * paginator.pageSize + i) + 1 }}
         </td>
       </ng-container>
 
       <!-- dynamic columns -->
       <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
 
-        <th mat-header-cell *matHeaderCellDef>
-          <ng-container *ngIf="col.sortable; else unsortableHeader">
-            <span mat-sort-header>{{col.header}}</span>
-          </ng-container>
-
-          <ng-template #unsortableHeader>
-            <span>{{col.header}}</span>
-          </ng-template>
-
+        <th mat-header-cell *matHeaderCellDef mat-sort-header [innerHTML]="col.header">
+          {{col.header}}
         </th>
 
         <td mat-cell *matCellDef="let element">

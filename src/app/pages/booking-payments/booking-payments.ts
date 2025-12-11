@@ -97,7 +97,7 @@ export class BookingPayments {
       page: 0,
       size: pageSize
     }
-    this.http.post(API_URL + ENDPOINTS.GET_PAYMENT_BY_FILTER, { payload }).subscribe((res: any) => {
+    this.http.post(API_URL + ENDPOINTS.GET_PAYMENT_BY_FILTER, payload).subscribe((res: any) => {
       this.dataSource.data = res.content;
       this.commonTable?.resetPagination();
     })

@@ -144,7 +144,6 @@ export class StaffIndividual implements OnDestroy {
       }
     } catch (e) { }
 
-    // Ensure the UI selects the first option by default for the filters
     if (this.states && this.states.length) { this.selectedCity = this.states[0]; }
     if (this.subcategories && this.subcategories.length) { this.selectedSubcategory = this.subcategories; }
     if (this.experiences && this.experiences.length) { this.selectedExperience = this.experiences[0].value; }
@@ -155,6 +154,31 @@ export class StaffIndividual implements OnDestroy {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.sort.sort({ id: 'addedDate', start: 'desc', disableClear: true });
+  }
+
+  updatePrice(element: any) {
+    switch (element.selectedShift) {
+      case '08:00':
+        element.calculatedPrice = element.eightPrice;
+        break;
+      case '12:00':
+        element.calculatedPrice = element.twelveHourPrice;
+        break;
+      case '24:00':
+        element.calculatedPrice = element.twentyFourHourPrice;
+        break;
+      case '1month8hours':
+        element.calculatedPrice = element.monthly8price;
+        break;
+      case '1month12hours':
+        element.calculatedPrice = element.monthly12price;
+        break;
+      case '1month24hours':
+        element.calculatedPrice = element.monthly24price;
+        break;
+      default:
+        element.calculatedPrice = '';
+    }
   }
 
   getSubCategories() {
@@ -178,6 +202,13 @@ export class StaffIndividual implements OnDestroy {
       }
     });
   }
+  private mapDefaultShiftOnData(data: any[]) {
+    return data.map(el => ({
+      ...el,
+      selectedShift: el.category === 'nurse' ? '08:00' : '1month8hours',
+      calculatedPrice: el.category === 'nurse' ? el.eightPrice : el.monthly8price
+    }));
+  }
 
   getStaffByFilter() {
     let params = new HttpParams();
@@ -193,7 +224,7 @@ export class StaffIndividual implements OnDestroy {
       params = params.set('experience', this.selectedExperience);
     }
     if (this.selectedShiftType && this.selectedShiftType.trim() !== '') {
-      params = params.set('preferredTimeSlot', this.selectedShiftType);
+      params = params.set('shiftType', this.selectedShiftType);
     }
     if (this.selectedDutyTime && this.selectedDutyTime.trim() !== '') {
       params = params.set('startTime', this.selectedDutyTime);
@@ -202,7 +233,8 @@ export class StaffIndividual implements OnDestroy {
     this.http.get(API_URL + ENDPOINTS.GET_STAFF_FILTER, { params }).subscribe({
       next: (res: any) => {
         const reversed = Array.isArray(res) ? [...res].reverse() : res;
-        this.dataSource.data = reversed;
+        // this.dataSource.data = reversed;
+        this.dataSource.data = this.mapDefaultShiftOnData(reversed);
       },
       error: (err) => {
         console.error('Error fetching filtered staffs:', err);
@@ -262,7 +294,8 @@ export class StaffIndividual implements OnDestroy {
       next: (res: any) => {
         const reversed = Array.isArray(res) ? [...res].reverse() : res;
         this.allStaffs = reversed; // Store reversed data
-        this.dataSource.data = reversed;
+        // this.dataSource.data = reversed;
+        this.dataSource.data = this.mapDefaultShiftOnData(reversed);
         if (this.sort) {
           this.dataSource.sort = this.sort;
         }

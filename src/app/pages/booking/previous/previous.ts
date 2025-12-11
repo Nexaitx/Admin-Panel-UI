@@ -9,7 +9,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { pushMessages$ } from '../../../core/services/push-notification';
 import { Subscription } from 'rxjs';
@@ -35,13 +34,21 @@ export class Previous implements OnDestroy {
   isLoading = false;
   dataSource = new MatTableDataSource<any>();
 
-  columnsToDisplay : ColumnDef[]= [
-    { key: 'staffId', header: 'Staff Id', sortable: true, type: 'text' },
-    { key: 'staffName', header: 'Staff Name', sortable: true, type: 'text' },
-    { key: 'userId', header: 'User Id', type: 'text' },
-    { key: 'userName', header: 'User Name', type: 'text' },
-    { key: 'dutyStart', header: 'Duty Start', sortable: true, type: 'date' },
-    { key: 'dutyEnd', header: 'Duty End', sortable: true, type: 'date' }
+  columnsToDisplay: ColumnDef[] = [
+    { key: 'bookingId', header: 'Booking&nbsp;No', type: 'text' },
+    { key: 'createdAt', header: 'Booking&nbsp;Date', type: 'date' },
+    { key: 'startDate', header: 'Shift&nbsp;Date&nbsp;Period', type: 'text' },
+    { key: 'endDate', header: 'Shift&nbsp;End&nbsp;Period', type: 'text' },
+    { key: 'login_time', header: 'Login&nbsp;Time', type: 'date' },
+    { key: 'logout_time', header: 'Logout&nbsp;Time', type: 'date' },
+    { key: 'login_selfie', header: 'Login&nbsp;Selfie' },
+    { key: 'logout_selfie', header: 'Logout&nbsp;Selfie' },
+    { key: 'user_name', header: 'User&nbsp;Name', type: 'text' },
+    { key: 'staff_name', header: 'Staff&nbsp;Name', type: 'text' },
+    { key: 'shift_total_price', header: 'Shift&nbsp;Total&nbsp;Price', type: 'text' },
+    { key: 'rating', header: 'Rating', type: 'text' },
+    { key: 'payout_status', header: 'Payout&nbsp;Status', type: 'text' },
+    { key: 'status', header: 'Status', type: 'text' },
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -101,7 +108,24 @@ export class Previous implements OnDestroy {
     if (endpoint) {
       this.http.get<any[]>(API_URL + endpoint).subscribe({
         next: (res: any) => {
-          this.dataSource.data = Array.isArray(res.content) ? [...res.content] : res.content;
+
+          const bookings = Array.isArray(res.content) ? res.content : [];
+          const transformedData = bookings.map((booking: any) => {
+            // const shiftStartPeriod = `${booking.startDate}|${booking.startTimeHour}:${booking.startTimeMinute} ${booking.startTimeAmPm}`;
+            // const shiftEndPeriod = `${booking.endDate}|${booking.endTimeHour}:${booking.endTimeMinute} ${booking.endTimeAmPm}`;
+            return {
+              ...booking,
+              startDate: `${booking.startDate}|${booking.startTimeHour}:${booking.startTimeMinute} ${booking.startTimeAmPm}`,
+              endDate: `${booking.endDate}|${booking.endTimeHour}:${booking.endTimeMinute} ${booking.endTimeAmPm}`
+            };
+          });
+
+          this.dataSource.data = transformedData;
+
+          if (this.paginator && res.totalElements !== undefined) {
+            this.paginator.length = res.totalElements;
+          }
+
           this.isLoading = false;
         },
         error: (err) => {
