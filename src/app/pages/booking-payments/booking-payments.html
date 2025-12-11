@@ -11,7 +11,7 @@
 
 <app-common-table [columns]="commonColumns"
   [data]="dataSource.data"
-  [pageSizeOptions]="[5,10,25,100]"
+  [pageSizeOptions]="[10,25,100]"
   [showCreate]="false"
   [showActions]="false"
   (view)="onRowView($event)"
@@ -26,7 +26,7 @@
       <div class="table-responsive">
         <div *ngFor="let booking of selectedBookingDetails; let idx = index" class="mb-4 border rounded p-3">
           <h4 class="mb-2">Booking {{ idx + 1 }}</h4>
-          <table class="w-100 p-2">
+          <table class="w-100 p-2  table table-striped table-hover">
             <tbody>
               <tr *ngFor="let col of bookingDetailsColumns">
                 <th class="text-left pe-4 align-top pb-2">{{ col.header }}</th>

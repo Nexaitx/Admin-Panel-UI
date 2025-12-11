@@ -1,98 +1,80 @@
-import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, ViewChild } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { API_URL, ENDPOINTS } from '../../core/const';
-
-interface User {
-  userId: string;
-  userName: string;
-  userPhoneNumber: string;
-  staffs?: Staff[];
-}
-
-interface Staff {
-  staffId: string;
-  name: string;
-  phoneNumber: string;
-  category: string;
-  status: 'ACCEPTED' | 'PENDING' | string;
-}
+import { ColumnDef, CommonTableComponent } from '../../shared/common-table/common-table.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-bulk-assignment',
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
+    CommonTableComponent,
+    MatDialogModule,
     MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatInputModule,
-    MatProgressSpinnerModule
+    MatButtonModule
   ],
   templateUrl: './bulk-assignment.html',
   styleUrl: './bulk-assignment.scss'
 })
 export class BulkAssignment {
   http = inject(HttpClient);
-  dataSource = new MatTableDataSource<User>([]);
-  columnsToDisplay = ['userId', 'userName', 'userPhone'];
-  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
-  // Track expanded row by userId for stability when table recreates row objects
-  expandedUserId: string | null = null;
+  dataSource = new MatTableDataSource<any>([]);
+  @ViewChild('staffDialog') staffDialog!: TemplateRef<any>;
+  selectedStaffDetails: any[] = [];
+  selectedRecord: any;
+  dialog = inject(MatDialog);
+  @ViewChild(CommonTableComponent) commonTable!: CommonTableComponent;
 
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  commonColumns: ColumnDef[] = [
+    { key: 'userId', header: 'User&nbsp;Id', sortable: true },
+    { key: 'userName', header: 'User&nbsp;Name', sortable: true },
+    { key: 'userPhoneNumber', header: 'User&nbsp;Phone', sortable: true },
+    { key: 'viewBookings', header: 'Staffs', type: 'action', sortable: false }
+  ];
+  staffsColumns: ColumnDef[] = [
+    { key: 'staffId', header: 'Staff Id' },
+    { key: 'name', header: 'Staff Name' },
+    { key: 'phoneNumber', header: 'Staff Phone' },
+    { key: 'category', header: 'Category' },
+    { key: 'subCategory', header: 'SubCategory' },
+    { key: 'gender', header: 'Gender' },
+    { key: 'status', header: 'Status' }
+  ];
+  staffDetailsColumns: ColumnDef[] = [...this.staffsColumns];
+  staffDetailsColumnKeys: string[] = this.staffDetailsColumns.map(c => c.key);
+
 
   ngOnInit(): void {
     this.fetchData();
-    this.dataSource.filterPredicate = (data: User, filter: string) => {
-      return (
-        data.userName.toLowerCase().includes(filter) ||
-        data.userPhoneNumber.toLowerCase().includes(filter)
-      );
-    };
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
   }
 
   fetchData(): void {
-    this.http.get<User[]>(API_URL + ENDPOINTS.GET_BULK_BOOKINGS).subscribe({
-      next: (res: User[]) => {
-        this.dataSource.data = res || [];
-      },
-      error: (err) => {
+    this.http.get(API_URL + ENDPOINTS.GET_BULK_BOOKINGS).subscribe((res: any) => {
+      this.dataSource.data = res || [];
+    },
+      (err) => {
         console.error('Error fetching data:', err);
-      }
-    });
+      });
   }
 
-  isExpanded(element: User): boolean {
-  return this.expandedUserId === element.userId;
+  onRowView(row: any) {
+    this.selectedRecord = row;
+    this.selectedStaffDetails = row?.staffs || [];
+    if (this.selectedStaffDetails.length) {
+      const presentKeys = new Set(Object.keys(this.selectedStaffDetails[0]));
+      const filtered = this.staffsColumns.filter(col => presentKeys.has(col.key));
+      this.staffDetailsColumnKeys = filtered.map(col => col.key);
+      this.staffDetailsColumns = filtered;
+    } else {
+      this.staffDetailsColumns = [...this.staffsColumns];
+      this.staffDetailsColumnKeys = this.staffDetailsColumns.map(c => c.key);
+    }
+    this.dialog.open(this.staffDialog, { width: '900px', minWidth: '800px' });
   }
 
-  toggle(element: User): void {
-  this.expandedUserId = this.isExpanded(element) ? null : element.userId;
-  }
 }

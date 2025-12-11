@@ -75,7 +75,7 @@ export class BookingPayments {
     { key: 'userPhone', header: 'User Phone Number', sortable: true },
     { key: 'userEmail', header: 'User Email', sortable: true },
     { key: 'status', header: 'Status', sortable: true },
-    { key: 'viewBookings', header: 'Bookings', type: 'action', sortable: false },
+    { key: 'viewBookings', header: 'Bookings', type: 'action', sortable: false }
   ];
 
   ngOnInit(): void {

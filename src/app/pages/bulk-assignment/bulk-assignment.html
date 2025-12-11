@@ -1,39 +1,33 @@
-<div class="mt-2">
-  <mat-form-field appearance="outline">
-    <mat-label>Search Assignments</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="search..." class="rounded-md">
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
+<app-common-table [columns]="commonColumns" [data]="dataSource.data" [pageSizeOptions]="[10,25,100]"
+  [showCreate]="false" [showActions]="false" (view)="onRowView($event)">
+</app-common-table>
 
-  <div class="scrollableTable overflow-x-auto">
-    <table mat-table [dataSource]="dataSource" class="bg-white" matSort multiTemplateDataRows>
-      <ng-container matColumnDef="userId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>User Id</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.userId }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="userName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.userName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="userPhone">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>User Phone Number</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.userPhoneNumber }}
-        </td>
-      </ng-container>
-    </table>
+<ng-template #staffDialog>
+  <div class="d-flex justify-content-between align-items-center">
+    <h2 mat-dialog-title>Staff Details</h2>
+    <h6 class="pe-3">Total Staffs: {{selectedStaffDetails.length}}</h6>
   </div>
-
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of alerts"
-    class="mt-4 rounded-lg shadow-sm"></mat-paginator>
-
-  <div *ngIf="dataSource.data.length === 0" class="p-8 text-center text-gray-500">
-    No data to display.
-  </div>
-</div>
+  <mat-dialog-content>
+    @if(selectedStaffDetails.length) {
+    <div class="table-responsive">
+      <div *ngFor="let staff of selectedStaffDetails; let idx = index" class="mb-4 border rounded p-3">
+        <h4 class="mb-2">Staff {{ idx + 1 }}</h4>
+        <table class="w-100 p-2 table table-striped table-hover">
+          <tbody>
+            <tr *ngFor="let col of staffDetailsColumns">
+              <th class="text-left pe-4 align-top pb-2">{{ col.header }}</th>
+              <td>{{ staff[col.key] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    }
+    @else {
+    <p>No staff details available.</p>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</ng-template>
