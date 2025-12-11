@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
     <mat-form-field appearance="outline">
         <mat-label>Search bookings</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="e.g. john" #input class="rounded-md">
@@ -6,49 +6,42 @@
     </mat-form-field>
     <div class="scrollableTable overflow-x-auto">
         <table mat-table [dataSource]="dataSource" matSort>
-            <!-- Serial No Column -->
+           
             <ng-container matColumnDef="serial_no" sticky="true">
                 <th mat-header-cell *matHeaderCellDef>S.No</th>
                 <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
             </ng-container>
 
-            <!-- Booking No Column -->
             <ng-container matColumnDef="booking_no">
                 <th mat-header-cell *matHeaderCellDef>Booking&nbsp;No</th>
                 <td mat-cell *matCellDef="let element">{{element.bookingId || element.booking_no || element.bookingNo || '-'}}</td>
             </ng-container>
 
-            <!-- Shift Date Column -->
             <ng-container matColumnDef="shift_date">
                 <th mat-header-cell *matHeaderCellDef>Shift&nbsp;Date</th>
                 <td mat-cell *matCellDef="let element">{{element.shiftDate ? (element.shiftDate | date:'mediumDate') : (element.startDate ? (element.startDate | date:'mediumDate') : '-')}}</td>
             </ng-container>
 
-            <!-- Shift Start Column -->
             <ng-container matColumnDef="shift_start">
                 <th mat-header-cell *matHeaderCellDef>Shift&nbsp;Start</th>
-                <td mat-cell *matCellDef="let element">{{element.shiftStart || element.startTime || '-'}}</td>
+                <td mat-cell *matCellDef="let element">{{`${element.startTimeHour}:${element.startTimeMinute}${element.startTimeAmPm}`}}</td>
             </ng-container>
 
-            <!-- Shift End Column -->
             <ng-container matColumnDef="shift_end">
                 <th mat-header-cell *matHeaderCellDef>Shift&nbsp;End</th>
-                <td mat-cell *matCellDef="let element">{{element.shiftEnd || element.endTime || '-'}}</td>
+                <td mat-cell *matCellDef="let element">{{`${element.endTimeHour}:${element.endTimeMinute}${element.endTimeAmPm}`}}</td>
             </ng-container>
 
-            <!-- Login Time Column -->
             <ng-container matColumnDef="login_time">
                 <th mat-header-cell *matHeaderCellDef>Login&nbsp;Time</th>
                 <td mat-cell *matCellDef="let element">{{element.loginTime ? (element.loginTime | date:'short') : (element.login_time || '-')}}</td>
             </ng-container>
 
-            <!-- Logout Time Column -->
             <ng-container matColumnDef="logout_time">
                 <th mat-header-cell *matHeaderCellDef>Logout&nbsp;Time</th>
                 <td mat-cell *matCellDef="let element">{{element.logoutTime ? (element.logoutTime | date:'short') : (element.logout_time || '-')}}</td>
             </ng-container>
 
-            <!-- Login Selfie Column -->
             <ng-container matColumnDef="login_selfie">
                 <th mat-header-cell *matHeaderCellDef>Login&nbsp;Selfie</th>
                 <td mat-cell *matCellDef="let element">
@@ -61,7 +54,6 @@
                 </td>
             </ng-container>
 
-            <!-- Logout Selfie Column -->
             <ng-container matColumnDef="logout_selfie">
                 <th mat-header-cell *matHeaderCellDef>Logout&nbsp;Selfie</th>
                 <td mat-cell *matCellDef="let element">
@@ -74,25 +66,21 @@
                 </td>
             </ng-container>
 
-            <!-- User Name Column -->
             <ng-container matColumnDef="user_name">
                 <th mat-header-cell *matHeaderCellDef>User&nbsp;Name</th>
                 <td mat-cell *matCellDef="let element">{{element.user?.name || element.userName || element.user_name || '-'}}</td>
             </ng-container>
 
-            <!-- Staff Name Column -->
             <ng-container matColumnDef="staff_name">
                 <th mat-header-cell *matHeaderCellDef>Staff&nbsp;Name</th>
                 <td mat-cell *matCellDef="let element">{{element.staff?.name || element.staffName || element.staff_name || '-'}}</td>
             </ng-container>
 
-            <!-- Shift Total Price Column -->
             <ng-container matColumnDef="shift_total_price">
                 <th mat-header-cell *matHeaderCellDef>Total&nbsp;Price</th>
                 <td mat-cell *matCellDef="let element">₹{{element.shiftTotalPrice || element.shift_total_price || element.price || '-'}}</td>
             </ng-container>
 
-            <!-- Rating Column -->
             <ng-container matColumnDef="rating">
                 <th mat-header-cell *matHeaderCellDef>Rating</th>
                 <td mat-cell *matCellDef="let element">
@@ -101,7 +89,6 @@
                 </td>
             </ng-container>
 
-            <!-- Payout Status Column -->
             <ng-container matColumnDef="payout_status">
                 <th mat-header-cell *matHeaderCellDef>Payout&nbsp;Status</th>
                 <td mat-cell *matCellDef="let element">
@@ -116,7 +103,6 @@
                 </td>
             </ng-container>
 
-            <!-- Status Column -->
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>Status</th>
                 <td mat-cell *matCellDef="let element">
@@ -131,7 +117,6 @@
                 </td>
             </ng-container>
 
-            <!-- Actions Column -->
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let element">
@@ -162,7 +147,10 @@
     <div *ngIf="dataSource.data.length === 0" class="p-8 text-center text-gray-500">
         No bookings to display.
     </div>
-</div>
+</div> -->
+<app-common-table [columns]="columnsToDisplay" [data]="dataSource.data"
+    [pageSizeOptions]="[10,25,100]" [showCreate]="false">
+</app-common-table>
 
 <ng-template #viewDialog>
     <div class="d-flex justify-content-between">

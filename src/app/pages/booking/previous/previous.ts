@@ -1,58 +1,53 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component, inject, Input, SimpleChanges, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { API_URL, ENDPOINTS } from '../../../core/const';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatMenuModule } from '@angular/material/menu';
 import { pushMessages$ } from '../../../core/services/push-notification';
 import { Subscription } from 'rxjs';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ColumnDef, CommonTableComponent } from '../../../shared/common-table/common-table.component';
 
 @Component({
   selector: 'app-previous',
   imports: [CommonModule,
-    MatTableModule,
     MatIconModule,
     MatFormFieldModule,
-    MatPaginatorModule,
-    MatSortModule,
     MatInputModule,
-    DatePipe,
     MatButtonModule,
-    MatCheckboxModule,
     MatDialogModule,
-    MatMenuModule,
-    MatTooltipModule
+    CommonTableComponent
   ],
   templateUrl: './previous.html',
   styleUrl: './previous.scss'
 })
 export class Previous implements OnDestroy {
+  private _pushSub: Subscription | any;
   @Input() booking: any;
   http = inject(HttpClient);
-  dataSource = new MatTableDataSource<any>();
-  columnsToDisplay = [
-    'serial_no', 'booking_no', 'shift_date', 'shift_start', 'shift_end',
-    'login_time', 'logout_time', 'login_selfie', 'logout_selfie',
-    'user_name', 'staff_name', 'shift_total_price', 'rating', 'payout_status', 'status', 'actions'];
   isLoading = false;
+  dataSource = new MatTableDataSource<any>();
+
+  columnsToDisplay : ColumnDef[]= [
+    { key: 'staffId', header: 'Staff Id', sortable: true, type: 'text' },
+    { key: 'staffName', header: 'Staff Name', sortable: true, type: 'text' },
+    { key: 'userId', header: 'User Id', type: 'text' },
+    { key: 'userName', header: 'User Name', type: 'text' },
+    { key: 'dutyStart', header: 'Duty Start', sortable: true, type: 'date' },
+    { key: 'dutyEnd', header: 'Duty End', sortable: true, type: 'date' }
+  ];
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  selection = new SelectionModel<any>(true, []);
   @ViewChild('viewDialog') viewDialog!: TemplateRef<any>;
   dialog = inject(MatDialog);
-  private _pushSub: Subscription | any;
-
-  constructor() { }
 
   ngOnInit(): void {
     this.fetchData();
@@ -73,21 +68,6 @@ export class Previous implements OnDestroy {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-
-    this.selection.select(...this.dataSource.data);
   }
 
   applyFilter(event: Event) {
@@ -116,7 +96,7 @@ export class Previous implements OnDestroy {
     const page = this.paginator ? this.paginator.pageIndex : 0;
     const size = this.paginator ? (this.paginator.pageSize || 10) : 10;
     let params = new HttpParams().set('page', String(page)).set('size', String(size))
-      endpoint = `${ENDPOINTS.GET_PREVIOUS_BOOKINGS}?${params.toString()}`;
+    endpoint = `${ENDPOINTS.GET_PREVIOUS_BOOKINGS}?${params.toString()}`;
 
     if (endpoint) {
       this.http.get<any[]>(API_URL + endpoint).subscribe({
