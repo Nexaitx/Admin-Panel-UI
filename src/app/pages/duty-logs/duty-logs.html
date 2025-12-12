@@ -16,7 +16,7 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-        <mat-tab-group>
+        <mat-tab-group (selectedIndexChange)="onTabChange($event)">
             <mat-tab label="Previously Assigned Duty">
                 <div>
                     <!-- <div class="scrollableTable overflow-x-auto"> -->

@@ -54,7 +54,6 @@ export const ENDPOINTS = {
     GET_PREVIOUS_BOOKINGS: '/api/admin/bookings/past',
     GET_ONGOING_BOOKINGS: '/api/admin/bookings/ongoing',
     GET_UPCOMING_BOOKINGS: '/api/admin/bookings/upcoming',
-
     GET_BULK_BOOKINGS: '/getAcceptedUserBookings',
 
     // GPS
@@ -75,7 +74,6 @@ export const ENDPOINTS = {
     GET_CLIENT_STAFF_COUNT: '/getClientAndStaffCount',
     GET_BOOKING_COUNTS: '/bookingStatus-Counts',
 
-
     // Get dietician dashboard
     GET_USERS_ONBOARD_DIET: '/getAllOnBoardUser',
     GET_ALL_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan', //Get all diet plans which are active or not
@@ -83,7 +81,6 @@ export const ENDPOINTS = {
     GET_ALL_LOGGEDIN_DIETICIAN_DIET_PLANS: '/api/dieticians/getAllDietPlan',
     GET_SCHEDULED_CALLS_COUNT: '/getDietScheduleCallCount',
     GET_SCHEDULED_CALL: '/getDietScheduleCall',
-
 
     UPDATE_VERIFICATION_ACCESS: '/documentverification',
     GET_ADMIN_BY_ID: '/getAdminById/',
@@ -162,5 +159,10 @@ export const ENDPOINTS = {
 
     GET_BOOKING_PAYMENTS: '/api/admin/payments/all',
     GET_PAYMENT_STATUSES: '/api/admin/payments/statuses',
-    GET_PAYMENT_BY_FILTER: '/api/admin/payments/filter'
+    GET_PAYMENT_BY_FILTER: '/api/admin/payments/filter',
+
+    // bulk assignments
+    GET_BULK_PREVIOUS_BOOKINGS: '/api/paymentbookings/previous',
+    GET_BULK_ONGOING_BOOKINGS: '/api/paymentbookings/ongoing',
+    GET_BULK_UPCOMING_BOOKINGS:  '/api/paymentbookings/upcoming',
 };

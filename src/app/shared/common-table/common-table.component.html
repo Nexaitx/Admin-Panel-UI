@@ -39,8 +39,10 @@
               <mat-icon>visibility</mat-icon>
               <span class="ml-1">View</span>
             </button>
-            <span *ngSwitchCase="'date'">{{element[col.key] | date}}</span>
+            <span *ngSwitchCase="'date'">{{element[col.key] | date: 'mediumDate'}}</span>
+            <span *ngSwitchCase="'time'">{{element[col.key] | date: 'shortTime'}}</span>
             <span *ngSwitchCase="'boolean'">{{element[col.key] ? 'Yes' : 'No'}}</span>
+            <span *ngSwitchCase="'number'">{{element[col.key] | number: '1.2-2'}}</span>
             <span *ngSwitchDefault>{{element[col.key]}}</span>
           </ng-container>
         </td>

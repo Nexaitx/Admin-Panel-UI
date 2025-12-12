@@ -29,16 +29,30 @@ import { CommonTableComponent, ColumnDef } from '../../shared/common-table/commo
   styleUrl: './duty-logs.scss'
 })
 export class DutyLogs {
+  activeTab: string = 'previous';
   http = inject(HttpClient);
   dataSource = new MatTableDataSource<any>();
   columnsToDisplay = ['staffId', 'staffName', 'userId', 'userName', 'actions'];
   // Common table column defs
   commonColumnsPreviouslyAssignedDuty: ColumnDef[] = [
-    { key: 'staffId', header: 'Staff Id', sortable: true },
-    { key: 'staffName', header: 'Staff Name', sortable: true },
-    { key: 'userId', header: 'User Id' },
-    { key: 'userName', header: 'User Name' },
-    {key: 'bookingId', header: 'Booking Id', sortable: true },
+    { key: 'bookingId', header: 'Booking&nbsp;Id', sortable: true },
+    { key: 'userName', header: 'User&nbsp;Name' },
+    { key: 'userPhoneNumber', header: 'User&nbsp;Phone&nbsp;Number' },
+    { key: 'staffName', header: 'Staff&nbsp;Name', sortable: true },
+    { key: 'staffPhoneNumber', header: 'Staff&nbsp;Phone&nbsp;Number' },
+    { key: 'category', header: 'Category', sortable: true },
+    { key: 'subCategory', header: 'Sub&nbsp;Category', sortable: true },
+    { key: 'startDate', header: 'Start&nbsp;Date', sortable: true, type: 'date' },
+    { key: 'endDate', header: 'End&nbsp;Date', sortable: true, type: 'date' },
+    { key: 'dutyDate', header: 'Duty Date', sortable: true, type: 'date' },
+    { key: 'loginTime', header: 'Login&nbsp;Time', sortable: true, type: 'time' },
+    { key: 'logoutTime', header: 'Logout&nbsp;Time', sortable: true, type: 'time' },
+    { key: 'loginSelfiePath', header: 'Login&nbsp;Selfie', type: 'action' },
+    { key: 'logoutSelfiePath', header: 'Logout&nbsp;Selfie', type: 'action' },
+    { key: 'amount', header: 'Amount', sortable: true, type: 'number' },
+    { key: 'fineType', header: 'Fine&nbsp;Type', sortable: true },
+    { key: 'payoutStatus', header: 'Payout&nbsp;Status', sortable: true },
+    { key: 'status', header: 'Status', sortable: true },
   ];
 
   commonColumnsOngoingAssignedDuty: ColumnDef[] = [
@@ -82,13 +96,32 @@ export class DutyLogs {
     }
   }
 
+  onTabChange(index: number) {
+    if (index === 0) {
+      this.activeTab = 'previous';
+      this.fetchData();
+    } else if (index === 1) {
+      this.activeTab = 'onGoing';
+      this.fetchData();
+    } else if (index === 2) {
+      this.activeTab = 'upComing';
+      this.fetchData();
+    }
+  }
+
   fetchData(): void {
     this.isLoading = true;
-    const endpoint = ENDPOINTS.GET_DUTY_LOGS;
-
+    let endpoint = '';
+    if (this.activeTab === 'previous') {
+      endpoint = ENDPOINTS.GET_BULK_PREVIOUS_BOOKINGS;
+    } else if (this.activeTab === 'onGoing') {
+      endpoint = ENDPOINTS.GET_BULK_ONGOING_BOOKINGS;
+    } else if (this.activeTab === 'upComing') {
+      endpoint = ENDPOINTS.GET_BULK_UPCOMING_BOOKINGS;
+    }
     this.http.get<any[]>(API_URL + endpoint).subscribe({
       next: (res: any) => {
-        this.dataSource.data = res;
+        this.dataSource.data = res.data.reverse() || [];
         this.isLoading = false;
       },
       error: (err) => {

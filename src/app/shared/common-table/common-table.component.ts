@@ -17,7 +17,7 @@ export interface ColumnDef {
   header: string;         // header label
   sortable?: boolean;     // enable sorting
   editable?: boolean;     // allow editing in dialog
-  type?: 'text' | 'number' | 'date' | 'select' | 'boolean' | 'action';
+  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action';
   options?: Array<{ value: any, label: string }>; // for select
   width?: string;
 }
