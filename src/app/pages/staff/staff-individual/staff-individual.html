@@ -30,7 +30,7 @@
     <button mat-button (click)="closeStaffDrawer()">Close</button>
   </mat-drawer>
   <div>
-    <div class="row mt-2">
+    <div class="row m-2">
       <mat-form-field appearance="outline" class="col-md-2 small-select">
         <mat-label>Select City</mat-label>
         <mat-select (selectionChange)="getStaffByFilter()" [(ngModel)]="selectedCity">
@@ -41,7 +41,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-3 small-select">
+      <mat-form-field appearance="outline" class="col-md-2 small-select">
         <mat-label>Sub Category</mat-label>
         <mat-select (selectionChange)="getStaffByFilter()" [(ngModel)]="selectedSubcategory">
           <mat-option [disabled]>Select Sub Category</mat-option>
@@ -60,7 +60,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-3 small-select">
+      <mat-form-field appearance="outline" class="col-md-2 small-select">
         <mat-label>Shift Type</mat-label>
         <mat-select (selectionChange)="getStaffByFilter()" [(ngModel)]="selectedShiftType">
           <mat-option value="" [disabled]>Select Shift Type</mat-option>
@@ -82,7 +82,10 @@
       </mat-form-field>
 
 
-      <div class="col-md-12 ms-auto d-flex justify-content-between mb-2">
+
+      <button class="col-md-2" matButton="filled" type="button" (click)="resetFilters()">Reset&nbsp;Filters</button>
+
+      <div class="col-md-12 ms-auto d-flex justify-content-between my-2">
         <mat-form-field appearance="outline" class="small-select">
           <mat-label>Search All Staff</mat-label>
           <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllStaffs>

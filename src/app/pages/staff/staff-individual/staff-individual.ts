@@ -242,6 +242,16 @@ export class StaffIndividual implements OnDestroy {
     });
   }
 
+  resetFilters() {
+    this.globalFilterValue = '';
+    this.selectedCity = null;
+    this.selectedSubcategory = null;
+    this.selectedExperience = '';
+    this.selectedShiftType = '';
+    this.selectedDutyTime = '';
+    this.getStaffs();
+  }
+
   createFilter(): (data: any, filter: string) => boolean {
     let filterFunction = (data: any, filter: string): boolean => {
       const searchTerms = JSON.parse(filter);
