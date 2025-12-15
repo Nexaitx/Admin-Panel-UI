@@ -1,33 +1,27 @@
 <mat-tab-group (selectedIndexChange)="onTabChange($event)">
     <mat-tab label="Previously Assigned Duty">
-        <div>
             <app-common-table [columns]="commonColumnsPreviouslyAssignedDuty" [data]="dataSource.data"
-                [showCreate]="false" (view)="onRowView($event)">
+                [showCreate]="false" [showActions]="false"  (view)="onRowView($event)">
             </app-common-table>
-        </div>
     </mat-tab>
 
     <mat-tab label="Ongoing Assigned Duty">
-        <div>
-            <app-common-table [columns]="commonColumnsOngoingAssignedDuty" [data]="dataSource.data"
+            <app-common-table [columns]="commonColumnsOngoingAssignedDuty" [data]="dataSource.data" [showActions]="false"
                 (view)="onRowView($event)">
             </app-common-table>
-        </div>
     </mat-tab>
 
     <mat-tab label="Upcoming Assigned Duty">
-        <div>
-            <app-common-table [columns]="commonColumnsUpcomingAssignedDuty" [data]="dataSource.data"
+            <app-common-table [columns]="commonColumnsUpcomingAssignedDuty" [data]="dataSource.data" [showActions]="false"
                 (view)="onRowView($event)">
             </app-common-table>
-        </div>
     </mat-tab>
 </mat-tab-group>
 
 <ng-template #viewDialog>
     <h2 mat-dialog-title>Login Selfie</h2>
     <mat-dialog-content>
-        <img src="{{selectedStaff?.loginSelfiePath}}" alt="Login Selfie">
+        <img src="{{selectedStaff?.row.loginSelfiePath}}" alt="Login Selfie">
     </mat-dialog-content>
     <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close>Close</button>

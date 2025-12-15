@@ -53,72 +53,94 @@ export class DutyLogs {
   ];
 
   commonColumnsOngoingAssignedDuty: ColumnDef[] = [
-    { key: 'staffId', header: 'Staff Id', sortable: true },
-    { key: 'staffName', header: 'Staff Name', sortable: true },
-    { key: 'userId', header: 'User Id' },
-    { key: 'userName', header: 'User Name' },
-    { key: 'dutyStart', header: 'Duty Start', sortable: true, type: 'date' },
-    { key: 'dutyEnd', header: 'Duty End', sortable: true, type: 'date' }
+    { key: 'bookingId', header: 'Booking&nbsp;Id', sortable: true },
+    { key: 'staffName', header: 'Staff&nbsp;Name', sortable: true },
+    { key: 'staffPhoneNumber', header: 'Staff&nbsp;Phone&nbsp;Number' },
+    { key: 'userName', header: 'User&nbsp;Name' },
+    { key: 'userPhoneNumber', header: 'User&nbsp;Phone&nbsp;Number' },
+    { key: 'loginTime', header: 'Login&nbsp;Time', sortable: true, type: 'time' },
+    { key: 'loginSelfiePath', header: 'Login&nbsp;Selfie', type: 'action' },
+    { key: 'startTime', header: 'Duty&nbsp;Start', sortable: true },
+    { key: 'endTime', header: 'Duty&nbsp;End', sortable: true },
+    { key: 'perDayPrice', header: 'Per&nbsp;Day&nbsp;Price', sortable: true, type: 'number' },
+    { key: 'staffLatitude', header: 'Staff&nbsp;Latitude' },
+    { key: 'staffLongitude', header: 'Staff&nbsp;Longitude' },
+    { key: 'status', header: 'Status' }
   ];
 
-  commonColumnsUpcomingAssignedDuty: ColumnDef[] = [
-    { key: 'staffId', header: 'Staff Id', sortable: true },
-    { key: 'staffName', header: 'Staff Name', sortable: true },
-    { key: 'userId', header: 'User Id' },
-    { key: 'userName', header: 'User Name' },
-    { key: 'bookingDate', header: 'Booking Date', sortable: true, type: 'date' }
-  ];
+commonColumnsUpcomingAssignedDuty: ColumnDef[] = [
+  { key: 'bookingId', header: 'Booking&nbsp;Id', sortable: true },
+  { key: 'startDate', header: 'Start&nbsp;Date', sortable: true },
+  { key: 'endDate', header: 'End&nbsp;Date', sortable: true },
+  { key: 'startTime', header: 'Start&nbsp;Time', sortable: true },
+  { key: 'endTime', header: 'End&nbsp;Time', sortable: true },
+  { key: 'userName', header: 'User&nbsp;Name' },
+  { key: 'userPhoneNumber', header: 'User&nbsp;Phone&nbsp;Number' },
+  { key: 'userAddress', header: 'User&nbsp;Address' },
+  { key: 'staffName', header: 'Staff&nbsp;Name', sortable: true },
+  { key: 'staffPhoneNumber', header: 'Staff&nbsp;Phone&nbsp;Number' },
+  { key: 'staffAddress', header: 'Staff&nbsp;Address' },
+  { key: 'category', header: 'Category', sortable: true },
+  { key: 'staffSubCategory', header: 'Sub&nbsp;Category', sortable: true },
+  { key: 'pricePackageUsed', header: 'Price&nbsp;Package&nbsp;Used', sortable: true },
+  { key: 'totalDays', header: 'Total&nbsp;Days', sortable: true },
+  { key: 'totalHours', header: 'Total&nbsp;Hours', sortable: true },
+  { key: 'price', header: 'Amount', sortable: true, type: 'number' },
+  { key: 'paymentStatus', header: 'Payment&nbsp;Status', sortable: true },
+  { key: 'status', header: 'Status', sortable: true },
+  { key: 'calculationType', header: 'Calculation&nbsp;Type', sortable: true },
+  { key: 'distanceKm', header: 'Distance&nbsp;Km', sortable: true },
+  { key: 'rating', header: 'Rating', sortable: true }
+];
 
-  constructor() { }
+ngOnInit(): void {
+  this.fetchData();
+}
 
-  ngOnInit(): void {
+onTabChange(index: number) {
+  if (index === 0) {
+    this.activeTab = 'previous';
+    this.fetchData();
+  } else if (index === 1) {
+    this.activeTab = 'onGoing';
+    this.fetchData();
+  } else if (index === 2) {
+    this.activeTab = 'upComing';
     this.fetchData();
   }
+}
 
-  onTabChange(index: number) {
-    if (index === 0) {
-      this.activeTab = 'previous';
-      this.fetchData();
-    } else if (index === 1) {
-      this.activeTab = 'onGoing';
-      this.fetchData();
-    } else if (index === 2) {
-      this.activeTab = 'upComing';
-      this.fetchData();
-    }
+fetchData(): void {
+  this.isLoading = true;
+  let endpoint = '';
+  if(this.activeTab === 'previous') {
+  endpoint = ENDPOINTS.GET_BULK_PREVIOUS_BOOKINGS;
+} else if (this.activeTab === 'onGoing') {
+  endpoint = ENDPOINTS.GET_BULK_ONGOING_BOOKINGS;
+} else if (this.activeTab === 'upComing') {
+  endpoint = ENDPOINTS.GET_BULK_UPCOMING_BOOKINGS;
+}
+this.http.get<any[]>(API_URL + endpoint).subscribe({
+  next: (res: any) => {
+    this.dataSource.data = res.data.reverse() || [];
+    this.isLoading = false;
+  },
+  error: (err) => {
+    console.error('Error fetching duty logs:', err);
+    this.dataSource.data = [];
+    this.isLoading = false;
+  }
+});
   }
 
-  fetchData(): void {
-    this.isLoading = true;
-    let endpoint = '';
-    if (this.activeTab === 'previous') {
-      endpoint = ENDPOINTS.GET_BULK_PREVIOUS_BOOKINGS;
-    } else if (this.activeTab === 'onGoing') {
-      endpoint = ENDPOINTS.GET_BULK_ONGOING_BOOKINGS;
-    } else if (this.activeTab === 'upComing') {
-      endpoint = ENDPOINTS.GET_BULK_UPCOMING_BOOKINGS;
-    }
-    this.http.get<any[]>(API_URL + endpoint).subscribe({
-      next: (res: any) => {
-        this.dataSource.data = res.data.reverse() || [];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching duty logs:', err);
-        this.dataSource.data = [];
-        this.isLoading = false;
-      }
-    });
-  }
+// handlers from common-table
+onRowView(row: any) {
+  this.selectedStaff = row;
+  this.onViewAction();
+}
 
-  // handlers from common-table
-  onRowView(row: any) {
-    this.selectedStaff = row;
-    this.onViewAction();
-  }
-
-  onViewAction() {
-    this.dialog.open(this.viewDialog, { width: '900px', minWidth: '800px' });
-  }
+onViewAction() {
+  this.dialog.open(this.viewDialog, { width: '900px', minWidth: '800px' });
+}
 
 }
