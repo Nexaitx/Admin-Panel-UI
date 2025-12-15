@@ -1,17 +1,3 @@
-<mat-sidenav-container class="h-screen w-full">
-    <mat-sidenav #sidenav mode="over" position="end" class="w-75">
-        <div class="flex justify-between items-center mb-6 border-b pb-2">
-            <h4 class="text-xl font-semibold">Staff Duty Logs</h4>
-            <button mat-icon-button (click)="sidenav.close()">
-                <mat-icon>close</mat-icon>
-            </button>
-        </div>
 
-       
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-        <app-common-table [columns]="columnsToDisplay" [data]="dataSource.data">
+        <app-common-table [columns]="columnsToDisplay" [showActions]="false" [data]="dataSource.data">
         </app-common-table>
-    </mat-sidenav-content>
-</mat-sidenav-container>
