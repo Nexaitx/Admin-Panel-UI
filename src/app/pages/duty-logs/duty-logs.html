@@ -1,48 +1,35 @@
-<mat-sidenav-container class="h-screen w-full">
-    <mat-sidenav #sidenav mode="over" position="end" class="w-75">
-        <div class="flex justify-between items-center mb-6 border-b pb-2">
-            <h4 class="text-xl font-semibold">Staff Duty Assigned</h4>
-            <button mat-icon-button (click)="sidenav.close()">
-                <mat-icon>close</mat-icon>
-            </button>
+<mat-tab-group (selectedIndexChange)="onTabChange($event)">
+    <mat-tab label="Previously Assigned Duty">
+        <div>
+            <app-common-table [columns]="commonColumnsPreviouslyAssignedDuty" [data]="dataSource.data"
+                [showCreate]="false" (view)="onRowView($event)">
+            </app-common-table>
         </div>
+    </mat-tab>
 
-        <div *ngIf="selectedStaff">
-            <div class="d-flex justify-content-between">
-                <p><strong>Staff ID:</strong> {{selectedStaff.staffId}}</p>
-                <p><strong>Name:</strong> {{selectedStaff.staffName}}</p>
-            </div>
+    <mat-tab label="Ongoing Assigned Duty">
+        <div>
+            <app-common-table [columns]="commonColumnsOngoingAssignedDuty" [data]="dataSource.data"
+                (view)="onRowView($event)">
+            </app-common-table>
         </div>
-    </mat-sidenav>
+    </mat-tab>
 
-    <mat-sidenav-content>
-        <mat-tab-group (selectedIndexChange)="onTabChange($event)">
-            <mat-tab label="Previously Assigned Duty">
-                <div>
-                    <!-- <div class="scrollableTable overflow-x-auto"> -->
-                        <app-common-table [columns]="commonColumnsPreviouslyAssignedDuty" [data]="dataSource.data"
-                            [pageSizeOptions]="[5,10,25,100]" [showCreate]="false" (view)="onRowView($event)"
-                            (save)="onRowSave($event)" (delete)="onRowDelete($event)">
-                        </app-common-table>
-                    <!-- </div> -->
-                </div>
-            </mat-tab>
+    <mat-tab label="Upcoming Assigned Duty">
+        <div>
+            <app-common-table [columns]="commonColumnsUpcomingAssignedDuty" [data]="dataSource.data"
+                (view)="onRowView($event)">
+            </app-common-table>
+        </div>
+    </mat-tab>
+</mat-tab-group>
 
-            <mat-tab label="Ongoing Assigned Duty">
-                <div>
-                    <app-common-table [columns]="commonColumnsOngoingAssignedDuty" [data]="dataSource.data" (view)="onRowView($event)"
-                        (save)="onRowSave($event)" (delete)="onRowDelete($event)">
-                    </app-common-table>
-                </div>
-            </mat-tab>
-
-            <mat-tab label="Upcoming Assigned Duty">
-                <div>
-                    <app-common-table [columns]="commonColumnsUpcomingAssignedDuty" [data]="dataSource.data" (view)="onRowView($event)"
-                        (save)="onRowSave($event)" (delete)="onRowDelete($event)">
-                    </app-common-table>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
-    </mat-sidenav-content>
-</mat-sidenav-container>
+<ng-template #viewDialog>
+    <h2 mat-dialog-title>Login Selfie</h2>
+    <mat-dialog-content>
+        <img src="{{selectedStaff?.loginSelfiePath}}" alt="Login Selfie">
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+</ng-template>

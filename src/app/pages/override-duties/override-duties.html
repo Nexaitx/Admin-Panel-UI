@@ -1,1 +1,77 @@
-<p>override-duties works!</p>
+<app-common-table [columns]="columns" [data]="dataSource.data" [showActions]="false" (view)="onRowClick($event)">
+</app-common-table>
+
+<ng-template #viewDialog>
+    <h2 mat-dialog-title>
+        {{ selectedRecord?.type }} Details
+    </h2>
+    <mat-dialog-content>
+        <div class="table-responsive">
+            <div class="mb-4 border rounded p-3">
+                <table class="w-100 p-2 table table-striped table-hover">
+                    <tbody>
+                        @if(selectedRecord?.type === 'User'){
+                        <ng-container>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">User Id: </th>
+                                <td>{{ selectedRecord?.userId }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">User Name: </th>
+                                <td>{{ selectedRecord?.name }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">User Email: </th>
+                                <td>{{ selectedRecord?.email }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">User Phone Number: </th>
+                                <td>{{ selectedRecord?.phone }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">User Address: </th>
+                                <td>{{ selectedRecord?.address }}</td>
+                            </tr>
+                        </ng-container>}
+                        @if(selectedRecord?.type === 'Staff') {
+                        <ng-container>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">Staff Id: </th>
+                                <td>{{ selectedRecord?.staffId }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">Staff Name: </th>
+                                <td>{{ selectedRecord?.name }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">Staff Email: </th>
+                                <td>{{ selectedRecord?.email }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">Staff Phone Number: </th>
+                                <td>{{ selectedRecord?.phone }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">Staff Address: </th>
+                                <td>{{ selectedRecord?.address }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">Staff Category: </th>
+                                <td>{{ selectedRecord?.category }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left pe-4 align-top pb-2">Staff Sub Category: </th>
+                                <td>{{ selectedRecord?.subCategory }}</td>
+                            </tr>
+                        </ng-container>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+</ng-template>

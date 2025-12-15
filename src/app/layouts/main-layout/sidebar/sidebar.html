@@ -141,7 +141,7 @@
     <a *ngIf="hasPermission('Active Staff')" mat-list-item routerLink="/app/active-staff"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <mat-icon class="material-icons">spellcheck</mat-icon><span>OnGoing Duty</span>
+            <mat-icon class="material-icons">spellcheck</mat-icon><span>Active Staffs</span>
         </span>
     </a>
 
@@ -160,7 +160,7 @@
     </a>
 
 
-    <a *ngIf="hasPermission('Overtime Duties')" mat-list-item routerLink="/app/override-Duties"
+    <a *ngIf="hasPermission('Override Duties')" mat-list-item routerLink="/app/override-Duties"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">swap_horiz</mat-icon><span>Override Duties</span>

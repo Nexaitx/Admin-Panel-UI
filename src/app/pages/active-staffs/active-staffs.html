@@ -7,98 +7,11 @@
             </button>
         </div>
 
-        <div *ngIf="selectedStaff">
-            <div class="d-flex justify-content-between">
-                <p><strong>Staff ID:</strong> {{selectedStaff.staffId}}</p>
-                <p><strong>Name:</strong> {{selectedStaff.staffName}}</p>
-            </div>
-        </div>
+       
     </mat-sidenav>
 
     <mat-sidenav-content>
-        <div>
-            <h5>Active Staff</h5>
-            <div class="d-flex justify-content-between align-items-center">
-                <mat-form-field appearance="outline">
-                    <mat-label>Search Duty Logs</mat-label>
-                    <input matInput (keyup)="applyFilter($event)" placeholder="e.g. Staff ID" #input class="rounded-md">
-                    <mat-icon matSuffix>search</mat-icon>
-                </mat-form-field>
-                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of alerts"></mat-paginator>
-            </div>
-            <div class="scrollableTable overflow-x-auto">
-                <table mat-table [dataSource]="dataSource" class="bg-white" matSort>
-
-                    <ng-container matColumnDef="staffId">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff&nbsp;Id</th>
-                        <td mat-cell *matCellDef="let element">{{element.staffId}}</td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="staffName">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff&nbsp;Name</th>
-                        <td mat-cell *matCellDef="let element">{{element.name}}</td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="phone">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
-                        <td mat-cell *matCellDef="let element">{{element.phone}}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="email">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-                        <td mat-cell *matCellDef="let element">{{element.email}}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="gender">category
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Gender</th>
-                        <td mat-cell *matCellDef="let element">{{element.gender}}</td>subcategory
-                    </ng-container>
-                    <ng-container matColumnDef="category">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
-                        <td mat-cell *matCellDef="let element">{{element.category}}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="subcategory">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sub&nbsp;Category</th>
-                        <td mat-cell *matCellDef="let element">{{element.subCategory}}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="duties">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Duties</th>
-                        <td mat-cell *matCellDef="let element">{{element.duties}}</td>
-                    </ng-container>price
-                    <ng-container matColumnDef="price">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-                        <td mat-cell *matCellDef="let element">{{element.price}}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="experience">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Experience</th>
-                        <td mat-cell *matCellDef="let element">{{element.experience}}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="qualification">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Qualification</th>
-                        <td mat-cell *matCellDef="let element">{{element.qualification}}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="profession">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Profession</th>
-                        <td mat-cell *matCellDef="let element">{{element.profession}}</td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
-                        <td mat-cell *matCellDef="let element">
-                            <button mat-icon-button color="primary">
-                                <mat-icon>visibility</mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                        class="hover:bg-gray-100 transition-colors">
-                    </tr>
-                </table>
-            </div>
-
-            <div *ngIf="dataSource.data.length === 0 && !isLoading" class="p-8 text-center text-gray-500">
-                No alerts to display.
-            </div>
-        </div>
+        <app-common-table [columns]="columnsToDisplay" [data]="dataSource.data">
+        </app-common-table>
     </mat-sidenav-content>
 </mat-sidenav-container>

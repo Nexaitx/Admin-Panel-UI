@@ -17,7 +17,7 @@ export interface ColumnDef {
   header: string;         // header label
   sortable?: boolean;     // enable sorting
   editable?: boolean;     // allow editing in dialog
-  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action';
+  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action' | 'actionUser' | 'actionStaff'; // data type
   options?: Array<{ value: any, label: string }>; // for select
   width?: string;
 }
@@ -45,7 +45,7 @@ export interface ColumnDef {
 export class CommonTableComponent implements OnInit, OnChanges {
   @Input() columns: ColumnDef[] = [];
   @Input() data: any[] = [];
-  @Input() pageSizeOptions: number[] = [5, 10, 25, 100];
+  @Input() pageSizeOptions: number[] = [10, 25, 100];
   @Input() showCreate = false;
   @Input() createLabel = 'Create';
   @Input() showActions = true;
@@ -133,7 +133,15 @@ export class CommonTableComponent implements OnInit, OnChanges {
     if (this.activeRow) { this.delete.emit(this.activeRow); }
   }
 
-  onView(row: any) { this.view.emit(row); }
+  // onView(row: any) { this.view.emit(row); }
+  onView(row: any, col: ColumnDef) {
+    this.view.emit({
+      row,
+      columnKey: col.key,
+      columnType: col.type
+    });
+  }
+
   onDelete(row: any) { this.delete.emit(row); }
 
   private openEditDialog(row: any, isNew: boolean) {

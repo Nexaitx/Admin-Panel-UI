@@ -1,6 +1,7 @@
 <div class="common-table">
-  <div class="ct-header d-flex justify-content-between items-center mb-3">
-    <mat-form-field appearance="outline">
+  <!-- <div class="ct-header d-flex justify-content-between items-center mb-3"> -->
+    <div class="row">
+    <mat-form-field appearance="outline" class="small-select col-md-2">
       <mat-label>Search</mat-label>
       <input matInput (keyup)="applyFilter($event)" placeholder="Search" [value]="filterValue">
       <mat-icon matSuffix>search</mat-icon>
@@ -8,11 +9,11 @@
 
 
 
-    <div class="ct-actions">
+    <div class="ct-actions col-md-1">
       <button *ngIf="showCreate" mat-flat-button color="primary" (click)="onCreate()">{{createLabel}}</button>
     </div>
 
-    <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+    <mat-paginator class="small-select col-md-8" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
   </div>
 
   <div class="scrollableTable overflow-x-auto">
@@ -35,15 +36,19 @@
 
         <td mat-cell *matCellDef="let element">
           <ng-container [ngSwitch]="col.type || 'text'">
-            <button *ngSwitchCase="'action'" matButton color="primary" matTooltip="View" (click)="onView(element)">
-              <mat-icon>visibility</mat-icon>
-              <span class="ml-1">View</span>
-            </button>
-            <span *ngSwitchCase="'date'">{{element[col.key] | date: 'mediumDate'}}</span>
-            <span *ngSwitchCase="'time'">{{element[col.key] | date: 'shortTime'}}</span>
-            <span *ngSwitchCase="'boolean'">{{element[col.key] ? 'Yes' : 'No'}}</span>
-            <span *ngSwitchCase="'number'">{{element[col.key] | number: '1.2-2'}}</span>
-            <span *ngSwitchDefault>{{element[col.key]}}</span>
+            <button *ngSwitchCase="'action'" matButton color="primary" (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
+
+              <button *ngSwitchCase="'actionUser'" matButton color="primary" matTooltip="View"
+                (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
+
+                <button *ngSwitchCase="'actionStaff'" matButton color="primary" matTooltip="View"
+                  (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
+
+                  <span *ngSwitchCase="'date'">{{element[col.key] | date: 'mediumDate'}}</span>
+                  <span *ngSwitchCase="'time'">{{element[col.key] | date: 'shortTime'}}</span>
+                  <span *ngSwitchCase="'boolean'">{{element[col.key] ? 'Yes' : 'No'}}</span>
+                  <span *ngSwitchCase="'number'">{{element[col.key] | number: '1.2-2'}}</span>
+                  <span *ngSwitchDefault>{{element[col.key]}}</span>
           </ng-container>
         </td>
 

@@ -1,29 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { API_URL, ENDPOINTS } from '../../core/const';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonTableComponent, ColumnDef } from '../../shared/common-table/common-table.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 @Component({
   selector: 'app-duty-logs',
   imports: [CommonModule,
     MatTableModule,
-    MatIconModule,
     MatFormFieldModule,
-    MatPaginatorModule,
-    MatSortModule,
     MatInputModule,
     MatButtonModule,
-    MatSidenavModule,
     MatTabsModule,
+    MatDialogModule,
     CommonTableComponent],
   templateUrl: './duty-logs.html',
   styleUrl: './duty-logs.scss'
@@ -32,8 +26,11 @@ export class DutyLogs {
   activeTab: string = 'previous';
   http = inject(HttpClient);
   dataSource = new MatTableDataSource<any>();
-  columnsToDisplay = ['staffId', 'staffName', 'userId', 'userName', 'actions'];
-  // Common table column defs
+  dialog = inject(MatDialog);
+  @ViewChild('viewDialog') viewDialog!: TemplateRef<any>;
+  selectedStaff: any;
+  isLoading: boolean = false;
+
   commonColumnsPreviouslyAssignedDuty: ColumnDef[] = [
     { key: 'bookingId', header: 'Booking&nbsp;Id', sortable: true },
     { key: 'userName', header: 'User&nbsp;Name' },
@@ -71,29 +68,11 @@ export class DutyLogs {
     { key: 'userName', header: 'User Name' },
     { key: 'bookingDate', header: 'Booking Date', sortable: true, type: 'date' }
   ];
-  isLoading = false;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild('sidenav') sidenav!: MatSidenav;
-  selectedStaff: any;
+
   constructor() { }
 
   ngOnInit(): void {
     this.fetchData();
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
   }
 
   onTabChange(index: number) {
@@ -138,21 +117,8 @@ export class DutyLogs {
     this.onViewAction();
   }
 
-  onRowDelete(row: any) {
-    console.log('Delete row requested', row);
-    // implement deletion API call here if required and refresh
-    // example: this.http.delete(API_URL + ENDPOINTS.DELETE_DUTY + '/' + row.id).subscribe(()=> this.fetchData())
-  }
-
-  onRowSave(payload: any) {
-    console.log('Save requested', payload);
-    // payload = { row, isNew }
-    // implement create/update api here then refresh
-    this.fetchData();
-  }
-
   onViewAction() {
-    this.sidenav.open();
+    this.dialog.open(this.viewDialog, { width: '900px', minWidth: '800px' });
   }
 
 }

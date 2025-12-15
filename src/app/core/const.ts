@@ -15,10 +15,11 @@ export const ENDPOINTS = {
     // Staffs
     GET_STAFFS: '/getAllStaff',
     GET_DUTY_LOGS: '/getDutyLog',
-    GET_ACTIVE_STAFFS: '/active-staffs',
+    // GET_ACTIVE_STAFFS: '/active-staffs',
     GET_STAFF_FILTER: '/api/staff/filter/advanced',
     GET_SUB_CATEGORIES: '/api/staff/subcategories',
     GET_STATES: '/api/staff/states',
+    GET_ACTIVE_STAFF: '/api/staff/filter',
 
     // Doctors
     GET_DOCTORS: '/getAllDoctor',
@@ -140,7 +141,7 @@ export const ENDPOINTS = {
     GET_OTHER_PHARMACIST_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/otherpharmacist/highest-discount',
     UPDATE_BULK_AVAILABILITY_DISCOUNT: '/api/pharmacists/medicines/bulk/disscountandisavailable',
     GET_AVAILABLE_TOGGLE: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
-    
+
     ALL_AVAILABLE_MEDICINE: '/api/medicines/allmedicine/pharmacistdiscountadded',
     DISABLE_MEDICINE_PERMANENTLY: '/api/medicines/disable/anymedicine',
     GET_PHARMACIST_MEDICINE: '/api/medicines/pharmacists/',
@@ -152,9 +153,9 @@ export const ENDPOINTS = {
     GET_ALL_PHARMACY_AVAILABLE_MEDICINE: '/api/medicines/getmedicine/bypharmacist/',
 
     UPDATE_MEDICINE_AVAILABILITY: '/api/pharmacists/medicines/pharmacist/myvailable/bulktoggle',
-    
+
     // push-notifications
-    SUBSCRIBEAPI:'/api/admin/subscribe',
+    SUBSCRIBEAPI: '/api/admin/subscribe',
     UPDATE_FCM_TOKEN: '/update-fcm-token',
 
     GET_BOOKING_PAYMENTS: '/api/admin/payments/all',
@@ -164,5 +165,9 @@ export const ENDPOINTS = {
     // bulk assignments
     GET_BULK_PREVIOUS_BOOKINGS: '/api/paymentbookings/previous',
     GET_BULK_ONGOING_BOOKINGS: '/api/paymentbookings/ongoing',
-    GET_BULK_UPCOMING_BOOKINGS:  '/api/paymentbookings/upcoming',
+    GET_BULK_UPCOMING_BOOKINGS: '/api/paymentbookings/upcoming',
+
+    // override duty
+    GET_OVERRIDE_DUTY: '/api/override-duties/overridden',
+
 };

@@ -25,7 +25,7 @@ export class Permissions {
   roles: any[] = [];
   basePermissionsList: string[] = [
     'Manage', 'Bookings', 'Booking Payments', 'Duty Assigned', 'Active Staff', 'GPS Monitoring', 'GPS Deviation',
-    'Bulk Assignment', 'Overtime Duties', 'Overtime Approvals', 'Devices & Addresses',
+    'Bulk Assignment', 'Override Duties', 'Overtime Approvals', 'Devices & Addresses',
     'Roles', 'Pharma', 'Account', 'Prescriptions', 'Permissions', 'Diet Plans', 'Diet Subscription Plans',
     'Ledgers', 'Diet Bookings', 'Dietician Reports', 'Diet Subscription', 'Settings'
   ];
