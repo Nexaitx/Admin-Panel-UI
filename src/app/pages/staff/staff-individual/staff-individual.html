@@ -41,7 +41,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-2 small-select">
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
         <mat-label>Sub Category</mat-label>
         <mat-select (selectionChange)="getStaffByFilter()" [(ngModel)]="selectedSubcategory">
           <mat-option [disabled]>Select Sub Category</mat-option>
@@ -60,7 +60,8 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-md-2 small-select">
+      <!-- according to babita mam we are not using it for now, it can be used in future -->
+      <!-- <mat-form-field appearance="outline" class="col-md-2 small-select">
         <mat-label>Shift Type</mat-label>
         <mat-select (selectionChange)="getStaffByFilter()" [(ngModel)]="selectedShiftType">
           <mat-option value="" [disabled]>Select Shift Type</mat-option>
@@ -71,17 +72,14 @@
           <mat-option value="1month12hours">Monthly (12 Hours, 4 Holidays)</mat-option>
           <mat-option value="1month24hours">Monthly (24 Hours, 4 Holidays)</mat-option>
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
 
-      <mat-form-field appearance="outline" class="col-md-2 small-select">
+      <mat-form-field appearance="outline" class="col-md-3 small-select">
         <mat-label>Pick a Duty Time</mat-label>
-        <input matInput [matTimepicker]="picker">
-        <mat-timepicker-toggle matIconSuffix [for]="picker" (selectionChange)="getStaffByFilter()"
-          [(ngModel)]="selectedDutyTime" />
+        <input matInput [matTimepicker]="picker" [(ngModel)]="selectedDutyTime" (ngModelChange)="getStaffByFilter()">
+        <mat-timepicker-toggle matIconSuffix [for]="picker" />
         <mat-timepicker #picker />
       </mat-form-field>
-
-
 
       <button class="col-md-2" matButton="filled" type="button" (click)="resetFilters()">Reset&nbsp;Filters</button>
 
@@ -185,7 +183,7 @@
           <td mat-cell *matCellDef="let element">
             <select class="form-select form-select-sm" style="width:120px" [(ngModel)]="element.selectedShift"
               (ngModelChange)="updatePrice(element)">
-              @if(element.category === 'nurse') {
+              @if(element?.category === 'nurse') {
               <option value="08:00">8 Hours</option>
               <option value="12:00">12 Hours</option>
               <option value="24:00">24 Hours</option> }
@@ -222,6 +220,11 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+          <td mat-cell *matCellDef="let element"> {{element.active ? 'Active' : 'In-Active'}} </td>
+        </ng-container>
+
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef> Actions </th>
           <td mat-cell *matCellDef="let element">
@@ -229,9 +232,9 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #actionMenu="matMenu">
-              <button mat-menu-item (click)="openStaffDrawer(element)">
-                <mat-icon>remove_red_eye</mat-icon>
-                <span>View</span>
+              <button mat-menu-item (click)="selectedStaff = element ; openStaffDisableDialog(element)">
+                <mat-icon>edit</mat-icon>
+                <span>Change Status</span>
               </button>
             </mat-menu>
           </td>
@@ -247,6 +250,19 @@
       </table>
     </section>
   </div>
+
+  <ng-template #staffStatus>
+    <h2 mat-dialog-title>Staff Status Change</h2>
+    <mat-dialog-content>
+      Do You Want to Make Staff ({{selectedStaff?.name}}) with Id {{selectedStaff?.staffId}} Account as Disabled?
+      <br><br>
+      <div class="d-flex justify-content-between">
+        <button matButton type="submit" (click)="isActive= false; disableStaff(); dialog.closeAll()">Yes</button>
+        <button matButton type="submit" (click)="isActive= true; disableStaff(); dialog.closeAll()">No</button>
+      </div>
+    </mat-dialog-content>
+  </ng-template>
+
   <ng-template #verificationDialog>
     <h2 mat-dialog-title>Verify Documents</h2>
     <mat-dialog-content>
@@ -255,11 +271,11 @@
         <div class="text-center">
           <img class="w-75" [src]="selectedStaff?.adharUrl" alt="Aadhaar Card">
         </div>
-        <label>Do you want to verify this Document?</label>
+        <!-- <label>Do you want to verify this Document?</label>
         <mat-radio-group aria-label="Select an option" name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
-        </mat-radio-group>
+        </mat-radio-group> -->
 
       </div>
       <hr>
@@ -269,11 +285,11 @@
         <div class="text-center">
           <img class="w-75" [src]="selectedStaff?.panUrl" alt="PAN Card">
         </div>
-        <label>Do you want to verify this Document?</label>
+        <!-- <label>Do you want to verify this Document?</label>
         <mat-radio-group aria-label="Select an option" name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
-        </mat-radio-group>
+        </mat-radio-group> -->
       </div>
       <hr>
 
@@ -282,11 +298,11 @@
         <div class="text-center">
           <img class="w-75" [src]="selectedStaff?.degreeUrl" alt="Degree Certificate">
         </div>
-        <label>Do you want to verify this Document?</label>
+        <!-- <label>Do you want to verify this Document?</label>
         <mat-radio-group aria-label="Select an option" name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
-        </mat-radio-group>
+        </mat-radio-group> -->
       </div>
       <hr>
 
@@ -295,11 +311,11 @@
         <div class="text-center">
           <img class="w-75" [src]="selectedStaff?.medicalLicenseUrl" alt="Medical License">
         </div>
-        <label>Do you want to verify this Document?</label>
+        <!-- <label>Do you want to verify this Document?</label>
         <mat-radio-group aria-label="Select an option" name="verification">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
-        </mat-radio-group>
+        </mat-radio-group> -->
       </div>
       <hr>
 
@@ -309,17 +325,22 @@
           <img class="w-75" [src]="selectedStaff?.policeVerificationUrl" alt="Police Verification">
         </div>
         <label>Do you want to verify this Document?</label>
-        <mat-radio-group aria-label="Select an option" name="verification">
+        <mat-radio-group aria-label="Select an option" [(ngModel)]="isVerified">
           <mat-radio-button [value]="true">Yes</mat-radio-button>
           <mat-radio-button [value]="false">No</mat-radio-button>
         </mat-radio-group>
       </div>
-      <hr>
 
+      <mat-form-field appearance="outline" class="w-100 mt-3">
+        <mat-label>Comment</mat-label>
+        <textarea matInput [(ngModel)]="reason" placeholder="Add comment..."></textarea>
+      </mat-form-field>
+
+      <hr>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="primary" (click)="dialog.closeAll()">Save</button>
+      <button mat-flat-button color="primary" (click)="verifyStaffDocuments(); dialog.closeAll()">Save</button>
     </mat-dialog-actions>
   </ng-template>
 </mat-drawer-container>

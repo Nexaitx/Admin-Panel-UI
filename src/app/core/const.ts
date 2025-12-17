@@ -15,11 +15,12 @@ export const ENDPOINTS = {
     // Staffs
     GET_STAFFS: '/getAllStaff',
     GET_DUTY_LOGS: '/getDutyLog',
-    // GET_ACTIVE_STAFFS: '/active-staffs',
     GET_STAFF_FILTER: '/api/staff/filter/advanced',
     GET_SUB_CATEGORIES: '/api/staff/subcategories',
     GET_STATES: '/api/staff/states',
     GET_ACTIVE_STAFF: '/api/staff/filter',
+    VERIFY_STAFF: '/api/staff/bulk/verification',
+    DISABLE_STAFF: '/api/staff/bulk/active-status',
 
     // Doctors
     GET_DOCTORS: '/getAllDoctor',

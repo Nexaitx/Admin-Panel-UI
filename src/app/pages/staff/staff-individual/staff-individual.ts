@@ -20,6 +20,8 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-staff-individual',
@@ -55,6 +57,8 @@ export class StaffIndividual implements OnDestroy {
   isDrawerOpen = false;
   selectedStaff: any = null;
   @Input() staff: any;
+  private _snackBar = inject(MatSnackBar);
+
 
   displayedColumns: string[] = [
     's_no',
@@ -74,10 +78,13 @@ export class StaffIndividual implements OnDestroy {
     'price',
     'rating',
     'verified',
+    'status',
     'actions'
   ];
+  isActive: boolean = false;
   verification: boolean = false;
   @ViewChild('verificationDialog') verificationDialog!: TemplateRef<any>;
+  @ViewChild('staffStatus') staffStatus!: TemplateRef<any>;
   dialog = inject(MatDialog);
 
   dataSource: MatTableDataSource<any>;
@@ -106,7 +113,8 @@ export class StaffIndividual implements OnDestroy {
   selectedExperience: string = '';
   selectedShiftType: string = '';
   selectedDutyTime: string = '';
-
+  isVerified: boolean = false;
+  reason: string = '';
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -212,8 +220,7 @@ export class StaffIndividual implements OnDestroy {
 
   getStaffByFilter() {
     let params = new HttpParams();
-
-    // Only add params if they have been explicitly selected (non-empty values)
+    console.log(this.selectedDutyTime);
     if (this.selectedCity) {
       params = params.set('state', String(this.selectedCity));
     }
@@ -226,8 +233,21 @@ export class StaffIndividual implements OnDestroy {
     if (this.selectedShiftType && this.selectedShiftType.trim() !== '') {
       params = params.set('shiftType', this.selectedShiftType);
     }
-    if (this.selectedDutyTime && this.selectedDutyTime.trim() !== '') {
-      params = params.set('startTime', this.selectedDutyTime);
+    if (this.selectedDutyTime) {
+      const timeDate = new Date(this.selectedDutyTime);
+
+      // Check for valid date to avoid errors
+      if (!isNaN(timeDate.getTime())) {
+        const formattedTime = timeDate.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+
+        params = params.set('startTime', formattedTime);
+      }
+      console.log(params)
+      // params = params.set('startTime', this.selectedDutyTime);
     }
 
     this.http.get(API_URL + ENDPOINTS.GET_STAFF_FILTER, { params }).subscribe({
@@ -323,7 +343,45 @@ export class StaffIndividual implements OnDestroy {
     this.ngOnInit();
   }
 
+  openStaffDisableDialog(m: any) {
+    const dialogRef = this.dialog.open(this.staffStatus, {
+      width: '600px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  disableStaff() {
+    const payload = {
+      staffIds: [this.selectedStaff.staffId],
+      isActive: this.isActive
+    }
+    this.http.post(API_URL + ENDPOINTS.DISABLE_STAFF, payload).subscribe((res: any) => {
+      this.getStaffs();
+      if (this.isActive) {
+        this._snackBar.open('Staff Active Successfully', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+        });
+      } else {
+        this._snackBar.open('Staff In-Active Successfully', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+        });
+      }
+    },
+      (err: any) => {
+        this._snackBar.open('Error in Staff Active/In-Active', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+        });
+      });
+  }
+
   openVerificationDialog(m: any) {
+    this.isVerified = this.selectedStaff.verified;
     const dialogRef = this.dialog.open(this.verificationDialog, {
       width: '850px',
       minWidth: '850px',
@@ -333,4 +391,33 @@ export class StaffIndividual implements OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
+
+  verifyStaffDocuments() {
+    const payload = {
+      staffIds: [this.selectedStaff?.staffId],
+      isVerified: this.isVerified,
+      reason: this.reason
+    }
+    this.http.post(API_URL + ENDPOINTS.VERIFY_STAFF, payload).subscribe((res: any) => {
+      if (this.isVerified) {
+        this._snackBar.open('Documents Verified Successfully', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+        });
+      } else {
+        this._snackBar.open('Documents Not Verified', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+        });
+      }
+      this.getStaffs();
+    },
+      (err: any) => {
+        this._snackBar.open('Error in Verifying Documents', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+        });
+      });
+  }
+
 }
