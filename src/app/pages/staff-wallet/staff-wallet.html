@@ -1,0 +1,25 @@
+<app-common-table [columns]="columnsToDisplay" [showActions]="false" [data]="dataSource.data"
+    (view)="onWalletTransaction($event)">
+</app-common-table>
+
+<ng-template #walletDialog>
+    <h2 mat-dialog-title>Wallet Transactions</h2>
+    <mat-dialog-content>
+        <div class="table-responsive">
+            <div *ngFor="let booking of selectedTransactionDetails; let idx = index" class="mb-4 border rounded p-3">
+                <h4 class="mb-2">Transaction {{ idx + 1 }}</h4>
+                <table class="w-100 p-2  table table-striped table-hover">
+                    <tbody>
+                        <tr *ngFor="let col of childTable">
+                            <th class="text-left pe-4 align-top pb-2">{{ col.header }}</th>
+                            <td>{{ booking[col.key] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+</ng-template>

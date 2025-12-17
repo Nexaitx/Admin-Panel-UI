@@ -22,6 +22,9 @@ export const ENDPOINTS = {
     VERIFY_STAFF: '/api/staff/bulk/verification',
     DISABLE_STAFF: '/api/staff/bulk/active-status',
 
+    // Staff Wallet
+    GET_STAFF_WALLET: '/api/v1/staff-wallet/all',
+
     // Doctors
     GET_DOCTORS: '/getAllDoctor',
 

@@ -32,14 +32,14 @@ export class ActiveStaffs {
     [{ key: 'staffId', header: 'Staff&nbsp;ID', sortable: true },
     { key: 'name', header: 'Staff&nbsp;Name', sortable: true },
     { key: 'phoneNumber', header: 'Phone', sortable: true },
-    { key: 'email', header: 'Email', sortable: true },
+    { key: 'state', header: 'State', sortable: true },
+    { key: 'country', header: 'Country', sortable: true },
     { key: 'gender', header: 'Gender', sortable: true },
     { key: 'category', header: 'Category', sortable: true },
     { key: 'subCategory', header: 'Sub&nbsp;Category', sortable: true },
-    { key: 'duties', header: 'Duties', sortable: true },
     { key: 'price', header: 'Price', sortable: true },
     { key: 'experience', header: 'Experience', sortable: true },
-    { key: 'qualification', header: 'Qualification' },
+    { key: 'documentStatus', header: 'Document&nbsp;Status' },
     { key: 'profession', header: 'Profession' }];
   constructor() { }
 
