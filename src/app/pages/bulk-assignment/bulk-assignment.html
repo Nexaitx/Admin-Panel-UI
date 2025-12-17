@@ -5,16 +5,16 @@
 <ng-template #staffDialog>
   <div class="d-flex justify-content-between align-items-center">
     <h2 mat-dialog-title>Staff Details</h2>
-    <h6 class="pe-3">Total Staffs: {{selectedStaffDetails.length}}</h6>
+    <h6 class="pe-3">Total Staffs: {{selectedStaffDetails?.length}}</h6>
   </div>
   <mat-dialog-content>
-    @if(selectedStaffDetails.length) {
+    <!-- @if(selectedStaffDetails.length) { -->
     <div class="table-responsive">
       <div *ngFor="let staff of selectedStaffDetails; let idx = index" class="mb-4 border rounded p-3">
         <h4 class="mb-2">Staff {{ idx + 1 }}</h4>
         <table class="w-100 p-2 table table-striped table-hover">
           <tbody>
-            <tr *ngFor="let col of staffDetailsColumns">
+            <tr *ngFor="let col of staffsColumns">
               <th class="text-left pe-4 align-top pb-2">{{ col.header }}</th>
               <td>{{ staff[col.key] }}</td>
             </tr>
@@ -22,10 +22,10 @@
         </table>
       </div>
     </div>
-    }
+    <!-- }
     @else {
     <p>No staff details available.</p>
-    }
+    } -->
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Close</button>

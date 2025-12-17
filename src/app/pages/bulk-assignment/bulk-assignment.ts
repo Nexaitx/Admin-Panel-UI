@@ -36,6 +36,7 @@ export class BulkAssignment {
     { key: 'userPhoneNumber', header: 'User&nbsp;Phone', sortable: true },
     { key: 'viewBookings', header: 'Staffs', type: 'action', sortable: false }
   ];
+
   staffsColumns: ColumnDef[] = [
     { key: 'staffId', header: 'Staff Id' },
     { key: 'name', header: 'Staff Name' },
@@ -45,8 +46,9 @@ export class BulkAssignment {
     { key: 'gender', header: 'Gender' },
     { key: 'status', header: 'Status' }
   ];
-  staffDetailsColumns: ColumnDef[] = [...this.staffsColumns];
-  staffDetailsColumnKeys: string[] = this.staffDetailsColumns.map(c => c.key);
+
+  // staffDetailsColumns: ColumnDef[] = [...this.staffsColumns];
+  // staffDetailsColumnKeys: string[] = this.staffDetailsColumns.map(c => c.key);
 
   ngOnInit(): void {
     this.fetchData();
@@ -62,17 +64,7 @@ export class BulkAssignment {
   }
 
   onRowView(row: any) {
-    this.selectedRecord = row;
-    this.selectedStaffDetails = row?.staffs || [];
-    if (this.selectedStaffDetails.length) {
-      const presentKeys = new Set(Object.keys(this.selectedStaffDetails[0]));
-      const filtered = this.staffsColumns.filter(col => presentKeys.has(col.key));
-      this.staffDetailsColumnKeys = filtered.map(col => col.key);
-      this.staffDetailsColumns = filtered;
-    } else {
-      this.staffDetailsColumns = [...this.staffsColumns];
-      this.staffDetailsColumnKeys = this.staffDetailsColumns.map(c => c.key);
-    }
+    this.selectedStaffDetails = row.row?.staffs;
     this.dialog.open(this.staffDialog, { width: '900px', minWidth: '800px' });
   }
 
