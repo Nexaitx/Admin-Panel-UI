@@ -1,28 +1,14 @@
-import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, ViewChild } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { API_URL, ENDPOINTS } from '../../core/const';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { Observable } from 'rxjs';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { ColumnDef, CommonTableComponent } from '../../shared/common-table/common-table.component';
 
 @Component({
   selector: 'app-gps-live-monitoring',
-  imports: [CommonModule,
-    MatTableModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSidenavModule],
+  imports: [CommonTableComponent,
+  ],
   templateUrl: './gps-live-monitoring.html',
   styleUrl: './gps-live-monitoring.scss'
 })
@@ -31,34 +17,34 @@ export class GPSLiveMonitoring {
   dataSource = new MatTableDataSource<any>();
 
   // New columns based on the provided data structure
-  columnsToDisplay = ['staffId', 'staffName', 'staffLocation', 'actions'];
+  columnsToDisplay: ColumnDef[] = [
+    { key: 'bookingId', header: 'Booking&nbsp;Id' },
+    { key: 'userName', header: 'User&nbsp;Name' },
+    { key: 'userPhoneNumber', header: 'User&nbsp;Phone&nbsp;Number' },
+    { key: 'userLatitude', header: 'User&nbsp;Latitude' },
+    { key: 'userLongitude', header: 'User&nbsp;Longitude' },
+    { key: 'userAddress', header: 'User&nbsp;Address' },
+    { key: 'staffName', header: 'Staff&nbsp;Name' },
+    { key: 'staffPhoneNumber', header: 'Staff&nbsp;Phone&nbsp;Number' },
+    { key: 'staffCategory', header: 'Staff&nbsp;Category' },
+    { key: 'staffSubCategory', header: 'Staff&nbsp;SubCategory' },
+    { key: 'staffLatitude', header: 'Staff&nbsp;Latitude' },
+    { key: 'staffLongitude', header: 'Staff&nbsp;Longitude' },
+    { key: 'staffAddress', header: 'Staff&nbsp;Address' },
+    { key: 'distanceKm', header: 'Distance(km)' },
+
+  ];
 
   isLoading = false;
 
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('sidenav') sidenav!: MatSidenav;
   selectedStaff: any;
   constructor() { }
 
   ngOnInit(): void {
     this.fetchData();
-    this.getLocation();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
 
   fetchData(): void {
     this.isLoading = true;
@@ -77,54 +63,6 @@ export class GPSLiveMonitoring {
         this.isLoading = false;
       }
     });
-  }
-
-  address: string | undefined;
-  latitude: number | undefined;
-  longitude: number | undefined;
-  errorMessage: string | undefined;
-  private apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
-  private apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
-
-  getAddress(latitude: number, longitude: number): Observable<any> {
-    const url = `${this.apiUrl}?latlng=${latitude},${longitude}&key=${this.apiKey}`;
-    return this.http.get(url);
-  }
-
-  getLocation(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position: GeolocationPosition) => {
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-          this.getAddress(this.latitude, this.longitude).subscribe(
-            (response: any) => {
-              if (response.results && response.results.length > 0) {
-                this.address = response.results[0].formatted_address;
-              } else {
-                this.address = 'Address not found.';
-              }
-            },
-            (error) => {
-              console.error('Error with geocoding API:', error);
-              this.errorMessage = 'Error fetching address.';
-            }
-          );
-        },
-        (error: GeolocationPositionError) => {
-          this.errorMessage = 'Error getting location: ' + error.message;
-          console.error('Error getting geolocation:', error);
-        }
-      );
-    } else {
-      this.errorMessage = 'Geolocation is not supported by this browser.';
-      console.error('Geolocation is not supported by this browser.');
-    }
-  }
-
-  viewStaffLocation(element: any): void {
-    this.selectedStaff = element;
-    this.sidenav.open();
   }
 
 }

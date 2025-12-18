@@ -1,4 +1,4 @@
-<mat-sidenav-container class="h-screen w-full">
+<!-- <mat-sidenav-container class="h-screen w-full">
     <mat-sidenav #sidenav mode="over" position="end" class="w-75">
         <div class="flex justify-between items-center mb-6 border-b pb-2">
             <h4 class="text-xl font-semibold">Staff Location Details</h4>
@@ -77,4 +77,7 @@
             </div>
         </div>
     </mat-sidenav-content>
-</mat-sidenav-container>
+</mat-sidenav-container> -->
+
+<app-common-table [columns]="columnsToDisplay" [showActions]="false" [data]="dataSource.data">
+</app-common-table>

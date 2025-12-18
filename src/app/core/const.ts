@@ -62,8 +62,8 @@ export const ENDPOINTS = {
     GET_BULK_BOOKINGS: '/getAcceptedUserBookings',
 
     // GPS
-    GET_GPS_DEVIATION_ALERTS: '/gps/Deviation',
-    GET_GPS_MONITORING: '/gpsMonitering',
+    GET_GPS_MONITORING : '/api/locations/active-staff-locations',
+    GET_GPS_DEVIATION_ALERTS: '/api/distance-alerts/current-alerts',
 
     // Devices and Addresses
     GET_USER_DEVICES_ADDRESS: '/getAllUserIpOrDeviceName',
