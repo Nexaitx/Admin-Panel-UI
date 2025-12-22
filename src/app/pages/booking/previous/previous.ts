@@ -43,11 +43,10 @@ export class Previous implements OnDestroy {
     { key: 'logout_time', header: 'Logout&nbsp;Time', type: 'date' },
     { key: 'login_selfie', header: 'Login&nbsp;Selfie' },
     { key: 'logout_selfie', header: 'Logout&nbsp;Selfie' },
-    { key: 'user_name', header: 'User&nbsp;Name', type: 'text' },
-    { key: 'staff_name', header: 'Staff&nbsp;Name', type: 'text' },
-    { key: 'shift_total_price', header: 'Shift&nbsp;Total&nbsp;Price', type: 'text' },
-    { key: 'rating', header: 'Rating', type: 'text' },
-    { key: 'payout_status', header: 'Payout&nbsp;Status', type: 'text' },
+    { key: 'userName', header: 'User&nbsp;Name', type: 'text' },
+    { key: 'staffName', header: 'Staff&nbsp;Name', type: 'text' },
+    { key: 'price', header: 'Shift&nbsp;Total&nbsp;Price', type: 'text' },
+    { key: 'paymentStatus', header: 'Payout&nbsp;Status', type: 'text' },
     { key: 'status', header: 'Status', type: 'text' },
   ];
 

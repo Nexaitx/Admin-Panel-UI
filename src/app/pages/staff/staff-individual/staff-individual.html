@@ -99,7 +99,7 @@
         <ng-container matColumnDef="s_no" sticky>
           <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
           <td mat-cell *matCellDef="let element; let i = index">
-            {{ paginator.length - (paginator.pageIndex * paginator.pageSize + i) }}
+            {{ (paginator.pageIndex * paginator.pageSize + i) + 1 }}
           </td>
         </ng-container>
 
@@ -125,12 +125,12 @@
 
         <ng-container matColumnDef="address">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
-          <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.fullAddress}} </td>
         </ng-container>
 
         <ng-container matColumnDef="city">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> City </th>
-          <td mat-cell *matCellDef="let element"> {{element.city | titlecase}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.state | titlecase}} </td>
         </ng-container>
 
         <ng-container matColumnDef="gender">

@@ -31,8 +31,7 @@ export class GPSLiveMonitoring {
     { key: 'staffLatitude', header: 'Staff&nbsp;Latitude' },
     { key: 'staffLongitude', header: 'Staff&nbsp;Longitude' },
     { key: 'staffAddress', header: 'Staff&nbsp;Address' },
-    { key: 'distanceKm', header: 'Distance(km)' },
-
+    { key: 'distanceKm', header: 'Distance(km)' }
   ];
 
   isLoading = false;

@@ -140,7 +140,7 @@ export class ClientIndividual {
     this.http.get(API_URL + ENDPOINTS.GET_USERS).subscribe({
       next: (res: any) => {
         this.dataSource.data = res
-        this.users = res;
+        this.users = res.reverse();
         this.mapAndSetDataSource(this.users);
       },
       error: (err) => {
