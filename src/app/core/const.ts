@@ -174,4 +174,13 @@ export const ENDPOINTS = {
     // override duty
     GET_OVERRIDE_DUTY: '/api/override-duties/overridden',
 
+
+    // Cancel Bookings
+    BOOKINGS_CANCELLED_BY_STAFF: '/api/bookings/cancelled-by-staff',
+    BOOKINGS_CANCELLED_BY_USER: '/api/cancellation-records',
+    GET_REASSIGN_DUTY: '/api/bookings/',
+
+    // SOS
+    GET_SOS_FROM_STAFF: '/api/sos/staff-with-contacts',
+
 };

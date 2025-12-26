@@ -1,7 +1,7 @@
 import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { ColumnDef, CommonTableComponent } from '../../shared/common-table/common-table.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,13 +9,12 @@ import { CommonModule } from '@angular/common'; // Import CommonModule for @if a
 
 @Component({
   selector: 'app-override-duties',
-  standalone: true, // Assuming this is a standalone component, as imports are used
+  standalone: true,
   imports: [
     CommonTableComponent,
     MatDialogModule,
     MatButtonModule,
-    MatTableModule, // Added MatTableModule to imports for completeness
-    CommonModule // Added CommonModule for structural directives
+    CommonModule
   ],
   templateUrl: './override-duties.html',
   styleUrl: './override-duties.scss'
@@ -25,8 +24,7 @@ export class OverrideDuties {
   dataSource = new MatTableDataSource<any>();
   dialog = inject(MatDialog);
   @ViewChild('viewDialog') viewDialog!: TemplateRef<any>;
-  selectedRecord: any; // Simplified selected record structure
-  @ViewChild(CommonTableComponent) commonTable!: CommonTableComponent;
+  selectedRecord: any;
 
   columns: ColumnDef[] = [
     { key: 'bookingId', header: 'Booking&nbsp;ID' },

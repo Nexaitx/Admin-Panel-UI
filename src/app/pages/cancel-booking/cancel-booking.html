@@ -1,0 +1,66 @@
+<app-common-table [columns]="router.url.includes('cancel-staff-booking') ? columnsStaff : columnsClient"
+    [data]="dataSource.data" (view)="onRowClick($event)" [showActions]="false">
+</app-common-table>
+
+<ng-template #viewDialog>
+    <h2 mat-dialog-title>
+        @if(selectedAction === 're-assign') { Re-Assign Duty To Another Staff }
+        @if(selectedAction === 'user') { User Details }
+        @if(selectedAction === 'staff') {Staff Details}
+    </h2>
+    <mat-dialog-content>
+        @if(selectedAction === 're-assign') {
+        Do you want to book Another staff for the client ?
+        }
+        @if(selectedAction === 'user') {
+        <table class="w-100 p-2 table table-striped table-hover">
+            <tbody>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">User Name</th>
+                    <td>{{ selectedRecord?.userName }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">User Email</th>
+                    <td>{{ selectedRecord?.userEmail }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">User Phone Number</th>
+                    <td>{{ selectedRecord?.userPhoneNumber }}</td>
+                </tr>
+            </tbody>
+        </table>
+        }
+        @if(selectedAction === 'staff') {
+        <table class="w-100 p-2 table table-striped table-hover">
+            <tbody>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Name</th>
+                    <td>{{ selectedRecord?.staffName }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Email</th>
+                    <td>{{ selectedRecord?.staffEmail }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Phone Number</th>
+                    <td>{{ selectedRecord?.staffPhoneNumber }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Sub Category</th>
+                    <td>{{ selectedRecord?.subCategory }}</td>
+                </tr>
+            </tbody>
+        </table>
+        }
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        @if(selectedAction === 're-assign') {
+        <button mat-button mat-dialog-close>No</button>
+        <button matButton="tonal" type="submit" (click)="onSubmit()" mat-dialog-close>Yes</button>
+        }
+        @if(selectedAction != 're-assign') {
+        <button mat-button mat-dialog-close>Close</button>
+        }
+    </mat-dialog-actions>
+
+</ng-template>

@@ -37,6 +37,7 @@
         <td mat-cell *matCellDef="let element">
           <ng-container [ngSwitch]="col.type || 'text'">
             <button *ngSwitchCase="'action'" matButton color="primary" (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
+            <button *ngSwitchCase="'actionReAssign'" matButton color="primary" (click)="onView(element, col)">ReAssign&nbsp;Staff</button>
 
               <button *ngSwitchCase="'actionUser'" matButton color="primary" matTooltip="View"
                 (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>

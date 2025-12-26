@@ -176,8 +176,18 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
-                path: 'overtime-approval',
-                loadComponent: () => import('./pages/overtime-approval/overtime-approval').then(m => m.OvertimeApproval),
+                path: 'cancel-staff-booking',
+                loadComponent: () => import('./pages/cancel-booking/cancel-booking').then(m => m.CancelBooking),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'cancel-client-booking',
+                loadComponent: () => import('./pages/cancel-booking/cancel-booking').then(m => m.CancelBooking),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'sos-staff',
+                loadComponent: () => import('./pages/SOS-Staff/SOS-Staff').then(m => m.SOSStaff),
                 canActivate: [authGuard],
             },
             {

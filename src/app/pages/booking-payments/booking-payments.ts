@@ -7,7 +7,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
@@ -18,7 +17,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTableModule,
     MatSelectModule,
     MatFormFieldModule],
   templateUrl: './booking-payments.html',
@@ -33,6 +31,7 @@ export class BookingPayments {
   selectedBookingDetails: any[] = [];
   statuses: any[] = [];
   selectedStatus: string | null = null;
+  isLoading: boolean = false;
   private allBookingDetailsColumns: ColumnDef[] = [
     { key: 'bookingId', header: 'Booking Id' },
     { key: 'bookingPrice', header: 'Booking Price' },
@@ -64,16 +63,16 @@ export class BookingPayments {
   @ViewChild('bookingDetailsDialog') bookingDetailsDialog!: TemplateRef<any>;
 
   commonColumns: ColumnDef[] = [
-    { key: 'paymentId', header: 'Payment Id', sortable: true },
-    { key: 'totalAmount', header: 'Total Amount', sortable: true },
-    { key: 'totalBookings', header: 'Total Bookings', sortable: true },
-    { key: 'razorpayOrderId', header: 'RazorPay Order Id', sortable: true },
-    { key: 'razorpayPaymentId', header: 'RazorPay Payment Id', sortable: true },
-    { key: 'paymentDate', header: 'Payment Date', sortable: true, type: 'date' },
-    { key: 'userId', header: 'User Id', sortable: true },
-    { key: 'userName', header: 'User Name', sortable: true },
-    { key: 'userPhone', header: 'User Phone Number', sortable: true },
-    { key: 'userEmail', header: 'User Email', sortable: true },
+    { key: 'paymentId', header: 'Payment&nbsp;Id', sortable: true },
+    { key: 'totalAmount', header: 'Total&nbsp;Amount', sortable: true },
+    { key: 'totalBookings', header: 'Total&nbsp;Bookings', sortable: true },
+    { key: 'razorpayOrderId', header: 'RazorPay&nbsp;Order&nbsp;Id', sortable: true },
+    { key: 'razorpayPaymentId', header: 'RazorPay&nbsp;Payment&nbsp;Id', sortable: true },
+    { key: 'paymentDate', header: 'Payment&nbsp;Date', sortable: true, type: 'date' },
+    { key: 'userId', header: 'User&nbsp;Id', sortable: true },
+    { key: 'userName', header: 'User&nbsp;Name', sortable: true },
+    { key: 'userPhone', header: 'User&nbsp;Phone&nbsp;Number', sortable: true },
+    { key: 'userEmail', header: 'User&nbsp;Email', sortable: true },
     { key: 'status', header: 'Status', sortable: true },
     { key: 'viewBookings', header: 'Bookings', type: 'action', sortable: false }
   ];
@@ -91,7 +90,7 @@ export class BookingPayments {
 
   filterData(status: string | null) {
     this.selectedStatus = status;
-    const pageSize = this.commonTable?.paginator?.pageSize || 5;
+    const pageSize = this.commonTable?.paginator?.pageSize || 10;
     const payload = {
       status: status || null,
       page: 0,
@@ -104,39 +103,27 @@ export class BookingPayments {
   }
 
   fetchData(): void {
+    this.isLoading = true;
     this.http.get(API_URL + ENDPOINTS.GET_BOOKING_PAYMENTS).subscribe((res: any) => {
       this.dataSource.data = res;
+      this.isLoading = false;
     });
   }
 
   onRowView(row: any) {
     this.selectedRecord = row;
-    this.selectedBookingDetails = row?.bookingDetails || [];
-    // Filter columns to only those present in the booking detail object
-    if (this.selectedBookingDetails.length) {
-      const presentKeys = new Set(Object.keys(this.selectedBookingDetails[0]));
-      const filtered = this.allBookingDetailsColumns.filter(col => presentKeys.has(col.key));
-      this.bookingDetailsColumnKeys = filtered.map(col => col.key);
-      this.bookingDetailsColumns = filtered;
-    } else {
-      this.bookingDetailsColumns = [...this.allBookingDetailsColumns];
-      this.bookingDetailsColumnKeys = this.bookingDetailsColumns.map(c => c.key);
-    }
+    this.selectedBookingDetails = row.row?.bookingDetails;
     this.dialog.open(this.bookingDetailsDialog, { width: '900px', minWidth: '800px' });
   }
 
   onRowDelete(row: any) {
     console.log('Delete row requested', row);
-    // implement deletion API call here if required and refresh
-    // example: this.http.delete(API_URL + ENDPOINTS.DELETE_DUTY + '/' + row.id).subscribe(()=> this.fetchData())
   }
 
   onRowSave(payload: any) {
-    console.log('Save requested', payload);
     this.fetchData();
   }
 
   onViewAction() {
-    // this.view = true;
   }
 }

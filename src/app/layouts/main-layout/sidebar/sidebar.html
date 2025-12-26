@@ -167,10 +167,40 @@
         </span>
     </a>
 
-    <a *ngIf="hasPermission('Overtime Approvals')" mat-list-item routerLink="/app/overtime-approval"
+    <mat-expansion-panel mat-list-item class="mat-elevation-z0" *ngIf="hasPermission('Cancel Booking')">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon>cancel_presentation</mat-icon><span>Cancelled Booking</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-nav-list dense>
+            <a mat-list-item routerLink="/app/cancel-staff-booking" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>voice_over_off</mat-icon><span>Cancelled By Staff</span>
+                </span>
+            </a>
+
+            <a mat-list-item routerLink="/app/cancel-client-booking" routerLinkActive="active-link">
+                <span class="sidebar-item-content">
+                    <mat-icon>person_cancel</mat-icon><span>Cancelled By Client</span>
+                </span>
+            </a>
+
+        </mat-nav-list>
+    </mat-expansion-panel>
+
+    <!-- <a *ngIf="hasPermission('Cancel Booking')" mat-list-item routerLink="/app/cancel-booking"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
-            <mat-icon class="material-icons">access_time</mat-icon><span>Overtime Approval</span>
+            <mat-icon class="material-icons">swap_horiz</mat-icon><span>Cancel Booking</span>
+        </span>
+    </a> -->
+
+    <a *ngIf="hasPermission('SOS Staff')" mat-list-item routerLink="/app/sos-staff"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">contact_emergency</mat-icon><span>SOS Staff Contacts</span>
         </span>
     </a>
     <a *ngIf="hasPermission('Staff Wallet')" mat-list-item routerLink="/app/staff-wallet"

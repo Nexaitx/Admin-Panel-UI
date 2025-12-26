@@ -1,5 +1,4 @@
-
-<div class="flex items-center gap-4 mb-3">
+<div>
   <mat-form-field appearance="outline" class="min-w-[220px]">
     <mat-label>Status</mat-label>
     <mat-select [value]="selectedStatus" (selectionChange)="filterData($event.value)">
@@ -9,37 +8,27 @@
   </mat-form-field>
 </div>
 
-<app-common-table [columns]="commonColumns"
-  [data]="dataSource.data"
-  [pageSizeOptions]="[10,25,100]"
-  [showCreate]="false"
-  [showActions]="false"
-  (view)="onRowView($event)"
-  (save)="onRowSave($event)"
+<app-common-table [columns]="commonColumns" [data]="dataSource.data" [pageSizeOptions]="[10,25,100]"
+  [showCreate]="false" [showActions]="false" (view)="onRowView($event)" (save)="onRowSave($event)"
   (delete)="onRowDelete($event)">
 </app-common-table>
 
 <ng-template #bookingDetailsDialog>
   <h2 mat-dialog-title>Booking Details</h2>
   <mat-dialog-content>
-    <div *ngIf="selectedBookingDetails.length; else noBookings">
-      <div class="table-responsive">
-        <div *ngFor="let booking of selectedBookingDetails; let idx = index" class="mb-4 border rounded p-3">
-          <h4 class="mb-2">Booking {{ idx + 1 }}</h4>
-          <table class="w-100 p-2  table table-striped table-hover">
-            <tbody>
-              <tr *ngFor="let col of bookingDetailsColumns">
-                <th class="text-left pe-4 align-top pb-2">{{ col.header }}</th>
-                <td>{{ booking[col.key] }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="table-responsive">
+      <div *ngFor="let booking of selectedBookingDetails; let idx = index" class="mb-4 border rounded p-3">
+        <h4 class="mb-2">Booking {{ idx + 1 }}</h4>
+        <table class="w-100 p-2  table table-striped table-hover">
+          <tbody>
+            <tr *ngFor="let col of bookingDetailsColumns">
+              <th class="text-left pe-4 align-top pb-2">{{ col.header }}</th>
+              <td>{{ booking[col.key] }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <ng-template #noBookings>
-      <p>No booking details available.</p>
-    </ng-template>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Close</button>

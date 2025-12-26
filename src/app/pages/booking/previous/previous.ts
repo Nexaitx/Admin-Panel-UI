@@ -110,12 +110,10 @@ export class Previous implements OnDestroy {
 
           const bookings = Array.isArray(res.content) ? res.content : [];
           const transformedData = bookings.map((booking: any) => {
-            // const shiftStartPeriod = `${booking.startDate}|${booking.startTimeHour}:${booking.startTimeMinute} ${booking.startTimeAmPm}`;
-            // const shiftEndPeriod = `${booking.endDate}|${booking.endTimeHour}:${booking.endTimeMinute} ${booking.endTimeAmPm}`;
             return {
               ...booking,
-              startDate: `${booking.startDate}|${booking.startTimeHour}:${booking.startTimeMinute} ${booking.startTimeAmPm}`,
-              endDate: `${booking.endDate}|${booking.endTimeHour}:${booking.endTimeMinute} ${booking.endTimeAmPm}`
+              startDate: `${booking.startDate}, ${booking.startTimeHour}:${booking.startTimeMinute} ${booking.startTimeAmPm}`,
+              endDate: `${booking.endDate}, ${booking.endTimeHour}:${booking.endTimeMinute} ${booking.endTimeAmPm}`
             };
           });
 

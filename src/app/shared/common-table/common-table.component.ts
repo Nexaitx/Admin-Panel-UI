@@ -17,7 +17,7 @@ export interface ColumnDef {
   header: string;         // header label
   sortable?: boolean;     // enable sorting
   editable?: boolean;     // allow editing in dialog
-  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action' | 'actionUser' | 'actionStaff'; // data type
+  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action' | 'actionReAssign' | 'actionUser' | 'actionStaff'; // data type
   options?: Array<{ value: any, label: string }>; // for select
   width?: string;
 }
@@ -133,7 +133,6 @@ export class CommonTableComponent implements OnInit, OnChanges {
     if (this.activeRow) { this.delete.emit(this.activeRow); }
   }
 
-  // onView(row: any) { this.view.emit(row); }
   onView(row: any, col: ColumnDef) {
     this.view.emit({
       row,

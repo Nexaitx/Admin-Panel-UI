@@ -25,7 +25,7 @@ export class BulkAssignment {
   http = inject(HttpClient);
   dataSource = new MatTableDataSource<any>([]);
   @ViewChild('staffDialog') staffDialog!: TemplateRef<any>;
-  selectedStaffDetails: any[] = [];
+  selectedStaffDetails: any;
   selectedRecord: any;
   dialog = inject(MatDialog);
   @ViewChild(CommonTableComponent) commonTable!: CommonTableComponent;
