@@ -1,4 +1,5 @@
 export const API_URL = 'https://vitoxyzcrm-bosc.onrender.com';
+export const googleMapsApiKey = 'AIzaSyBwkoBuGelQUiN2YSN-pqGhNv1KJE8CFNs';
 // export const API_URL = 'http://localhost:8081';
 
 export const ENDPOINTS = {
@@ -62,7 +63,7 @@ export const ENDPOINTS = {
     GET_BULK_BOOKINGS: '/getAcceptedUserBookings',
 
     // GPS
-    GET_GPS_MONITORING : '/api/locations/active-staff-locations',
+    GET_GPS_MONITORING: '/api/locations/active-staff-locations',
     GET_GPS_DEVIATION_ALERTS: '/api/distance-alerts/current-alerts',
 
     // Devices and Addresses
