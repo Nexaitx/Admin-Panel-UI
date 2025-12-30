@@ -203,6 +203,13 @@
             <mat-icon class="material-icons">contact_emergency</mat-icon><span>SOS Staff Contacts</span>
         </span>
     </a>
+    
+    <a *ngIf="hasPermission('SOS Alerts')" mat-list-item routerLink="/app/sos-alerts"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">add_alert</mat-icon><span>SOS Alerts</span>
+        </span>
+    </a>
     <a *ngIf="hasPermission('Staff Wallet')" mat-list-item routerLink="/app/staff-wallet"
         routerLinkActive="active-link">
         <span class="sidebar-item-content">

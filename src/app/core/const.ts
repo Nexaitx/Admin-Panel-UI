@@ -185,5 +185,8 @@ export const ENDPOINTS = {
 
     // SOS
     GET_SOS_FROM_STAFF: '/api/sos/staff-with-contacts',
+    GET_SOS: '/api/sos/all',
+    GET_SOS_PENDING: '/api/sos/pending',
+    GET_SOS_RESOLVED: '/api/sos/resolved'
 
 };

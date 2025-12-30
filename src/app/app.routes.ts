@@ -191,6 +191,11 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'sos-alerts',
+                loadComponent: () => import('./pages/sos-alerts/sos-alerts').then(m => m.SosAlerts),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'staff-wallet',
                 loadComponent: () => import('./pages/staff-wallet/staff-wallet').then(m => m.StaffWallet),
                 canActivate: [authGuard],

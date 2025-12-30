@@ -1,1 +1,11 @@
-<p>sos-alerts works!</p>
+<mat-form-field appearance="outline" class="min-w-[220px]">
+    <mat-label>SOS Alert Status</mat-label>
+    <mat-select [value]="selectedStatus" (selectionChange)="fetchData($event.value)">
+        <mat-option value="all">All</mat-option>
+        <mat-option value="pending">Pending</mat-option>
+        <mat-option value="resolved">Resolved</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<app-common-table [columns]="columns" [data]="dataSource.data" [showActions]="false">
+</app-common-table>
