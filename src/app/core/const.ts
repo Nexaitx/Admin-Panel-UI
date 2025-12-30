@@ -40,6 +40,8 @@ export const ENDPOINTS = {
     UPDATE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-update/',
     DELETE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-delete',
     GET_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plans',
+    GET_DIET_USERS: '/api/subscriptions/users-with-subscriptions',
+    GET_DIET_USERS_BY_PAYMENT_STATUS: '/api/subscriptions/status/',
 
     // Roles & Permissions
     GET_ROLES: '/getAllRoles',

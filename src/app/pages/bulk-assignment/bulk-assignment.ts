@@ -47,9 +47,6 @@ export class BulkAssignment {
     { key: 'status', header: 'Status' }
   ];
 
-  // staffDetailsColumns: ColumnDef[] = [...this.staffsColumns];
-  // staffDetailsColumnKeys: string[] = this.staffDetailsColumns.map(c => c.key);
-
   ngOnInit(): void {
     this.fetchData();
   }

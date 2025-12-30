@@ -74,15 +74,6 @@ export class CancelBooking {
     { key: 'userPhoneNumber', header: 'User&nbsp;Phone&nbsp;Number' }
   ];
 
-  userDetails: ColumnDef[] = [
-    { key: 'userId', header: 'User Id' },
-    { key: 'userName', header: 'User Name' }
-  ];
-
-  staffDetails: ColumnDef[] = [
-
-  ]
-
   ngOnInit(): void {
     this.fetchData();
     try {
@@ -108,7 +99,7 @@ export class CancelBooking {
 
   fetchData(): void {
     if (this.router.url.includes('cancel-staff-booking')) {
-      const pageSize = this.commonTable?.paginator?.pageSize || 5;
+      const pageSize = this.commonTable?.paginator?.pageSize || 10;
       const params = {
         page: 0,
         size: pageSize,
