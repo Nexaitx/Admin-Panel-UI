@@ -183,10 +183,10 @@
           <td mat-cell *matCellDef="let element">
             <select class="form-select form-select-sm" style="width:120px" [(ngModel)]="element.selectedShift"
               (ngModelChange)="updatePrice(element)">
-              @if(element?.category === 'nurse') {
-              <option value="08:00">8 Hours</option>
-              <option value="12:00">12 Hours</option>
-              <option value="24:00">24 Hours</option> }
+              @if(element?.category && element?.category.trim().toLowerCase() === 'nurse') {
+                <option value="08:00">8 Hours</option>
+                <option value="12:00">12 Hours</option>
+                <option value="24:00">24 Hours</option> }
               <option value="1month8hours">Monthly (8 Hours, 4 Holidays)</option>
               <option value="1month12hours">Monthly (12 Hours, 4 Holidays)</option>
               <option value="1month24hours">Monthly (24 Hours, 4 Holidays)</option>
