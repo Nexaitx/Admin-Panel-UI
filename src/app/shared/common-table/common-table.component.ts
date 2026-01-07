@@ -22,6 +22,13 @@ export interface ColumnDef {
   width?: string;
 }
 
+export interface PaginationEvent {
+  pageIndex: number;
+  pageSize: number;
+  length: number;
+  previousPageIndex?: number;
+}
+
 @Component({
   selector: 'app-common-table',
   standalone: true,
@@ -50,12 +57,15 @@ export class CommonTableComponent implements OnInit, OnChanges {
   @Input() createLabel = 'Create';
   @Input() showActions = true;
   @Input() sortable = true;
+  @Input() length: number = 0; // Total elements from server for server-side pagination
+  @Input() serverSidePagination: boolean = true; // Use server-side pagination by default
 
   @Output() view = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
   @Output() create = new EventEmitter<any>();
   @Output() save = new EventEmitter<{ row: any, isNew: boolean }>(); // Added type for clarity
+  @Output() pageChange = new EventEmitter<PaginationEvent>();
 
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [];
@@ -84,11 +94,32 @@ export class CommonTableComponent implements OnInit, OnChanges {
     if (changes['data']) {
       this.setData(changes['data'].currentValue || []);
     }
+    if (changes['length'] && this.paginator) {
+      this.paginator.length = this.length;
+    }
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    // For server-side pagination, don't apply paginator to dataSource
+    // This prevents client-side pagination from overriding server results
+    if (!this.serverSidePagination) {
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
+    
+    if (this.paginator) {
+      // Set the total length from server
+      this.paginator.length = this.length;
+      
+      this.paginator.page.subscribe((event: any) => {
+        this.pageChange.emit({
+          pageIndex: event.pageIndex,
+          pageSize: event.pageSize,
+          length: this.length,
+          previousPageIndex: event.previousPageIndex
+        });
+      });
+    }
   }
 
   private buildDisplayedColumns() {
@@ -101,8 +132,15 @@ export class CommonTableComponent implements OnInit, OnChanges {
 
   private setData(d: any[]) {
     this.dataSource.data = Array.isArray(d) ? d : [];
-    if (this.paginator) { this.dataSource.paginator = this.paginator; }
-    if (this.sort) { this.dataSource.sort = this.sort; }
+    
+    // Only apply client-side pagination if not using server-side
+    if (!this.serverSidePagination) {
+      if (this.paginator) { this.dataSource.paginator = this.paginator; }
+      if (this.sort) { this.dataSource.sort = this.sort; }
+    } else {
+      // For server-side, still set sort but not paginator
+      if (this.sort) { this.dataSource.sort = this.sort; }
+    }
   }
 
   applyFilter(event: Event) {
@@ -115,6 +153,15 @@ export class CommonTableComponent implements OnInit, OnChanges {
   resetPagination() {
     if (this.paginator) {
       this.paginator.firstPage();
+      // Emit page change event to trigger data fetch
+      if (this.serverSidePagination) {
+        this.pageChange.emit({
+          pageIndex: 0,
+          pageSize: this.paginator.pageSize,
+          length: this.length,
+          previousPageIndex: this.paginator.pageIndex
+        });
+      }
     }
   }
 

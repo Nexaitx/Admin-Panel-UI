@@ -177,7 +177,6 @@ export const ENDPOINTS = {
     // override duty
     GET_OVERRIDE_DUTY: '/api/override-duties/overridden',
 
-
     // Cancel Bookings
     BOOKINGS_CANCELLED_BY_STAFF: '/api/bookings/cancelled-by-staff',
     BOOKINGS_CANCELLED_BY_USER: '/api/cancellation-records',

@@ -1,126 +1,36 @@
-
 mat-toolbar {
     border-bottom: 1px solid #C7E9E6;
     // position: fixed;
     z-index: 9999;
     top: 0;
-
-    .notification-wrapper {
-    margin-left: 16px;
     display: flex;
     align-items: center;
-  }
+ 
+    .notification-bell {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+ 
     .logout {
         margin-left: auto;
         display: flex;
         align-items: center;
-        gap: 20px;
     }
 }
-.notifications-menu {
-  min-width: 320px;
-  max-width: 420px;
-  padding: 0;
-
-  .menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    font-weight: 600;
-  }
-
-  .mark-read-btn {
-    min-width: 0;
-    font-size: 12px;
-    text-transform: none;
-  }
-
-  .notifications-list {
-    max-height: 360px;
-    overflow: auto;
-  }
-
-  .notification-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    text-align: left;
-    padding: 10px 16px;
-  }
-
-  .avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .thumb {
-    width: 48px;
-    height: 48px;
-    border-radius: 6px;
-    object-fit: cover;
-    margin-left: auto;
-  }
-
-  .notification-body {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .time {
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
-    white-space: nowrap;
-  }
-
-  .message {
-    font-size: 13px;
-    color: rgba(0, 0, 0, 0.7);
-  }
-
-  .no-notif {
-    padding: 12px 16px;
-    color: rgba(0,0,0,0.6);
-  }
-
-  .view-all {
-    justify-content: center;
-    font-weight: 600;
-    color: #fff;
-    background: #2e9e4a;
-    margin: 8px;
-    border-radius: 4px;
-  }
-}
-
-/* Optional: customize badge color to green like your screenshot */
-.mat-badge-content {
-  background-color: #30c070 !important; /* green */
-  color: #fff !important;
-  font-weight: 600;
-}
+ 
 mat-icon {
     color: #0BBBC1 !important;
 }
-
+ 
 mat-drawer-container {
     // margin-top: 60px;
     z-index: 1
 }
-
+ 
 .main-layout {
     height: calc(100% - 65px) !important;
-
+ 
     .sidebar {
         background-color: #14bbc1 !important;
         width: auto;
@@ -132,18 +42,86 @@ mat-drawer-container {
         height: fit-content !important;
     }
 }
-
+ 
 .content {
     min-height: 90vh;
     // background-color: #ffffff !important;
 }
-
+ 
 mat-drawer-content {
     // z-index: 1;
     position: relative;
     display: block;
 }
-
+ 
 .mat-drawer-inner-container {
     overflow: hidden !important;
 }
+ 
+// Notification Menu Styles
+.notification-menu {
+    .notification-list {
+        min-width: 350px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+ 
+    .notification-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border-left: 3px solid transparent;
+ 
+        &:hover {
+            background-color: #f5f5f5;
+        }
+ 
+        &.unread {
+            background-color: #f0f8ff;
+            border-left-color: #0BBBC1;
+ 
+            .notification-content strong {
+                font-weight: 600;
+            }
+        }
+ 
+        .notification-content {
+            strong {
+                display: block;
+                color: #333;
+                margin-bottom: 4px;
+            }
+ 
+            p {
+                margin: 4px 0;
+                color: #666;
+                font-size: 13px;
+                line-height: 1.4;
+            }
+ 
+            small {
+                color: #999;
+                font-size: 12px;
+            }
+        }
+    }
+ 
+    .no-notifications {
+        padding: 16px;
+        text-align: center;
+        color: #999;
+        min-width: 250px;
+    }
+ 
+    .clear-btn {
+        width: 100%;
+        justify-content: center;
+        color: #0BBBC1 !important;
+ 
+        &:hover {
+            background-color: #f5f5f5 !important;
+        }
+    }
+}
+ 

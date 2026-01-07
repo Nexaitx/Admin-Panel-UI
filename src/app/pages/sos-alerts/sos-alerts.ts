@@ -39,6 +39,8 @@ export class SosAlerts {
     try {
       this._pushSub = pushMessages$.subscribe((msg: any) => {
         const payload = msg && msg.payload ? msg.payload : msg;
+        console.log(payload)
+        alert(`New App Message: ${payload.notification.title}`);
         const title = payload?.notification?.title || payload?.data?.title || payload?.title;
         if (title === 'SOS' || title === 'SOS alert') {
           this.fetchData();
@@ -76,7 +78,7 @@ export class SosAlerts {
 
   // 2. Execute request and format data
   this.http.get(endpoint).subscribe((res: any) => {
-    this.dataSource.data = res.reverse().map((item: any) => ({
+    this.dataSource.data = res.map((item: any) => ({
       ...item,
       resolved: item.resolved ? 'Resolved' : 'Pending'
     }));

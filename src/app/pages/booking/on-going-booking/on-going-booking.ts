@@ -51,6 +51,7 @@ export class OnGoingBooking implements OnDestroy {
     try {
       this._pushSub = pushMessages$.subscribe((msg: any) => {
         const payload = msg && msg.payload ? msg.payload : msg;
+        alert(`New App Message: ${payload.notification.title}`);
         const title = payload?.notification?.title || payload?.data?.title || payload?.title || '';
         console.log(title);
         if (title || title === 'booking' ) {

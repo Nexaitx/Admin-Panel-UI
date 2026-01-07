@@ -1,13 +1,27 @@
-:host { display: block; }
+:host {
+    display: block;
+}
 
-.scrollableTable { overflow-x: auto; }
-.ct-header { display:flex; gap:12px; align-items:center; justify-content:space-between; }
-.field { margin-bottom: 12px; }
-.sticky-col { 
-  position: sticky; 
-  left: 0; 
-  background: #fff; 
-  z-index: 2; 
+.scrollableTable {
+    overflow-x: auto !important;
+}
+
+.ct-header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.field {
+    margin-bottom: 12px;
+}
+
+.sticky-col {
+    position: sticky;
+    left: 0;
+    background: #fff;
+    z-index: 2;
 }
 
 :host {

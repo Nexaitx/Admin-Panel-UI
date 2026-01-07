@@ -70,16 +70,11 @@ export async function initPushNotifications(): Promise<void> {
       }
 
       // handle messages when app is in the foreground
-            onMessage(messaging, (payload) => {
+      onMessage(messaging, (payload) => {
         console.log('Foreground message received:', payload);
         pushMessages$.next(payload);
-        // Show a visual notification even in foreground
-        if (payload.notification) {
-          const { title, body } = payload.notification;
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(title || 'Message', { body });
-          }
-        }
+        // Do not show browser notification here - let the app handle it
+        // to avoid duplicate system notifications
       });
       // messaging, (payload) => {
       //   console.log('Foreground message received: ', payload);

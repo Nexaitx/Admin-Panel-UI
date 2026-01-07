@@ -28,17 +28,16 @@ messaging.onBackgroundMessage(function(payload) {
     // Some browsers may restrict console in certain worker contexts
   }
 
-  const notification = payload.notification || {};
-  const title = notification.title || 'New Notification';
- const options = {
-  body: notification.body || '',
-  icon: notification.icon || '/icons/icon-192.png',  // Updated path
-  data: payload.data || {}
-};
-
-  // show the notification
-  self.registration.showNotification(title, options);
+  // Send message to client app only - let the app handle notification display
+  self.clients.matchAll({ includeUncontrolled: true }).then(clients => {
+    clients.forEach(client => {
+      try {
+        client.postMessage({ from: 'service-worker', payload: payload });
+      } catch (e) {}
+    });
+  });
 });
+
 
 self.addEventListener('push', event => {
   // Safely parse push payload
@@ -61,22 +60,16 @@ self.addEventListener('push', event => {
   } catch (e) {}
 
   // Send message to all client pages (Angular app)
-  self.clients.matchAll({ includeUncontrolled: true }).then(clients => {
-    clients.forEach(client => {
-      // Post the entire payload so the app can inspect notification + custom data
-      try {
-        client.postMessage({ from: 'service-worker', payload: data });
-      } catch (e) {}
-    });
-  });
-
-  // Show Notification (use payload.notification if present)
-  const notif = data.notification || { title: 'New Notification', body: '' };
   event.waitUntil(
-    self.registration.showNotification(notif.title, {
-      body: notif.body,
-      data: data.data || {}
+    self.clients.matchAll({ includeUncontrolled: true }).then(clients => {
+      clients.forEach(client => {
+        // Post the entire payload so the app can inspect notification + custom data
+        try {
+          client.postMessage({ from: 'service-worker', payload: data });
+        } catch (e) {}
+      });
     })
   );
 });
+
 

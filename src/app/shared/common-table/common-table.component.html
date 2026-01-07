@@ -1,19 +1,20 @@
 <div class="common-table">
-  <!-- <div class="ct-header d-flex justify-content-between items-center mb-3"> -->
-    <div class="row">
-    <mat-form-field appearance="outline" class="small-select col-md-2">
-      <mat-label>Search</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search" [value]="filterValue">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+  <div class="mt-2 row">
+      <mat-form-field appearance="outline" class="search-field col-md-3">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search" [value]="filterValue">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
 
+      <div class="ct-actions col-md-1">
+        <button *ngIf="showCreate" mat-flat-button color="primary" (click)="onCreate()">{{createLabel}}</button>
+      </div>
 
-
-    <div class="ct-actions col-md-1">
-      <button *ngIf="showCreate" mat-flat-button color="primary" (click)="onCreate()">{{createLabel}}</button>
-    </div>
-
-    <mat-paginator class="small-select col-md-8" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+    <mat-paginator 
+      class="responsive-paginator col-md-8" 
+      [pageSizeOptions]="pageSizeOptions" 
+      showFirstLastButtons>
+    </mat-paginator>
   </div>
 
   <div class="scrollableTable overflow-x-auto">

@@ -1,0 +1,22 @@
+// .mat-mdc-tab-body-active > .mat-mdc-tab-body-content {
+//   overflow-x: hidden !important;
+// }
+
+/* 1. Prevent the tab body from growing infinitely */
+:host ::v-deep .mat-mdc-tab-body-content {
+  overflow: hidden !important; 
+  display: flex;
+  flex-direction: column;
+}
+
+/* 2. Define the scrollable area for the table */
+.table-wrapper {
+  height: 400px; /* Or use calc(100vh - 200px) for responsive height */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 3. Keep the table header sticky (optional but recommended) */
+.mat-mdc-table {
+  width: 100%;
+}

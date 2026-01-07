@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -7,11 +7,24 @@ import { Sidebar } from './sidebar/sidebar';
 import { MatIconModule } from '@angular/material/icon';
 import { Auth } from '../../core/services/auth';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { CommonModule } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatDivider } from "@angular/material/divider";
-
+import { MatDividerModule } from '@angular/material/divider';
+import { CommonModule } from '@angular/common';
+import { Support } from '../../pages/support/support';
+import { pushMessages$ } from '../../core/services/push-notification';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+ 
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  timestamp: Date;
+  read?: boolean;
+  data?: any;
+}
+ 
 @Component({
   selector: 'app-main-layout',
   imports: [
@@ -23,105 +36,88 @@ import { MatDivider } from "@angular/material/divider";
     MatIconModule,
     MatTooltipModule,
     MatMenuModule,
-    CommonModule,
     MatBadgeModule,
-    MatDivider
-],
+    MatDividerModule,
+    CommonModule,
+    Support
+  ],
   standalone: true,
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss'
 })
-export class MainLayout {
+export class MainLayout implements OnInit, OnDestroy {
   private auth = inject(Auth);
   private router = inject(Router);
-  //   unreadCount = 0;
-  //    constructor() {
-  //   // Example: if you have a NotificationService that returns unread count,
-  //   // subscribe here and update unreadCount. Example (pseudo):
-  //   // this.notificationService.unreadCount$.subscribe(count => this.unreadCount = count);
-
-  //   // For demonstration, set a static example:
-  //   // remove the next line in production and use your real service
-  //   this.unreadCount = 3;
-  // }
-   // reference to MatMenuTrigger if you need programmatic control
-  @ViewChild('notifTrigger') notifTrigger!: MatMenuTrigger;
-
-  // sample notifications - replace with real data from backend
-  notifications = [
-    {
-      id: 1,
-      title: 'John Doe reacted to your post',
-      message: 'Great post!',
-      time: '10 mins ago',
-      avatar: '',
-      thumb: '',
-      read: false
-    },
-    {
-      id: 2,
-      title: 'Richard Miles reacted to your post',
-      message: 'Nice work',
-      time: '1 day ago',
-      avatar: '',
-      thumb: '',
-      read: false
-    },
-    {
-      id: 3,
-      title: 'Brian Cumin reacted to your post',
-      message: 'Love it',
-      time: '1 day ago',
-      avatar: '',
-      thumb: '',
-      read: true
+  private destroy$ = new Subject<void>();
+ 
+  notifications: Notification[] = [];
+  notificationCount = 0;
+ 
+  ngOnInit() {
+    this.listenForFCMMessages();
+  }
+ 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+ 
+  listenForFCMMessages() {
+    // Subscribe to foreground messages from FCM service only
+    // (Don't subscribe to fcmListener.message$ to avoid duplicate notifications)
+    pushMessages$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((message: any) => {
+        this.handleIncomingNotification(message);
+      });
+  }
+ 
+  handleIncomingNotification(message: any) {
+    // Extract notification data from FCM message
+    const data = message.data || message.notification || {};
+   
+    const notification: Notification = {
+      id: message.messageId || Date.now().toString(),
+      title: data.title || 'New Notification',
+      message: data.body || data.subCategory || '',
+      timestamp: new Date(),
+      read: false,
+      data: data
+    };
+ 
+    // Add notification to the beginning of the array
+    this.notifications.unshift(notification);
+   
+    // Keep only last 50 notifications
+    if (this.notifications.length > 50) {
+      this.notifications = this.notifications.slice(0, 50);
     }
-  ];
-    get unreadCount(): number {
-    return this.notifications.filter(n => !n.read).length;
+ 
+    this.updateNotificationCount();
+    console.log('Notification added to bell:', notification);
   }
-   goToStaffBooking() {
-    // navigate to staff booking page - change the path if your route differs
-    this.router.navigate(['/app/bookings']);
+ 
+  updateNotificationCount() {
+    this.notificationCount = this.notifications.filter(n => !n.read).length;
   }
+ 
+  markAsRead(notification: Notification) {
+    notification.read = true;
+    this.updateNotificationCount();
+  }
+ 
+  clearNotifications() {
+    this.notifications = [];
+    this.notificationCount = 0;
+  }
+ 
   logout() {
     this.auth.logout();
     this.router.navigate(['']);
   }
-  // // open menu programmatically (for hover)
-  // openNotifications() {
-  //   if (this.notifTrigger && !this.notifTrigger.menuOpen) {
-  //     this.notifTrigger.openMenu();
-  //   }
-  // }
-
-  // close menu when leaving area
-  closeNotifications() {
-    // small timeout to allow mouseenter on menu itself — prevents flicker
-    setTimeout(() => {
-      if (this.notifTrigger && this.notifTrigger.menuOpen) {
-        this.notifTrigger.closeMenu();
-      }
-    }, 150);
-  }
-
-    openNotification(notif: any, event: Event) {
-    event.stopPropagation();
-    notif.read = true;
-
-    // navigate if required later
-    // this.router.navigate(['/post', notif.postId]);
-  }
-
-  // mark all as read
- markAllRead(event: Event) {
-    event.stopPropagation();
-    this.notifications = this.notifications.map(n => ({ ...n, read: true }));
-  }
-
-  // view all
-  viewAll(event: Event) {
-    event.stopPropagation();
-    this.router.navigate(['/notifications']);
-  }
 }
+ 
+ 
+ 
+ 
+ 

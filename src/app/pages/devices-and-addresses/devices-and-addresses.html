@@ -1,10 +1,16 @@
-<mat-tab-group (selectedTabChange)="onTabChange($event)">
-      <mat-tab label="Client Devices & Addresses">
-        
-        <app-user [device]="'userDevicesAndAddresses'"></app-user>
-      </mat-tab>
-      <mat-tab label="Staff Devices & Addresses">
-        
-        <app-staff [device]="'staffDevicesAndAddresses'"></app-staff>
-      </mat-tab>
-    </mat-tab-group>
+<mat-tab-group (selectedIndexChange)="onTabChange($event)">
+  <mat-tab label="Client Devices & Addresses">
+    <div class="table-wrapper">
+      <app-common-table [columns]="columnUserToDisplay" [showActions]="false" [data]="dataSource.data"
+        [length]="totalElements" [serverSidePagination]="true" (pageChange)="onPageChange($event)">
+      </app-common-table>
+    </div>
+  </mat-tab>
+  <mat-tab label="Staff Devices & Addresses">
+    <div class="table-wrapper">
+      <app-common-table [columns]="columnStaffToDisplay" [showActions]="false" [data]="dataSource.data"
+        [length]="totalElements" [serverSidePagination]="true" (pageChange)="onPageChange($event)">
+      </app-common-table>
+    </div>
+  </mat-tab>
+</mat-tab-group>
