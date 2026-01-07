@@ -189,6 +189,18 @@
 
         </mat-nav-list>
     </mat-expansion-panel>
+    <a *ngIf="hasPermission('Requested SubCategories')" mat-list-item routerLink="/app/requested-sub-categories"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">contact_emergency</mat-icon><span>Requested SubCategories</span>
+        </span>
+    </a>
+    <a *ngIf="hasPermission('Re-Assigned Booking')" mat-list-item routerLink="/app/re-assigned-bookings"
+        routerLinkActive="active-link">
+        <span class="sidebar-item-content">
+            <mat-icon class="material-icons">contact_emergency</mat-icon><span>Re-Assigned Bookings</span>
+        </span>
+    </a>
 
     <!-- <a *ngIf="hasPermission('Cancel Booking')" mat-list-item routerLink="/app/cancel-booking"
         routerLinkActive="active-link">
@@ -197,15 +209,13 @@
         </span>
     </a> -->
 
-    <a *ngIf="hasPermission('SOS Staff')" mat-list-item routerLink="/app/sos-staff"
-        routerLinkActive="active-link">
+    <a *ngIf="hasPermission('SOS Staff')" mat-list-item routerLink="/app/sos-staff" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">contact_emergency</mat-icon><span>SOS Staff Contacts</span>
         </span>
     </a>
-    
-    <a *ngIf="hasPermission('SOS Alerts')" mat-list-item routerLink="/app/sos-alerts"
-        routerLinkActive="active-link">
+
+    <a *ngIf="hasPermission('SOS Alerts')" mat-list-item routerLink="/app/sos-alerts" routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">add_alert</mat-icon><span>SOS Alerts</span>
         </span>
@@ -214,7 +224,7 @@
         routerLinkActive="active-link">
         <span class="sidebar-item-content">
             <mat-icon class="material-icons">account_balance_wallet</mat-icon><span>Staff Wallet</span>
-            </span>
+        </span>
     </a>
     <a *ngIf="hasPermission('Ledgers')" mat-list-item routerLink="/app/ledgers" routerLinkActive="active-link">
         <span class="sidebar-item-content">

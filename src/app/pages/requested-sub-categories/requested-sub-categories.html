@@ -1,0 +1,19 @@
+<app-common-table 
+  [columns]="columns" 
+  [data]="dataSource.data" 
+  [showActions]="false"
+  [serverSidePagination]="false"
+  (view)="onRowView($event)">
+</app-common-table>
+
+<ng-template #otherSubcategory>
+  <h2 mat-dialog-title>Confirm Subcategory Approval</h2>
+  <mat-dialog-content>
+    <p>You are about to approve the request for a <b>new subcategory</b>.</p>
+    <p>Approving this will make it available for selection across the system. Would you like to proceed?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>No</button>
+    <button matButton="tonal" (click)="saveRequest()" mat-dialog-close>Yes</button>
+  </mat-dialog-actions>
+</ng-template>

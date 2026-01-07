@@ -119,11 +119,15 @@ export class CancelBooking {
 
   onSubmit(): void {
     const bookingId = this.selectedRecord.bookingId;
-    const url = `${API_URL}${ENDPOINTS.GET_REASSIGN_DUTY}${bookingId}/recreate-booking-direct`;
-
-    this.http.post(url, {}).subscribe({
+    const url = `${API_URL}${ENDPOINTS.GET_REASSIGN_DUTY}${bookingId}/cancel-and-resend-booking`;
+    const admin = JSON.parse(localStorage.getItem('userProfile') || '{}');
+    const params = {
+      bookingId: bookingId,
+      adminId: admin?.admin_id
+    }
+    this.http.post(url, {params}).subscribe({
       next: (res: any) => {
-        this._snackBar.open(`Duty is Re-Assigned to ${res.notifiedStaff?.length} Staffs`, 'Close', {
+        this._snackBar.open(res.bookingServiceResult, 'Close', {
           duration: 3000,
           panelClass: ['snackbar-success'],
         });

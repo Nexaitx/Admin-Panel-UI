@@ -1,19 +1,16 @@
 <div class="common-table">
   <div class="mt-2 row">
-      <mat-form-field appearance="outline" class="search-field col-md-3">
-        <mat-label>Search</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search" [value]="filterValue">
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="search-field col-md-3">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search" [value]="filterValue">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
 
-      <div class="ct-actions col-md-1">
-        <button *ngIf="showCreate" mat-flat-button color="primary" (click)="onCreate()">{{createLabel}}</button>
-      </div>
+    <div class="ct-actions col-md-1">
+      <button *ngIf="showCreate" mat-flat-button color="primary" (click)="onCreate()">{{createLabel}}</button>
+    </div>
 
-    <mat-paginator 
-      class="responsive-paginator col-md-8" 
-      [pageSizeOptions]="pageSizeOptions" 
-      showFirstLastButtons>
+    <mat-paginator class="responsive-paginator col-md-8" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons>
     </mat-paginator>
   </div>
 
@@ -37,20 +34,25 @@
 
         <td mat-cell *matCellDef="let element">
           <ng-container [ngSwitch]="col.type || 'text'">
-            <button *ngSwitchCase="'action'" matButton color="primary" (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
-            <button *ngSwitchCase="'actionReAssign'" matButton color="primary" (click)="onView(element, col)">ReAssign&nbsp;Staff</button>
+            <button *ngSwitchCase="'action'" matButton color="primary"
+              (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
+            <button *ngSwitchCase="'actionReAssign'" matButton color="primary"
+              (click)="onView(element, col)">ReAssign&nbsp;Staff</button>
+              
+            <div *ngSwitchCase="'actionApproveReject'">
+              <button matButton color="primary" (click)="onView(element, col)">Create</button>
+            </div>
+            <button *ngSwitchCase="'actionUser'" matButton color="primary" matTooltip="View"
+              (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
 
-              <button *ngSwitchCase="'actionUser'" matButton color="primary" matTooltip="View"
-                (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
+            <button *ngSwitchCase="'actionStaff'" matButton color="primary" matTooltip="View"
+              (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
 
-                <button *ngSwitchCase="'actionStaff'" matButton color="primary" matTooltip="View"
-                  (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
-
-                  <span *ngSwitchCase="'date'">{{element[col.key] | date: 'mediumDate'}}</span>
-                  <span *ngSwitchCase="'time'">{{element[col.key] | date: 'shortTime'}}</span>
-                  <span *ngSwitchCase="'boolean'">{{element[col.key] ? 'Yes' : 'No'}}</span>
-                  <span *ngSwitchCase="'number'">{{element[col.key] | number: '1.2-2'}}</span>
-                  <span *ngSwitchDefault>{{element[col.key]}}</span>
+            <span *ngSwitchCase="'date'">{{element[col.key] | date: 'mediumDate'}}</span>
+            <span *ngSwitchCase="'time'">{{element[col.key] | date: 'shortTime'}}</span>
+            <span *ngSwitchCase="'boolean'">{{element[col.key] ? 'Yes' : 'No'}}</span>
+            <span *ngSwitchCase="'number'">{{element[col.key] | number: '1.2-2'}}</span>
+            <span *ngSwitchDefault>{{element[col.key]}}</span>
           </ng-container>
         </td>
 

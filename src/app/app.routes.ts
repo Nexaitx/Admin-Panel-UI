@@ -125,7 +125,7 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/booking-payments/booking-payments').then(m => m.BookingPayments),
                 canActivate: [authGuard],
             },
-             {
+            {
                 path: 'diet-subscription',
                 loadComponent: () => import('./pages/diet-bookings/diet-bookings').then(m => m.DietBookings),
                 canActivate: [authGuard],
@@ -138,6 +138,11 @@ export const routes: Routes = [
             {
                 path: 'prescription',
                 loadComponent: () => import('./pages/prescription/prescription').then(m => m.Prescriptions),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'requested-sub-categories',
+                loadComponent: () => import('./pages/requested-sub-categories/requested-sub-categories').then(m => m.RequestedSubCategories),
                 canActivate: [authGuard],
             },
             {
@@ -183,6 +188,11 @@ export const routes: Routes = [
             {
                 path: 'cancel-client-booking',
                 loadComponent: () => import('./pages/cancel-booking/cancel-booking').then(m => m.CancelBooking),
+                canActivate: [authGuard],
+            },
+            {
+                path: 're-assigned-bookings',
+                loadComponent: () => import('./pages/reassigned-bookings/reassigned-bookings').then(m => m.ReassignedBookings),
                 canActivate: [authGuard],
             },
             {

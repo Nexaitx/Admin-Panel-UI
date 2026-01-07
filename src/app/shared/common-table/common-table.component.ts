@@ -17,7 +17,7 @@ export interface ColumnDef {
   header: string;         // header label
   sortable?: boolean;     // enable sorting
   editable?: boolean;     // allow editing in dialog
-  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action' | 'actionReAssign' | 'actionUser' | 'actionStaff'; // data type
+  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action' | 'actionReAssign' | 'actionApproveReject' | 'actionUser' | 'actionStaff'; // data type
   options?: Array<{ value: any, label: string }>; // for select
   width?: string;
 }
