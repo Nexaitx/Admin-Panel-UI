@@ -194,7 +194,7 @@ deleteElement(element: any): void {
   getRoles() {
     this.http.get(API_URL + ENDPOINTS.GET_ROLES).subscribe({
       next: (res: any) => {
-        this.roles.data = res.role
+        this.roles.data = res
         console.log(this.roles.data);
       },
       error: (err) => {
