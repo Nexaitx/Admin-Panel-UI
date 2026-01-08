@@ -1,209 +1,179 @@
-import { Component, inject, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatTreeModule, MatTreeNestedDataSource } from '@angular/material/tree';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+
+// Material Imports
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { API_URL, ENDPOINTS } from '../../core/const';
-import { HttpClient } from '@angular/common/http';
-import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { API_URL, ENDPOINTS } from '../../core/const';
+import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 
 @Component({
   selector: 'app-roles',
+  standalone: true,
   imports: [
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatCardModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSidenavModule
+    CommonModule, MatTreeModule, MatFormFieldModule, MatDialogModule,
+    MatInputModule, MatIconModule, MatButtonModule, MatMenuModule,
+    MatCardModule, FormsModule, ReactiveFormsModule, MatTooltipModule
   ],
   templateUrl: './roles.html',
   styleUrl: './roles.scss'
 })
-export class Roles {
-  http = inject(HttpClient);
-  fb = inject(FormBuilder);
+export class Roles implements OnInit {
+  private http = inject(HttpClient);
+  private fb = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
-  isDrawerOpen: boolean = false;
-  isEdit: boolean = false;
-  selectedRecord: any;
-  rolesForm!: FormGroup;
-  roles: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild('userDrawer') userDrawer!: MatDrawer;
+  @ViewChild('roleDialog') roleDialog!: TemplateRef<any>;
+  private dialogRef?: MatDialogRef<any>;
 
-  displayedColumns: string[] = [
-    's_no',
-    'roleType',
-    'actions'
-  ];
+  isEdit = false;
+  isSubRoleMode = false;
+  selectedRecord: any = null;
+  parentRoleId: any = null;
+  rolesForm: FormGroup;
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {
+  treeControl = new NestedTreeControl<any>(node => node.subRoles);
+  dataSource = new MatTreeNestedDataSource<any>();
+
+  constructor() {
     this.rolesForm = this.fb.group({
-      roleType: ['', Validators.required],
+      roleType: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
     this.getRoles();
-    this.roles.filterPredicate = (data: any, filter: string): boolean => {
-      const dataStr = `${data.roleType}`;
-      return dataStr.includes(filter.toLowerCase());
-    };
   }
 
-  ngAfterViewInit(): void {
-    this.roles.sort = this.sort;
-    this.roles.paginator = this.paginator;
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.roles.filter = filterValue.trim().toLowerCase();
-    if (this.roles.paginator) {
-      this.roles.paginator.firstPage();
-    }
-  }
-
-deleteElement(element: any): void {
-  const dialogRef = this.dialog.open(ConfirmationDialog, {
-    width: '350px',
-    data: {
-      title: 'Confirm Deletion',
-      message: `Are you sure you want to delete the role "${element.roleType}"? This action cannot be undone.`,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel'
-    }
-  });
-  // ... (previous code)
-
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      this.http.delete(API_URL + ENDPOINTS.DELETE_ROLE + element.id, { responseType: 'text' }).subscribe({
-        next: (res: any) => {
-          // The response is now a text string
-          if (res === 'Role deleted successfully') {
-            this.getRoles();
-            this.snackBar.open('Role deleted successfully!', 'Close', {
-              duration: 3000,
-              panelClass: ['snackbar-success']
-            });
-          } else {
-            // Handle unexpected text response
-            this.snackBar.open('Error deleting role. Unexpected response.', 'Close', {
-              duration: 3000,
-              panelClass: ['snackbar-error']
-            });
-          }
-        },
-        error: error => {
-          console.error(error);
-          this.snackBar.open('Error deleting role. Please try again.', 'Close', {
-            duration: 3000,
-            panelClass: ['snackbar-error']
-          });
-        }
-      });
-    } else {
-      // ... (rest of the code)
-    }
-  });
-}
-
-  openUserDrawer(element?: any) {
-    this.isEdit = !!element;
-    if (this.isEdit) {
-      this.selectedRecord = element;
-      this.rolesForm.patchValue({
-        roleType: element.roleType,
-      });
-    } else {
-      this.rolesForm.reset();
-    }
-    this.isDrawerOpen = true;
-  }
-
-  closeUserDrawer() {
-    this.isDrawerOpen = false;
-    this.selectedRecord = null;
-    this.isEdit = false;
-    this.rolesForm.reset();
-  }
-
-
-  onSubmission() {
-    if (this.rolesForm.invalid) {
-      this.rolesForm.markAllAsTouched();
-      return;
-    }
-    if (!this.isEdit) {
-      this.http.post(API_URL + ENDPOINTS.CREATE_ROLE, this.rolesForm.value).subscribe({
-        next: (res: any) => {
-          this.getRoles();
-          this.snackBar.open('Role created successfully!', 'Close', {
-            duration: 3000,
-            panelClass: ['snackbar-success']
-          });
-          this.closeUserDrawer();
-        },
-        error: err => {
-          console.error(err);
-          this.snackBar.open('Error creating role. Please try again.', 'Close', {
-            duration: 3000,
-            panelClass: ['snackbar-error']
-          });
-        }
-      });
-    } else {
-      this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ROLE}${this.selectedRecord.id}`, this.rolesForm.value).subscribe({
-        next: (res: any) => {
-          this.getRoles();
-          this.snackBar.open('Role updated successfully!', 'Close', {
-            duration: 3000,
-            panelClass: ['snackbar-success']
-          });
-          this.closeUserDrawer();
-        },
-        error: err => {
-          console.error(err);
-          this.snackBar.open('Error updating diet plan. Please try again.', 'Close', {
-            duration: 3000,
-            panelClass: ['snackbar-error']
-          });
-        }
-      });
-    }
-  }
+  hasChild = (_: number, node: any) => !!node.subRoles && node.subRoles.length > 0;
+  isMainRoleNoChildren = (_: number, node: any) => (!node.subRoles || node.subRoles.length === 0) && node.roleType;
 
   getRoles() {
     this.http.get(API_URL + ENDPOINTS.GET_ROLES).subscribe({
       next: (res: any) => {
-        this.roles.data = res
-        console.log(this.roles.data);
+        // 1. Assign data
+        this.dataSource.data = res;
+        // Ensure tree control knows about the data nodes and expand by default
+        try {
+          this.treeControl.dataNodes = this.dataSource.data;
+          // Expand all nodes so tree is open by default
+          this.treeControl.expandAll();
+        } catch (e) {
+          // ignore if tree control methods are not available
+        }
       },
-      error: (err) => {
-        console.error(err);
-        this.snackBar.open('Error fetching roles. Please try again.', 'Close', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+      error: () => this.showSnackBar('Error fetching roles', 'error')
+    });
+  }
+  // Updated to open Dialog instead of Drawer
+  openUserDrawer(element?: any) {
+    this.isSubRoleMode = false;
+    this.isEdit = !!element;
+    this.selectedRecord = element || null;
+    this.rolesForm.patchValue({ roleType: element ? element.roleType : '' });
+    this.openModal();
+  }
+
+  openSubRoleDrawer(node: any, isEditMode: boolean) {
+    this.isSubRoleMode = true;
+    this.isEdit = isEditMode;
+    this.selectedRecord = node;
+    if (isEditMode) {
+      this.rolesForm.patchValue({ roleType: node.subRoleName });
+      this.parentRoleId = node.roleId;
+    } else {
+      this.rolesForm.reset();
+      this.parentRoleId = node?.id;
+    }
+    this.openModal();
+  }
+
+  private openModal() {
+    this.dialogRef = this.dialog.open(this.roleDialog, {
+      width: '500px',
+      disableClose: true
+    });
+  }
+
+  closeDialog() {
+    if (this.dialogRef) this.dialogRef.close();
+    this.rolesForm.reset();
+    this.selectedRecord = null;
+    this.parentRoleId = null;
+  }
+
+  onSubmission() {
+    if (this.rolesForm.invalid) return;
+
+    const val = this.rolesForm.value.roleType;
+    let url = '';
+    let payload: any = {};
+
+    if (this.isSubRoleMode) {
+      url = this.isEdit ? `${API_URL}${ENDPOINTS.UPDATE_SUB_ROLE}${this.selectedRecord.id}` : `${API_URL}${ENDPOINTS.CREATE_SUB_ROLE}`;
+      payload = { subRoleName: val, roleId: this.isEdit ? this.selectedRecord.roleId : this.parentRoleId };
+    } else {
+      url = this.isEdit ? `${API_URL}${ENDPOINTS.UPDATE_ROLE}${this.selectedRecord.id}` : `${API_URL}${ENDPOINTS.CREATE_ROLE}`;
+      payload = { roleType: val };
+    }
+
+    const request = this.isEdit ? this.http.put(url, payload) : this.http.post(url, payload);
+
+    request.subscribe({
+      next: () => {
+        this.showSnackBar(`Role ${this.isEdit ? 'updated' : 'created'} successfully`, 'success');
+        this.getRoles();
+        this.closeDialog();
+      },
+      error: () => this.showSnackBar('Operation failed', 'error')
+    });
+  }
+
+  deleteElement(element: any, isSub: boolean = false) {
+    const name = isSub ? element.subRoleName : element.roleType;
+    const confirmRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: 'Confirm Deletion', message: `Are you sure you want to delete "${name}"?`,
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Delete'
+      }
+    });
+    confirmRef.afterClosed().subscribe(result => {
+      if (result) {
+        const url = isSub ? `${API_URL}${ENDPOINTS.DELETE_SUB_ROLE}${element.id}` : `${API_URL}${ENDPOINTS.DELETE_ROLE}${element.id}`;
+        this.http.delete(url, { responseType: 'text' }).subscribe({
+          next: () => {
+            this.getRoles();
+            this.showSnackBar('Deleted successfully', 'success');
+          },
+          error: (err) => {
+            this.showSnackBar(err.error?.message || 'Failed to delete role', 'error');
+          }
         });
       }
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    if (!filterValue) return this.getRoles();
+    this.dataSource.data = this.dataSource.data.filter(r => r.roleType.toLowerCase().includes(filterValue));
+  }
+
+  private showSnackBar(msg: string, type: 'success' | 'error') {
+    this.snackBar.open(msg, 'Close', { duration: 3000, panelClass: type === 'success' ? ['snackbar-success'] : ['snackbar-error'] });
   }
 }

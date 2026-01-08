@@ -50,6 +50,9 @@ export const ENDPOINTS = {
     DELETE_ROLE: '/DeleteRole/',
     GET_ROLE_PERMISSIONS: '/getRolePermit',
     UPDATE_ROLE_PERMISSIONS: '/assignRolePermit',
+    CREATE_SUB_ROLE: '/api/admin/subroles/createsubrole',
+    UPDATE_SUB_ROLE: '/api/admin/subroles/updatesubrole/',
+    DELETE_SUB_ROLE: '/api/admin/subroles/deletesubrole/',
 
     // Get Accounts
     GET_ACCOUNTS: '/getAllAccounts',
