@@ -81,6 +81,8 @@ export class CommonTableComponent implements OnInit, OnChanges {
   editRow: any = null;
   editing = false;
   activeRow: any = null;
+  passwordModel: NgModel | null = null;
+  confirmPasswordModel: NgModel | null = null;
 
   filterValue = '';
 
@@ -200,31 +202,31 @@ export class CommonTableComponent implements OnInit, OnChanges {
   }
 
   // Called from template-driven controls to validate password match
-  checkPasswordMatch(passwordModel: NgModel | null, confirmModel: NgModel | null, row: any) {
+  checkPasswordMatch(row: any) {
     try {
       const pwd = row?.password;
       const cnf = row?.confirmPassword;
 
-      if (!confirmModel || !confirmModel.control) { return; }
+      if (!this.confirmPasswordModel || !this.confirmPasswordModel.control) { return; }
 
       // if both empty, clear errors
       if (!pwd && !cnf) {
-        confirmModel.control.setErrors(null);
+        this.confirmPasswordModel.control.setErrors(null);
         return;
       }
 
       if (pwd !== cnf) {
-        const existing = confirmModel.control.errors || {};
+        const existing = this.confirmPasswordModel.control.errors || {};
         existing['mismatch'] = true;
-        confirmModel.control.setErrors(existing);
+        this.confirmPasswordModel.control.setErrors(existing);
       } else {
-        const existing = confirmModel.control.errors || {};
+        const existing = this.confirmPasswordModel.control.errors || {};
         if (existing['mismatch']) { delete existing['mismatch']; }
         // if no other errors, clear, else set remaining
         if (Object.keys(existing).length === 0) {
-          confirmModel.control.setErrors(null);
+          this.confirmPasswordModel.control.setErrors(null);
         } else {
-          confirmModel.control.setErrors(existing);
+          this.confirmPasswordModel.control.setErrors(existing);
         }
       }
     } catch (e) {
