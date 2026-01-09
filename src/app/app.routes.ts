@@ -151,6 +151,11 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'sub-role-accounts',
+                loadComponent: () => import('./pages/subrole-accounts/subrole-accounts').then(m => m.SubroleAccounts),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'active-staff',
                 loadComponent: () => import('./pages/active-staffs/active-staffs').then(m => m.ActiveStaffs),
                 canActivate: [authGuard],

@@ -38,7 +38,7 @@
               (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
             <button *ngSwitchCase="'actionReAssign'" matButton color="primary"
               (click)="onView(element, col)">ReAssign&nbsp;Staff</button>
-              
+
             <div *ngSwitchCase="'actionApproveReject'">
               <button matButton color="primary" (click)="onView(element, col)">Create</button>
             </div>
@@ -93,24 +93,72 @@
   <ng-template #editDialog let-data>
     <h2 mat-dialog-title>{{data?.isNew ? 'Create' : 'Edit'}} Record</h2>
     <mat-dialog-content>
-      <div class="grid gap-3">
-        <div *ngFor="let col of columns" class="field">
-          <label class="block text-sm font-medium text-gray-700">{{col.header}}</label>
-          <ng-container [ngSwitch]="col.type || 'text'">
-            <input *ngSwitchCase="'text'" matInput [(ngModel)]="data.row[col.key]" />
-            <input *ngSwitchCase="'number'" type="number" matInput [(ngModel)]="data.row[col.key]" />
-            <input *ngSwitchCase="'date'" type="date" matInput [(ngModel)]="data.row[col.key]" />
-            <select *ngSwitchCase="'select'" matNativeControl [(ngModel)]="data.row[col.key]">
-              <option *ngFor="let opt of (col.options || [])" [value]="opt.value">{{opt.label}}</option>
-            </select>
-            <input *ngSwitchDefault matInput [(ngModel)]="data.row[col.key]" />
-          </ng-container>
+      <form #editForm="ngForm">
+        <div class="grid my-2">
+          <div *ngFor="let col of (formFields && formFields.length ? formFields : columns)" class="field">
+            <ng-container [ngSwitch]="col.type || 'text'">
+
+              <mat-form-field *ngSwitchCase="'text'" appearance="outline" class="w-100">
+                <mat-label>{{ col.header }}</mat-label>
+                <input matInput [(ngModel)]="data.row[col.key]" name="{{col.key}}" [placeholder]="col.header" />
+              </mat-form-field>
+
+              <mat-form-field *ngSwitchCase="'number'" appearance="outline" class="w-100">
+                <mat-label>{{ col.header }}</mat-label>
+                <input matInput type="number" [(ngModel)]="data.row[col.key]" name="{{col.key}}" />
+              </mat-form-field>
+
+              <mat-form-field *ngSwitchCase="'date'" appearance="outline" class="w-100">
+                <mat-label>{{ col.header }}</mat-label>
+                <input matInput type="date" [(ngModel)]="data.row[col.key]" name="{{col.key}}" />
+              </mat-form-field>
+
+              <mat-form-field *ngSwitchCase="'select'" appearance="outline" class="w-100">
+                <mat-label>{{ col.header }}</mat-label>
+                <mat-select [(ngModel)]="data.row[col.key]" name="{{col.key}}">
+                  <mat-option *ngFor="let opt of (col.options || [])" [value]="opt.value">
+                    {{ opt.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field *ngSwitchCase="'password'" appearance="outline" class="w-100">
+                <mat-label>{{ col.header }}</mat-label>
+                <input matInput type="password" [(ngModel)]="data.row[col.key]" name="{{col.key}}"
+                  #passwordModel="ngModel" [required]="data?.isNew" [minlength]="data?.isNew ? 8 : null"
+                  (ngModelChange)="checkPasswordMatch(passwordModel, confirmPasswordModel, data.row)" />
+                <mat-error *ngIf="passwordModel.errors?.['required']">Password is required</mat-error>
+                <mat-error *ngIf="passwordModel.errors?.['minlength']">Minimum 8 characters required</mat-error>
+              </mat-form-field>
+
+              <mat-form-field *ngSwitchCase="'confirmPassword'" appearance="outline" class="w-100">
+                <mat-label>{{ col.header }}</mat-label>
+                <input matInput type="password" [(ngModel)]="data.row[col.key]" name="{{col.key}}"
+                  #confirmPasswordModel="ngModel" [required]="data?.isNew"
+                  (ngModelChange)="checkPasswordMatch(passwordModel, confirmPasswordModel, data.row)" />
+
+                <mat-error *ngIf="confirmPasswordModel.errors?.['mismatch'] && confirmPasswordModel.touched">
+                  Passwords do not match.
+                </mat-error>
+                <mat-error *ngIf="confirmPasswordModel.errors?.['required']">Please confirm your password</mat-error>
+              </mat-form-field>
+
+              <mat-form-field *ngSwitchDefault appearance="outline" class="w-100">
+                <mat-label>{{ col.header }}</mat-label>
+                <input matInput [(ngModel)]="data.row[col.key]" />
+              </mat-form-field>
+
+            </ng-container>
+          </div>
         </div>
-      </div>
+      </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="cancelEdit()">Cancel</button>
-      <button mat-flat-button color="primary" (click)="saveEdit(data.row, data?.isNew)">Save</button>
+      <button mat-flat-button color="primary" (click)="saveEdit(data.row, data?.isNew)"
+        [disabled]="editForm.invalid || data.row.password !== data.row.confirmPassword">
+        Save
+      </button>
     </mat-dialog-actions>
   </ng-template>
 </div>

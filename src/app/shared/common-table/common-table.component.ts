@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, TemplateRef } from '@angular/core';
+import { NgModel } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -11,13 +12,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 
 export interface ColumnDef {
   key: string;            // property name in row object
   header: string;         // header label
   sortable?: boolean;     // enable sorting
   editable?: boolean;     // allow editing in dialog
-  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'action' | 'actionReAssign' | 'actionApproveReject' | 'actionUser' | 'actionStaff'; // data type
+  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'password' | 'confirmPassword' | 'action' | 'actionReAssign' | 'actionApproveReject' | 'actionUser' | 'actionStaff'; // data type
   options?: Array<{ value: any, label: string }>; // for select
   width?: string;
 }
@@ -46,7 +48,8 @@ export interface PaginationEvent {
     MatMenuModule,
     MatDialogModule,
     MatTooltipModule,
-    FormsModule
+    FormsModule,
+    MatSelectModule
   ]
 })
 export class CommonTableComponent implements OnInit, OnChanges {
@@ -56,15 +59,16 @@ export class CommonTableComponent implements OnInit, OnChanges {
   @Input() showCreate = false;
   @Input() createLabel = 'Create';
   @Input() showActions = true;
+  @Input() formFields: ColumnDef[] = [];
   @Input() sortable = true;
-  @Input() length: number = 0; // Total elements from server for server-side pagination
-  @Input() serverSidePagination: boolean = true; // Use server-side pagination by default
+  @Input() length: number = 0;
+  @Input() serverSidePagination: boolean = true;
 
   @Output() view = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
   @Output() create = new EventEmitter<any>();
-  @Output() save = new EventEmitter<{ row: any, isNew: boolean }>(); // Added type for clarity
+  @Output() save = new EventEmitter<{ row: any, isNew: boolean }>();
   @Output() pageChange = new EventEmitter<PaginationEvent>();
 
   dataSource = new MatTableDataSource<any>([]);
@@ -100,15 +104,12 @@ export class CommonTableComponent implements OnInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    // For server-side pagination, don't apply paginator to dataSource
-    // This prevents client-side pagination from overriding server results
     if (!this.serverSidePagination) {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     }
     
     if (this.paginator) {
-      // Set the total length from server
       this.paginator.length = this.length;
       
       this.paginator.page.subscribe((event: any) => {
@@ -123,7 +124,6 @@ export class CommonTableComponent implements OnInit, OnChanges {
   }
 
   private buildDisplayedColumns() {
-    // Serial column is always the first column
     const baseColumns = ['serial', ...this.columns.map(c => c.key)];
     const needsActions = this.showActions && !baseColumns.includes('actions');
 
@@ -133,12 +133,10 @@ export class CommonTableComponent implements OnInit, OnChanges {
   private setData(d: any[]) {
     this.dataSource.data = Array.isArray(d) ? d : [];
     
-    // Only apply client-side pagination if not using server-side
     if (!this.serverSidePagination) {
       if (this.paginator) { this.dataSource.paginator = this.paginator; }
       if (this.sort) { this.dataSource.sort = this.sort; }
     } else {
-      // For server-side, still set sort but not paginator
       if (this.sort) { this.dataSource.sort = this.sort; }
     }
   }
@@ -153,7 +151,6 @@ export class CommonTableComponent implements OnInit, OnChanges {
   resetPagination() {
     if (this.paginator) {
       this.paginator.firstPage();
-      // Emit page change event to trigger data fetch
       if (this.serverSidePagination) {
         this.pageChange.emit({
           pageIndex: 0,
@@ -200,6 +197,39 @@ export class CommonTableComponent implements OnInit, OnChanges {
     this.editRow = {};
     this.editing = true;
     this.dialog.open(this.editDialog, { width: '700px', data: { row: this.editRow, isNew: true } });
+  }
+
+  // Called from template-driven controls to validate password match
+  checkPasswordMatch(passwordModel: NgModel | null, confirmModel: NgModel | null, row: any) {
+    try {
+      const pwd = row?.password;
+      const cnf = row?.confirmPassword;
+
+      if (!confirmModel || !confirmModel.control) { return; }
+
+      // if both empty, clear errors
+      if (!pwd && !cnf) {
+        confirmModel.control.setErrors(null);
+        return;
+      }
+
+      if (pwd !== cnf) {
+        const existing = confirmModel.control.errors || {};
+        existing['mismatch'] = true;
+        confirmModel.control.setErrors(existing);
+      } else {
+        const existing = confirmModel.control.errors || {};
+        if (existing['mismatch']) { delete existing['mismatch']; }
+        // if no other errors, clear, else set remaining
+        if (Object.keys(existing).length === 0) {
+          confirmModel.control.setErrors(null);
+        } else {
+          confirmModel.control.setErrors(existing);
+        }
+      }
+    } catch (e) {
+      // defensive: do nothing on unexpected template states
+    }
   }
 
   saveEdit(row: any, isNew = false) {

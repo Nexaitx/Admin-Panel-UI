@@ -50,6 +50,7 @@ export const ENDPOINTS = {
     DELETE_ROLE: '/DeleteRole/',
     GET_ROLE_PERMISSIONS: '/getRolePermit',
     UPDATE_ROLE_PERMISSIONS: '/assignRolePermit',
+    GET_SUBROLES: '/api/admin/subroles/subroleonly',
     CREATE_SUB_ROLE: '/api/admin/subroles/createsubrole',
     UPDATE_SUB_ROLE: '/api/admin/subroles/updatesubrole/',
     DELETE_SUB_ROLE: '/api/admin/subroles/deletesubrole/',
@@ -184,6 +185,7 @@ export const ENDPOINTS = {
     BOOKINGS_CANCELLED_BY_STAFF: '/api/bookings/cancelled-by-staff',
     BOOKINGS_CANCELLED_BY_USER: '/api/cancellation-records',
     GET_REASSIGN_DUTY: '/api/bookings/',
+    REASSIGNED_BOOKINGS: '/api/reassignments/all',
 
     // SOS
     GET_SOS_FROM_STAFF: '/api/sos/staff-with-contacts',

@@ -49,6 +49,7 @@
             "styles": [
               "src/styles.scss",
               "src/app_theme-colors.scss",
+              "node_modules/@flaticon/flaticon-uicons/css/all/all.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css"
@@ -128,7 +129,8 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/@flaticon/flaticon-uicons/css/all/all.css"
             ]
           }
         }

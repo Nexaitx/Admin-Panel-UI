@@ -1,3 +1,61 @@
-<app-common-table [columns]="columns"
-    [data]="dataSource.data" [showActions]="false">
+<app-common-table [columns]="columns" [length]="totalElements" [serverSidePagination]="true"
+    (pageChange)="onPageChange($event)" [data]="dataSource.data" [showActions]="false" (view)="onRowView($event)">
 </app-common-table>
+
+<ng-template #bookingDetailsDialog>
+    <h2 mat-dialog-title>@if(selectedAction === 'oldStaff') {Old Staff Details}
+        @else if(selectedAction === 'newStaff')
+        {New Staff Details}</h2>
+    <mat-dialog-content>
+        @if(selectedAction === 'oldStaff' || selectedAction === 'newStaff') {
+        <table class="w-100 p-2 table table-striped table-hover">
+            <tbody>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Id</th>
+                    <!-- <pre>{{selectedRecord?.row?.oldStaffId}}</pre> -->
+                    <td>{{ selectedAction === 'oldStaff' ?
+                        selectedRecord?.row?.oldStaff?.oldStaffId : selectedRecord?.row?.newStaff?.newStaffId
+                        }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Name</th>
+                    <td>{{ selectedAction === 'oldStaff' ?
+                        selectedRecord?.row?.oldStaff?.oldStaffName : selectedRecord?.row?.newStaff?.newStaffName
+                        }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Email</th>
+                    <td>{{ selectedAction === 'oldStaff' ?
+                        selectedRecord?.row?.oldStaff?.oldStaffEmail : selectedRecord?.row?.newStaff?.newStaffEmail
+                        }}</td>
+
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Phone Number</th>
+                    <td>{{ selectedAction === 'oldStaff' ?
+                        selectedRecord?.row?.oldStaff?.oldStaffPhone : selectedRecord?.row?.newStaff?.newStaffPhone
+                        }}</td>
+
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Category</th>
+                    <td>{{ selectedAction === 'oldStaff' ?
+                        selectedRecord?.row?.oldStaff?.oldStaffCategory : selectedRecord?.row?.newStaff?.newStaffCategory
+                        }}</td>
+
+                </tr>
+                <tr>
+                    <th class="text-left pe-4 align-top pb-2">Staff Sub Category</th>
+                    <td>{{ selectedAction === 'oldStaff' ?
+                        selectedRecord?.row?.oldStaff?.oldStaffSubCategory : selectedRecord?.row?.newStaff?.newStaffSubCategory
+                        }}</td>
+
+                </tr>
+            </tbody>
+        </table>
+        }
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+</ng-template>
