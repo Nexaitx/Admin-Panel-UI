@@ -58,6 +58,11 @@ mat-drawer-content {
   color: #667085 !important;
 }
 
+.mat-card {
+  border-radius: 0px;
+  border: 0.2px solid aliceblue;
+}
+
 .mat-mdc-menu-panel,
 mat-card-content,
 mat-toolbar {
@@ -191,7 +196,7 @@ mat-drawer h2 {
 .bg-green {
   background-color: #d1fae5;
   color: #065f46;
-} 
+}
 
 .bg-red {
   background-color: #fee2e2;
