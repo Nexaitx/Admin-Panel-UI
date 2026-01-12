@@ -40,7 +40,8 @@
               (click)="onView(element, col)">ReAssign&nbsp;Staff</button>
 
             <div *ngSwitchCase="'actionApproveReject'">
-              <button matButton color="primary" (click)="onView(element, col)">Create</button>
+              <button *ngIf="element.status !== 'APPROVED'" matButton color="primary" (click)="onView(element, col)">Create</button>
+              <button *ngIf="element.status === 'APPROVED'" matButton color="warn" (click)="onView(element, col)">Delete</button>
             </div>
             <button *ngSwitchCase="'actionUser'" matButton color="primary" matTooltip="View"
               (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>

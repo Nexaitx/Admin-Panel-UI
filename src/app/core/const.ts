@@ -62,6 +62,9 @@ export const ENDPOINTS = {
     GET_ACCOUNT_BY_ROLE: '/getAccountByRole',
     GET_LOGGED_IN_USER_DETAILS: '/profile',
 
+    // Sub Role Accounts
+    CREATE_SUBROLE_ACCOUNT: 'subcreate',
+
     // Get Bookings
     GET_PREVIOUS_BOOKINGS: '/api/admin/bookings/past',
     GET_ONGOING_BOOKINGS: '/api/admin/bookings/ongoing',
@@ -195,5 +198,7 @@ export const ENDPOINTS = {
 
     // Other Subcategory
     GET_OTHER_SUBCATEGORY: '/api/other-sub-category/status/',
+    UPDATE_STATUS_SUB_CATGEORY: '/api/other-sub-category/process/',
+    DELETE_SUB_CATEGORY: '/api/other-sub-category/' //API is not yet ready
 
 };

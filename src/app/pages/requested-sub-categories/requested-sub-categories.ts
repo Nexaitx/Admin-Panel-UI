@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-requested-sub-categories',
@@ -16,7 +17,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    CommonModule
   ],
   templateUrl: './requested-sub-categories.html',
   styleUrl: './requested-sub-categories.scss',
@@ -30,6 +32,8 @@ export class RequestedSubCategories {
   selectedStatus: string = 'ALL';
   private snackBar = inject(MatSnackBar);
   @ViewChild('otherSubcategory') otherSubcategory!: TemplateRef<any>;
+  @ViewChild('deleteConfirmation') deleteConfirmation!: TemplateRef<any>;
+  actionType: string = '';
 
   columns: ColumnDef[] = [
     { key: 'subCategoryId', header: 'Sub&nbsp;Category&nbsp;ID', sortable: true },
@@ -47,27 +51,71 @@ export class RequestedSubCategories {
   }
 
   fetchData() {
-    const statusParam = this.selectedStatus === 'ALL' ? '' : this.selectedStatus;
+    const statusParam = this.selectedStatus === 'ALL' ? 'ALL' : this.selectedStatus;
+    console.log(statusParam);
     this.http.get(API_URL + ENDPOINTS.GET_OTHER_SUBCATEGORY + statusParam).subscribe((data: any) => {
       this.dataSource.data = data.reverse();
     });
   }
 
-  onRowView(row: any) {
-    this.selectedRecord = row;
-    this.dialog.open(this.otherSubcategory, { width: '700px', minWidth: '600px' });
-  }
-
-  saveRequest() {
-    this.snackBar.open('Sub Category Successfully Created', 'Close', {
-      duration: 3000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top'
-    });
+  onRowView(event: any) {
+    this.selectedRecord = event;
+    const row = event.row || event;
+    
+    // Check if this is a delete action (for APPROVED status)
+    if (event.columnType === 'actionApproveReject' && row.status === 'APPROVED') {
+      this.actionType = 'delete';
+      this.dialog.open(this.deleteConfirmation, { width: '500px', minWidth: '400px' });
+    } else {
+      // Open approval dialog for create action
+      this.actionType = 'approve';
+      this.dialog.open(this.otherSubcategory, { width: '700px', minWidth: '600px' });
+    }
   }
 
   onStatusChange(status: string) {
     this.selectedStatus = status;
     this.fetchData();
+  }
+
+  updateStatus(status: string) {
+    const payload = {
+      action: status,
+      categoryName: this.selectedRecord.row.category,
+      subcategoryValue: this.selectedRecord.row.subCategory,
+      subcategoryLabel: this.selectedRecord.row.subCategory
+    };
+    this.http.post(API_URL + ENDPOINTS.UPDATE_STATUS_SUB_CATGEORY + this.selectedRecord.row.subCategoryId, payload).subscribe((response: any) => {
+      this.snackBar.open('Sub Category Status Updated Successfully', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'right',
+        verticalPosition: 'top'
+      });
+      this.fetchData();
+      this.dialog.closeAll();
+    });
+  }
+
+  deleteSubCategory() {
+    const row = this.selectedRecord.row || this.selectedRecord;
+    this.http.delete(API_URL + ENDPOINTS.GET_OTHER_SUBCATEGORY + row.subCategoryId).subscribe(
+      (response: any) => {
+        this.snackBar.open('Sub Category Deleted Successfully', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top'
+        });
+        this.fetchData();
+        this.dialog.closeAll();
+      },
+      (error: any) => {
+        this.snackBar.open('Failed to delete Sub Category', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['error']
+        });
+      }
+    );
   }
 }
