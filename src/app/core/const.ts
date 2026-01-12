@@ -194,6 +194,6 @@ export const ENDPOINTS = {
     GET_SOS_RESOLVED: '/api/sos/resolved',
 
     // Other Subcategory
-    GET_OTHER_SUBCATEGORY: '/api/other-sub-category/getAllOtherSubcategory',
+    GET_OTHER_SUBCATEGORY: '/api/other-sub-category/status/',
 
 };

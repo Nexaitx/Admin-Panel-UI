@@ -82,7 +82,7 @@
             </mat-nav-list>
         </mat-expansion-panel>
 
-        <mat-expansion-panel mat-list-item class="mat-elevation-z0">
+        <mat-expansion-panel mat-list-item class="mat-elevation-z0" *ngIf="hasPermission('Booking Payments')">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <mat-icon>track_changes</mat-icon><span>Bookings & Payments</span>

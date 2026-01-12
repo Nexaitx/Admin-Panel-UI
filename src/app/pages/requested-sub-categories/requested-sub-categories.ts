@@ -7,12 +7,16 @@ import { API_URL, ENDPOINTS } from '../../core/const';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-requested-sub-categories',
   imports: [CommonTableComponent,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   templateUrl: './requested-sub-categories.html',
   styleUrl: './requested-sub-categories.scss',
@@ -23,6 +27,7 @@ export class RequestedSubCategories {
   router = inject(Router);
   dataSource = new MatTableDataSource<any>();
   dialog = inject(MatDialog);
+  selectedStatus: string = 'ALL';
   private snackBar = inject(MatSnackBar);
   @ViewChild('otherSubcategory') otherSubcategory!: TemplateRef<any>;
 
@@ -33,6 +38,7 @@ export class RequestedSubCategories {
     { key: 'subCategory', header: 'Sub&nbsp;Category', sortable: true },
     { key: 'createdAt', header: 'Created&nbsp;At', sortable: true, type: 'date' },
     { key: 'updatedAt', header: 'Updated&nbsp;At', sortable: true, type: 'date' },
+    { key: 'status', header: 'Status', sortable: true },
     { key: 'actions', header: 'Actions', type: 'actionApproveReject' }
   ];
 
@@ -41,7 +47,8 @@ export class RequestedSubCategories {
   }
 
   fetchData() {
-    this.http.get(API_URL + ENDPOINTS.GET_OTHER_SUBCATEGORY).subscribe((data: any) => {
+    const statusParam = this.selectedStatus === 'ALL' ? '' : this.selectedStatus;
+    this.http.get(API_URL + ENDPOINTS.GET_OTHER_SUBCATEGORY + statusParam).subscribe((data: any) => {
       this.dataSource.data = data.reverse();
     });
   }
@@ -57,5 +64,10 @@ export class RequestedSubCategories {
       horizontalPosition: 'right',
       verticalPosition: 'top'
     });
+  }
+
+  onStatusChange(status: string) {
+    this.selectedStatus = status;
+    this.fetchData();
   }
 }

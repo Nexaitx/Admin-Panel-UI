@@ -1,8 +1,13 @@
-<app-common-table 
-  [columns]="columns" 
-  [data]="dataSource.data" 
-  [showActions]="false"
-  [serverSidePagination]="false"
+<mat-form-field appearance="outline" class="status-filter">
+  <mat-label>Select Subcategory Status</mat-label>
+  <mat-select (selectionChange)="onStatusChange($event.value)" [value]="selectedStatus">
+    <mat-option value="ALL">All</mat-option>
+    <mat-option value="PENDING">Pending</mat-option>
+    <mat-option value="APPROVED">Approved</mat-option>
+    <mat-option value="REJECTED">Rejected</mat-option>
+  </mat-select>
+</mat-form-field>
+<app-common-table [columns]="columns" [data]="dataSource.data" [showActions]="false" [serverSidePagination]="false"
   (view)="onRowView($event)">
 </app-common-table>
 
