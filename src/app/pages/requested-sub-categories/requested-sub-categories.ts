@@ -37,6 +37,9 @@ export class RequestedSubCategories {
 
   columns: ColumnDef[] = [
     { key: 'subCategoryId', header: 'Sub&nbsp;Category&nbsp;ID', sortable: true },
+    { key: 'staffId', header: 'Staff&nbsp;ID', sortable: true },
+    { key: 'staffName', header: 'Staff&nbsp;Name', sortable: true },
+    { key: 'staffCategory', header: 'Staff&nbsp;Category', sortable: true },
     { key: 'phoneNo', header: 'Phone&nbsp;Number', sortable: true },
     { key: 'category', header: 'Category', sortable: true },
     { key: 'subCategory', header: 'Sub&nbsp;Category', sortable: true },
@@ -62,8 +65,7 @@ export class RequestedSubCategories {
     this.selectedRecord = event;
     const row = event.row || event;
     
-    // Check if this is a delete action (for APPROVED status)
-    if (event.columnType === 'actionApproveReject' && row.status === 'APPROVED') {
+    if (event.columnType === 'actionApproveReject' && row.status !== 'PENDING') {
       this.actionType = 'delete';
       this.dialog.open(this.deleteConfirmation, { width: '500px', minWidth: '400px' });
     } else {
@@ -98,7 +100,7 @@ export class RequestedSubCategories {
 
   deleteSubCategory() {
     const row = this.selectedRecord.row || this.selectedRecord;
-    this.http.delete(API_URL + ENDPOINTS.GET_OTHER_SUBCATEGORY + row.subCategoryId).subscribe(
+    this.http.delete(API_URL + ENDPOINTS.DELETE_SUB_CATEGORY + row.subCategoryId).subscribe(
       (response: any) => {
         this.snackBar.open('Sub Category Deleted Successfully', 'Close', {
           duration: 3000,

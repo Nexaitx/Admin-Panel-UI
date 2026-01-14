@@ -63,7 +63,10 @@ export const ENDPOINTS = {
     GET_LOGGED_IN_USER_DETAILS: '/profile',
 
     // Sub Role Accounts
-    CREATE_SUBROLE_ACCOUNT: 'subcreate',
+    CREATE_SUBROLE_ACCOUNT: '/subcreate',
+    GET_SUBROLE_ACCOUNTS: '/with-subrole',
+    UPDATE_SUBROLE_ACCOUNT: '/subadmin/',
+    DELETE_SUBROLE_ACCOUNT: '/subadmin/',
 
     // Get Bookings
     GET_PREVIOUS_BOOKINGS: '/api/admin/bookings/past',
@@ -199,6 +202,6 @@ export const ENDPOINTS = {
     // Other Subcategory
     GET_OTHER_SUBCATEGORY: '/api/other-sub-category/status/',
     UPDATE_STATUS_SUB_CATGEORY: '/api/other-sub-category/process/',
-    DELETE_SUB_CATEGORY: '/api/other-sub-category/' //API is not yet ready
+    DELETE_SUB_CATEGORY: '/api/other-sub-category/delete-by-id/'
 
 };

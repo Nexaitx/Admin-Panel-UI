@@ -4,7 +4,7 @@
     <mat-option value="ALL">All</mat-option>
     <mat-option value="PENDING">Pending</mat-option>
     <mat-option value="APPROVED">Approved</mat-option>
-    <mat-option value="REJECTED">Rejected</mat-option>
+    <mat-option value="REJECT">Rejected</mat-option>
   </mat-select>
 </mat-form-field>
 <app-common-table [columns]="columns" [data]="dataSource.data" [showActions]="false" [serverSidePagination]="false"
@@ -17,9 +17,12 @@
     <p>You are about to approve the request for a <b>new subcategory</b>.</p>
     <p>Approving this will make it available for selection across the system. Would you like to proceed?</p>
   </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="updateStatus('REJECTED')" mat-dialog-close>No</button>
-    <button matButton="tonal" (click)="updateStatus('APPROVED')" mat-dialog-close>Yes</button>
+  <mat-dialog-actions class="d-flex justify-content-between">
+    <button mat-button mat-dialog-close>Close</button>
+    <div>
+    <button mat-button (click)="updateStatus('REJECT')" mat-dialog-close>Reject</button>
+    <button matButton="tonal" (click)="updateStatus('APPROVED')" mat-dialog-close>Approve</button>
+    </div>
   </mat-dialog-actions>
 </ng-template>
 

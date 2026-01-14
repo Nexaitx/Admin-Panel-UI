@@ -137,7 +137,7 @@ export class Dietician {
   }
 
   getAccounts() {
-    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/pharmacist').subscribe((res: any) => {
+    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/dietician').subscribe((res: any) => {
       this.accounts = res;
       this.mapAndSetDataSource(this.accounts);
     })
