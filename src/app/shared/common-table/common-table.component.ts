@@ -22,6 +22,8 @@ export interface ColumnDef {
   type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'password' | 'confirmPassword' | 'action' | 'actionReAssign' | 'actionApproveReject' | 'actionUser' | 'actionStaff'; // data type
   options?: Array<{ value: any, label: string }>; // for select
   width?: string;
+  disabled?: boolean;     // disable field in edit mode
+  disabledInEdit?: boolean; // disable field specifically in edit mode
 }
 
 export interface PaginationEvent {
@@ -192,7 +194,7 @@ export class CommonTableComponent implements OnInit, OnChanges {
   private openEditDialog(row: any, isNew: boolean) {
     this.editRow = JSON.parse(JSON.stringify(row));
     this.editing = true;
-    this.dialog.open(this.editDialog, { width: '800px', minWidth: '800px', data: { row: this.editRow, isNew } });
+    this.dialog.open(this.editDialog, { width: '800px', minWidth: '600px', data: { row: this.editRow, isNew } });
   }
 
   onCreate() {

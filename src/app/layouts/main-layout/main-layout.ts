@@ -38,9 +38,7 @@ interface Notification {
     MatMenuModule,
     MatBadgeModule,
     MatDividerModule,
-    CommonModule,
-    Support
-  ],
+    CommonModule  ],
   standalone: true,
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss'
