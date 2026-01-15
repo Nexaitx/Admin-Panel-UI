@@ -43,12 +43,12 @@ export class SubroleAccounts implements OnInit {
 
   columns: ColumnDef[] = [
     { key: 'subRoleId', header: 'Subrole&nbsp;ID', sortable: true },
-    { key: 'subRoleName', header: 'Subrole&nbsp;Type', sortable: true },
+    { key: 'roleType', header: 'Subrole&nbsp;Type', sortable: true },
+    { key: 'adminId', header: 'SubAdmin&nbsp;ID', sortable: true },
+    { key: 'subRoleName', header: 'Subrole&nbsp;Name', sortable: true },
     { key: 'name', header: 'Full&nbsp;Name', sortable: true },
     { key: 'email', header: 'Email&nbsp;Address', sortable: true },
     { key: 'phoneNumber', header: 'Phone&nbsp;Number', sortable: true },
-    { key: 'roleType', header: 'Role&nbsp;Type', sortable: true },
-    { key: 'adminId', header: 'Admin&nbsp;ID', sortable: true }
   ];
 
   formFields: ColumnDef[] = [
@@ -85,7 +85,7 @@ export class SubroleAccounts implements OnInit {
         error: () => this.snackBar.open('Signup failed', 'Close')
       });
     } else {
-      const id = payload.subRoleId;
+      const id = payload.adminId;
       if (!id) { this.snackBar.open('Missing identifier for update', 'Close'); return; }
       this.http.put(`${API_URL}${ENDPOINTS.UPDATE_SUBROLE_ACCOUNT}/${id}`, payload).subscribe({
         next: () => this.handleSuccess('Sub role account updated successfully'),
@@ -95,7 +95,7 @@ export class SubroleAccounts implements OnInit {
   }
 
   onTableDelete(row: any) {
-    const id = row.subRoleId;
+    const id = row.adminId;
     if (!id) {
       this.snackBar.open('Missing identifier for deletion', 'Close');
       return;

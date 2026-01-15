@@ -66,7 +66,7 @@ export const ENDPOINTS = {
     CREATE_SUBROLE_ACCOUNT: '/subcreate',
     GET_SUBROLE_ACCOUNTS: '/with-subrole',
     UPDATE_SUBROLE_ACCOUNT: '/subadmin',
-    DELETE_SUBROLE_ACCOUNT: '/subadmin',
+    DELETE_SUBROLE_ACCOUNT: '/subadmin/deleteaccount',
 
     // Get Bookings
     GET_PREVIOUS_BOOKINGS: '/api/admin/bookings/past',

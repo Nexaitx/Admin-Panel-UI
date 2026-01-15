@@ -78,10 +78,10 @@
 
   <!-- action menu (single menu, row passed by click handlers) -->
   <mat-menu #actionMenu="matMenu" (closed)="clearActiveRow()">
-    <button mat-menu-item (click)="handleView()">
+    <!-- <button mat-menu-item (click)="handleView()">
       <mat-icon>visibility</mat-icon>
       <span>Show</span>
-    </button>
+    </button> -->
     <button mat-menu-item (click)="handleEdit()">
       <mat-icon>edit</mat-icon>
       <span>Edit</span>
@@ -103,7 +103,7 @@
 
               <mat-form-field *ngSwitchCase="'text'" appearance="outline" class="w-100">
                 <mat-label>{{ col.header }}</mat-label>
-                <input matInput [(ngModel)]="data.row[col.key]" name="{{col.key}}" [placeholder]="col.header" [disabled]="col.disabledInEdit && !data?.isNew" />
+                <input matInput [(ngModel)]="data.row[col.key]" name="{{col.key}}" [placeholder]="col.header" [disabled]="(col?.disabledInEdit && !data?.isNew) || false" />
               </mat-form-field>
 
               <mat-form-field *ngSwitchCase="'number'" appearance="outline" class="w-100">
