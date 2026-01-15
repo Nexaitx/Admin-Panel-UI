@@ -124,7 +124,7 @@ export class Roles implements OnInit {
 
     if (this.isSubRoleMode) {
       url = this.isEdit ? `${API_URL}${ENDPOINTS.UPDATE_SUB_ROLE}${this.selectedRecord.id}` : `${API_URL}${ENDPOINTS.CREATE_SUB_ROLE}`;
-      payload = { subRoleName: val, roleId: this.selectedRecord.roleId };
+      payload = { subRoleName: val, roleId: this.selectedRecord.id };
     } else {
       url = this.isEdit ? `${API_URL}${ENDPOINTS.UPDATE_ROLE}${this.selectedRecord.id}` : `${API_URL}${ENDPOINTS.CREATE_ROLE}`;
       payload = { roleType: val };
