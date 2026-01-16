@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-between">
+<!-- <div class="d-flex justify-content-between">
   <h4>Role Wise Permissions</h4>
   <button matButton="tonal" (click)="savePermissions()">Save</button>
 </div>
@@ -36,4 +36,52 @@
     <p class="col-4"><mat-checkbox formControlName="Dietician Reports">Dietician Reports</mat-checkbox></p>
     <p class="col-4"><mat-checkbox formControlName="Settings">Settings</mat-checkbox></p>
   </div>
+</div> -->
+<div class="container-fluid p-4">
+  <div class="mb-4 bg-white p-3 rounded shadow-sm border">
+    <h4 class="m-0">Role Wise Permissions</h4>
+    <small class="text-muted">Expand a role to edit and save its permissions individually.</small>
+  </div>
+
+  <form [formGroup]="permissionsForm">
+    <mat-accordion multi>
+      
+      <mat-expansion-panel 
+        *ngFor="let roleGroup of rolePermissionsArray.controls; let i=index" 
+        [formGroup]="getGroup(roleGroup)"
+        class="mb-3 border-0 shadow-sm">
+        
+        <mat-expansion-panel-header [class.sub-role-header]="roleGroup.get('isSubRole')?.value">
+          <mat-panel-title>
+            <div class="d-flex align-items-center" [class.ps-4]="roleGroup.get('isSubRole')?.value">
+              <mat-icon class="me-2 text-secondary" *ngIf="roleGroup.get('isSubRole')?.value">subdirectory_arrow_right</mat-icon>
+              <mat-icon class="me-2 text-info" *ngIf="!roleGroup.get('isSubRole')?.value">verified_user</mat-icon>
+              
+              <span [class.fw-light]="!roleGroup.get('isSubRole')?.value">
+                {{ roleGroup.get('roleName')?.value }}
+              </span>
+              
+              <span class="badge bg-light text-dark border ms-2" *ngIf="roleGroup.get('isSubRole')?.value">Sub-Role</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="row pt-3 px-3" [formGroup]="getGroup(roleGroup.get('permissions'))">
+          <div class="col-xl-3 col-lg-4 col-sm-6" *ngFor="let key of getPermissionKeys(roleGroup)">
+            <mat-checkbox [formControlName]="key" color="primary" class="perm-check">
+              <span class="text-wrap" style="font-size: 13px;">{{ key }}</span>
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <mat-action-row>
+          <button mat-flat-button color="primary" (click)="saveSingleRole(roleGroup)">
+            Save {{ roleGroup.get('roleName')?.value }} Permissions
+          </button>
+        </mat-action-row>
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
+  </form>
 </div>

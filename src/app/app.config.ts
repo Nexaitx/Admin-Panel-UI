@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { routes } from './app.routes';
@@ -10,9 +10,9 @@ import { GoogleMapsModule } from '@angular/google-maps';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
+    provideZonelessChangeDetection(),
     provideAnimations(),
     provideHttpClient(withInterceptors([loaderInterceptor])),
     // importProvidersFrom(BrowserAnimationsModule),

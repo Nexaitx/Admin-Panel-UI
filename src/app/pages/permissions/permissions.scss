@@ -1,0 +1,28 @@
+.sub-role-header {
+  background-color: #fcfcfc;
+}
+
+.mat-expansion-panel {
+  border-radius: 8px !important;
+  overflow: hidden;
+  border-left: 4px solid #3f51b5; // Blue border for main roles
+  
+  &.mat-expanded {
+    margin-bottom: 16px !important;
+  }
+}
+
+.sub-role-header {
+  border-left: 4px solid #9e9e9e !important; // Grey border for sub roles
+}
+
+.perm-check {
+  display: block;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #f0f2f5;
+  }
+}
