@@ -1,4 +1,4 @@
-<mat-nav-list>
+<!-- <mat-nav-list>
     <div class="pb-1 mb-1 border-bottom">
         <img src="./assets/images/logo-light.png" height="50" alt="Vitoxyz Logo">
     </div>
@@ -180,13 +180,6 @@
                 <mat-icon class="material-icons">find_replace</mat-icon><span>Re-Assigned Bookings</span>
             </span>
         </a>
-
-        <!-- <a *ngIf="hasPermission('Cancel Booking')" mat-list-item routerLink="/app/cancel-booking"
-        routerLinkActive="active-link">
-        <span class="sidebar-item-content">
-            <mat-icon class="material-icons">swap_horiz</mat-icon><span>Cancel Booking</span>
-        </span>
-    </a> -->
 
         <a *ngIf="hasPermission('SOS Staff')" mat-list-item routerLink="/app/sos-staff" routerLinkActive="active-link">
             <span class="sidebar-item-content">
@@ -412,4 +405,46 @@
 
         </mat-expansion-panel>
     </div>
+</mat-nav-list> -->
+<mat-nav-list>
+    <div class="pb-1 mb-1 border-bottom">
+        <img src="./assets/images/logo-light.png" height="50" alt="Vitoxyz Logo">
+    </div>
+
+    <ng-container *ngFor="let item of filteredMenu">
+
+        <a *ngIf="!item.children || item.children.length === 0" 
+           mat-list-item 
+           [routerLink]="item.route"
+           routerLinkActive="active-link">
+            <span class="sidebar-item-content">
+                <mat-icon class="material-icons">{{ item.icon }}</mat-icon>
+                <span>{{ item.title }}</span>
+            </span>
+        </a>
+
+        <mat-expansion-panel *ngIf="item.children && item.children.length > 0" 
+                             mat-list-item 
+                             class="mat-elevation-z0">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <mat-icon>{{ item.icon }}</mat-icon>
+                    <span>{{ item.title }}</span>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-nav-list dense>
+                <a *ngFor="let child of item.children" 
+                   mat-list-item 
+                   [routerLink]="child.route"
+                   routerLinkActive="active-link">
+                    <span class="sidebar-item-content">
+                        <mat-icon>{{ child.icon }}</mat-icon>
+                        <span>{{ child.title }}</span>
+                    </span>
+                </a>
+            </mat-nav-list>
+        </mat-expansion-panel>
+
+    </ng-container>
 </mat-nav-list>

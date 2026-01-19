@@ -48,6 +48,7 @@ export const ENDPOINTS = {
     CREATE_ROLE: '/createRole',
     UPDATE_ROLE: '/updateRole/',
     DELETE_ROLE: '/DeleteRole/',
+    GET_ROLE_PERMISSIONS_BY_ROLE_ID: '/getRolPermitByRoleId/',
     GET_ROLE_PERMISSIONS: '/getRolePermit',
     UPDATE_ROLE_PERMISSIONS: '/assignRolePermit',
     GET_SUBROLES: '/api/admin/subroles/subroleonly',
