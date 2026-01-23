@@ -6,7 +6,8 @@
     </mat-select>
 </mat-form-field>
 
-<app-common-table [columns]="columns" [data]="dataSource.data" (view)="onRowClick($event)" [showActions]="false">
+<app-common-table [columns]="columns" [data]="dataSource.data" (view)="onRowClick($event)" [showActions]="false"
+[length]="totalElements" [serverSidePagination]="true" (pageChange)="onPageChange($event)">
 </app-common-table>
 
 <ng-template #viewDialog>

@@ -2,7 +2,7 @@ import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { API_URL, ENDPOINTS } from '../../core/const';
 import { HttpClient } from '@angular/common/http';
-import { ColumnDef, CommonTableComponent } from '../../shared/common-table/common-table.component';
+import { ColumnDef, CommonTableComponent, PaginationEvent } from '../../shared/common-table/common-table.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -32,6 +32,9 @@ export class DietBookings {
   @ViewChild('viewDialog') viewDialog!: TemplateRef<any>;
   statuses: any[] = ['PENDING', 'SUCCESS', 'FAILED', 'REFUNDED'];
   selectedStatus: any;
+  currentPageIndex = 0;
+  currentPageSize = 10;
+  totalElements = 0;
 
   columns: ColumnDef[] = [
     { key: 'userId', header: 'User&nbsp;ID' },
@@ -72,15 +75,21 @@ export class DietBookings {
     this.dialog.open(this.viewDialog, { width: '700px', minWidth: '700px' });
   }
 
+  onPageChange(event: PaginationEvent): void {
+    this.currentPageIndex = event.pageIndex;
+    this.currentPageSize = event.pageSize;
+    this.getDietUsers();
+  }
   getDietUsers() {
     const pageSize = this.commonTable?.paginator?.pageSize || 10;
     const params = {
-      page: 0,
-      size: pageSize,
-      sortDir: 'asc'
+      page: this.currentPageIndex,
+      size: this.currentPageSize,
+      sortDir: 'desc'
     }
     this.http.get(API_URL + ENDPOINTS.GET_DIET_USERS, { params }).subscribe((res: any) => {
       this.dataSource.data = res.content;
+       this.totalElements = res.totalElements || 0;
     })
   }
 
@@ -89,16 +98,14 @@ export class DietBookings {
 
     // Create params object
     const params: any = {
-      page: this.commonTable.paginator.pageIndex,
-      size: this.commonTable?.paginator?.pageSize,
+      page: this.currentPageIndex,
+      size: this.currentPageSize,
       sortDir: 'desc'
     };
-
-
     this.http.get(API_URL + ENDPOINTS.GET_DIET_USERS_BY_PAYMENT_STATUS + status, { params })
       .subscribe((res: any) => {
         this.dataSource.data = res.content;
-        this.commonTable?.resetPagination();
+        this.totalElements = res.totalElements || 0;
       });
   }
 
