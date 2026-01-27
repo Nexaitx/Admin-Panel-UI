@@ -85,7 +85,8 @@ export class CommonTableComponent implements OnInit, OnChanges {
   activeRow: any = null;
   passwordModel: NgModel | null = null;
   confirmPasswordModel: NgModel | null = null;
-
+  hidePassword = true;
+  hideConfirmPassword = true;
   filterValue = '';
 
   constructor(private dialog: MatDialog) { }
@@ -112,10 +113,10 @@ export class CommonTableComponent implements OnInit, OnChanges {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     }
-    
+
     if (this.paginator) {
       this.paginator.length = this.length;
-      
+
       this.paginator.page.subscribe((event: any) => {
         this.pageChange.emit({
           pageIndex: event.pageIndex,
@@ -136,7 +137,7 @@ export class CommonTableComponent implements OnInit, OnChanges {
 
   private setData(d: any[]) {
     this.dataSource.data = Array.isArray(d) ? d : [];
-    
+
     if (!this.serverSidePagination) {
       if (this.paginator) { this.dataSource.paginator = this.paginator; }
       if (this.sort) { this.dataSource.sort = this.sort; }
