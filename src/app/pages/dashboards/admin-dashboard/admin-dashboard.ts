@@ -26,24 +26,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 
-const ELEMENT_DATA = [
-  { staffId: 1, staff: 'Hydrogen', user: 1.0079, status: 'In Complete', location: 'A1' },
-  { staffId: 2, staff: 'Helium', user: 4.0026, status: 'Complete', location: 'A2' },
-  { staffId: 3, staff: 'Lithium', user: 6.941, status: 'Complete', location: 'A3' },
-  { staffId: 1, staff: 'Hydrogen', user: 1.0079, status: 'In Complete', location: 'A1' },
-  { staffId: 4, staff: 'Beryllium', user: 9.0122, status: 'Complete', location: 'A4' },
-  { staffId: 2, staff: 'Helium', user: 4.0026, status: 'Complete', location: 'A2' },
-  { staffId: 5, staff: 'Boron', user: 10.811, status: 'Complete', location: 'A5' },
-  { staffId: 6, staff: 'Carbon', user: 12.0107, status: 'In Complete', location: 'A6' },
-  { staffId: 4, staff: 'Beryllium', user: 9.0122, status: 'Complete', location: 'A4' },
-  { staffId: 7, staff: 'Nitrogen', user: 14.0067, status: 'Complete', location: 'A7' },
-  { staffId: 5, staff: 'Boron', user: 10.811, status: 'Complete', location: 'A5' },
-  { staffId: 8, staff: 'Oxygen', user: 15.9994, status: 'Complete', location: 'A8' },
-  { staffId: 6, staff: 'Carbon', user: 12.0107, status: 'In Complete', location: 'A6' },
-  { staffId: 9, staff: 'Fluorine', user: 18.9984, status: 'In Complete', location: 'A9' },
-  { staffId: 10, staff: 'Neon', user: 20.1797, status: 'Complete', location: 'A10' },
-  { staffId: 8, staff: 'OxystaffIdgen', user: 15.9994, status: 'Complete', location: 'A8' },
-];
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
@@ -185,8 +167,7 @@ export class AdminDashboard {
       labels: []
     };
 
-
-this.chartOptionClientStaff = {
+    this.chartOptionClientStaff = {
       series: [
         { name: "Clients", data: [] },
         { name: "Staffs", data: [] }
@@ -374,20 +355,20 @@ this.chartOptionClientStaff = {
     this.http.get(API_URL + ENDPOINTS.GET_CLIENT_STAFF_COUNT).subscribe((res: any) => {
       this.clientStaff = res;
       const clientsCount = res.totalUsers ?? 0;
-        const staffCount = res.totalStaff ?? 0;
-        const monthLabel = "Current Month"; // or derive from res or date
+      const staffCount = res.totalStaff ?? 0;
+      const monthLabel = "Current Month"; // or derive from res or date
 
-        // Update series
-        this.chartOptionClientStaff.series = [
-          { name: "Clients", data: [clientsCount] },
-          { name: "Staffs", data: [staffCount] }
-        ];
+      // Update series
+      this.chartOptionClientStaff.series = [
+        { name: "Clients", data: [clientsCount] },
+        { name: "Staffs", data: [staffCount] }
+      ];
 
-        // Update xaxis categories
-        this.chartOptionClientStaff.xaxis = {
-          ...this.chartOptionClientStaff.xaxis,
-          categories: [monthLabel]
-        };
+      // Update xaxis categories
+      this.chartOptionClientStaff.xaxis = {
+        ...this.chartOptionClientStaff.xaxis,
+        categories: [monthLabel]
+      };
 
     });
 

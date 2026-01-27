@@ -21,6 +21,11 @@ export const routes: Routes = [
         component: MainLayout,
         children: [
             {
+                path: 'dashboard',
+                loadComponent: () => import('./pages/dashboards/default-dashboard/default-dashboard').then(m => m.DefaultDashboard),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'admin-dashboard',
                 loadComponent: () => import('./pages/dashboards/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard),
                 canActivate: [authGuard],

@@ -1,1 +1,77 @@
-<p>default-dashboard works!</p>
+<div class="row g-3">
+
+    <div class="col-md-6">
+        <mat-card class="shadow" appearance="outlined">
+            <mat-card-header>
+                <div class="ms-auto"><i class="fi fi-rr-user-trust profile"></i></div>
+                <mat-card-title>{{currentUser?.name}}</mat-card-title>
+                <mat-card-subtitle><strong>{{currentUser?.roleType}}</strong></mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="m-3">
+                <div class="p-2 rounded">
+                    <i>Welcome to the Default Dashboard!</i>
+                    <p class="mb-1 mt-3"><i class="fi fi-rr-phone-call pe-3"></i>{{currentUser?.phoneNumber}}</p>
+                    <p><i class="fi fi-rr-envelope pe-3"></i>{{currentUser?.email}}</p>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div class="col-md-6">
+        <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
+            <mat-card-header class="d-flex justify-content-between">
+                <mat-card-title>Staff Types</mat-card-title>
+                <i class="fi fi-rr-analyse-alt icon"></i>
+            </mat-card-header>
+            <hr class="mb-0">
+            <mat-card-content class="my-2">
+
+                <div id="chart">
+                    <apx-chart [series]="chartOptionsStaffType.series" [chart]="chartOptionsStaffType.chart"
+                        [labels]="chartOptionsStaffType.labels" [fill]="chartOptionsStaffType.fill"
+                        [stroke]="chartOptionsStaffType.stroke"
+                        [responsive]="chartOptionsStaffType.responsive"></apx-chart>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div class="col-md-6">
+        <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
+            <mat-card-header class="d-flex justify-content-between">
+                <mat-card-title>Clients & Staff Stats</mat-card-title>
+                <i class="fi fi-rr-users icon"></i>
+            </mat-card-header>
+            <hr>
+            <mat-card-content class="my-2">
+                <div id="chart">
+                    <apx-chart [series]="chartOptionClientStaff.series" [chart]="chartOptionClientStaff.chart"
+                        [dataLabels]="chartOptionClientStaff.dataLabels"
+                        [plotOptions]="chartOptionClientStaff.plotOptions" [yaxis]="chartOptionClientStaff.yaxis"
+                        [legend]="chartOptionClientStaff.legend" [fill]="chartOptionClientStaff.fill"
+                        [stroke]="chartOptionClientStaff.stroke" [tooltip]="chartOptionClientStaff.tooltip"
+                        [xaxis]="chartOptionClientStaff.xaxis"></apx-chart>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+    <div class="col-md-6">
+        <mat-card class="example-card h-100 bg-white shadow" appearance="outlined">
+                <mat-card-header class="d-flex justify-content-between">
+                    <mat-card-title>Bookings Statistics</mat-card-title>
+                    <i class="fi fi-rr-stats icon"></i>
+                </mat-card-header>
+                <hr>
+                <mat-card-content>
+                    <div id="chart">
+                        <apx-chart #chartBooking [series]="chartOptionsBooking.series"
+                            [chart]="chartOptionsBooking.chart" [labels]="chartOptionsBooking.labels"
+                            [responsive]="chartOptionsBooking.responsive">
+                        </apx-chart>
+                    </div>
+                </mat-card-content>
+        </mat-card>
+    </div>
+</div>

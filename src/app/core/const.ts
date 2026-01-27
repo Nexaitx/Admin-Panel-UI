@@ -9,6 +9,7 @@ export const ENDPOINTS = {
     SIGNUP: '/signup',
     RESET_PASSWORD: '/forgot-password',
 
+    GET_BOOKINGS_STATISTICS: '/api/admin/bookings/statistics',
     // Users
     GET_USERS: '/getAllUser',
     GET_ORGANIZATIONS: '/getAllOrganizations',

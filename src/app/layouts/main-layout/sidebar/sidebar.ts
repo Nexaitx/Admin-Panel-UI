@@ -22,82 +22,72 @@ import { API_URL, ENDPOINTS } from '../../../core/const';
 })
 export class Sidebar implements OnInit {
   permissions: string[] = [];
-  
+
   userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
-  roleObj = this.userProfile.role || {}; 
-  
-  roleName: string = this.roleObj.roleType || ''; 
+  roleObj = this.userProfile.role || this.userProfile.subRole || {};
+
+  roleName: string = this.roleObj.roleType || '';
 
   http = inject(HttpClient);
   filteredMenu: MenuItem[] = [];
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.getRolePermissions();
-    // Do NOT call buildMenu here. It's too early.
   }
 
   getRolePermissions() {
-    if (!this.roleObj?.roleid) {
-      console.warn('No Role ID found');
+    if (!this.roleObj?.roleid && !this.userProfile?.hasSubRole) {
       return;
     }
-
-    this.http.get<any>(`${API_URL}${ENDPOINTS.GET_ROLE_PERMISSIONS_BY_ROLE_ID}${this.roleObj.roleid}`)
-      .subscribe({
-        next: (res: any) => {
-          // 3. Assign permissions from API
-          // Ensure we map to a simple string array if the API returns objects
-          this.permissions = res.permissions || []; 
-
-          console.log('Permissions loaded:', this.permissions);
-
-          // 4. BUILD MENU HERE (Inside the subscription)
-          // Now that we have data, we can filter the menu
-          this.filteredMenu = this.buildMenu(MENU_DATA);
-        },
-        error: (err) => {
-          console.error('Failed to load permissions', err);
-          // Optional: Show a fallback menu or empty state
-          this.filteredMenu = []; 
-        }
-      });
+    if (this.roleObj?.roleid) {
+      this.http.get<any>(`${API_URL}${ENDPOINTS.GET_ROLE_PERMISSIONS_BY_ROLE_ID}${this.roleObj.roleid}`)
+        .subscribe({
+          next: (res: any) => {
+            this.permissions = res.permissions || [];
+            this.filteredMenu = this.buildMenu(MENU_DATA);
+          },
+          error: (err) => {
+            console.error('Failed to load permissions', err);
+            this.filteredMenu = [];
+          }
+        });
+    }
+    else if (this.userProfile?.hasSubRole) {
+      const existingPerms = this.roleObj?.permissions || [];
+      this.permissions = existingPerms.includes('Dashboard')
+        ? [...existingPerms]
+        : ['Dashboard', ...existingPerms];
+      const menu = {
+        title: 'Dashboard',
+        icon: 'widgets',
+        route: '/app/dashboard',
+        permission: 'Dashboard'
+      }
+      const otherMenuItems = this.buildMenu(MENU_DATA);
+      this.filteredMenu = [menu, ...otherMenuItems];
+    }
   }
 
   buildMenu(items: MenuItem[]): MenuItem[] {
     return items
       .filter(item => {
-        // Check 1: Permissions
-        // If the item has no permission requirement, allow it.
-        // If it does, check if our API permissions include it.
-        const hasPerm = item.permission 
-          ? this.permissions.includes(item.permission) 
+        const hasPerm = item.permission
+          ? this.permissions.includes(item.permission)
           : true;
-
-        // Check 2: Roles
-        // We compare item.allowedRoles against this.roleName (String), not the Object
-        const hasRole = item.allowedRoles 
-          ? item.allowedRoles.includes(this.roleName) 
+        const hasRole = item.allowedRoles
+          ? item.allowedRoles.includes(this.roleName)
           : true;
-
         return hasPerm && hasRole;
       })
       .map(item => {
-        // Recursion for sub-menus
         if (item.children) {
-          // We recursively filter children, but we keep the parent 
-          // even if it has no children left (or you can filter empty parents out)
           const filteredChildren = this.buildMenu(item.children);
-          
-          // Optional: If you want to hide the parent if all children are hidden:
-          // if (filteredChildren.length === 0) return null; 
-
           return { ...item, children: filteredChildren };
         }
         return item;
       })
-      // Clean up nulls if you implemented the "Optional" step above
-      .filter(item => item !== null) as MenuItem[]; 
+      .filter(item => item !== null) as MenuItem[];
   }
 }

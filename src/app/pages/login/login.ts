@@ -71,21 +71,21 @@ export class Login {
     try {
       // Step 1: Login 
       const loginResponse: any = await this.http.post(
-        API_URL + ENDPOINTS.LOGIN, 
+        API_URL + ENDPOINTS.LOGIN,
         this.loginForm.value
       ).toPromise();
-      
+
       if (loginResponse) {
         // Step 2: User data save
         this.auth.login(
-          loginResponse?.token, 
-          loginResponse?.profile?.role?.permissions, 
+          loginResponse?.token,
+          loginResponse?.profile?.role?.permissions,
           loginResponse?.profile
         );
-        
+
         // Step 3: FCM token handle
         await this.handleFCMToken(loginResponse.token);
-        
+
         // Step 4: Success message show
         this._snackBar.open('Logged In Successfully!', 'Success', {
           horizontalPosition: 'end',
@@ -96,7 +96,7 @@ export class Login {
 
         // Step 5: Navigate 
         await this.navigateBasedOnPermissions(loginResponse);
-        
+
         // Step 6: Debug logs show 
         setTimeout(() => {
           this.showFCMDebugInfo();
@@ -104,8 +104,8 @@ export class Login {
       }
     } catch (error: any) {
       this._snackBar.open(
-        error.error?.message || 'Login failed. Please check your credentials.', 
-        'Error', 
+        error.error?.message || 'Login failed. Please check your credentials.',
+        'Error',
         {
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -121,34 +121,34 @@ export class Login {
   private async handleFCMToken(authToken: string): Promise<void> {
     try {
       // Check current notification permission status
-      
+
       if (Notification.permission === 'granted') {
         // Permission already granted
-        
+
         // Check if we already have FCM token
         if (this.firebaseService.fcmToken) {
           await this.sendFCMTokenToBackend(this.firebaseService.fcmToken, authToken);
         } else {
           // Get token from Firebase Service
           await this.firebaseService.requestPermission();
-          
+
           if (this.firebaseService.fcmToken) {
             await this.sendFCMTokenToBackend(this.firebaseService.fcmToken, authToken);
           }
         }
       } else if (Notification.permission === 'default') {
         // Permission not decided yet, ask user
-        
+
         // Show a snackbar to inform user about notification permission
         this._snackBar.open('Please allow notifications for better experience', 'OK', {
           horizontalPosition: 'end',
           verticalPosition: 'top',
           duration: 3000
         });
-        
+
         // Request permission
         const hasPermission = await this.firebaseService.requestPermission();
-        
+
         if (hasPermission && this.firebaseService.fcmToken) {
           await this.sendFCMTokenToBackend(this.firebaseService.fcmToken, authToken);
         }
@@ -160,10 +160,10 @@ export class Login {
           duration: 3000
         });
       }
-      
+
       // Check for pending tokens
       this.firebaseService.sendPendingToken();
-      
+
     } catch (error) {
       console.error(' Error handling FCM token:', error);
     }
@@ -173,25 +173,25 @@ export class Login {
     try {
       const response: any = await this.http.post(
         API_URL + ENDPOINTS.UPDATE_FCM_TOKEN,
-        { 
+        {
           fcmToken: fcmToken,
           timestamp: new Date().toISOString()
         },
-        { 
-          headers: { 
+        {
+          headers: {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
-          } 
+          }
         }
-      ).toPromise();      
+      ).toPromise();
       // Remove pending token if exists
       localStorage.removeItem('pending_fcm_token');
-      
+
     } catch (error: any) {
-      
+
       // Store token for retry later
       localStorage.setItem('pending_fcm_token', fcmToken);
-      
+
       // Show error message to user
       this._snackBar.open('Failed to save notification token. Will retry later.', 'OK', {
         horizontalPosition: 'end',
@@ -202,24 +202,28 @@ export class Login {
   }
 
   private async navigateBasedOnPermissions(loginResponse: any): Promise<void> {
-    const perm = loginResponse?.profile?.role?.permissions;
+    const perm = loginResponse?.profile?.role?.permissions || loginResponse?.profile?.subRole?.permissions || [];
     const documentVerification = loginResponse?.profile?.documentVerification;
-
+    console.log(perm);
+    
     if (perm.includes('Admin Dashboard')) {
       this.router.navigate(['/app/admin-dashboard']);
     } else if (perm.includes('Pharmacist Dashboard') && documentVerification === 'VERIFIED') {
       this.router.navigate(['/app/pharmacist-dashboard']);
     } else if (perm.includes('Dietician Dashboard')) {
       this.router.navigate(['/app/dietician-dashboard']);
+    }
+     else if (loginResponse?.profile?.subRole && loginResponse?.profile?.subRole?.permissions.length > 0) { //subrole
+      this.router.navigate(['/app/dashboard']);
     } else {
-      this.router.navigate(['/complete-verification']);
+      this.router.navigate(['/app/dashboard']);
     }
   }
 
   private showFCMDebugInfo(): void {
     // Get FCM status from service
     const fcmStatus = this.firebaseService.getFCMStatus();
-    
+
     // Show in snackbar for user info if token exists
     if (fcmStatus.fcmToken) {
       this._snackBar.open('Notification token saved successfully!', 'OK', {
@@ -234,7 +238,7 @@ export class Login {
   async testFCMToken(): Promise<void> {
     try {
       const hasPermission = await this.firebaseService.requestPermission();
-      
+
       if (hasPermission && this.firebaseService.fcmToken) {
         const token = localStorage.getItem('token');
         if (token) {
