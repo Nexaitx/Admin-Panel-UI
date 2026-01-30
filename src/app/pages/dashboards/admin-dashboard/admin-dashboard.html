@@ -3,7 +3,7 @@
   <p class="text-muted">We're glad to see you again. Here's what's happening in your dashboard:</p>
   <div class="row p-2 mt-3">
     <div class="col-md-4">
-      <mat-card class="example-card bg-white shadow h-auto" appearance="outlined">
+      <mat-card class="example-card bg-white shadow h-50" appearance="outlined">
         <mat-card-header>
           <mat-card-title class="d-flex"> <mat-icon> person_pin</mat-icon> {{role}}</mat-card-title>
           <mat-card-subtitle>
@@ -17,7 +17,7 @@
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="example-card my-2 bg-white shadow h-auto" appearance="outlined">
+      <mat-card class="example-card my-2 bg-white shadow h-50" appearance="outlined">
         <mat-card-header class="d-flex justify-content-between">
           <mat-card-title>Staff Types</mat-card-title>
           <mat-icon class="navigations" [routerLink]="['/app/staff']" matTooltip="View Staff">launch</mat-icon>
@@ -35,7 +35,7 @@
     </div>
 
     <div class="col-md-4 mb-2">
-      <mat-card class="example-card bg-white shadow" appearance="outlined">
+      <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
         <mat-card-header>
           <mat-card-title>Accounts</mat-card-title>
           <mat-card-subtitle>
@@ -53,7 +53,7 @@
     </div>
 
     <div class="col-md-4 mb-2">
-      <mat-card class="example-card bg-white shadow" appearance="outlined">
+      <mat-card class="example-card bg-white shadow h-100" appearance="outlined">
         <mat-card-header class="d-flex justify-content-between">
           <mat-card-title>Clients & Staff Stats</mat-card-title>
           <mat-icon class="navigations" [routerLink]="['/app/client']" matTooltip="View Clients">launch</mat-icon>

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -302,7 +302,19 @@ export class AdminDashboard {
     }
   }
 
+  currentUser: any;
+  jwt = localStorage.getItem('token');
   getData() {
+
+   const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.jwt}`
+    });
+
+    // 2. Pass the headers in the options argument
+    this.http.get(API_URL + ENDPOINTS.GET_LOGGED_IN_USER_DETAILS, { headers })
+      .subscribe((res: any) => {
+        this.currentUser = res;
+      });
 
     this.http.get(API_URL + ENDPOINTS.GET_ONGOING_BOOKINGS).subscribe((res: any) => {
       this.dataSource.data = res;
@@ -373,12 +385,17 @@ export class AdminDashboard {
     });
 
     // Get bookings count
-    this.http.get(API_URL + ENDPOINTS.GET_BOOKING_COUNTS).subscribe((res: any) => {
-      const prev = res.accept || 0;
-      const decline = res.decline || 0;
-      const upcoming = res.PENDING || 0;
+    this.http.get(API_URL + ENDPOINTS.GET_BOOKINGS_STATISTICS).subscribe((res: any) => {
+      const total = res.total || 0;
+      const ongoing = res.ongoing || 0;
+      const accepted = res.accepted || 0;
+      const past = res.past || 0;
+      const cancelled = res.cancelled || 0;
+      const pending = res.pending || 0;
+      const completed = res.completed || 0;
+      const upcoming = res.upcoming || 0;
 
-      this.chartOptionsBooking.series = [prev, decline, upcoming];
+      this.chartOptionsBooking.series = [total, accepted, past, upcoming, ongoing, pending, cancelled, completed];
     });
   }
 
