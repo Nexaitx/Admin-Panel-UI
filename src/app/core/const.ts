@@ -31,10 +31,14 @@ export const ENDPOINTS = {
     GET_DOCTORS: '/getAllDoctor',
 
     // Diet plans
-    CREATE_DIETPLAN: '/api/dietplans/create',
+    CREATE_DIETPLAN: '/api/diet-plans/add-with-images',
     UPDATE_DIETPLAN: '/api/dietplans/',
     DELETE_DIETPLAN: '/api/dietplans/',
     GET_DIETPLAN: '/getAllDietPlan',
+    
+    GET_MY_DIET_PLAN: '/api/diet-plans/my-diet-plans',
+    DELETE_DIET_PLAN_IMAGE: '/api/diet-plans/', //{dietPlanId}/images/{imageId}
+    ADD_IMAGE_DIET_PLAN: '/api/diet-plans/', //{dietPlanId}/images
 
     // Diet Plans Subscription Plans
     CREATE_DIET_SUBSCRIPTION: '/api/dieticians/subscription/plan-create',

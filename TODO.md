@@ -1,0 +1,2 @@
+- [ ] Update HTML button click in image dialog to pass `data.element` and `url` to `confirmDelete`
+- [ ] Modify `confirmDelete` method in TS to accept `element` and `url`, add confirmation logic to extract `imageId` from `url` and call `deleteImageFromDietPlan`

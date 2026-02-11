@@ -108,9 +108,9 @@ export class CompleteVerification {
   }
 
   onFileSelected(event: Event, which: 'license' | 'id') {
-    console.log(event);
+    
     const input = event.target as HTMLInputElement;
-    console.log(event.target)
+    
     if (!input.files || input.files.length === 0) return;
     const file = input.files[0];
     const maxBytes = 5 * 1024 * 1024;

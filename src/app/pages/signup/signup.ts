@@ -73,7 +73,6 @@ export class Signup {
         role: ['', Validators.required],
       },
       {
-        // Add the custom validator at the form group level
         validators: passwordMatchValidator,
       }
     );
@@ -81,9 +80,7 @@ export class Signup {
 
   onKeyPress(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
-    // Check if the character is a number (0-9)
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-      // If not, prevent the key press
       event.preventDefault();
     }
   }
@@ -102,33 +99,29 @@ export class Signup {
   }
 
   onSignupSubmit(): void {
-    // Check if the form is valid before submitting
     if (this.signupForm.invalid) {
       this.signupForm.markAllAsTouched();
       this._snackBar.open('Please correct the form errors.', 'Error', {
         horizontalPosition: 'end',
         verticalPosition: 'top',
         duration: 3000,
-        panelClass: ['snackbar-error'],
+        panelClass: ['snackbar-error']
       });
       return;
     }
 
-    // this.signupForm.value.roleType = 'Admin';
     this.http.post(API_URL + ENDPOINTS.SIGNUP, this.signupForm.value).subscribe(
       (res: any) => {
-        if (res) {
-          this._snackBar.open('Company Created Successful!', 'Successfully', {
-            horizontalPosition: 'end',
-            verticalPosition: 'top',
-            duration: 3000,
-            panelClass: ['snackbar-success'],
-          });
-          this.router.navigate(['/login']);
-        }
+        this._snackBar.open('Company Created Successful!', 'Successfully', {
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+        });
+        this.router.navigate(['/login']);
       },
       (error) => {
-        this._snackBar.open('Company Already Exists', 'Error', {
+        this._snackBar.open('Unable to create Account', 'Error', {
           horizontalPosition: 'end',
           verticalPosition: 'top',
           duration: 3000,
