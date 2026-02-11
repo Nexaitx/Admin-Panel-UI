@@ -53,7 +53,7 @@ export class DietPlan {
   dietPlanForm: FormGroup;
   jwt = localStorage.getItem('token');
 
-  displayedColumns: string[] = ['s_no', 'dietPlanId', 'planType', 'title', 'dietPreference', 'gender', 'minAge', 'maxAge', 'activityLevel', 'imageUrls', 'active', 'actions'];
+  displayedColumns: string[] = ['s_no', 'dietPlanId', 'title', 'description', 'category', 'mealType', 'caloriesPerDay', 'addedDate', 'subscriptionType', 'imageUrls', 'active', 'actions'];
 
   dietPlans: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   @ViewChild('imageDialog') imageDialog!: TemplateRef<any>;

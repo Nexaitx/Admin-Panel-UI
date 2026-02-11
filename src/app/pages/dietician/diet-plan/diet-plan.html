@@ -332,19 +332,19 @@
     <mat-card>
       <mat-card-content>
         <div class="table-controls d-flex">
-          <mat-form-field class="full-width-input">
+          <!-- <mat-form-field class="full-width-input">
             <mat-label>Search All Diet Plans</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllUsers>
-          </mat-form-field>
+          </mat-form-field> -->
 
-          <mat-form-field class="ms-3">
+          <!-- <mat-form-field class="ms-3">
             <mat-label>Select Diet plans</mat-label>
             <mat-select [(ngModel)]="selectedValue" (selectionChange)="getMyDietPlans()" name="dietPlans">
               <mat-option value="myDietPlans">Get My Diet Plans</mat-option>
               <mat-option value="all">Get All Diet plans</mat-option>
               <mat-option value="active">Get Active Diet Plans</mat-option>
             </mat-select>
-          </mat-form-field>
+          </mat-form-field> -->
 
           <button class="ms-auto" mat-button (click)="openUserDrawer($event)">
             <mat-icon>add</mat-icon>
@@ -366,9 +366,9 @@
               <td mat-cell *matCellDef="let element"> {{element.dietPlanId}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="planType">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Plan Type </th>
-              <td mat-cell *matCellDef="let element"> {{element.planType}} </td>
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
             </ng-container>
 
             <ng-container matColumnDef="title">
@@ -376,35 +376,35 @@
               <td mat-cell *matCellDef="let element"> {{element.title}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="dietPreference">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Diet Preference </th>
-              <td mat-cell *matCellDef="let element"> {{element.dietPreference}} </td>
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+              <td mat-cell *matCellDef="let element"> {{element.category}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="gender">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
-              <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
+            <ng-container matColumnDef="mealType">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Meal Type </th>
+              <td mat-cell *matCellDef="let element"> {{element.mealType}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="minAge">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Minimum Age</th>
-              <td mat-cell *matCellDef="let element"> {{element.minAge}} </td>
+            <ng-container matColumnDef="caloriesPerDay">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Calories Per Day</th>
+              <td mat-cell *matCellDef="let element"> {{element.caloriesPerDay}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="maxAge">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Maximum Age</th>
-              <td mat-cell *matCellDef="let element"> {{element.maxAge}} </td>
+            <ng-container matColumnDef="addedDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Added Date</th>
+              <td mat-cell *matCellDef="let element"> {{element.addedDate}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="activityLevel">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity Level </th>
-              <td mat-cell *matCellDef="let element"> {{element.activityLevel}} </td>
+            <ng-container matColumnDef="subscriptionType">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Subscription Type </th>
+              <td mat-cell *matCellDef="let element"> {{element.subscriptionType}} </td>
             </ng-container>
 
             <ng-container matColumnDef="imageUrls">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Image URLs </th>
-              <td mat-cell *matCellDef="let element"><button matButton
-                  (click)="openModel(element)">View</button></td>
+              <td mat-cell *matCellDef="let element"><button matButton="tonal"
+                  (click)="openModel(element)"><i class="fi fi-rr-edit"></i>&nbsp;Edit</button></td>
             </ng-container>
 
             <ng-container matColumnDef="active">
@@ -438,8 +438,8 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
             <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data matching the filter
-                "{{inputAllUsers.value}}"</td>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data Found
+               </td>
             </tr>
           </table>
 
