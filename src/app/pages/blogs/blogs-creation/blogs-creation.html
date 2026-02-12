@@ -1,1 +1,59 @@
-<p>blogs-creation works!</p>
+<div class="blog-creation-container p-4">
+    <div class="mb-4">
+        <h2 class="fw-bold">Create New Post</h2>
+        <hr />
+    </div>
+
+    <div class="form-section mb-4">
+        <label class="form-label"> Title</label>
+        <input type="text" class="form-control form-control-lg" placeholder="Enter a catchy title..."
+            [(ngModel)]="blogTitle" />
+    </div>
+
+    <div class="form-section mb-4">
+        <label class="form-label">Featured Image (Cover)</label>
+        <div class="upload-box border rounded p-3 text-center bg-light">
+            <input type="file" #imageInput accept="image/*" class="d-none" (change)="onImageSelected($event)" />
+
+            <div *ngIf="!featuredImage" (click)="imageInput.click()" style="cursor: pointer;">
+                <p class="mb-0 text-muted">📸 Click to upload cover image</p>
+            </div>
+
+            <div *ngIf="featuredImage" class="position-relative d-inline-block">
+                <img [src]="featuredImage" alt="Preview" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+                <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                    (click)="featuredImage = null">✕</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section mb-4">
+        <label class="form-label">Blog Content</label>
+        <div class="editor-container border rounded">
+            <input type="file" #editorImageInput accept="image/*" class="d-none"
+                (change)="onEditorImageSelected($event)" />
+
+            <div class="bg-light border-bottom p-2 d-flex align-items-center flex-wrap gap-2">
+                <ngx-editor-menu [editor]="editor" [toolbar]="toolbar" class="flex-grow-1"></ngx-editor-menu>
+
+                <button type="button" class="btn btn-sm btn-primary" (click)="editorImageInput.click()"
+                    title="Upload image from computer">
+                    📁 Upload Image
+                </button>
+            </div>
+
+            <ngx-editor [editor]="editor" [(ngModel)]="html" [placeholder]="'Write your story here...'"></ngx-editor>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label text-muted small">Short Summary (SEO)</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="blogDescription"
+                placeholder="Briefly describe this post..."></textarea>
+        </div>
+    </div>
+
+    <div class="footer-actions d-flex justify-content-end gap-2 border-top pt-4">
+        <button matButton class="px-4" (click)="resetForm()">Reset</button>
+        <button matButton="filled" class="px-5" (click)="saveBlog()">Publish Post</button>
+    </div>
+</div>

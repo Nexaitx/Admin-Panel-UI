@@ -301,6 +301,16 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'create-blog',
+                loadComponent: () => import('./pages/blogs/blogs-creation/blogs-creation').then(m => m.BlogsCreation),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'blogs',
+                loadComponent: () => import('./pages/blogs/blogs-list/blogs-list').then(m => m.BlogsList),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'settings',
                 loadComponent: () => import('./pages/settings/settings').then(m => m.Settings),
                 canActivate: [authGuard],

@@ -268,7 +268,15 @@ export const MENU_DATA: MenuItem[] = [
     route: '/app/permissions',
     permission: 'Permissions'
   },
-
+  {
+    title: 'Blogs',
+    icon: 'settings',
+    permission: 'Blogs',
+    children: [
+      { title: 'Create Blogs', icon: 'report_problem', route: '/app/create-blog' },
+      { title: 'All Blogs', icon: 'access_time', route: '/app/blogs' }
+    ]
+  },
   // --- Settings (Expansion Panel) ---
   {
     title: 'Settings',
