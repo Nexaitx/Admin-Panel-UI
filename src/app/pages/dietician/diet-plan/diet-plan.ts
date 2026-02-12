@@ -184,10 +184,10 @@ export class DietPlan {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.delete(API_URL + ENDPOINTS.DELETE_DIETPLAN + element.id)
+        this.http.delete(API_URL + ENDPOINTS.DELETE_DIETPLAN + element.dietPlanId, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } })
           .subscribe({
             next: () => {
-              this.dietPlans.data = this.dietPlans.data.filter(item => item.id !== element.id);
+              this.dietPlans.data = this.dietPlans.data.filter(item => item.dietPlanId !== element.dietPlanId);
               this.snackBar.open('Diet plan deleted successfully!', 'Close', {
                 duration: 3000,
                 panelClass: ['snackbar-success']
@@ -195,7 +195,7 @@ export class DietPlan {
             },
             error: err => {
               console.error(err);
-              this.snackBar.open('Error deleting diet plan. Please try again.', 'Close', {
+              this.snackBar.open(err.message, 'Close', {
                 duration: 3000,
                 panelClass: ['snackbar-error']
               });
@@ -212,9 +212,13 @@ export class DietPlan {
 
 
   openUserDrawer(element: any) {
+    this.selectedFiles = [];
+    this.imagePreviews = [];
     if (this.isEdit) {
       this.selectedRecord = element;
       this.dietPlanForm.patchValue(element);
+      this.imagePreviews = element.imageUrls ? element.imageUrls.map((img: any) => img.url || img) : [];
+      this.dietPlanForm.get('images')?.setValue(element.imageUrls ? element.imageUrls.map((img: any) => img.url || img) : []);
     }
     this.selectedRecord = element;
     this.isDrawerOpen = true;
@@ -270,9 +274,9 @@ export class DietPlan {
       });
     } else {
       // If your Edit also supports images, use the same 'formData' object here instead of 'this.dietPlanForm.value'
-      this.http.put(`${API_URL}${ENDPOINTS.UPDATE_DIETPLAN}${this.selectedRecord.id}`, formData, { headers }).subscribe({
+      this.http.put(`${API_URL}${ENDPOINTS.UPDATE_DIETPLAN}${this.selectedRecord.dietPlanId}`, formValue, { headers }).subscribe({
         next: (res: any) => {
-          const updatedData = this.dietPlans.data.map((item) => item.id === this.selectedRecord.id ? res : item);
+          const updatedData = this.dietPlans.data.map((item) => item.dietPlanId === this.selectedRecord.dietPlanId ? res : item);
           this.getMyDietPlans();
           this.snackBar.open('Diet plan updated successfully!', 'Close', { duration: 3000 });
           this.closeUserDrawer();
@@ -386,7 +390,7 @@ export class DietPlan {
     });
   }
 
-  confirmDelete(element: any, url: string) {
+  confirmDelete(element: any, img: any) {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: '350px',
       data: {
@@ -399,7 +403,7 @@ export class DietPlan {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const imageId = element?.imageid
+        const imageId = img.id || img.imageid;
         if (imageId) {
            this.deleteImageFromDietPlan(element?.dietPlanId, parseInt(imageId));
         }

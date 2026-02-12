@@ -32,8 +32,8 @@ export const ENDPOINTS = {
 
     // Diet plans
     CREATE_DIETPLAN: '/api/diet-plans/add-with-images',
-    UPDATE_DIETPLAN: '/api/dietplans/',
-    DELETE_DIETPLAN: '/api/dietplans/',
+    UPDATE_DIETPLAN: '/api/diet-plans/',
+    DELETE_DIETPLAN: '/api/diet-plans/',
     GET_DIETPLAN: '/getAllDietPlan',
     
     GET_MY_DIET_PLAN: '/api/diet-plans/my-diet-plans',
