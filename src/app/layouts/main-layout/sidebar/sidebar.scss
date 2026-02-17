@@ -1,3 +1,37 @@
+.sidebar-container {
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome, Safari, Edge */
+.sidebar-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Show scrollbar on hover */
+.sidebar-container:hover {
+  scrollbar-width: auto;
+}
+
+.sidebar-container:hover::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+}
+
+.sidebar-container:hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-container:hover::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.sidebar-container:hover::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 .sidebar-item-content {
   display: flex;
   align-items: center;

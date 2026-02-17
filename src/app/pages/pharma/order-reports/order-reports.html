@@ -1,1 +1,138 @@
-<p>order-reports works!</p>
+<div class="container-fluid py-2 px-0">
+  <mat-card class="report-header-card mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between p-3">
+      
+      <div class="d-flex align-items-center mb-3">
+        <mat-icon class="me-2 text-secondary">analytics</mat-icon>
+        <h2 class="mb-0 h5">Pharmacy Performance Reports</h2>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-baseline gap-3">
+        <mat-button-toggle-group name="reportRange" aria-label="Report Range" #group="matButtonToggleGroup" value="today">
+          <mat-button-toggle value="today">Today</mat-button-toggle>
+          <mat-button-toggle value="week">This Week</mat-button-toggle>
+          <mat-button-toggle value="month">This Month</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <mat-form-field appearance="outline" class="date-range-field">
+          <mat-label>Custom Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date">
+            <input matEndDate placeholder="End date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+        
+        <button mat-flat-button color="accent" class="refresh-btn">
+          <mat-icon>refresh</mat-icon> Generate
+        </button>
+      </div>
+    </div>
+  </mat-card>
+
+  <div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <mat-card class="p-3 border-top border-primary border-1 bg-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <small class="text-muted text-uppercase fw-bold">Total Prescriptions</small>
+          <h3 class="display-6 mb-0">1,284</h3>
+        </div>
+        <mat-icon class="card-icon text-primary">medication</mat-icon>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="col-md-6">
+    <mat-card class="p-3 border-top border-success border-1 bg-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <small class="text-muted text-uppercase fw-bold">Revenue</small>
+          <h3 class="display-6 mb-0">$14,520</h3>
+        </div>
+        <mat-icon class="card-icon text-success">payments</mat-icon>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+  <div class="row g-3 my-4">
+  <div class="col-md">
+    <mat-card class="report-card border-info">
+      <mat-card-content>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1 fw-bold">RECEIVED</p>
+            <h2 class="mb-0 ps-2">452</h2>
+          </div>
+          <mat-icon class="icon-lg text-info">inbox</mat-icon>
+        </div>
+        <mat-progress-bar mode="determinate" value="100" class="mt-3"></mat-progress-bar>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-md">
+    <mat-card class="report-card border-success">
+      <mat-card-content>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1 fw-bold">SUCCESSFUL</p>
+            <h2 class="mb-0 ps-2">380</h2>
+          </div>
+          <mat-icon class="icon-lg text-success">verified</mat-icon>
+        </div>
+        <div class="mt-2 small text-success">
+          <mat-icon class="v-align-middle">trending_up</mat-icon> 84% conversion
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-md">
+    <mat-card class="report-card border-primary">
+      <mat-card-content>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1 fw-bold">DELIVERED</p>
+            <h2 class="mb-0 ps-2">310</h2>
+          </div>
+          <mat-icon class="icon-lg text-primary">local_shipping</mat-icon>
+        </div>
+        <div class="mt-2 small text-muted">Avg. time: 45 mins</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-md">
+    <mat-card class="report-card border-danger">
+      <mat-card-content>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1 fw-bold">MISSED</p>
+            <h2 class="mb-0 text-danger ps-2">12</h2>
+          </div>
+          <mat-icon class="icon-lg text-danger">event_busy</mat-icon>
+        </div>
+        <div class="mt-2 small text-danger fw-bold">Requires Attention</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-md">
+    <mat-card class="report-card border-warning">
+      <mat-card-content>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1 fw-bold">RETURNED</p>
+            <h2 class="mb-0 ps-2">8</h2>
+          </div>
+          <mat-icon class="icon-lg text-warning">assignment_return</mat-icon>
+        </div>
+        <div class="mt-2 small text-muted">Restock pending</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+</div>

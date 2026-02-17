@@ -278,14 +278,14 @@ export const MENU_DATA: MenuItem[] = [
   {
     title: 'Orders',
     icon: 'shopping_basket',
-    route: '/app/permissions',
+    route: '/app/orders',
     permission: 'Orders',
     allowedRoles: ['Pharmacist']
   },
   {
     title: 'Reports',
     icon: 'bar_chart',
-    route: '/app/permissions',
+    route: '/app/reports',
     permission: 'Reports',
     allowedRoles: ['Pharmacist']
   },

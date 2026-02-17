@@ -121,6 +121,42 @@ mat-drawer-content {
  
         &:hover {
             background-color: #f5f5f5 !important;
+        }        .main-layout {
+          height: calc(100vh - 64px); /* Adjust 64px based on your toolbar height */
+        }
+        
+        .sidebar {
+          height: calc(100vh - 64px);
+          overflow-y: auto;
+          scrollbar-width: none; /* Firefox - hide scrollbar */
+        }
+        
+        /* Hide scrollbar for Chrome, Safari, Edge */
+        .sidebar::-webkit-scrollbar {
+          display: none;
+        }
+        
+        /* Show scrollbar on hover */
+        .sidebar:hover {
+          scrollbar-width: auto; /* Firefox */
+        }
+        
+        .sidebar:hover::-webkit-scrollbar {
+          display: block;
+          width: 10px;
+        }
+        
+        .sidebar:hover::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        
+        .sidebar:hover::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 6px;
+        }
+        
+        .sidebar:hover::-webkit-scrollbar-thumb:hover {
+          background: #888;
         }
     }
 }
