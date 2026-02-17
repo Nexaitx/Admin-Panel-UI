@@ -161,44 +161,44 @@ export const MENU_DATA: MenuItem[] = [
     icon: 'apps',
     permission: 'Pharma',
     allowedRoles: ['Admin'], // Restricts this specific block to Admins
-    children: [
-      { title: 'Pharma Bookings', icon: 'account_circle', route: '/app/pharmaceutical/bookings' },
-      { title: 'Vitoxyz Medicines', icon: 'healing', route: '/app/pharmaceutical/medicines' },
-      { title: 'Pharmacists Products', icon: 'align_vertical_bottom', route: '/app/pharmaceutical/all-pharmacists-available-products' },
-      { title: 'Top Discounts', icon: 'leaderboard', route: '/app/pharmaceutical/top-discounts' },
-      { title: 'Available Products', icon: 'addchart', route: '/app/pharmaceutical/vitoxyz-available-products' },
-    ]
+    // children: [
+    //   { title: 'Pharma Bookings', icon: 'account_circle', route: '/app/pharmaceutical/bookings' },
+    //   { title: 'Vitoxyz Medicines', icon: 'healing', route: '/app/pharmaceutical/medicines' },
+    //   { title: 'Pharmacists Products', icon: 'align_vertical_bottom', route: '/app/pharmaceutical/all-pharmacists-available-products' },
+    //   { title: 'Top Discounts', icon: 'leaderboard', route: '/app/pharmaceutical/top-discounts' },
+    //   { title: 'Available Products', icon: 'addchart', route: '/app/pharmaceutical/vitoxyz-available-products' },
+    // ]
   },
 
   // --- Pharma (Pharmacist View - Flat Links) ---
-  {
-    title: 'Pharma Bookings',
-    icon: 'receipt_long',
-    route: '/app/pharmaceutical/bookings',
-    permission: 'Pharma',
-    allowedRoles: ['Pharmacist']
-  },
-  {
-    title: 'Vitoxyz Medicine Data',
-    icon: 'medications',
-    route: '/app/pharmaceutical/medicines',
-    permission: 'Pharma',
-    allowedRoles: ['Pharmacist']
-  },
-  {
-    title: 'My Available Products',
-    icon: 'health_and_safety',
-    route: '/app/pharmaceutical/my-available-medicine',
-    permission: 'Pharma',
-    allowedRoles: ['Pharmacist']
-  },
-  {
-    title: 'Other Pharmacist Products',
-    icon: 'safety_divider',
-    route: '/app/pharmaceutical/other-pharmacists-available-products',
-    permission: 'Pharma',
-    allowedRoles: ['Pharmacist']
-  },
+  // {
+  //   title: 'Pharma Bookings',
+  //   icon: 'receipt_long',
+  //   route: '/app/pharmaceutical/bookings',
+  //   permission: 'Pharma',
+  //   allowedRoles: ['Pharmacist']
+  // },
+  // {
+  //   title: 'Vitoxyz Medicine Data',
+  //   icon: 'medications',
+  //   route: '/app/pharmaceutical/medicines',
+  //   permission: 'Pharma',
+  //   allowedRoles: ['Pharmacist']
+  // },
+  // {
+  //   title: 'My Available Products',
+  //   icon: 'health_and_safety',
+  //   route: '/app/pharmaceutical/my-available-medicine',
+  //   permission: 'Pharma',
+  //   allowedRoles: ['Pharmacist']
+  // },
+  // {
+  //   title: 'Other Pharmacist Products',
+  //   icon: 'safety_divider',
+  //   route: '/app/pharmaceutical/other-pharmacists-available-products',
+  //   permission: 'Pharma',
+  //   allowedRoles: ['Pharmacist']
+  // },
 
   // --- Diet Section ---
   {
@@ -251,12 +251,7 @@ export const MENU_DATA: MenuItem[] = [
     route: '/app/prescription',
     permission: 'Prescriptions'
   },
-  {
-    title: 'Account',
-    icon: 'group',
-    route: '/app/account',
-    permission: 'Account'
-  },
+
   {
     title: 'Roles',
     icon: 'group',
@@ -278,23 +273,34 @@ export const MENU_DATA: MenuItem[] = [
       { title: 'All Blogs', icon: 'access_time', route: '/app/blogs' }
     ]
   },
+
+  // new Pharma Integration
   {
     title: 'Orders',
-    icon: 'library_books',
+    icon: 'shopping_basket',
     route: '/app/permissions',
-    permission: 'Permissions'
+    permission: 'Orders',
+    allowedRoles: ['Pharmacist']
   },
   {
     title: 'Reports',
-    icon: 'library_books',
+    icon: 'bar_chart',
     route: '/app/permissions',
-    permission: 'Permissions'
+    permission: 'Reports',
+    allowedRoles: ['Pharmacist']
   },
   {
     title: 'Orders Ledgers',
-    icon: 'library_books',
+    icon: 'money',
     route: '/app/order-ledgers',
-    permission: 'Orders Ledgers'
+    permission: 'Order Ledgers',
+    allowedRoles: ['Pharmacist']
+  },
+  {
+    title: 'Account',
+    icon: 'group',
+    route: '/app/account',
+    permission: 'Account'
   },
   // --- Settings (Expansion Panel) ---
   {
