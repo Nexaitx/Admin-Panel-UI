@@ -1,0 +1,4 @@
+<small>Manage /<span class="highlight"> Main-Role Accounts</span></small>
+
+<app-common-table [columns]="columns"  [serverSidePagination]="false" [formFields]="formFields" [showCreate]="true" [data]="dataSource.data" [showActions]="true" (save)="onTableSave($event)" (delete)="onTableDelete($event)">
+</app-common-table>

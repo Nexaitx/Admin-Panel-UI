@@ -37,7 +37,7 @@ export const routes: Routes = [
             },
             {
                 path: 'pharmacist-dashboard',
-                loadComponent: () => import('./pages/dashboards/pharmacist-dashboard/pharmacist-dashboard').then(m => m.PharmacistDashboard),
+                loadComponent: () => import('./pages/dashboards/pharma-dashboard/pharma-dashboard').then(m => m.PharmaDashboard),
                 canActivate: [authGuard],
             },
             {
@@ -116,8 +116,8 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
-                path: 'manage-accounts',
-                loadChildren: () => import('./pages/manage-accounts/manage-accounts-module').then(m => m.ManageAccountsModule),
+                path: 'role-accounts',
+                loadComponent: () => import('./pages/manage-accounts/role-accounts/role-accounts').then(m => m.RoleAccounts),
                 canActivate: [authGuard],
             },
             {
@@ -157,7 +157,7 @@ export const routes: Routes = [
             },
             {
                 path: 'sub-role-accounts',
-                loadComponent: () => import('./pages/subrole-accounts/subrole-accounts').then(m => m.SubroleAccounts),
+                loadComponent: () => import('./pages/manage-accounts/subrole-accounts/subrole-accounts').then(m => m.SubroleAccounts),
                 canActivate: [authGuard],
             },
             {
@@ -319,6 +319,22 @@ export const routes: Routes = [
                 path: 'permissions',
                 loadComponent: () => import('./pages/permissions/permissions').then(m => m.Permissions),
                 canActivate: [authGuard],
+            },
+            // New Pharmacy UI Pages
+            {
+                path: 'orders',
+                loadComponent: () => import('./pages/pharma/orders/orders').then(m => m.Orders),
+                canActivate: [authGuard]
+            },
+            {
+                path: 'order-ledgers',
+                loadComponent: () => import('./pages/pharma/order-ledgers/order-ledgers').then(m => m.OrderLedgers),
+                canActivate: [authGuard]
+            },
+            {
+                path: 'reports',
+                loadComponent: () => import('./pages/pharma/order-reports/order-reports').then(m => m.OrderReports),
+                canActivate: [authGuard]
             }
         ]
     }

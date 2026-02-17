@@ -179,6 +179,7 @@ export class CommonTableComponent implements OnInit, OnChanges {
   }
 
   handleDelete() {
+    console.log(this.activeRow)
     if (this.activeRow) { this.delete.emit(this.activeRow); }
   }
 
@@ -189,8 +190,6 @@ export class CommonTableComponent implements OnInit, OnChanges {
       columnType: col.type
     });
   }
-
-  onDelete(row: any) { this.delete.emit(row); }
 
   private openEditDialog(row: any, isNew: boolean) {
     this.editRow = JSON.parse(JSON.stringify(row));

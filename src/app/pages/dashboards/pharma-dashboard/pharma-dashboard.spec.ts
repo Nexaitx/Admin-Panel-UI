@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SubroleAccounts } from './subrole-accounts';
+import { PharmaDashboard } from './pharma-dashboard';
 
-describe('SubroleAccounts', () => {
-  let component: SubroleAccounts;
-  let fixture: ComponentFixture<SubroleAccounts>;
+describe('PharmaDashboard', () => {
+  let component: PharmaDashboard;
+  let fixture: ComponentFixture<PharmaDashboard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubroleAccounts]
+      imports: [PharmaDashboard]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SubroleAccounts);
+    fixture = TestBed.createComponent(PharmaDashboard);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

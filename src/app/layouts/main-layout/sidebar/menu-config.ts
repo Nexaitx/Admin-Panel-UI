@@ -56,7 +56,8 @@ export const MENU_DATA: MenuItem[] = [
       { title: 'Staff', icon: 'admin_panel_settings', route: '/app/staff' },
       { title: 'Pharmacist', icon: 'local_hospital', route: '/app/pharmacist' },
       { title: 'Dieticians', icon: 'medical_information', route: '/app/dietician' },
-      { title: 'Create Accounts', icon: 'medical_information', route: '/app/sub-role-accounts' },
+      { title: 'Main Role Accounts', icon: 'admin_panel_settings', route: '/app/role-accounts' },
+      { title: 'Sub Role Accounts', icon: 'medical_information', route: '/app/sub-role-accounts' },
     ]
   },
 
@@ -276,6 +277,24 @@ export const MENU_DATA: MenuItem[] = [
       { title: 'Create Blogs', icon: 'report_problem', route: '/app/create-blog' },
       { title: 'All Blogs', icon: 'access_time', route: '/app/blogs' }
     ]
+  },
+  {
+    title: 'Orders',
+    icon: 'library_books',
+    route: '/app/permissions',
+    permission: 'Permissions'
+  },
+  {
+    title: 'Reports',
+    icon: 'library_books',
+    route: '/app/permissions',
+    permission: 'Permissions'
+  },
+  {
+    title: 'Orders Ledgers',
+    icon: 'library_books',
+    route: '/app/order-ledgers',
+    permission: 'Orders Ledgers'
   },
   // --- Settings (Expansion Panel) ---
   {

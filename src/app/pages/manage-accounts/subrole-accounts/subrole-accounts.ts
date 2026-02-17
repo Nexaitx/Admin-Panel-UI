@@ -5,9 +5,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-import { API_URL, ENDPOINTS } from '../../core/const';
-import { ColumnDef, CommonTableComponent } from '../../shared/common-table/common-table.component';
-import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
+import { API_URL, ENDPOINTS } from '../../../core/const';
+import { ColumnDef, CommonTableComponent } from '../../../shared/common-table/common-table.component';
+import { ConfirmationDialog } from '../../confirmation-dialog/confirmation-dialog';
 
 // Material Imports
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,7 +29,6 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class SubroleAccounts implements OnInit {
   private http = inject(HttpClient);
-  private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
@@ -37,7 +36,7 @@ export class SubroleAccounts implements OnInit {
 
   dataSource = new MatTableDataSource<any>([]);
   userForm!: FormGroup;
-  subRoles: any[] = []; // List of roles from API
+  subRoles: any[] = [];
   selectedUser: any = null;
   isEdit = false;
 
@@ -48,7 +47,7 @@ export class SubroleAccounts implements OnInit {
     { key: 'subRoleName', header: 'Subrole&nbsp;Name', sortable: true },
     { key: 'name', header: 'Full&nbsp;Name', sortable: true },
     { key: 'email', header: 'Email&nbsp;Address', sortable: true },
-    { key: 'phoneNumber', header: 'Phone&nbsp;Number', sortable: true },
+    { key: 'phoneNumber', header: 'Phone&nbsp;Number', sortable: true }
   ];
 
   formFields: ColumnDef[] = [
@@ -66,10 +65,8 @@ export class SubroleAccounts implements OnInit {
   }
 
   fetchSubRoles() {
-    // Replace with your actual endpoint for getting the sub-roles list
     this.http.get(API_URL + ENDPOINTS.GET_SUBROLES).subscribe((res: any) => {
       this.subRoles = res;
-      // populate select options for formFields
       const idx = this.formFields.findIndex(f => f.key === 'subRoleId');
       if (idx !== -1) {
         this.formFields[idx].options = (res || []).map((r: any) => ({ value: r.subRoleId, label: r.subRoleName }));
@@ -100,7 +97,7 @@ export class SubroleAccounts implements OnInit {
       this.snackBar.open('Missing identifier for deletion', 'Close');
       return;
     }
-    
+
     const confirmRef = this.dialog.open(ConfirmationDialog, {
       data: {
         title: 'Confirm Deletion',
@@ -125,7 +122,7 @@ export class SubroleAccounts implements OnInit {
       this.dataSource.data = res;
     });
   }
-  
+
   handleSuccess(msg: string) {
     this.snackBar.open(msg, 'Close', { duration: 3000 });
     this.dialog.closeAll();

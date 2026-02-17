@@ -66,7 +66,7 @@ export const ENDPOINTS = {
     // Get Accounts
     GET_ACCOUNTS: '/getAllAccounts',
     UPDATE_ACCOUNT: '/updateAccount',
-    DELETE_ACCOUNT: '/deleteAccount/',
+    DELETE_ACCOUNT: '/deleteAdminAccount/',
     GET_ACCOUNT_BY_ROLE: '/getAccountByRole',
     GET_LOGGED_IN_USER_DETAILS: '/profile',
 
