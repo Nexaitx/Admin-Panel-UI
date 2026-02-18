@@ -6,15 +6,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from "@angular/router";
 import { interval, Subscription } from 'rxjs';
 
 interface Order {
   orderId: string;
   medication: string;
-  status: string;
+  status: 'Pending' | 'Ready' | 'Accepted'; // Added specific statuses
   timerId?: number;
   timer?: string;
+  extensionCount: number; // Track if the 1-min extension was used
 }
 
 @Component({
@@ -26,30 +28,90 @@ interface Order {
     MatIconModule,
     MatMenuModule,
     CommonModule,
-    RouterLink],
+    RouterLink,
+    MatTooltipModule],
   templateUrl: './pharma-dashboard.html',
   styleUrl: './pharma-dashboard.scss',
 })
 export class PharmaDashboard implements OnInit, OnDestroy {
-  displayedColumns = ['orderId', 'medication', 'status', 'timer', 'action']
+  displayedColumns = ['orderId', 'actions'];
   dataSource = new MatTableDataSource<Order>([]);
   ordersSignal = signal<Order[]>([]);
   private timerSubscription: Subscription | null = null;
-  private readonly TIMER_DURATION = 165; // 2 minutes 45 seconds
+  private readonly NEW_ORDER_TIME = 60;      // 1 Minute
+  private readonly RUNNING_ORDER_TIME = 120; // 2 Minutes
+  private readonly EXTENSION_TIME = 60;     // 1 Minute extension
+  private readonly MAX_EXTENSIONS = 3;
 
   ngOnInit() {
     const initialOrders: Order[] = [
-      { orderId: '1101', medication: 'Paracetamol', status: 'Pending', timerId: this.TIMER_DURATION, timer: this.formatTime(this.TIMER_DURATION) },
-      { orderId: '1102', medication: 'Paracetamol', status: 'Ready', timerId: 0, timer: '' },
-      { orderId: '1103', medication: 'Paracetamol', status: 'Ready', timerId: 0, timer: '' },
-      { orderId: '1104', medication: 'Paracetamol', status: 'Pending', timerId: this.TIMER_DURATION, timer: this.formatTime(this.TIMER_DURATION) },
-      { orderId: '1105', medication: 'Paracetamol', status: 'Pending', timerId: this.TIMER_DURATION, timer: this.formatTime(this.TIMER_DURATION) }
+      {
+        orderId: '1101',
+        medication: 'Paracetamol',
+        status: 'Pending',
+        timerId: this.NEW_ORDER_TIME,
+        timer: this.formatTime(this.NEW_ORDER_TIME),
+        extensionCount: 0 // Initialized for new orders
+      },
+      {
+        orderId: '1102',
+        medication: 'Amoxicillin',
+        status: 'Accepted',
+        timerId: this.RUNNING_ORDER_TIME,
+        timer: this.formatTime(this.RUNNING_ORDER_TIME),
+        extensionCount: 0 // Pharmacist can extend this 3 times
+      },
+      {
+        orderId: '1103',
+        medication: 'Ibuprofen',
+        status: 'Accepted',
+        timerId: 45, // Example: Order nearing expiration
+        timer: this.formatTime(45),
+        extensionCount: 2 // Example: Already extended twice
+      }
     ];
-    
+
     this.ordersSignal.set(initialOrders);
     this.dataSource.data = initialOrders;
     this.startTimer();
   }
+  onExtend(order: Order) {
+    if (order.extensionCount >= this.MAX_EXTENSIONS) return;
+
+    const updated = this.ordersSignal().map(o => {
+      if (o.orderId === order.orderId) {
+        const extraTime = (o.timerId || 0) + this.EXTENSION_TIME;
+        return {
+          ...o,
+          timerId: extraTime,
+          timer: this.formatTime(extraTime),
+          extensionCount: o.extensionCount + 1 // Increment counter
+        };
+      }
+      return o;
+    });
+    this.updateData(updated);
+  }
+
+  private updateData(orders: Order[]) {
+    this.ordersSignal.set(orders);
+    this.dataSource.data = orders;
+  }
+  onAccept(order: Order) {
+  const updated = this.ordersSignal().map(o => {
+    if (o.orderId === order.orderId) {
+      return { 
+        ...o, 
+        status: 'Accepted' as const, 
+        timerId: this.RUNNING_ORDER_TIME, 
+        timer: this.formatTime(this.RUNNING_ORDER_TIME),
+        extensionCount: 0 // Resetting count for the new phase
+      };
+    }
+    return o;
+  });
+  this.updateData(updated);
+}
 
   private startTimer() {
     this.timerSubscription = interval(1000).subscribe(() => {
@@ -82,10 +144,6 @@ export class PharmaDashboard implements OnInit, OnDestroy {
 
   onView(order: any) {
     console.log('Viewing order:', order.orderId);
-  }
-
-  onAccept(order: any) {
-    console.log('Accepted:', order.orderId);
   }
 
   onReject(order: any) {

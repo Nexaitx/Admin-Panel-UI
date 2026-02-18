@@ -68,152 +68,116 @@
     </div>
 
 
-    <div class="row g-3">
 
-        <div class="col-lg-6">
-            <mat-card class="m-2">
-                <mat-card-header>
-                    <mat-card-title class="d-flex align-items-center">
-                        <div class="live-icon rounded-circle me-1" style="height:10px; width: 10px"></div>Running Orders
-                    </mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <table mat-table [dataSource]="dataSource" class="w-100 mt-0">
-                        <ng-container matColumnDef="orderId">
-                            <th mat-header-cell *matHeaderCellDef>Order&nbsp;ID </th>
-                            <td mat-cell *matCellDef="let element"> {{element.orderId}} </td>
-                        </ng-container>
+    <div class="container-fluid py-4">
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <mat-card class="order-list-card">
+                    <mat-card-header class="pb-2 border-bottom">
+                        <mat-card-title class="d-flex align-items-center mb-0">
+                            <div class="live-pulse me-2"></div>
+                            <span class="h6 mb-0">Running Orders</span>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content class="p-0">
+                        <table mat-table [dataSource]="ordersSignal()" class="w-100 plain-table">
+                            <ng-container matColumnDef="orderId">
+                                <td mat-cell *matCellDef="let element" class="py-2">
+                                    <ng-container *ngIf="element.status === 'Accepted'">
+                                        <div class="fw-bold text-dark">#{{element.orderId}}</div>
+                                        <small [class.text-danger]="element.timerId < 30"
+                                            class="text-muted d-flex align-items-center">
+                                            <mat-icon style="font-size: 14px; height: 14px; width: 14px;"
+                                                class="me-1">history</mat-icon>
+                                            {{element.timer}}
+                                        </small>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
 
-                        <ng-container matColumnDef="medication">
-                            <th mat-header-cell *matHeaderCellDef> Medication </th>
-                            <td mat-cell *matCellDef="let element"> {{element.medication}} </td>
-                        </ng-container>
+                            <ng-container matColumnDef="actions">
+                                <td mat-cell *matCellDef="let element" class="text-end py-2 pe-3">
+                                    <div class="d-flex justify-content-end gap-1" *ngIf="element.status === 'Accepted'">
+                                        <!-- <button class="btn btn-sm btn-success rounded-pill" color="accent"
+                                            [disabled]="element.isExtended" (click)="onExtend(element)">
+                                            Extend Time
+                                        </button> -->
+                                        <span class="extension-label me-1" *ngIf="element.extensionCount > 0">
+                                            Ext: {{element.extensionCount}}/3
+                                        </span>
 
-                        <ng-container matColumnDef="status">
-                            <th mat-header-cell *matHeaderCellDef> Status </th>
-                            <td mat-cell *matCellDef="let element">
-                                <span class="badge"
-                                    [ngClass]="{'bg-warning': element.status === 'Pending', 'bg-success': element.status === 'Ready'}">
-                                    {{element.status}}
-                                </span>
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="timer">
-                            <th mat-header-cell *matHeaderCellDef> Timer </th>
-                            <td mat-cell *matCellDef="let element">
-                                {{element.timer}}
-                            </td>
-                        </ng-container>
+                                        <button mat-icon-button [color]="element.extensionCount >= 3 ? '' : 'accent'"
+                                            [disabled]="element.extensionCount >= 3" (click)="onExtend(element)"
+                                            [matTooltip]="element.extensionCount >= 3 ? 'Max extensions reached' : 'Extend 1 Min'">
+                                            <mat-icon>more_time</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="primary" matTooltip="View"
+                                            (click)="onView(element)">
+                                            <mat-icon matTooltip="View" matTooltipPosition="below">visibility</mat-icon>
+                                        </button>
+                                        <button mat-icon-button matTooltip="View" (click)="onEdit(element)">
+                                            <mat-icon matTooltip="View" class="text-warning"
+                                                matTooltipPosition="below">edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button class="text-success"
+                                            (click)="onDelivered(element)"><mat-icon matTooltip="Delivered" matTooltipPosition="below">task_alt</mat-icon></button>
+                                        <button mat-icon-button matTooltip="Return" (click)="onHandover(element)">
+                                            <mat-icon class="text-success" matTooltip="Handover"
+                                                matTooltipPosition="below">assignment_turned_in</mat-icon>
+                                        </button>
+                                        <button mat-icon-button class="text-danger"
+                                            (click)="onReturned(element)" ><mat-icon matTooltip="Returned" matTooltipPosition="below">replay</mat-icon></button>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                                [hidden]="row.status !== 'Accepted'"></tr>
+                        </table>
+                    </mat-card-content>
+                </mat-card>
+            </div>
 
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef> Action </th>
-                            <td mat-cell *matCellDef="let element">
-                                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Action menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
+            <div class="col-lg-6">
+                <mat-card class="order-list-card">
+                    <mat-card-header class="pb-2 border-bottom">
+                        <mat-card-title class="d-flex align-items-center mb-0">
+                            <div class="bg-warning rounded-circle me-2 new-pulse" style="height:10px; width: 10px">
+                            </div>
+                            <span class="h6 mb-0">New Orders (1m Limit)</span>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content class="p-0">
+                        <table mat-table [dataSource]="ordersSignal()" class="w-100 plain-table">
+                            <ng-container matColumnDef="orderId">
+                                <td mat-cell *matCellDef="let element" class="py-2">
+                                    <ng-container *ngIf="element.status === 'Pending'">
+                                        <span class="fw-bold">#{{element.orderId}}</span>
+                                        <div class="small text-danger fw-bold">{{element.timer}}</div>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
 
-                                <mat-menu #menu="matMenu">
-                                    <button mat-menu-item (click)="onView(element)">
-                                        <mat-icon>visibility</mat-icon>
-                                        <span>View Order</span>
+                            <ng-container matColumnDef="actions">
+                                <td mat-cell *matCellDef="let element" class="text-end py-2 pe-3">
+                                    <button matButton="tonal" class="w-100" color="primary" matTooltip="View"
+                                        (click)="onView(element)">
+                                        View Order
                                     </button>
+                                    <div *ngIf="element.status === 'Pending'" class="d-flex w-100">
 
-                                    <button mat-menu-item (click)="onEdit(element)">
-                                        <mat-icon color="primary">edit</mat-icon>
-                                        <span>Edit Order</span>
-                                    </button>
-
-                                    <button mat-menu-item (click)="onHandover(element)">
-                                        <mat-icon style="color: #ff9800;">hail</mat-icon>
-                                        <span>Handover Order</span>
-                                    </button>
-
-                                    <button mat-menu-item (click)="onDelivered(element)">
-                                        <mat-icon class="text-success">task_alt</mat-icon>
-                                        <span>Delivered Order</span>
-                                    </button>
-
-                                    <button mat-menu-item (click)="onReturned(element)">
-                                        <mat-icon class="text-danger">replay</mat-icon>
-                                        <span>Returned Order</span>
-                                    </button>
-                                </mat-menu>
-                            </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                </mat-card-content>
-            </mat-card>
-        </div>
-
-
-        <div class="col-lg-6">
-            <mat-card class="m-2">
-                <mat-card-header>
-                    <mat-card-title class="d-flex align-items-center">
-                        <div class="bg-warning rounded-circle me-1" style="height:10px; width: 10px"></div>New Order
-                    </mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <table mat-table [dataSource]="dataSource" class="w-100 mt-0">
-                        <ng-container matColumnDef="orderId">
-                            <th mat-header-cell *matHeaderCellDef>Order&nbsp;ID </th>
-                            <td mat-cell *matCellDef="let element"> {{element.orderId}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="medication">
-                            <th mat-header-cell *matHeaderCellDef> Medication </th>
-                            <td mat-cell *matCellDef="let element"> {{element.medication}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="status">
-                            <th mat-header-cell *matHeaderCellDef> Status </th>
-                            <td mat-cell *matCellDef="let element">
-                                <span class="badge"
-                                    [ngClass]="{'bg-warning': element.status === 'Pending', 'bg-success': element.status === 'Ready'}">
-                                    {{element.status}}
-                                </span>
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="timer">
-                            <th mat-header-cell *matHeaderCellDef> Timer </th>
-                            <td mat-cell *matCellDef="let element">
-                                {{element.timer}}
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef> Action </th>
-                            <td mat-cell *matCellDef="let element">
-                                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Action menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-
-                                <mat-menu #menu="matMenu">
-                                    <button mat-menu-item (click)="onView(element)">
-                                        <mat-icon>visibility</mat-icon>
-                                        <span>View Order</span>
-                                    </button>
-                                    <button mat-menu-item (click)="onAccept(element)">
-                                        <mat-icon class="text-success">check_circle</mat-icon>
-                                        <span>Accept Order</span>
-                                    </button>
-                                    <button mat-menu-item (click)="onReject(element)">
-                                        <mat-icon class="text-danger">cancel</mat-icon>
-                                        <span>Reject Order</span>
-                                    </button>
-                                </mat-menu>
-                            </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                </mat-card-content>
-            </mat-card>
+                                        <button mat-flat-button color="success" class="me-2 mt-2 w-50 btn-sm-custom"
+                                            (click)="onAccept(element)">Accept</button>
+                                        <button mat-stroked-button color="warn" class="mt-2 w-50 btn-sm-custom"
+                                            (click)="onReject(element)">Reject</button>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                                [hidden]="row.status !== 'Pending'"></tr>
+                        </table>
+                    </mat-card-content>
+                </mat-card>
+            </div>
         </div>
     </div>
 </div>
