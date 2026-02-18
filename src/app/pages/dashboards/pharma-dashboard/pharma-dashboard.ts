@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { interval, Subscription } from 'rxjs';
 
 interface Order {
@@ -42,6 +42,7 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   private readonly RUNNING_ORDER_TIME = 120; // 2 Minutes
   private readonly EXTENSION_TIME = 60;     // 1 Minute extension
   private readonly MAX_EXTENSIONS = 3;
+  private router = inject(Router)
 
   ngOnInit() {
     const initialOrders: Order[] = [
@@ -98,20 +99,21 @@ export class PharmaDashboard implements OnInit, OnDestroy {
     this.dataSource.data = orders;
   }
   onAccept(order: Order) {
-  const updated = this.ordersSignal().map(o => {
-    if (o.orderId === order.orderId) {
-      return { 
-        ...o, 
-        status: 'Accepted' as const, 
-        timerId: this.RUNNING_ORDER_TIME, 
-        timer: this.formatTime(this.RUNNING_ORDER_TIME),
-        extensionCount: 0 // Resetting count for the new phase
-      };
-    }
-    return o;
-  });
-  this.updateData(updated);
-}
+    const updated = this.ordersSignal().map(o => {
+      if (o.orderId === order.orderId) {
+        return {
+          ...o,
+          status: 'Accepted' as const,
+          timerId: this.RUNNING_ORDER_TIME,
+          timer: this.formatTime(this.RUNNING_ORDER_TIME),
+          extensionCount: 0
+        };
+      }
+      return o;
+    });
+    this.updateData(updated);
+    this.router.navigate(['/app/new-order']);
+  }
 
   private startTimer() {
     this.timerSubscription = interval(1000).subscribe(() => {
@@ -142,12 +144,19 @@ export class PharmaDashboard implements OnInit, OnDestroy {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
-  onView(order: any) {
+  onNewView(order: any) {
     console.log('Viewing order:', order.orderId);
+    this.router.navigate(['/app/view-new-order']);
+  }
+
+   onView(order: any) {
+    console.log('Viewing order:', order.orderId);
+    this.router.navigate(['/app/view-order']);
   }
 
   onReject(order: any) {
     console.log('Rejected:', order.orderId);
+    this.router.navigate(['/app/new-order']);
   }
 
   onReturned(order: any) {
@@ -163,7 +172,7 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   }
 
   onEdit(order: any) {
-    console.log('Edit:', order.orderId);
+    this.router.navigate(['/app/edit-order'])
   }
 
   ngOnDestroy() {

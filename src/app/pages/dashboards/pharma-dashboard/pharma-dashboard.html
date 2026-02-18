@@ -1,4 +1,4 @@
-<div class="container-fluid py-4">
+<div class="container-fluid py-4 px-0">
     <h4>Overview</h4>
     <div class="row mb-4 g-3">
         <div class="col-md-3">
@@ -115,18 +115,20 @@
                                             (click)="onView(element)">
                                             <mat-icon matTooltip="View" matTooltipPosition="below">visibility</mat-icon>
                                         </button>
-                                        <button mat-icon-button matTooltip="View" (click)="onEdit(element)">
-                                            <mat-icon matTooltip="View" class="text-warning"
+                                        <button mat-icon-button (click)="onEdit(element)">
+                                            <mat-icon matTooltip="Edit" class="text-warning"
                                                 matTooltipPosition="below">edit</mat-icon>
                                         </button>
                                         <button mat-icon-button class="text-success"
-                                            (click)="onDelivered(element)"><mat-icon matTooltip="Delivered" matTooltipPosition="below">task_alt</mat-icon></button>
+                                            (click)="onDelivered(element)"><mat-icon matTooltip="Delivered"
+                                                matTooltipPosition="below">task_alt</mat-icon></button>
                                         <button mat-icon-button matTooltip="Return" (click)="onHandover(element)">
                                             <mat-icon class="text-success" matTooltip="Handover"
                                                 matTooltipPosition="below">assignment_turned_in</mat-icon>
                                         </button>
                                         <button mat-icon-button class="text-danger"
-                                            (click)="onReturned(element)" ><mat-icon matTooltip="Returned" matTooltipPosition="below">replay</mat-icon></button>
+                                            (click)="onReturned(element)"><mat-icon matTooltip="Returned"
+                                                matTooltipPosition="below">replay</mat-icon></button>
                                     </div>
                                 </td>
                             </ng-container>
@@ -160,7 +162,7 @@
                             <ng-container matColumnDef="actions">
                                 <td mat-cell *matCellDef="let element" class="text-end py-2 pe-3">
                                     <button matButton="tonal" class="w-100" color="primary" matTooltip="View"
-                                        (click)="onView(element)">
+                                        (click)="onNewView(element)">
                                         View Order
                                     </button>
                                     <div *ngIf="element.status === 'Pending'" class="d-flex w-100">

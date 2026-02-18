@@ -335,6 +335,26 @@ export const routes: Routes = [
                 path: 'reports',
                 loadComponent: () => import('./pages/pharma/order-reports/order-reports').then(m => m.OrderReports),
                 canActivate: [authGuard]
+            },
+            {
+                path: 'view-new-order',
+                loadComponent: () => import('./pages/pharma/new-order-view/new-order-view').then(m => m.NewOrderView),
+                canActivate: [authGuard]
+            },
+            {
+                path: 'view-order',
+                loadComponent: () => import('./pages/pharma/view-order/view-order').then(m => m.ViewOrder),
+                canActivate: [authGuard]
+            },
+            {
+                path: 'edit-order',
+                loadComponent: () => import('./pages/pharma/edit-order/edit-order').then(m => m.EditOrder),
+                canActivate: [authGuard]
+            },
+            {
+                path: 'new-order',
+                loadComponent: () => import('./pages/pharma/new-order-accept-reject/new-order-accept-reject').then(m => m.NewOrderAcceptReject),
+                canActivate: [authGuard]
             }
         ]
     }
