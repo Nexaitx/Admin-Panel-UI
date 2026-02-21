@@ -342,12 +342,12 @@ export const routes: Routes = [
                 canActivate: [authGuard]
             },
             {
-                path: 'view-order',
+                path: 'view-order/:id',
                 loadComponent: () => import('./pages/pharma/view-order/view-order').then(m => m.ViewOrder),
                 canActivate: [authGuard]
             },
             {
-                path: 'edit-order',
+                path: 'edit-order/:id',
                 loadComponent: () => import('./pages/pharma/edit-order/edit-order').then(m => m.EditOrder),
                 canActivate: [authGuard]
             },

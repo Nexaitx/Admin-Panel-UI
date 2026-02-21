@@ -1,4 +1,7 @@
 export const API_URL = 'https://vitoxyzcrm-bosc.onrender.com';
+
+export const PHARMA_API_URL = 'https://pharmacyvitoxyzbackend.onrender.com/Backend/';
+
 export const googleMapsApiKey = 'AIzaSyBwkoBuGelQUiN2YSN-pqGhNv1KJE8CFNs';
 // export const API_URL = 'http://localhost:8081';
 
@@ -210,6 +213,11 @@ export const ENDPOINTS = {
     // Other Subcategory
     GET_OTHER_SUBCATEGORY: '/api/other-sub-category/status/',
     UPDATE_STATUS_SUB_CATGEORY: '/api/other-sub-category/process/',
-    DELETE_SUB_CATEGORY: '/api/other-sub-category/delete-by-id/'
+    DELETE_SUB_CATEGORY: '/api/other-sub-category/delete-by-id/',
 
+    // New Pharma Panel
+    GET_ALL_RUNNING_ORDERS: 'api/accept/pharmacy-bookings/pharma/accepted',
+    GET_ALL_NEW_ORDERS: 'api/accept/pharmacy-bookings/pending',
+    GET_COUNT_OF_ACCEPTED_SUMMARY: 'api/admin/bookings/accepted/summary',
+    GET_ACCEPTED_BOOKING_BY_ID: 'api/accept/pharmacy-bookings/booking/',
 };

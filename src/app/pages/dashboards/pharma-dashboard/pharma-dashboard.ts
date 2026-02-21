@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,15 +10,8 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink } from "@angular/router";
 import { interval, Subscription } from 'rxjs';
-
-interface Order {
-  orderId: string;
-  medication: string;
-  status: 'Pending' | 'Ready' | 'Accepted'; // Added specific statuses
-  timerId?: number;
-  timer?: string;
-  extensionCount: number; // Track if the 1-min extension was used
-}
+import { ENDPOINTS, PHARMA_API_URL } from '../../../core/const';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-pharma-dashboard',
@@ -35,51 +29,30 @@ interface Order {
 })
 export class PharmaDashboard implements OnInit, OnDestroy {
   displayedColumns = ['orderId', 'actions'];
-  dataSource = new MatTableDataSource<Order>([]);
-  ordersSignal = signal<Order[]>([]);
+  dataSourceRunning = new MatTableDataSource([]);
+  dataSourceNew = new MatTableDataSource([]);
+  runningOrdersSignal = signal([]);
+  newOrdersSignal = signal([]);
   private timerSubscription: Subscription | null = null;
-  private readonly NEW_ORDER_TIME = 60;      // 1 Minute
-  private readonly RUNNING_ORDER_TIME = 120; // 2 Minutes
-  private readonly EXTENSION_TIME = 60;     // 1 Minute extension
-  private readonly MAX_EXTENSIONS = 3;
+  private readonly NEW_ORDER_TIME = 60;
+  private readonly RUNNING_ORDER_TIME = 120;
+  private readonly EXTENSION_TIME = 60;
+  private readonly MAX_EXTENSIONS = 2;
   private router = inject(Router)
+  private http = inject(HttpClient);
+  private snackBar = inject(MatSnackBar);
+  accepted: any;
+
 
   ngOnInit() {
-    const initialOrders: Order[] = [
-      {
-        orderId: '1101',
-        medication: 'Paracetamol',
-        status: 'Pending',
-        timerId: this.NEW_ORDER_TIME,
-        timer: this.formatTime(this.NEW_ORDER_TIME),
-        extensionCount: 0 // Initialized for new orders
-      },
-      {
-        orderId: '1102',
-        medication: 'Amoxicillin',
-        status: 'Accepted',
-        timerId: this.RUNNING_ORDER_TIME,
-        timer: this.formatTime(this.RUNNING_ORDER_TIME),
-        extensionCount: 0 // Pharmacist can extend this 3 times
-      },
-      {
-        orderId: '1103',
-        medication: 'Ibuprofen',
-        status: 'Accepted',
-        timerId: 45, // Example: Order nearing expiration
-        timer: this.formatTime(45),
-        extensionCount: 2 // Example: Already extended twice
-      }
-    ];
-
-    this.ordersSignal.set(initialOrders);
-    this.dataSource.data = initialOrders;
-    this.startTimer();
+    this.getOverView();
+    this.getRunningOrders();
+    this.getNewOrders();
   }
-  onExtend(order: Order) {
+  onExtend(order: any) {
     if (order.extensionCount >= this.MAX_EXTENSIONS) return;
 
-    const updated = this.ordersSignal().map(o => {
+    const updated = this.runningOrdersSignal().map((o: any) => {
       if (o.orderId === order.orderId) {
         const extraTime = (o.timerId || 0) + this.EXTENSION_TIME;
         return {
@@ -94,25 +67,31 @@ export class PharmaDashboard implements OnInit, OnDestroy {
     this.updateData(updated);
   }
 
-  private updateData(orders: Order[]) {
-    this.ordersSignal.set(orders);
-    this.dataSource.data = orders;
+  private updateData(orders: any) {
+    this.runningOrdersSignal.set(orders);
+    this.dataSourceRunning.data = orders;
   }
-  onAccept(order: Order) {
-    const updated = this.ordersSignal().map(o => {
-      if (o.orderId === order.orderId) {
-        return {
-          ...o,
-          status: 'Accepted' as const,
-          timerId: this.RUNNING_ORDER_TIME,
-          timer: this.formatTime(this.RUNNING_ORDER_TIME),
-          extensionCount: 0
-        };
-      }
-      return o;
-    });
-    this.updateData(updated);
-    this.router.navigate(['/app/new-order']);
+  onAccept(order: any) {
+    // 1. Remove from New Orders
+    const updatedNew = this.newOrdersSignal().filter((o: any) => o.orderId !== order.orderId);
+    this.newOrdersSignal.set(updatedNew);
+    this.dataSourceNew.data = updatedNew;
+
+    // 2. Add to Running Orders with 2-minute timer
+    const acceptedOrder = {
+      ...order,
+      status: 'ACCEPTED',
+      timerId: this.RUNNING_ORDER_TIME,
+      timer: this.formatTime(this.RUNNING_ORDER_TIME),
+      extensionCount: 0
+    };
+
+    const updatedRunning: any = [...this.runningOrdersSignal(), acceptedOrder];
+    this.runningOrdersSignal.set(updatedRunning);
+    this.dataSourceRunning.data = updatedRunning;
+
+    // Optional: Navigate or show success
+    this.snackBar.open('Order Accepted', 'Close', { duration: 2000 });
   }
 
   private startTimer() {
@@ -122,20 +101,24 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   }
 
   private updateTimers() {
-    const updatedOrders = this.ordersSignal().map(order => {
+    // Helper to countdown a list of orders
+    const countdown = (orders: any) => orders.map((order: any) => {
       if (order.timerId && order.timerId > 0) {
-        const newTimerId = order.timerId - 1;
-        return {
-          ...order,
-          timerId: newTimerId,
-          timer: this.formatTime(newTimerId)
-        };
+        const newTime = order.timerId - 1;
+        return { ...order, timerId: newTime, timer: this.formatTime(newTime) };
       }
       return order;
     });
 
-    this.ordersSignal.set(updatedOrders);
-    this.dataSource.data = updatedOrders;
+    // Update Running Orders
+    const updatedRunning = countdown(this.runningOrdersSignal());
+    this.runningOrdersSignal.set(updatedRunning);
+    this.dataSourceRunning.data = updatedRunning;
+
+    // Update New Orders
+    const updatedNew = countdown(this.newOrdersSignal());
+    this.newOrdersSignal.set(updatedNew);
+    this.dataSourceNew.data = updatedNew;
   }
 
   private formatTime(seconds: number): string {
@@ -149,9 +132,9 @@ export class PharmaDashboard implements OnInit, OnDestroy {
     this.router.navigate(['/app/view-new-order']);
   }
 
-   onView(order: any) {
+  onView(order: any) {
     console.log('Viewing order:', order.orderId);
-    this.router.navigate(['/app/view-order']);
+    this.router.navigate(['/app/view-order', order.orderId]);
   }
 
   onReject(order: any) {
@@ -172,12 +155,70 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   }
 
   onEdit(order: any) {
-    this.router.navigate(['/app/edit-order'])
+    this.router.navigate(['/app/edit-order', order.orderId])
   }
 
   ngOnDestroy() {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
     }
+  }
+  getRunningOrders() {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get(PHARMA_API_URL + ENDPOINTS.GET_ALL_RUNNING_ORDERS, { headers }).subscribe({
+      next: (res: any) => {
+        const items = Array.isArray(res) ? res : (res?.data || res?.bookingRecords || []);
+        const mapped: any = items.map((item: any) => ({
+          orderId: item.bookingId || 'N/A',
+          status: 'ACCEPTED',
+          // Force 120s (2 min) if API doesn't provide remaining_seconds
+          timerId: typeof item.remaining_seconds === 'number' ? item.remaining_seconds : this.RUNNING_ORDER_TIME,
+          timer: this.formatTime(typeof item.remaining_seconds === 'number' ? item.remaining_seconds : this.RUNNING_ORDER_TIME),
+          extensionCount: item.extension_count || 0
+        }));
+
+        this.runningOrdersSignal.set(mapped);
+        this.dataSourceRunning.data = mapped;
+        this.checkTimer();
+      }
+    });
+  }
+
+  getNewOrders() {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get(PHARMA_API_URL + ENDPOINTS.GET_ALL_NEW_ORDERS, { headers }).subscribe({
+      next: (res: any) => {
+        const items = Array.isArray(res) ? res : (res?.data || []);
+        const mapped = items.map((item: any) => ({
+          orderId: item.bookingId || 'N/A',
+          timerId: typeof item.remaining_seconds === 'number' ? item.remaining_seconds : this.NEW_ORDER_TIME,
+          timer: this.formatTime(typeof item.remaining_seconds === 'number' ? item.remaining_seconds : this.NEW_ORDER_TIME),
+          extensionCount: 0
+        }));
+
+        this.newOrdersSignal.set(mapped);
+        this.dataSourceNew.data = mapped;
+        console.log(this.dataSourceNew.data);
+        this.checkTimer();
+      }
+    });
+  }
+
+  private checkTimer() {
+    if (!this.timerSubscription || this.timerSubscription.closed) {
+      this.startTimer();
+    }
+  }
+
+  getOverView() {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.get(`${PHARMA_API_URL}${ENDPOINTS.GET_COUNT_OF_ACCEPTED_SUMMARY}`, {headers}).subscribe((res: any) => {
+      this.accepted = res;
+    })
   }
 }

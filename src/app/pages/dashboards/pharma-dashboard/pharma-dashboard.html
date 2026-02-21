@@ -4,32 +4,32 @@
         <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white incoming p-3">
                 <mat-card-subtitle>Broadcasted</mat-card-subtitle>
-                <mat-card-title>24</mat-card-title>
+                <mat-card-title>📢 --</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white outgoing p-3">
                 <mat-card-subtitle>Accepted</mat-card-subtitle>
-                <mat-card-title>12</mat-card-title>
+                <mat-card-title>✅ {{accepted?.totalAcceptedBookings}}</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white alerts p-3">
                 <mat-card-subtitle>Missed</mat-card-subtitle>
-                <mat-card-title>5</mat-card-title>
+                <mat-card-title>⚠️ --</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white history p-3">
                 <mat-card-subtitle>Delivered</mat-card-subtitle>
-                <mat-card-title>142</mat-card-title>
+                <mat-card-title>🚚 --</mat-card-title>
             </mat-card>
         </div>
 
         <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white history p-3">
                 <mat-card-subtitle>Returned</mat-card-subtitle>
-                <mat-card-title>142</mat-card-title>
+                <mat-card-title>🔄 --</mat-card-title>
             </mat-card>
         </div>
     </div>
@@ -40,25 +40,25 @@
         <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white incoming p-3">
                 <mat-card-subtitle>Accepted</mat-card-subtitle>
-                <mat-card-title>24</mat-card-title>
+                <mat-card-title>✅ {{accepted?.totalAcceptedAmount}}</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white outgoing p-3">
                 <mat-card-subtitle>Delivered</mat-card-subtitle>
-                <mat-card-title>12</mat-card-title>
+                <mat-card-title>🚚 --</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white alerts p-3">
                 <mat-card-subtitle>Returned</mat-card-subtitle>
-                <mat-card-title>5</mat-card-title>
+                <mat-card-title>🔄 --</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white history p-3">
                 <mat-card-subtitle>Net Value</mat-card-subtitle>
-                <mat-card-title>142</mat-card-title>
+                <mat-card-title>--</mat-card-title>
             </mat-card>
         </div>
 
@@ -66,8 +66,6 @@
             <button matButton="outlined" [routerLink]="['/app/order-ledgers']">View Ledgers</button>
         </div>
     </div>
-
-
 
     <div class="container-fluid py-4">
         <div class="row g-3">
@@ -80,11 +78,12 @@
                         </mat-card-title>
                     </mat-card-header>
                     <mat-card-content class="p-0">
-                        <table mat-table [dataSource]="ordersSignal()" class="w-100 plain-table">
+
+                        <table mat-table [dataSource]="dataSourceRunning" class="w-100 plain-table">
                             <ng-container matColumnDef="orderId">
                                 <td mat-cell *matCellDef="let element" class="py-2">
-                                    <ng-container *ngIf="element.status === 'Accepted'">
-                                        <div class="fw-bold text-dark">#{{element.orderId}}</div>
+                                    <ng-container>
+                                        <div class="fw-bold text-dark">#ORD-ID:{{element.orderId}}</div>
                                         <small [class.text-danger]="element.timerId < 30"
                                             class="text-muted d-flex align-items-center">
                                             <mat-icon style="font-size: 14px; height: 14px; width: 14px;"
@@ -97,11 +96,8 @@
 
                             <ng-container matColumnDef="actions">
                                 <td mat-cell *matCellDef="let element" class="text-end py-2 pe-3">
-                                    <div class="d-flex justify-content-end gap-1" *ngIf="element.status === 'Accepted'">
-                                        <!-- <button class="btn btn-sm btn-success rounded-pill" color="accent"
-                                            [disabled]="element.isExtended" (click)="onExtend(element)">
-                                            Extend Time
-                                        </button> -->
+                                    <div class="d-flex justify-content-end gap-1">
+
                                         <span class="extension-label me-1" *ngIf="element.extensionCount > 0">
                                             Ext: {{element.extensionCount}}/3
                                         </span>
@@ -132,8 +128,7 @@
                                     </div>
                                 </td>
                             </ng-container>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                                [hidden]="row.status !== 'Accepted'"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                         </table>
                     </mat-card-content>
                 </mat-card>
@@ -149,10 +144,10 @@
                         </mat-card-title>
                     </mat-card-header>
                     <mat-card-content class="p-0">
-                        <table mat-table [dataSource]="ordersSignal()" class="w-100 plain-table">
+                        <table mat-table [dataSource]="dataSourceNew" class="w-100 plain-table">
                             <ng-container matColumnDef="orderId">
                                 <td mat-cell *matCellDef="let element" class="py-2">
-                                    <ng-container *ngIf="element.status === 'Pending'">
+                                    <ng-container>
                                         <span class="fw-bold">#{{element.orderId}}</span>
                                         <div class="small text-danger fw-bold">{{element.timer}}</div>
                                     </ng-container>
@@ -165,7 +160,7 @@
                                         (click)="onNewView(element)">
                                         View Order
                                     </button>
-                                    <div *ngIf="element.status === 'Pending'" class="d-flex w-100">
+                                    <div class="d-flex w-100">
 
                                         <button mat-flat-button color="success" class="me-2 mt-2 w-50 btn-sm-custom"
                                             (click)="onAccept(element)">Accept</button>
@@ -174,8 +169,13 @@
                                     </div>
                                 </td>
                             </ng-container>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                                [hidden]="row.status !== 'Pending'"></tr>
+
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell p-4 text-center" [attr.colspan]="displayedColumns.length">
+                                    No Incoming bookings within 5km radius
+                                </td>
+                            </tr>
                         </table>
                     </mat-card-content>
                 </mat-card>
