@@ -297,6 +297,13 @@ export const MENU_DATA: MenuItem[] = [
     allowedRoles: ['Pharmacist']
   },
   {
+    title: 'Pharmacy',
+    icon: 'money',
+    route: '/app/pharmacy',
+    permission: 'Pharmacy',
+    allowedRoles: ['Pharmacist']
+  },
+  {
     title: 'Account',
     icon: 'group',
     route: '/app/account',

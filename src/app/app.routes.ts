@@ -355,7 +355,13 @@ export const routes: Routes = [
                 path: 'new-order',
                 loadComponent: () => import('./pages/pharma/new-order-accept-reject/new-order-accept-reject').then(m => m.NewOrderAcceptReject),
                 canActivate: [authGuard]
-            }
+            },
+            {
+                path: 'pharmacy',
+                loadComponent: () => import('./pages/pharma/pharmacy-detail/pharmacy-detail').then(m => m.PharmacyDetail),
+                canActivate: [authGuard]
+            },
+
         ]
     }
 ];
