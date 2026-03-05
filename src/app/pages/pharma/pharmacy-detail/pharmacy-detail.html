@@ -1,1 +1,111 @@
-<p>pharmacy-detail works!</p>
+
+  <div style="display:flex; justify-content:space-between; margin-bottom:20px">
+    <h2>Pharmacy Addresses</h2>
+
+    <button mat-raised-button color="primary" (click)="openDialog()">
+      Add Address
+    </button>
+  </div>
+
+  <!-- TABLE -->
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="pharmacyName">
+      <th mat-header-cell *matHeaderCellDef> Pharmacy </th>
+      <td mat-cell *matCellDef="let row"> {{row.pharmacyName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef> Address </th>
+      <td mat-cell *matCellDef="let row"> {{row.address}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="city">
+      <th mat-header-cell *matHeaderCellDef> City </th>
+      <td mat-cell *matCellDef="let row"> {{row.city}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="state">
+      <th mat-header-cell *matHeaderCellDef> State </th>
+      <td mat-cell *matCellDef="let row"> {{row.state}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="pincode">
+      <th mat-header-cell *matHeaderCellDef> Pincode </th>
+      <td mat-cell *matCellDef="let row"> {{row.pincode}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+
+      <td mat-cell *matCellDef="let row">
+
+        <button mat-icon-button color="primary" (click)="openDialog(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button color="warn" (click)="deleteAddress(row.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+  </table>
+
+<!-- DIALOG TEMPLATE -->
+
+<ng-template #addressDialog let-dialogRef="dialogRef">
+
+  <h2 mat-dialog-title>
+    {{ isEdit ? 'Update Address' : 'Add Address' }}
+  </h2>
+
+  <mat-dialog-content class="py-2">
+
+    <mat-form-field appearance="outline" style="width:100%">
+      <mat-label>Pharmacy Name</mat-label>
+      <input matInput [(ngModel)]="form.pharmacyName">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width:100%">
+      <mat-label>Address</mat-label>
+      <input matInput [(ngModel)]="form.address">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width:100%">
+      <mat-label>City</mat-label>
+      <input matInput [(ngModel)]="form.city">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width:100%">
+      <mat-label>State</mat-label>
+      <input matInput [(ngModel)]="form.state">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width:100%">
+      <mat-label>Pincode</mat-label>
+      <input matInput [(ngModel)]="form.pincode">
+    </mat-form-field>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+
+    <button mat-button mat-dialog-close>
+      Cancel
+    </button>
+
+    <button mat-raised-button
+      (click)="saveAddress(dialogRef)">
+      Save
+    </button>
+
+  </mat-dialog-actions>
+
+</ng-template>
