@@ -337,7 +337,7 @@ export const routes: Routes = [
                 canActivate: [authGuard]
             },
             {
-                path: 'view-new-order',
+                path: 'view-new-order/:id',
                 loadComponent: () => import('./pages/pharma/new-order-view/new-order-view').then(m => m.NewOrderView),
                 canActivate: [authGuard]
             },

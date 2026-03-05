@@ -220,4 +220,9 @@ export const ENDPOINTS = {
     GET_ALL_NEW_ORDERS: 'api/accept/pharmacy-bookings/pending',
     GET_COUNT_OF_ACCEPTED_SUMMARY: 'api/admin/bookings/accepted/summary',
     GET_ACCEPTED_BOOKING_BY_ID: 'api/accept/pharmacy-bookings/booking/',
+    UPDATE_ACCEPTED_BOOKING: 'api/admin/pharmacy-bookings/items/update',
+    GET_NEW_BOOKING_BY_ID: 'api/accept/pharmacy-bookings/booking/', //26/items
+
+    ACCEPT_NEW_BOOKING: 'api/accept/pharmacy-bookings/', //bookingId/accept
+    REJECT_NEW_BOOKING: 'api/reject/pharmacy-bookings/' //bookingId/reject
 };

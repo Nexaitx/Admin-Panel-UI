@@ -9,6 +9,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; //
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common'; // Required for [class.text-danger]
 import { MatSelectModule } from '@angular/material/select';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ENDPOINTS, PHARMA_API_URL } from '../../../core/const';
+import { ActivatedRoute } from '@angular/router';
 
 interface OrderItem {
   id: string;
@@ -41,54 +44,97 @@ interface OrderItem {
 })
 export class EditOrder implements OnInit {
   private snackBar = inject(MatSnackBar);
-  
-  // Use the interface instead of any for better intellisense
-  editDataSource = new MatTableDataSource<OrderItem>([]);
+  private http = inject(HttpClient);
+
+  editDataSource = new MatTableDataSource<any>([]);
+  private route = inject(ActivatedRoute);
+  orderId = this.route.snapshot.paramMap.get('id');
 
   ngOnInit() {
-    const data: OrderItem[] = [
-      { id: '1101', name: 'Paracetamol', maxDemand: 5, currentQty: 3, price: 100, isOutOfStock: false, status: 'Available' }
-    ];
-    this.editDataSource.data = data;
+    this.getOrderByOrderId();
   }
-onStatusChange(item: OrderItem) {
-    if (item.status === 'Non Available') {
-        item.currentQty = 0;
-    } else if (item.status === 'Available') {
-        item.currentQty = item.maxDemand;
+
+  getOrderByOrderId() {
+    this.http.get(PHARMA_API_URL + ENDPOINTS.GET_ACCEPTED_BOOKING_BY_ID + this.orderId + '/items').subscribe((res: any) => {
+      this.editDataSource.data = res.items.map((item: any) => ({
+        ...item,
+        allowedQty: item.quantity   // 🔒 store original quantity
+      }));
+    })
+  }
+
+  onQtyChange(item: any, newQty: number) {
+
+    // restrict increase beyond original quantity
+    if (newQty > item.allowedQty) {
+      this.snackBar.open(
+        `Cannot exceed client's demand of ${item.allowedQty}`,
+        'Close',
+        { duration: 3000 }
+      );
+      newQty = item.allowedQty;
     }
-    // If 'Partial', we keep the currentQty as is for the user to adjust manually
-    
-    this.snackBar.open(`Status updated to ${item.status}`, 'OK', { duration: 2000 });
-}
-  onQtyChange(item: OrderItem, newQty: number) {
-    if (newQty > item.maxDemand) {
-      item.currentQty = item.maxDemand;
-      this.snackBar.open(`Cannot exceed client's demand of ${item.maxDemand}`, 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom'
-      });
-    } else if (newQty < 0) {
-      item.currentQty = 0;
+
+    if (newQty < 0) {
+      newQty = 0;
     }
-    
-    // Auto-toggle shortage if qty becomes 0
-    if (item.currentQty === 0) {
-        item.isOutOfStock = true;
+
+    item.quantity = newQty;
+
+    // auto-status
+    if (item.quantity === 0) {
+      item.availabilityStatus = 'Non Available';
+    } else if (item.quantity < item.allowedQty) {
+      item.availabilityStatus = 'Partial';
     } else {
-        item.isOutOfStock = false;
+      item.availabilityStatus = 'Available';
     }
+
+    item.isOutOfStock = item.quantity === 0;
+  }
+  preventManualStatusChange(event: any, item: any) {
+    // Revert to auto-calculated status
+    event.source.writeValue(item.availabilityStatus);
+
+    this.snackBar.open(
+      'Status is auto-calculated based on quantity',
+      'Close',
+      { duration: 2000 }
+    );
   }
 
-  // Handle the toggle specifically
-  onToggleShortage(item: OrderItem) {
-    if (item.isOutOfStock) {
-      item.currentQty = 0;
+  saveChanges() {
+    const items = this.editDataSource.data.map((item: any) => {
+      return {
+        itemId: item.itemId,
+        category: item.category || 'General',
+        offerPrice: item.price || 0,
+        availableQuantity: item.quantity,
+        availabilityStatus: item.availabilityStatus.toUpperCase()
+      };
+    });
+    const payload = {
+      bookingId: Number(this.orderId),
+      items: items,
+      totalWeight: null,
+      isColdChain: false // static value added 
+    };
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
-  }
-
-  saveChanges() { 
-    console.log('Saved data:', this.editDataSource.data);
-    this.snackBar.open('Order updated successfully', 'OK', { duration: 2000 });
+    this.http.put(PHARMA_API_URL + ENDPOINTS.UPDATE_ACCEPTED_BOOKING, payload, { headers })
+      .subscribe({
+        next: (res: any) => {
+          this.snackBar.open('Order updated successfully', 'OK', { duration: 2000 });
+        },
+        error: (err) => {
+          this.snackBar.open(err.message, 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      });
   }
 }

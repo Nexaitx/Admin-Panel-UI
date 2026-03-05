@@ -1,7 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
+import { ENDPOINTS, PHARMA_API_URL } from '../../../core/const';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-new-order-view',
@@ -13,24 +17,44 @@ import { MatTableModule } from '@angular/material/table';
   styleUrl: './new-order-view.scss',
 })
 export class NewOrderView {
-detailColumns: string[] = ['medicine', 'batch', 'qty', 'price', 'total'];
-  
-  detailsSource = [
-    { 
-      name: 'Amoxicillin + Clavulanate', 
-      dosage: '625mg', 
-      type: 'Tablet', 
-      batchNo: 'AMX24091', 
-      qty: 10, 
-      price: 120.00 
-    },
-    { 
-      name: 'Paracetamol', 
-      dosage: '500mg', 
-      type: 'Capsule', 
-      batchNo: 'PCM99210', 
-      qty: 2, 
-      price: 20.00 
+  detailColumns: string[] = ['medicine', 'qty', 'price', 'offerPrice', 'availableQuantity', 'quantity', 'productType'];
+  private route = inject(ActivatedRoute)
+  orderId = this.route.snapshot.paramMap.get('id');
+  private http = inject(HttpClient);
+  detailsSource = new MatTableDataSource([]);
+  private snackBar = inject(MatSnackBar);
+  result: any;
+
+  ngOnInit() {
+    this.getNewOrderById();
+  }
+
+  getNewOrderById() {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
-  ];
+    this.http.get(PHARMA_API_URL + ENDPOINTS.GET_NEW_BOOKING_BY_ID + this.orderId + '/items', { headers }).subscribe((res: any) => {
+      this.result = res;
+      this.detailsSource.data = res.items;
+    })
+  }
+
+  onReject() {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.post(PHARMA_API_URL + ENDPOINTS.ACCEPT_NEW_BOOKING + this.orderId + '/reject', {}, { headers }).subscribe((res: any) => {
+      console.log('rejected order successfully');
+    })
+  }
+
+  onAccept() {
+    // 1. Remove from New Orders
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.post(`${PHARMA_API_URL}${ENDPOINTS.ACCEPT_NEW_BOOKING}${this.orderId}${'/accept'}`, {}, { headers }).subscribe((res: any) => {
+      this.snackBar.open('Order Accepted', 'Close', { duration: 2000 });
+    });
+  }
 }

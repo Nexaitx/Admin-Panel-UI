@@ -73,10 +73,13 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   }
   onAccept(order: any) {
     // 1. Remove from New Orders
-    const updatedNew = this.newOrdersSignal().filter((o: any) => o.orderId !== order.orderId);
-    this.newOrdersSignal.set(updatedNew);
-    this.dataSourceNew.data = updatedNew;
-
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.post(`${PHARMA_API_URL}${ENDPOINTS.ACCEPT_NEW_BOOKING}${order.orderId}${'/accept'}`, {}, { headers }).subscribe((res: any) => {
+      const updatedNew = this.newOrdersSignal().filter((o: any) => o.orderId !== order.orderId);
+      this.newOrdersSignal.set(updatedNew);
+      this.dataSourceNew.data = updatedNew;
+    });
     // 2. Add to Running Orders with 2-minute timer
     const acceptedOrder = {
       ...order,
@@ -129,7 +132,7 @@ export class PharmaDashboard implements OnInit, OnDestroy {
 
   onNewView(order: any) {
     console.log('Viewing order:', order.orderId);
-    this.router.navigate(['/app/view-new-order']);
+    this.router.navigate(['/app/view-new-order', order.orderId]);
   }
 
   onView(order: any) {
@@ -138,8 +141,11 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   }
 
   onReject(order: any) {
-    console.log('Rejected:', order.orderId);
-    this.router.navigate(['/app/new-order']);
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.post(PHARMA_API_URL + ENDPOINTS.ACCEPT_NEW_BOOKING + order.orderId + '/reject', {}, { headers }).subscribe((res: any) => {
+      console.log('rejected order successfully');
+    })
   }
 
   onReturned(order: any) {
@@ -192,9 +198,8 @@ export class PharmaDashboard implements OnInit, OnDestroy {
 
     this.http.get(PHARMA_API_URL + ENDPOINTS.GET_ALL_NEW_ORDERS, { headers }).subscribe({
       next: (res: any) => {
-        const items = Array.isArray(res) ? res : (res?.data || []);
-        const mapped = items.map((item: any) => ({
-          orderId: item.bookingId || 'N/A',
+        const mapped = res.bookings.map((item: any) => ({
+          orderId: item.id || 'N/A',
           timerId: typeof item.remaining_seconds === 'number' ? item.remaining_seconds : this.NEW_ORDER_TIME,
           timer: this.formatTime(typeof item.remaining_seconds === 'number' ? item.remaining_seconds : this.NEW_ORDER_TIME),
           extensionCount: 0
@@ -217,7 +222,7 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   getOverView() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get(`${PHARMA_API_URL}${ENDPOINTS.GET_COUNT_OF_ACCEPTED_SUMMARY}`, {headers}).subscribe((res: any) => {
+    this.http.get(`${PHARMA_API_URL}${ENDPOINTS.GET_COUNT_OF_ACCEPTED_SUMMARY}`, { headers }).subscribe((res: any) => {
       this.accepted = res;
     })
   }
