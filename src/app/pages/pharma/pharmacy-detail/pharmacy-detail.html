@@ -1,111 +1,145 @@
-
-  <div style="display:flex; justify-content:space-between; margin-bottom:20px">
+<div style="display:flex; justify-content:space-between; margin-bottom:20px">
     <h2>Pharmacy Addresses</h2>
 
-    <button mat-raised-button color="primary" (click)="openDialog()">
-      Add Address
+    <button mat-raised-button color="primary" (click)="isEdit = false; openDialog()">
+        Add Address
     </button>
-  </div>
+</div>
 
-  <!-- TABLE -->
-
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<!-- TABLE -->
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Pharmacy&nbsp;Id </th>
+        <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+    </ng-container>
 
     <ng-container matColumnDef="pharmacyName">
-      <th mat-header-cell *matHeaderCellDef> Pharmacy </th>
-      <td mat-cell *matCellDef="let row"> {{row.pharmacyName}} </td>
+        <th mat-header-cell *matHeaderCellDef> Pharmacy </th>
+        <td mat-cell *matCellDef="let row"> {{row.companyName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="address">
-      <th mat-header-cell *matHeaderCellDef> Address </th>
-      <td mat-cell *matCellDef="let row"> {{row.address}} </td>
+        <th mat-header-cell *matHeaderCellDef> Address </th>
+        <td mat-cell *matCellDef="let row"> {{row.companyAddress}} </td>
     </ng-container>
 
     <ng-container matColumnDef="city">
-      <th mat-header-cell *matHeaderCellDef> City </th>
-      <td mat-cell *matCellDef="let row"> {{row.city}} </td>
+        <th mat-header-cell *matHeaderCellDef> City </th>
+        <td mat-cell *matCellDef="let row"> {{row.city}} </td>
     </ng-container>
 
     <ng-container matColumnDef="state">
-      <th mat-header-cell *matHeaderCellDef> State </th>
-      <td mat-cell *matCellDef="let row"> {{row.state}} </td>
+        <th mat-header-cell *matHeaderCellDef> State </th>
+        <td mat-cell *matCellDef="let row"> {{row.state}} </td>
     </ng-container>
 
     <ng-container matColumnDef="pincode">
-      <th mat-header-cell *matHeaderCellDef> Pincode </th>
-      <td mat-cell *matCellDef="let row"> {{row.pincode}} </td>
+        <th mat-header-cell *matHeaderCellDef> Pincode </th>
+        <td mat-cell *matCellDef="let row"> {{row.pincode}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="adminName">
+        <th mat-header-cell *matHeaderCellDef> Pharmacist </th>
+        <td mat-cell *matCellDef="let row"> {{row.adminName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="latitude">
+        <th mat-header-cell *matHeaderCellDef> Latitude </th>
+        <td mat-cell *matCellDef="let row"> {{row.latitude}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="longitude">
+        <th mat-header-cell *matHeaderCellDef> Longitude </th>
+        <td mat-cell *matCellDef="let row"> {{row.longitude}} </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
 
-      <td mat-cell *matCellDef="let row">
+        <td mat-cell *matCellDef="let row">
 
-        <button mat-icon-button color="primary" (click)="openDialog(row)">
-          <mat-icon>edit</mat-icon>
-        </button>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
 
-        <button mat-icon-button color="warn" (click)="deleteAddress(row.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
+            <mat-menu #menu="matMenu">
 
-      </td>
+                <button mat-menu-item (click)="selectedRecord = row; openDialog(row)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                </button>
+
+                <button mat-menu-item (click)="deleteAddress(row)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                </button>
+
+            </mat-menu>
+
+        </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-  </table>
+</table>
 
 <!-- DIALOG TEMPLATE -->
-
 <ng-template #addressDialog let-dialogRef="dialogRef">
 
-  <h2 mat-dialog-title>
-    {{ isEdit ? 'Update Address' : 'Add Address' }}
-  </h2>
+    <h2 mat-dialog-title>
+        {{ isEdit ? 'Update Address' : 'Add Address' }}
+    </h2>
 
-  <mat-dialog-content class="py-2">
+    <form [formGroup]="addressForm">
 
-    <mat-form-field appearance="outline" style="width:100%">
-      <mat-label>Pharmacy Name</mat-label>
-      <input matInput [(ngModel)]="form.pharmacyName">
-    </mat-form-field>
+        <mat-dialog-content>
 
-    <mat-form-field appearance="outline" style="width:100%">
-      <mat-label>Address</mat-label>
-      <input matInput [(ngModel)]="form.address">
-    </mat-form-field>
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>Company Name</mat-label>
+                <input matInput formControlName="companyName">
+            </mat-form-field>
 
-    <mat-form-field appearance="outline" style="width:100%">
-      <mat-label>City</mat-label>
-      <input matInput [(ngModel)]="form.city">
-    </mat-form-field>
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>Company Address</mat-label>
+                <input matInput formControlName="companyAddress">
+            </mat-form-field>
 
-    <mat-form-field appearance="outline" style="width:100%">
-      <mat-label>State</mat-label>
-      <input matInput [(ngModel)]="form.state">
-    </mat-form-field>
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city">
+            </mat-form-field>
 
-    <mat-form-field appearance="outline" style="width:100%">
-      <mat-label>Pincode</mat-label>
-      <input matInput [(ngModel)]="form.pincode">
-    </mat-form-field>
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>State</mat-label>
+                <input matInput formControlName="state">
+            </mat-form-field>
 
-  </mat-dialog-content>
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>Pincode</mat-label>
+                <input matInput formControlName="pincode">
+            </mat-form-field>
 
-  <mat-dialog-actions align="end">
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>Address Type</mat-label>
+                <input matInput formControlName="addressType">
+            </mat-form-field>
 
-    <button mat-button mat-dialog-close>
-      Cancel
-    </button>
+        </mat-dialog-content>
 
-    <button mat-raised-button
-      (click)="saveAddress(dialogRef)">
-      Save
-    </button>
+        <mat-dialog-actions align="end">
 
-  </mat-dialog-actions>
+            <button mat-button mat-dialog-close>
+                Cancel
+            </button>
+
+            <button mat-raised-button color="primary" (click)="saveAddress()">
+                Save
+            </button>
+
+        </mat-dialog-actions>
+
+    </form>
 
 </ng-template>

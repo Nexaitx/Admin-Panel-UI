@@ -215,6 +215,12 @@ export const ENDPOINTS = {
     UPDATE_STATUS_SUB_CATGEORY: '/api/other-sub-category/process/',
     DELETE_SUB_CATEGORY: '/api/other-sub-category/delete-by-id/',
 
+    // Pharma Address
+    CREATE_PHARMA_ADDRESS: '/api/admin/addresses',
+    UPDATE_PHARMA_ADDRESS: '/api/admin/addresses/', //{ADDRESSID}
+    DELETE_PHARMA_ADDRESS: '/api/admin/addresses/', //{ADDRESSID}
+    GET_PHARMA_ADDRESS: '/api/admin/addresses', //JWTTOKEN REQUIRED*
+
     // New Pharma Panel
     GET_ALL_RUNNING_ORDERS: 'api/accept/pharmacy-bookings/pharma/accepted',
     GET_ALL_NEW_ORDERS: 'api/accept/pharmacy-bookings/pending',
