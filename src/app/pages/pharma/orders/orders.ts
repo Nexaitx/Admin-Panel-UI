@@ -1,50 +1,56 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ENDPOINTS, PHARMA_API_URL } from '../../../core/const';
+import { MatMenuModule } from '@angular/material/menu';
 
-interface OrderRecord {
-  orderId: string;
-  customer: string;
-  medication: string;
-  date: string;
-  amount: number;
-  status: 'Accepted' | 'Delivered' | 'Missed' | 'Rejected';
-}
 @Component({
   selector: 'app-orders',
   imports: [CommonModule,
-    MatTabsModule,
+    MatFormFieldModule,
+    MatSelectModule,
     MatTableModule,
     MatIconModule,
     MatButtonModule,
-    MatChipsModule],
+    MatMenuModule
+  ],
   templateUrl: './orders.html',
   styleUrl: './orders.scss',
 })
 export class Orders {
-  displayedColumns: string[] = ['orderId', 'customer', 'medication', 'amount', 'date', 'actions'];
-
-  // Data sources for each tab
-  acceptedSource = new MatTableDataSource<OrderRecord>([]);
-  deliveredSource = new MatTableDataSource<OrderRecord>([]);
-  missedSource = new MatTableDataSource<OrderRecord>([]);
-  rejectedSource = new MatTableDataSource<OrderRecord>([]);
+  displayedColumns: string[] = ['orderId', 'customer', 'distance', 'amount', 'status', 'actions'];
+  dataSource = new MatTableDataSource([]);
+  selectedStatus: string = 'ACCEPTED';
+  private http = inject(HttpClient);
 
   ngOnInit() {
-    const mockData: OrderRecord[] = [
-      { orderId: 'ORD-001', customer: 'John Doe', medication: 'Amoxicillin', amount: 450, date: '2023-10-27', status: 'Accepted' },
-      { orderId: 'ORD-002', customer: 'Jane Smith', medication: 'Paracetamol', amount: 120, date: '2023-10-26', status: 'Delivered' },
-      { orderId: 'ORD-003', customer: 'Mike Ross', medication: 'Lipitor', amount: 890, date: '2023-10-25', status: 'Missed' },
-      { orderId: 'ORD-004', customer: 'Harvey Specter', medication: 'Nexium', amount: 1100, date: '2023-10-24', status: 'Rejected' },
-    ];
+    this.fetchBookings();
+  }
 
-    this.acceptedSource.data = mockData.filter(o => o.status === 'Accepted');
-    this.deliveredSource.data = mockData.filter(o => o.status === 'Delivered');
-    this.missedSource.data = mockData.filter(o => o.status === 'Missed');
-    this.rejectedSource.data = mockData.filter(o => o.status === 'Rejected');
+  fetchBookings() {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', `Bearer ${token}`);
+
+    this.http.get(PHARMA_API_URL + ENDPOINTS.GET_ALL_RUNNING_ORDERS, { headers }).subscribe((res: any) => {
+      this.dataSource.data = res;
+    });
+
+  }
+
+  viewOrder(element: any) {
+    console.log('View order', element);
+  }
+
+  printOrder() {
+    // console.log('Print order', element);
+    window.print()
   }
 }
