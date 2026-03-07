@@ -298,9 +298,16 @@ export const MENU_DATA: MenuItem[] = [
   },
   {
     title: 'Pharmacy',
-    icon: 'money',
+    icon: 'business',
     route: '/app/pharmacy',
     permission: 'Pharmacy',
+    allowedRoles: ['Pharmacist']
+  },
+  {
+    title: 'Bank Details',
+    icon: 'business_center',
+    route: '/app/bank-details',
+    permission: 'Bank Details',
     allowedRoles: ['Pharmacist']
   },
   {

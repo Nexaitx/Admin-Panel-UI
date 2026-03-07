@@ -6,14 +6,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { API_URL, ENDPOINTS } from '../../../core/const';
+import { ENDPOINTS, PHARMA_API_URL } from '../../../core/const';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationDialog } from '../../confirmation-dialog/confirmation-dialog';
+import { CommonModule } from '@angular/common';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
-  selector: 'app-pharmacy-detail',
+  selector: 'app-bank-details',
   imports: [MatFormFieldModule,
     MatTableModule,
     MatButtonModule,
@@ -22,22 +24,23 @@ import { ConfirmationDialog } from '../../confirmation-dialog/confirmation-dialo
     MatIconModule,
     MatInputModule,
     MatDialogModule,
-    MatMenuModule
-  ],
-  templateUrl: './pharmacy-detail.html',
-  styleUrl: './pharmacy-detail.scss',
+    MatMenuModule,
+    MatRadioModule,
+    CommonModule],
+  templateUrl: './bank-details.html',
+  styleUrl: './bank-details.scss',
 })
-export class PharmacyDetail {
+export class BankDetails {
   displayedColumns: string[] = [
     'id',
-    'pharmacyName',
-    'address',
-    'city',
-    'state',
-    'pincode',
-    'adminName',
-    'latitude',
-    'longitude',
+    'adminId',
+    'accountHolderName',
+    'bankName',
+    'accountNumber',
+    'ifscCode',
+    'upiId',
+    'isPrimary',
+    'createdAt',
     'actions'
   ];
 
@@ -49,13 +52,13 @@ export class PharmacyDetail {
   private _snackBar = inject(MatSnackBar);
 
   addressForm: FormGroup = this.fb.group({
-    companyName: ['', Validators.required],
-    companyAddress: ['', Validators.required],
-    city: ['', Validators.required],
-    state: ['', Validators.required],
-    pincode: ['', Validators.required],
+    accountHolderName: ['', Validators.required],
+    bankName: ['', Validators.required],
+    accountNumber: ['', Validators.required],
+    confirmAccountNumber: ['', Validators.required],
+    ifscCode: ['', Validators.required],
+    upiId: [''],
     isPrimary: [false],
-    addressType: [''],
   });
 
   isEdit = false;
@@ -71,8 +74,8 @@ export class PharmacyDetail {
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
-    this.http.get(API_URL + ENDPOINTS.GET_PHARMA_ADDRESS, { headers }).subscribe((res: any) => {
-      this.dataSource.data = res.data;
+    this.http.get(PHARMA_API_URL + ENDPOINTS.GET_BANK_ACCOUNT, { headers }).subscribe((res: any) => {
+      this.dataSource.data = res.accounts;
     })
   }
   openDialog(row?: any) {
@@ -81,27 +84,18 @@ export class PharmacyDetail {
       this.isEdit = true;
 
       this.addressForm.patchValue({
-        companyName: row.companyName,
-        companyAddress: row.companyAddress,
-        city: row.city,
-        state: row.state,
-        pincode: row.pincode,
-        addressType: row.addressType,
-        isPrimary: row.isPrimary
+        accountHolderName: row.accountHolderName,
+        bankName: row.bankName,
+        accountNumber: row.accountNumber,
+        confirmAccountNumber: row.confirmAccountNumber,
+        ifscCode: row.ifscCode,
+        upiId: row.upiId,
+        isPrimary: row.isPrimary,
       });
 
     } else {
       this.isEdit = false;
-
-      this.addressForm.reset({
-        companyName: '',
-        companyAddress: '',
-        city: '',
-        state: '',
-        pincode: '',
-        addressType: '',
-        isPrimary: false
-      });
+      this.addressForm.reset();
     }
 
     this.dialog.open(this.addressDialog, {
@@ -118,30 +112,30 @@ export class PharmacyDetail {
     }
     const payload = this.addressForm.value;
     if (this.isEdit) {
-      this.http.put(API_URL + ENDPOINTS.UPDATE_PHARMA_ADDRESS + this.selectedRecord?.id, payload, { headers }).subscribe((res: any) => {
+      this.http.put(PHARMA_API_URL + ENDPOINTS.UPDATE_BANK_ACCOUNT + this.selectedRecord?.id, payload, { headers }).subscribe((res: any) => {
         this.getPharmaAddresses();
-        this._snackBar.open('Pharmacy Address Updated.', 'Close', {
+        this._snackBar.open('Bank Details Updated.', 'Close', {
           duration: 3000,
           panelClass: ['snackbar-success'],
         });
       },
         (err) => {
-          this._snackBar.open('Pharmacy address can not be updated', 'Close', {
+          this._snackBar.open('Bank Details can not be updated', 'Close', {
             duration: 3000,
             panelClass: ['snackbar-error'],
           });
         })
     } else {
-      this.http.post(API_URL + ENDPOINTS.CREATE_PHARMA_ADDRESS, payload, { headers })
+      this.http.post(PHARMA_API_URL + ENDPOINTS.ADD_BANK_ACCOUNT, payload, { headers })
         .subscribe(() => {
           this.getPharmaAddresses();
-          this._snackBar.open('Pharmacy Address added sucessfully.', 'Close', {
+          this._snackBar.open('Bank Details added sucessfully.', 'Close', {
             duration: 3000,
             panelClass: ['snackbar-success'],
           });
         },
           (err) => {
-            this._snackBar.open('Pharmacy address can not be created', 'Close', {
+            this._snackBar.open('Bank Details can not be added', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-error'],
             });
@@ -157,7 +151,7 @@ export class PharmacyDetail {
       width: '400px',
       data: {
         title: 'Confirm Delete',
-        message: `Are you sure you want to delete Pharmacy ${m?.companyName || ''}?`,
+        message: `Are you sure you want to delete Bank Details?`,
         cancelButtonText: 'Cancel',
         confirmButtonText: 'Delete'
       }
@@ -171,17 +165,17 @@ export class PharmacyDetail {
         if (token) {
           headers = headers.set('Authorization', `Bearer ${token}`);
         }
-        this.http.delete(API_URL + ENDPOINTS.DELETE_PHARMA_ADDRESS + m?.id, { headers }).subscribe((res: any) => {
+        this.http.delete(PHARMA_API_URL + ENDPOINTS.DELETE_BANK_ACCOUNT + m?.id, { headers }).subscribe((res: any) => {
           // this.getPharmaAddresses();
           this.dataSource.data = this.dataSource.data.filter(a => a.id !== m?.id);
-          this._snackBar.open('Pharmacy address deleted successfully.', 'Close', {
+          this._snackBar.open('Bank Details deleted successfully.', 'Close', {
             duration: 3000,
             panelClass: ['snackbar-success'],
           });
 
         },
           (err) => {
-            this._snackBar.open('Pharmacy address can not be deleted', 'Close', {
+            this._snackBar.open('Bank Details can not be deleted', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-error'],
             });
@@ -190,5 +184,4 @@ export class PharmacyDetail {
     });
 
   }
-
 }

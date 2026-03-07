@@ -1,0 +1,162 @@
+<div style="display:flex; justify-content:space-between; margin-bottom:20px">
+    <h2>Bank Accounts</h2>
+
+    <button mat-raised-button color="primary" (click)="isEdit = false; openDialog()">
+        Add Bank
+    </button>
+</div>
+
+<!-- TABLE -->
+<div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> Id </th>
+            <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="adminId">
+            <th mat-header-cell *matHeaderCellDef> Admin&nbsp;Id </th>
+            <td mat-cell *matCellDef="let row"> {{row.adminId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountHolderName">
+            <th mat-header-cell *matHeaderCellDef> Account&nbsp;Holder&nbsp;Name </th>
+            <td mat-cell *matCellDef="let row"> {{row.accountHolderName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bankName">
+            <th mat-header-cell *matHeaderCellDef> Bank&nbsp;Name </th>
+            <td mat-cell *matCellDef="let row"> {{row.bankName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountNumber">
+            <th mat-header-cell *matHeaderCellDef> Account&nbsp;Number </th>
+            <td mat-cell *matCellDef="let row"> {{row.accountNumber}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ifscCode">
+            <th mat-header-cell *matHeaderCellDef> IFSC&nbsp;Code </th>
+            <td mat-cell *matCellDef="let row"> {{row.ifscCode}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="upiId">
+            <th mat-header-cell *matHeaderCellDef> UPI&nbsp;Id </th>
+            <td mat-cell *matCellDef="let row"> {{row.upiId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="isPrimary">
+            <th mat-header-cell *matHeaderCellDef> Is&nbsp;Primary </th>
+            <td mat-cell *matCellDef="let row"> {{row.isPrimary ? 'Yes': 'No'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef> Created&nbsp;At </th>
+            <td mat-cell *matCellDef="let row"> {{row.createdAt | date: 'mediumDate'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+
+            <td mat-cell *matCellDef="let row">
+
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #menu="matMenu">
+
+                    <button mat-menu-item (click)="selectedRecord = row; openDialog(row)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit</span>
+                    </button>
+
+                    <button mat-menu-item (click)="deleteAddress(row)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete</span>
+                    </button>
+
+                </mat-menu>
+
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    </table>
+</div>
+
+<!-- DIALOG TEMPLATE -->
+<ng-template #addressDialog let-dialogRef="dialogRef">
+
+    <h2 mat-dialog-title>
+        {{ isEdit ? 'Update Address' : 'Add Address' }}
+    </h2>
+
+    <form [formGroup]="addressForm">
+
+        <mat-dialog-content>
+
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>Account Holder Name</mat-label>
+                <input matInput formControlName="accountHolderName">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label> Bank Name</mat-label>
+                <input matInput formControlName="bankName">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>Account Number</mat-label>
+                <input matInput formControlName="accountNumber">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>Confirm Account Number</mat-label>
+                <input matInput formControlName="confirmAccountNumber">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>IFSC Code</mat-label>
+                <input matInput formControlName="ifscCode">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width:100%">
+                <mat-label>UPI Id</mat-label>
+                <input matInput formControlName="upiId">
+            </mat-form-field>
+
+            <div style="width:100%">
+                <label>Is this Bank Account Primary?</label>
+                <mat-radio-group formControlName="isPrimary">
+
+                    <mat-radio-button [value]="true" class="me-3">
+                        Yes
+                    </mat-radio-button>
+
+                    <mat-radio-button [value]="false">
+                        No
+                    </mat-radio-button>
+
+                </mat-radio-group>
+            </div>
+
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="end">
+
+            <button mat-button mat-dialog-close>
+                Cancel
+            </button>
+
+            <button mat-raised-button color="primary" (click)="saveAddress()">
+                Save
+            </button>
+
+        </mat-dialog-actions>
+
+    </form>
+
+</ng-template>

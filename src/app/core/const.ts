@@ -230,5 +230,10 @@ export const ENDPOINTS = {
     GET_NEW_BOOKING_BY_ID: 'api/accept/pharmacy-bookings/booking/', //26/items
 
     ACCEPT_NEW_BOOKING: 'api/accept/pharmacy-bookings/', //bookingId/accept
-    REJECT_NEW_BOOKING: 'api/reject/pharmacy-bookings/' //bookingId/reject
+    REJECT_NEW_BOOKING: 'api/reject/pharmacy-bookings/', //bookingId/reject
+
+    ADD_BANK_ACCOUNT: 'api/admin/bank-accounts',
+    UPDATE_BANK_ACCOUNT: 'api/admin/bank-accounts/', //{ACCOUNTID}
+    DELETE_BANK_ACCOUNT: 'api/admin/bank-accounts/', //{ACCOUNTID}
+    GET_BANK_ACCOUNT: 'api/admin/bank-accounts',
 };

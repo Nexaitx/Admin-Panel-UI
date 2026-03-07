@@ -361,6 +361,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/pharma/pharmacy-detail/pharmacy-detail').then(m => m.PharmacyDetail),
                 canActivate: [authGuard]
             },
+            {
+                path: 'bank-details',
+                loadComponent: () => import('./pages/pharma/bank-details/bank-details').then(m => m.BankDetails),
+                canActivate: [authGuard]
+            },
 
         ]
     }
