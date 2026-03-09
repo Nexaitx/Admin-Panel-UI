@@ -310,6 +310,13 @@ export const MENU_DATA: MenuItem[] = [
     permission: 'Bank Details',
     allowedRoles: ['Pharmacist']
   },
+   {
+    title: 'Account Settings',
+    icon: 'tools',
+    route: '/app/account-settings',
+    permission: 'Account Settings',
+    allowedRoles: ['Pharmacist']
+  },
   {
     title: 'Account',
     icon: 'group',

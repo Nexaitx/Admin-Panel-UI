@@ -12,6 +12,7 @@ import { Router, RouterLink } from "@angular/router";
 import { interval, Subscription } from 'rxjs';
 import { ENDPOINTS, PHARMA_API_URL } from '../../../core/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { pushMessages$ } from '../../../core/services/push-notification';
 
 @Component({
   selector: 'app-pharma-dashboard',
@@ -42,13 +43,26 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar);
   accepted: any;
-
+private _pushSub: any;
 
   ngOnInit() {
     this.getOverView();
     this.getRunningOrders();
     this.getNewOrders();
+    try {
+          this._pushSub = pushMessages$.subscribe((msg: any) => {
+            const payload = msg && msg.payload ? msg.payload : msg;
+            const title = payload?.notification?.title || payload?.data?.title || payload?.title;
+            if (title === '📦 New Pharmacy Booking' || title === 'New booking') {
+              this.getNewOrders();
+            }
+          });
+        } catch (e) {
+          console.warn('Failed to subscribe to push messages', e);
+        }
   }
+
+
   onExtend(order: any) {
     if (order.extensionCount >= this.MAX_EXTENSIONS) return;
 
@@ -168,6 +182,11 @@ export class PharmaDashboard implements OnInit, OnDestroy {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
     }
+     try {
+      if (this._pushSub && typeof this._pushSub.unsubscribe === 'function') {
+        this._pushSub.unsubscribe();
+      }
+    } catch (e) { }
   }
   getRunningOrders() {
     const token = localStorage.getItem('token');
@@ -207,7 +226,6 @@ export class PharmaDashboard implements OnInit, OnDestroy {
 
         this.newOrdersSignal.set(mapped);
         this.dataSourceNew.data = mapped;
-        console.log(this.dataSourceNew.data);
         this.checkTimer();
       }
     });
