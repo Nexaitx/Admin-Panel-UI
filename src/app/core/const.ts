@@ -236,4 +236,9 @@ export const ENDPOINTS = {
     UPDATE_BANK_ACCOUNT: 'api/admin/bank-accounts/', //{ACCOUNTID}
     DELETE_BANK_ACCOUNT: 'api/admin/bank-accounts/', //{ACCOUNTID}
     GET_BANK_ACCOUNT: 'api/admin/bank-accounts',
+
+    // Pharma account settings
+    GET_ALL_DEVICES_OF_PHARMACY: 'api/admin/devices/my-devices',
+    REGISTER_FCM: 'api/admin/devices/register',
+    UPDATE_FCM: 'api/admin/devices/',
 };
