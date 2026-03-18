@@ -1,17 +1,18 @@
 // firebase.service.ts (Complete Updated Version)
-import { Injectable, inject } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { 
-  getMessaging, 
-  getToken, 
-  onMessage, 
+import {
+  getMessaging,
+  getToken,
+  onMessage,
   Messaging,
-  isSupported 
+  isSupported
 } from 'firebase/messaging';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { API_URL, ENDPOINTS } from '../const';
+import { API_URL, ENDPOINTS, PHARMA_API_URL } from '../const';
+import { Platform } from '@angular/cdk/platform';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +25,10 @@ export class FirebaseService {
   public fcmToken: string | null = null;
   private tokenRefreshInterval: any;
   private isInitialized = false;
-    private tokenRequested = false;
+  private tokenRequested = false;
 
-    private staffUpdateCallbacks: ((data: any) => void)[] = [];
-
+  private staffUpdateCallbacks: ((data: any) => void)[] = [];
+  private platform = inject(Platform)
 
 
   constructor() {
@@ -36,61 +37,61 @@ export class FirebaseService {
 
 
   public onStaffUpdate(callback: (data: any) => void): void {
-  this.staffUpdateCallbacks.push(callback);
-}
-private handleStaffUpdateNotification(data: any): void {
-  console.log('🔄 Staff update notification received:', data);
-  
-  this.staffUpdateCallbacks.forEach(callback => {
-    try {
-      callback(data);
-    } catch (error) {
-      console.error('Error in staff update callback:', error);
-    }
-  });
-}
-
-private handleIncomingMessage(payload: any): void {
-  const data = payload.data || {};
-  const notification = payload.notification || {};
-  
-  console.log('🔔 Handling incoming message type:', data.type || 'GENERAL');
-
-  // Different notification types handle 
-  switch (data.type) {
-    case 'STAFF_CREATED':
-      this.handleStaffCreatedNotification(payload);
-      break;
-    case 'STAFF_UPDATED':
-      this.handleStaffUpdateNotification(data);
-      break;
-    case 'STAFF_DELETED':
-      this.handleStaffUpdateNotification(data); // Same handler for delete
-      break;
-    default:
-      this.showForegroundNotification(notification.title, notification.body, data);
-      break;
+    this.staffUpdateCallbacks.push(callback);
   }
-}
+  private handleStaffUpdateNotification(data: any): void {
+    console.log('🔄 Staff update notification received:', data);
 
-   private async initializeFirebase() {
+    this.staffUpdateCallbacks.forEach(callback => {
+      try {
+        callback(data);
+      } catch (error) {
+        console.error('Error in staff update callback:', error);
+      }
+    });
+  }
+
+  private handleIncomingMessage(payload: any): void {
+    const data = payload.data || {};
+    const notification = payload.notification || {};
+
+    console.log('🔔 Handling incoming message type:', data.type || 'GENERAL');
+
+    // Different notification types handle 
+    switch (data.type) {
+      case 'STAFF_CREATED':
+        this.handleStaffCreatedNotification(payload);
+        break;
+      case 'STAFF_UPDATED':
+        this.handleStaffUpdateNotification(data);
+        break;
+      case 'STAFF_DELETED':
+        this.handleStaffUpdateNotification(data); // Same handler for delete
+        break;
+      default:
+        this.showForegroundNotification(notification.title, notification.body, data);
+        break;
+    }
+  }
+
+  private async initializeFirebase() {
     try {
       this.isSupported = await isSupported();
-      
+
       if (this.isSupported) {
         console.log('✅ Firebase Messaging is supported');
         const app = initializeApp(environment.firebase);
         this.messaging = getMessaging(app);
-        
+
         this.isInitialized = true;
         console.log('🚀 Firebase Messaging initialized successfully');
-        
+
         // Auto-request permission only if not already requested
         if (!this.tokenRequested && Notification.permission === 'default') {
           console.log('🔄 Auto-requesting notification permission...');
           this.requestPermission();
         }
-        
+
       } else {
         console.warn('❌ Firebase Messaging is not supported');
       }
@@ -99,7 +100,7 @@ private handleIncomingMessage(payload: any): void {
     }
   }
 
- async requestPermission(): Promise<boolean> {
+  async requestPermission(): Promise<boolean> {
     if (!this.messaging || !this.isSupported) {
       console.warn('Firebase messaging not available');
       return false;
@@ -123,7 +124,7 @@ private handleIncomingMessage(payload: any): void {
       // Request permission
       console.log('🔄 Requesting notification permission...');
       const permission = await Notification.requestPermission();
-      
+
       if (permission === 'granted') {
         console.log('✅ Notification permission granted');
         const token = await this.getFCMToken();
@@ -166,7 +167,7 @@ private handleIncomingMessage(payload: any): void {
       // Request permission
       console.log('🔄 Requesting notification permission...');
       const permission = await Notification.requestPermission();
-      
+
       if (permission === 'granted') {
         console.log('✅ Notification permission granted');
         const token = await this.getFCMToken();
@@ -181,7 +182,7 @@ private handleIncomingMessage(payload: any): void {
     }
   }
 
-   private async getFCMToken1(): Promise<string | null> {
+  private async getFCMToken1(): Promise<string | null> {
     if (!this.messaging) {
       console.error('❌ Messaging not available for token generation');
       return null;
@@ -189,22 +190,22 @@ private handleIncomingMessage(payload: any): void {
 
     try {
       console.log('🔄 Getting FCM token...');
-      
+
       // First setup message listener
       this.listenForMessages();
-      
+
       let serviceWorkerRegistration: ServiceWorkerRegistration | undefined;
-      
+
       // Try to get existing service worker
       if ('serviceWorker' in navigator) {
         try {
           // Try multiple service worker paths
           serviceWorkerRegistration = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
-          
+
           if (!serviceWorkerRegistration) {
             serviceWorkerRegistration = await navigator.serviceWorker.getRegistration('/');
           }
-          
+
           if (!serviceWorkerRegistration) {
             console.log('📝 Service worker not found, registering new one...');
             try {
@@ -240,16 +241,16 @@ private handleIncomingMessage(payload: any): void {
       }
 
       console.log('🔧 Token options:', tokenOptions);
-      
+
       const token = await getToken(this.messaging, tokenOptions);
 
       if (token) {
         console.log('✅ FCM Token obtained:', token);
         this.fcmToken = token;
-        
+
         // Setup token refresh after getting token
         this.setupTokenRefresh();
-        
+
         // Send token to backend
         // this.sendTokenToBackend(token);
         return token;
@@ -259,12 +260,12 @@ private handleIncomingMessage(payload: any): void {
       }
     } catch (error: any) {
       console.error('❌ Error getting FCM token:', error);
-      
+
       // More detailed error logging
       if (error.code) {
         console.error('🔧 Firebase Error Code:', error.code);
       }
-      
+
       if (error.code === 'messaging/token-subscribe-failed') {
         console.error('🔧 Token subscription failed - check:');
         console.error('1. VAPID key validity');
@@ -275,11 +276,11 @@ private handleIncomingMessage(payload: any): void {
       } else if (error.code === 'messaging/permission-default') {
         console.error('🔧 Notification permission not granted yet');
       }
-      
+
       return null;
     }
   }
- public sendFCMTokenAfterLogin(): void {
+  public sendFCMTokenAfterLogin(): void {
     if (this.fcmToken) {
       console.log('🔄 Sending existing FCM token after login...');
       // this.sendTokenToBackend(this.fcmToken);
@@ -296,10 +297,10 @@ private handleIncomingMessage(payload: any): void {
 
     try {
       console.log('🔄 Getting FCM token...');
-      
+
       // Setup message listener first
       this.listenForMessages();
-      
+
       const token = await getToken(this.messaging, {
         vapidKey: environment.vapidKey
       });
@@ -307,10 +308,27 @@ private handleIncomingMessage(payload: any): void {
       if (token) {
         console.log('✅ FCM Token obtained:', token.substring(0, 20) + '...');
         this.fcmToken = token;
-        
+        const jwtToken = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (jwtToken) {
+          headers = headers.set('Authorization', `Bearer ${jwtToken}`);
+        }
+        const user = JSON.parse(localStorage.getItem('userProfile') || '{}')
+        console.log(this.platform)
+        const payload = {
+          deviceId: 'browser',
+          deviceType: this.platform.isBrowser ? 'browser' : 'safari' ,
+          fcmToken: token,
+        };
+        console.log('fcm token register: ', payload)
+        this.http.post(
+          PHARMA_API_URL + ENDPOINTS.REGISTER_FCM,
+          payload, { headers }
+        ).subscribe();
+
         // Setup token refresh
         this.setupTokenRefresh();
-        
+
         // Try to send token to backend immediately
         // this.sendTokenToBackend(token);
         return token;
@@ -335,12 +353,12 @@ private handleIncomingMessage(payload: any): void {
   async refreshFCMToken(): Promise<string | null> {
     try {
       if (!this.messaging) return null;
-      
+
       console.log('🔄 Refreshing FCM token...');
       const token = await getToken(this.messaging, {
         vapidKey: environment.vapidKey
       });
-      
+
       if (token && token !== this.fcmToken) {
         console.log('🔄 FCM Token refreshed');
         this.fcmToken = token;
@@ -363,32 +381,19 @@ private handleIncomingMessage(payload: any): void {
 
     onMessage(this.messaging, (payload) => {
       console.log('📨 📨 📨 FOREGROUND MESSAGE RECEIVED:', payload);
-      
+
       // Log detailed information
       console.log('📊 Notification Title:', payload.notification?.title);
       console.log('📊 Notification Body:', payload.notification?.body);
       console.log('📊 Notification Data:', payload.data);
-      
+
       // Send to BehaviorSubject for components to listen
       this.currentMessage.next(payload);
-      
+
       // Handle different notification types
       this.handleIncomingMessage(payload);
     });
   }
-
-  // private handleIncomingMessage(payload: any): void {
-  //   const data = payload.data || {};
-  //   const notification = payload.notification || {};
-    
-  //   console.log('🔔 Handling incoming message type:', data.type || 'GENERAL');
-
-  //   if (data.type === 'STAFF_CREATED') {
-  //     this.handleStaffCreatedNotification(payload);
-  //   } else {
-  //     this.showForegroundNotification(notification.title, notification.body, data);
-  //   }
-  // }
 
   private handleStaffCreatedNotification(payload: any): void {
     const data = payload.data;
@@ -396,7 +401,7 @@ private handleIncomingMessage(payload: any): void {
     const body = payload.notification?.body || 'A new staff member has been added';
 
     console.log('👥 STAFF CREATION NOTIFICATION DETAILS:', data);
-    
+
     // Show both browser and custom notifications
     this.showStaffNotification(title, body, data);
   }
@@ -404,7 +409,7 @@ private handleIncomingMessage(payload: any): void {
   private showStaffNotification(title: string, body: string, data: any): void {
     // Show browser notification
     this.showBrowserNotification(title, body, data);
-    
+
     // Also trigger custom UI notification
     this.showCustomUINotification(title, body, data);
   }
@@ -484,7 +489,7 @@ private handleIncomingMessage(payload: any): void {
 
   private handleNotificationClick(data: any): void {
     console.log('🔔 Notification clicked with data:', data);
-    
+
     if (data.staffId) {
       // You can navigate to staff details page here
       this.navigateToStaffDetails(data.staffId);
@@ -496,67 +501,23 @@ private handleIncomingMessage(payload: any): void {
     // Example: this.router.navigate(['/staff', staffId]);
   }
 
-  // private sendTokenToBackend(token: string): void {
-  //   console.log('📤 Starting FCM Token Backend Submission...');
-    
-  //   try {
-  //     const currentUser = this.getCurrentUser();
-  //     console.log('🔍 Current User Status:', currentUser ? 'Logged In' : 'Not Logged In');
-      
-  //     if (currentUser?.token) {
-  //       console.log('✅ User is logged in, sending token to backend...');
-  //       console.log('🔑 Auth Token Available:', currentUser.token.substring(0, 20) + '...');
-        
-  //       this.http.post(
-  //         `${environment.apiUrl}/update-fcm-token`,
-  //         { fcmToken: token },
-  //         { 
-  //           headers: { 
-  //             'Authorization': `Bearer ${currentUser.token}`,
-  //             'Content-Type': 'application/json'
-  //           } 
-  //         }
-  //       ).subscribe({
-  //         next: (response: any) => {
-  //           console.log('✅ FCM token sent to backend successfully');
-  //           console.log('📊 Backend Response:', response);
-  //           localStorage.removeItem('pending_fcm_token');
-  //         },
-  //         error: (error) => {
-  //           console.error('❌ Error sending FCM token to backend:', error);
-  //           console.error('📊 Error Status:', error.status);
-  //           console.error('📊 Error Message:', error.message);
-  //           this.storeTokenForRetry(token);
-  //         }
-  //       });
-  //     } else {
-  //       console.warn('⚠ No user logged in, storing token for retry');
-  //       this.storeTokenForRetry(token);
-  //     }
-  //   } catch (error) {
-  //     console.error('💥 Error in sendTokenToBackend:', error);
-  //     this.storeTokenForRetry(token);
-  //   }
-  // }
-
-
   private storeTokenForRetry(token: string): void {
     console.log('💾 Storing FCM token for retry...');
     localStorage.setItem('pending_fcm_token', token);
     console.log('✅ FCM token stored in localStorage');
   }
 
- public sendPendingToken(): void {
+  public sendPendingToken(): void {
     console.log('🔄 Checking for pending FCM token...');
     const pendingToken = localStorage.getItem('pending_fcm_token');
     const currentUser = this.getCurrentUser();
-    
+
     console.log('📊 Pending Token Available:', !!pendingToken);
     console.log('📊 User Logged In:', !!currentUser?.token);
-    
+
     if (pendingToken && currentUser?.token) {
       console.log('🔄 Sending pending FCM token to backend...');
-      
+
       this.http.post(
         `${environment.apiUrl}${ENDPOINTS.UPDATE_FCM_TOKEN}`,
         { fcmToken: pendingToken },
@@ -581,9 +542,9 @@ private handleIncomingMessage(payload: any): void {
   }
 
 
-   public async debugFCMSetup(): Promise<any> {
+  public async debugFCMSetup(): Promise<any> {
     console.log('🩺 Starting Comprehensive FCM Debug...');
-    
+
     const debugInfo: any = {
       timestamp: new Date().toISOString(),
       isSupported: this.isSupported,
@@ -619,7 +580,7 @@ private handleIncomingMessage(payload: any): void {
     return debugInfo;
   }
 
-  
+
 
   private getCurrentUser(): any {
     try {
@@ -628,7 +589,7 @@ private handleIncomingMessage(payload: any): void {
       if (token) {
         return { token: token };
       }
-      
+
       // Fallback to currentUser if it exists
       const userData = localStorage.getItem('currentUser');
       return userData ? JSON.parse(userData) : null;
@@ -646,7 +607,7 @@ private handleIncomingMessage(payload: any): void {
   }
 
   // Debug method to check FCM status
- getFCMStatus(): any {
+  getFCMStatus(): any {
     const status = {
       isSupported: this.isSupported,
       isInitialized: this.isInitialized,
@@ -655,13 +616,13 @@ private handleIncomingMessage(payload: any): void {
       notificationPermission: Notification.permission,
       serviceWorker: 'serviceWorker' in navigator
     };
-    
+
     console.log('📊 FCM Status Report:', status);
     return status;
   }
 
 
-    ngOnDestroy() {
+  ngOnDestroy() {
     console.log('🧹 Cleaning up Firebase Service...');
     if (this.tokenRefreshInterval) {
       clearInterval(this.tokenRefreshInterval);

@@ -9,8 +9,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { HttpClient } from '@angular/common/http';
-import { API_URL, ENDPOINTS } from '../../core/const';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { API_URL, ENDPOINTS, PHARMA_API_URL } from '../../core/const';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FirebaseService } from '../../core/services/firebase.service';
 
@@ -171,9 +171,7 @@ export class Login {
 
   private async sendFCMTokenToBackend(fcmToken: string, authToken: string): Promise<void> {
     try {
-      const response: any = await this.http.post(
-        API_URL + ENDPOINTS.UPDATE_FCM_TOKEN,
-        {
+      const response: any = await this.http.post(API_URL + ENDPOINTS.UPDATE_FCM_TOKEN,{
           fcmToken: fcmToken,
           timestamp: new Date().toISOString()
         },
@@ -205,7 +203,7 @@ export class Login {
     const perm = loginResponse?.profile?.role?.permissions || loginResponse?.profile?.subRole?.permissions || [];
     const documentVerification = loginResponse?.profile?.documentVerification;
     console.log(perm);
-    
+
     if (perm.includes('Admin Dashboard')) {
       this.router.navigate(['/app/admin-dashboard']);
     } else if (perm.includes('Pharmacist Dashboard') && documentVerification === 'VERIFIED') {
@@ -213,7 +211,7 @@ export class Login {
     } else if (perm.includes('Dietician Dashboard')) {
       this.router.navigate(['/app/dietician-dashboard']);
     }
-     else if (loginResponse?.profile?.subRole && loginResponse?.profile?.subRole?.permissions.length > 0) { //subrole
+    else if (loginResponse?.profile?.subRole && loginResponse?.profile?.subRole?.permissions.length > 0) { //subrole
       this.router.navigate(['/app/dashboard']);
     } else {
       this.router.navigate(['/app/dashboard']);

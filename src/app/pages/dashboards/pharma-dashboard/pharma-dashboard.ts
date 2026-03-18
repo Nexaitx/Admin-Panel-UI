@@ -43,23 +43,23 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar);
   accepted: any;
-private _pushSub: any;
+  private _pushSub: any;
 
   ngOnInit() {
     this.getOverView();
     this.getRunningOrders();
     this.getNewOrders();
     try {
-          this._pushSub = pushMessages$.subscribe((msg: any) => {
-            const payload = msg && msg.payload ? msg.payload : msg;
-            const title = payload?.notification?.title || payload?.data?.title || payload?.title;
-            if (title === '📦 New Pharmacy Booking' || title === 'New booking') {
-              this.getNewOrders();
-            }
-          });
-        } catch (e) {
-          console.warn('Failed to subscribe to push messages', e);
+      this._pushSub = pushMessages$.subscribe((msg: any) => {
+        const payload = msg && msg.payload ? msg.payload : msg;
+        const title = payload?.notification?.title || payload?.data?.title || payload?.title;
+        if (title === '📦 New Pharmacy Booking' || title === 'New booking') {
+          this.getNewOrders();
         }
+      });
+    } catch (e) {
+      console.warn('Failed to subscribe to push messages', e);
+    }
   }
 
 
@@ -182,7 +182,7 @@ private _pushSub: any;
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
     }
-     try {
+    try {
       if (this._pushSub && typeof this._pushSub.unsubscribe === 'function') {
         this._pushSub.unsubscribe();
       }

@@ -312,7 +312,7 @@ export const MENU_DATA: MenuItem[] = [
   },
    {
     title: 'Account Settings',
-    icon: 'tools',
+    icon: 'approval',
     route: '/app/account-settings',
     permission: 'Account Settings',
     allowedRoles: ['Pharmacist']
