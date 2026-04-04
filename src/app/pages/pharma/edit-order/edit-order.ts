@@ -20,7 +20,7 @@ interface OrderItem {
   currentQty: number;
   price: number;
   isOutOfStock: boolean;
-  status: 'Available' | 'Non Available' | 'Partial';
+  status: 'AVAILABLE' | 'NOT_AVAILABLE' | 'PARTIAL_AVAILABLE';
 }
 
 @Component({
@@ -83,11 +83,11 @@ export class EditOrder implements OnInit {
 
     // auto-status
     if (item.quantity === 0) {
-      item.availabilityStatus = 'Non Available';
+      item.availabilityStatus = 'NOT_AVAILABLE';
     } else if (item.quantity < item.allowedQty) {
-      item.availabilityStatus = 'Partial';
+      item.availabilityStatus = 'PARTIAL_AVAILABLE';
     } else {
-      item.availabilityStatus = 'Available';
+      item.availabilityStatus = 'AVAILABLE';
     }
 
     item.isOutOfStock = item.quantity === 0;
@@ -107,7 +107,7 @@ export class EditOrder implements OnInit {
     const items = this.editDataSource.data.map((item: any) => {
       return {
         itemId: item.itemId,
-        category: item.category || 'General',
+        category: item.category || 'OTC',
         offerPrice: item.price || 0,
         availableQuantity: item.quantity,
         availabilityStatus: item.availabilityStatus.toUpperCase()

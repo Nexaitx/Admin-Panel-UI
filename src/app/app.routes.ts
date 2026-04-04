@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { authGuard, redirectIfAuthenticated } from './core/guards/auth-guard';
-import { AuthLayout } from './layouts/auth-layout/auth-layout';
 export const routes: Routes = [
     {
         path: '',
@@ -329,6 +328,11 @@ export const routes: Routes = [
             {
                 path: 'order-ledgers',
                 loadComponent: () => import('./pages/pharma/order-ledgers/order-ledgers').then(m => m.OrderLedgers),
+                canActivate: [authGuard]
+            },
+             {
+                path: 'withdrawal-requests',
+                loadComponent: () => import('./pages/pharma/wallet/wallet-withdrawal-request/wallet-withdrawal-request').then(m => m.WalletWithdrawalRequest),
                 canActivate: [authGuard]
             },
             {

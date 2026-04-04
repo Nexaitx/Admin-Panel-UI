@@ -290,7 +290,7 @@ export const MENU_DATA: MenuItem[] = [
     allowedRoles: ['Pharmacist']
   },
   {
-    title: 'Orders Ledgers',
+    title: 'Wallet & Ledgers',
     icon: 'money',
     route: '/app/order-ledgers',
     permission: 'Order Ledgers',

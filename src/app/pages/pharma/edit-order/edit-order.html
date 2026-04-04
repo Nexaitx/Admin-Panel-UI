@@ -41,9 +41,9 @@
                 <td mat-cell *matCellDef="let item">
 
                     <div class="status-display d-flex align-items-center" [ngClass]="{
-           'text-success': item.availabilityStatus === 'Available',
-           'text-danger': item.availabilityStatus === 'Non Available',
-           'text-warning': item.availabilityStatus === 'Partial'
+           'text-success': item.availabilityStatus === 'AVAILABLE',
+           'text-danger': item.availabilityStatus === 'NOT_AVAILABLE',
+           'text-warning': item.availabilityStatus === 'PARTIAL_AVAILABLE'
          }">
                         <mat-icon *ngIf="item.availabilityStatus === 'AVAILABLE'">
                             check_circle

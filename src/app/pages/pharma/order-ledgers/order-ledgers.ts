@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-order-ledgers',
@@ -61,5 +62,10 @@ export class OrderLedgers {
     // 2. Logic: Company takes 15%, Pharma gets the rest (example formula)
     element.companyShare = element.offerPrice * 0.15;
     element.payout = (element.offerPrice - element.companyShare) * element.qty;
+  }
+private router = inject(Router);
+  navigateToWithdraw() {
+    // Implement navigation logic to Withdraw page
+this.router.navigate(['/app/withdrawal-requests']);
   }
 }

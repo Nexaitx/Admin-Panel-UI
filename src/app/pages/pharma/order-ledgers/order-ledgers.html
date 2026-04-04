@@ -1,11 +1,43 @@
 <div class="container-fluid px-0">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h4 mb-0">Order Ledger</h2>
-        <button mat-flat-button color="primary">
-            <mat-icon>save</mat-icon> Save Ledger
-        </button>
+        <div>
+            <h2 class="h4 mb-0">Wallet & Ledger</h2>
+            <small>Track your earnings and transactions</small>
+        </div>
+    </div>
+    <div class="row g-3 mb-3">
+        <div class="col-md-3">
+            <div class="d-flex flex-column align-items-center p-2 card">
+                <h4 class="card-body mb-0">Total Earned</h4>
+                <span class="card-text ps-3">₹ --</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+
+            <div class="d-flex flex-column align-items-center p-2 card">
+                <h4 class="card-body mb-0">Current Balance</h4>
+                <span class="card-text ps-3">₹ --</span>
+            </div>
+        </div>
+
+        <div class="col-md-3" style="cursor: pointer;">
+            <div class="d-flex flex-column align-items-center p-2 card shadow" (click)="navigateToWithdraw()">
+                <mat-icon class="text-success">payments</mat-icon>
+                <h4 class="card-body mb-0">Withdraw</h4>
+                <span class="card-text ps-3">View Request withdrawal</span>
+            </div>
+        </div>
+
+        <div class="col-md-3" style="cursor: pointer;">
+            <div class="d-flex flex-column align-items-center p-2 card shadow">
+                <mat-icon class="text-primary">account_balance</mat-icon>
+                <h4 class="card-body mb-0">Accounts</h4>
+                <span class="card-text ps-3">Manage bank accounts</span>
+            </div>
+        </div>
     </div>
 
+    <h4>Transactions</h4>
     <div class="table-container mat-elevation-z2">
         <table mat-table [dataSource]="dataSource" class="w-100">
 
