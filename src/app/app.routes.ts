@@ -330,9 +330,14 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/pharma/order-ledgers/order-ledgers').then(m => m.OrderLedgers),
                 canActivate: [authGuard]
             },
-             {
+            {
                 path: 'withdrawal-requests',
                 loadComponent: () => import('./pages/pharma/wallet/wallet-withdrawal-request/wallet-withdrawal-request').then(m => m.WalletWithdrawalRequest),
+                canActivate: [authGuard]
+            },
+            {
+                path: 'account-details',
+                loadComponent: () => import('./pages/pharma/account-details/account-details').then(m => m.AccountDetails),
                 canActivate: [authGuard]
             },
             {

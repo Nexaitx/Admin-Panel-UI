@@ -241,4 +241,12 @@ export const ENDPOINTS = {
     GET_ALL_DEVICES_OF_PHARMACY: 'api/admin/devices/my-devices',
     REGISTER_FCM: 'api/admin/devices/register',
     UPDATE_FCM: 'api/admin/devices/',
+
+    // Wallet and Ledgers
+    GET_MY_TRANSACTIONS: 'api/admin/withdrawals/my-transactions',
+    GET_WALLET_BALANCE: 'api/admin/withdrawals/my-wallet',
+    GET_WITHDRAW_REQUESTS: 'api/admin/wallet/withdraw/requests',
+    CREATE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request',
+    UPDATE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request/', //{requestId}
+    DELETE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request/' //{requestId}
 };

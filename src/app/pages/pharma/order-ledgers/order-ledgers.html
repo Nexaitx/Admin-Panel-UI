@@ -7,16 +7,18 @@
     </div>
     <div class="row g-3 mb-3">
         <div class="col-md-3">
-            <div class="d-flex flex-column align-items-center p-2 card">
+            <div class="d-flex flex-column align-items-center p-2 card shadow">
+                <mat-icon class="text-warning">trending_up</mat-icon>
                 <h4 class="card-body mb-0">Total Earned</h4>
-                <span class="card-text ps-3">₹ --</span>
+                <span class="card-text ps-3">₹ {{myWallet?.totalEarned}}</span>
             </div>
         </div>
         <div class="col-md-3">
 
-            <div class="d-flex flex-column align-items-center p-2 card">
+            <div class="d-flex flex-column align-items-center p-2 card shadow">
+                <mat-icon class="text-info">account_balance_wallet</mat-icon>
                 <h4 class="card-body mb-0">Current Balance</h4>
-                <span class="card-text ps-3">₹ --</span>
+                <span class="card-text ps-3">₹ {{myWallet?.currentBalance}}</span>
             </div>
         </div>
 
@@ -29,7 +31,7 @@
         </div>
 
         <div class="col-md-3" style="cursor: pointer;">
-            <div class="d-flex flex-column align-items-center p-2 card shadow">
+            <div class="d-flex flex-column align-items-center p-2 card shadow" (click)="navigateToAccounts()">
                 <mat-icon class="text-primary">account_balance</mat-icon>
                 <h4 class="card-body mb-0">Accounts</h4>
                 <span class="card-text ps-3">Manage bank accounts</span>
@@ -37,7 +39,7 @@
         </div>
     </div>
 
-    <h4>Transactions</h4>
+    <b>Transactions</b>
     <div class="table-container mat-elevation-z2">
         <table mat-table [dataSource]="dataSource" class="w-100">
 
@@ -45,80 +47,24 @@
                 <th mat-header-cell *matHeaderCellDef> S.No </th>
                 <td mat-cell *matCellDef="let i = index"> {{i + 1}} </td>
             </ng-container>
-
-            <ng-container matColumnDef="medicine">
-                <th mat-header-cell *matHeaderCellDef> Medicine </th>
-                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef> Transaction&nbsp;Id </th>
+                <td mat-cell *matCellDef="let element"><b>T_ID: </b>{{element.id}}</td>
+            </ng-container>
+            <ng-container matColumnDef="total_amount">
+                <th mat-header-cell *matHeaderCellDef> Total Amount </th>
+                <td mat-cell *matCellDef="let element">{{element.amount}}</td>
             </ng-container>
 
-            <ng-container matColumnDef="quantity">
-                <th mat-header-cell *matHeaderCellDef> Qty </th>
-                <td mat-cell *matCellDef="let element">
-                    <mat-form-field appearance="outline" class="compact-input">
-                        <input matInput type="number" [(ngModel)]="element.qty" [max]="element.maxQty"
-                            (change)="validateQty(element)">
-                        <mat-hint>Max: {{element.maxQty}}</mat-hint>
-                    </mat-form-field>
+            <ng-container matColumnDef="commision">
+                <th mat-header-cell *matHeaderCellDef> Transaction&nbsp;Type </th>
+                <td mat-cell *matCellDef="let element">{{element.transactionType}}
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Availability </th>
-                <td mat-cell *matCellDef="let element">
-                    <mat-form-field appearance="outline" class="status-dropdown">
-                        <mat-select [(ngModel)]="element.isAvailable"
-                            [ngClass]="element.isAvailable ? 'text-success' : 'text-danger'">
-                            <mat-option [value]="true">
-                                <mat-icon class="status-icon success-icon">check_circle</mat-icon>
-                                Available
-                            </mat-option>
-                            <mat-option [value]="false">
-                                <mat-icon class="status-icon danger-icon">cancel</mat-icon>
-                                Non Available
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="mrp">
-                <th mat-header-cell *matHeaderCellDef> MRP </th>
-                <td mat-cell *matCellDef="let element"> {{element.mrp | currency:'INR'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="offerPrice">
-                <th mat-header-cell *matHeaderCellDef> Offer Price </th>
-                <td mat-cell *matCellDef="let element">
-                    <mat-form-field appearance="outline" class="compact-input">
-                        <input matInput type="number" [(ngModel)]="element.offerPrice"
-                            (input)="calculatePayouts(element)">
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="category">
-                <th mat-header-cell *matHeaderCellDef> Category </th>
-                <td mat-cell *matCellDef="let element">
-                    <mat-form-field appearance="outline" class="compact-input">
-                        <mat-select [(ngModel)]="element.category">
-                            <mat-option value="OTC">OTC</mat-option>
-                            <mat-option value="Ethical">Ethical</mat-option>
-                            <mat-option value="Surgical">Surgical</mat-option>
-                            <mat-option value="Generic">Generic</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="companyShare">
-                <th mat-header-cell *matHeaderCellDef> Vitoxyz Share </th>
-                <td mat-cell *matCellDef="let element"> {{element.companyShare | currency:'INR'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="payout">
-                <th mat-header-cell *matHeaderCellDef> Net Payout </th>
-                <td mat-cell *matCellDef="let element">
-                    <strong class="text-primary">{{element.payout | currency:'INR'}}</strong>
+            <ng-container matColumnDef="net_amount">
+                <th mat-header-cell *matHeaderCellDef> Source </th>
+                <td mat-cell *matCellDef="let element">{{element.source}}
                 </td>
             </ng-container>
 
