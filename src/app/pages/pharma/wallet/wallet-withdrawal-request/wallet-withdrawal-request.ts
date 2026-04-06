@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ConfirmationDialog } from '../../../confirmation-dialog/confirmation-dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
@@ -46,7 +46,7 @@ export class WalletWithdrawalRequest {
   ngOnInit() {
     this.requestForm = this.fb.group({
       // bankAccountId: [''],
-      amount: [''],
+      amount: ['',  [Validators.required, Validators.min(0)]],
       remarks: ['']
     })
     this.getWithdrawRequests();
