@@ -144,7 +144,16 @@ export class AccountDetails {
     console.log(this.requestForm.value);
     // if (this.requestForm.valid) {   
       if (this.isEdit && this.selectedRecord) {
-       this.http.put(`${PHARMA_API_URL + ENDPOINTS.UPDATE_BANK_ACCOUNT}${this.selectedRecord?.id}`, this.requestForm.value, { headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`) })
+        const payload = {
+          bankName: this.requestForm.value.bankName,
+          accountHolderName: this.requestForm.value.accountHolderName,
+          accountNumber: this.selectedRecord ? this.selectedRecord.accountNumber : this.requestForm.value.accountNumber,
+          confirmAccountNumber: this.selectedRecord ? this.selectedRecord.accountNumber : this.requestForm.value.accountNumber,
+          ifscCode: this.requestForm.value.ifscCode,
+          upiId: this.requestForm.value.upiId,
+          isPrimary: this.requestForm.value.isPrimary
+        }
+       this.http.put(`${PHARMA_API_URL + ENDPOINTS.UPDATE_BANK_ACCOUNT}${this.selectedRecord?.id}`, payload, { headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`) })
           .subscribe((response: any) => {
             this.getBankAccounts();
             this.dialog.closeAll();
