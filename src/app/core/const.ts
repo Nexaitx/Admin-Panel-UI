@@ -248,5 +248,5 @@ export const ENDPOINTS = {
     GET_WITHDRAW_REQUESTS: 'api/admin/wallet/withdraw/requests',
     CREATE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request',
     UPDATE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request/', //{requestId}
-    DELETE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request/' //{requestId}
+    DELETE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request/', //{requestId}
 };

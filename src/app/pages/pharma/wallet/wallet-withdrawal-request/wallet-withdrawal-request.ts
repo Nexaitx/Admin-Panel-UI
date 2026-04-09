@@ -137,22 +137,4 @@ export class WalletWithdrawalRequest {
     }
   }
 
-  // onSubmit() {
-
-  //   console.log("Form Value:", this.requestForm.value);
-  //   if (this.requestForm.valid) {
-  //     const formValue = this.requestForm.value;
-  //     const requestData = {
-  //       // bankAccountId: formValue.bankAccountId,
-  //       amount: formValue.amount,
-  //       remarks: formValue.remarks
-  //     };
-  //     console.log("Request Data to submit:", requestData);
-  //     // this.http.post(PHARMA_API_URL + ENDPOINTS.CREATE_WITHDRAWAL_REQUEST, requestData, { headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`) })
-  //     //   .subscribe((response: any) => {
-  //     //     this.dataSource.data = [...this.dataSource.data, response];
-  //     //   });
-  //     // this.dialog.closeAll();
-  //   }
-  // }
 }
