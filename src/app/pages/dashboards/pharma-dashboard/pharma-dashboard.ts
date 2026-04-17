@@ -42,7 +42,7 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   private router = inject(Router)
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar);
-  accepted: any;
+  summary: any;
   private _pushSub: any;
 
   ngOnInit() {
@@ -240,8 +240,8 @@ export class PharmaDashboard implements OnInit, OnDestroy {
   getOverView() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get(`${PHARMA_API_URL}${ENDPOINTS.GET_COUNT_OF_ACCEPTED_SUMMARY}`, { headers }).subscribe((res: any) => {
-      this.accepted = res;
+    this.http.get(`${PHARMA_API_URL}${ENDPOINTS.GET_SUMMARY_DASHBOARD}`, { headers }).subscribe((res: any) => {
+      this.summary = res.data;
     })
   }
 }

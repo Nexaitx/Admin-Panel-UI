@@ -222,6 +222,7 @@ export const ENDPOINTS = {
     GET_PHARMA_ADDRESS: '/api/admin/addresses', //JWTTOKEN REQUIRED*
 
     // New Pharma Panel
+    GET_SUMMARY_DASHBOARD: 'api/pharmacy/bookings/statistics/my-stats',
     GET_ALL_RUNNING_ORDERS: 'api/accept/pharmacy-bookings/pharma/accepted',
     GET_ALL_NEW_ORDERS: 'api/accept/pharmacy-bookings/pending',
     GET_COUNT_OF_ACCEPTED_SUMMARY: 'api/admin/bookings/accepted/summary',
@@ -249,4 +250,7 @@ export const ENDPOINTS = {
     CREATE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request',
     UPDATE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request/', //{requestId}
     DELETE_WITHDRAWAL_REQUEST: 'api/admin/wallet/withdraw/request/', //{requestId}
+
+    ORDER_STATUSES: 'api/admin/bookings/allowed-statuses',
+    ORDER_BY_STATUS: 'api/admin/bookings/light',
 };

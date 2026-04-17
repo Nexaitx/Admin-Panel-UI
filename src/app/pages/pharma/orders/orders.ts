@@ -25,22 +25,42 @@ import { MatMenuModule } from '@angular/material/menu';
   styleUrl: './orders.scss',
 })
 export class Orders {
-  displayedColumns: string[] = ['orderId', 'customer', 'distance', 'amount', 'status', 'actions'];
+  displayedColumns: string[] = ['orderId', 'customer', 'adminAddressDetails', 'distance', 'amount', 'status', 'actions'];
   dataSource = new MatTableDataSource([]);
-  selectedStatus: string = 'ACCEPTED';
+  selectedStatus: string = 'DELIVERED';
   private http = inject(HttpClient);
+  orderStatuses: any;
 
   ngOnInit() {
+    this.fetchOrderStatuses();
     this.fetchBookings();
+  }
+
+  fetchOrderStatuses() {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', `Bearer ${token}`);
+    this.http.get(PHARMA_API_URL + ENDPOINTS.ORDER_STATUSES, { headers }).subscribe((res: any) => {
+      this.orderStatuses = res.statuses;
+    });
   }
 
   fetchBookings() {
     const token = localStorage.getItem('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', `Bearer ${token}`);
-
-    this.http.get(PHARMA_API_URL + ENDPOINTS.GET_ALL_RUNNING_ORDERS, { headers }).subscribe((res: any) => {
-      this.dataSource.data = res;
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      }),
+      params: {
+        status: this.selectedStatus,
+        page: '0',
+        size: '100'
+      }
+    };
+    this.http.get(PHARMA_API_URL + ENDPOINTS.ORDER_BY_STATUS, options).subscribe((res: any) => {
+      this.dataSource.data = res.bookings;
     });
 
   }

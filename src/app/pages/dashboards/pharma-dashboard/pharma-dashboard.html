@@ -1,36 +1,39 @@
 <div class="container-fluid py-4 px-0">
     <h4>Overview</h4>
     <div class="row mb-4 g-3">
-        <div class="col-md-3">
+        <!-- <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white incoming p-3">
                 <mat-card-subtitle>Broadcasted</mat-card-subtitle>
                 <mat-card-title>📢 --</mat-card-title>
             </mat-card>
-        </div>
+        </div> -->
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white outgoing p-3">
                 <mat-card-subtitle>Accepted</mat-card-subtitle>
-                <mat-card-title>✅ {{accepted?.totalAcceptedBookings}}</mat-card-title>
+                <mat-card-title>✅ {{summary?.userAccepted?.count || 0}}</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white alerts p-3">
                 <mat-card-subtitle>Missed</mat-card-subtitle>
-                <mat-card-title>⚠️ --</mat-card-title>
+                <mat-card-title>⚠️ {{summary?.cancelled?.count || 0}}</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white history p-3">
                 <mat-card-subtitle>Delivered</mat-card-subtitle>
-                <mat-card-title>🚚 --</mat-card-title>
+                <mat-card-title>🚚 {{summary?.delivered?.count || 0}}</mat-card-title>
             </mat-card>
         </div>
 
         <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white history p-3">
                 <mat-card-subtitle>Returned</mat-card-subtitle>
-                <mat-card-title>🔄 --</mat-card-title>
+                <mat-card-title>🔄 {{summary?.deliveryFailed?.count || 0}}</mat-card-title>
             </mat-card>
+        </div>
+        <div class="col-md-2">
+            <button matButton="outlined" [routerLink]="['/app/order-ledgers']">View Ledgers</button>
         </div>
     </div>
 
@@ -40,31 +43,29 @@
         <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white incoming p-3">
                 <mat-card-subtitle>Accepted</mat-card-subtitle>
-                <mat-card-title>✅ {{accepted?.totalAcceptedAmount}}</mat-card-title>
+                <mat-card-title>✅ {{summary?.userAccepted?.totalAmount || 0}}</mat-card-title>
             </mat-card>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white outgoing p-3">
                 <mat-card-subtitle>Delivered</mat-card-subtitle>
-                <mat-card-title>🚚 --</mat-card-title>
+                <mat-card-title>🚚 {{summary?.delivered?.totalAmount || 0}}</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-2">
             <mat-card class="status-card shadow-sm bg-white alerts p-3">
                 <mat-card-subtitle>Returned</mat-card-subtitle>
-                <mat-card-title>🔄 --</mat-card-title>
+                <mat-card-title>🔄 {{summary?.deliveryFailed?.totalAmount || 0}}</mat-card-title>
             </mat-card>
         </div>
         <div class="col-md-3">
             <mat-card class="status-card shadow-sm bg-white history p-3">
                 <mat-card-subtitle>Net Value</mat-card-subtitle>
-                <mat-card-title>--</mat-card-title>
+                <mat-card-title>{{summary?.summary?.totalRevenue || 0}}</mat-card-title>
             </mat-card>
         </div>
 
-        <div class="col-md-2">
-            <button matButton="outlined" [routerLink]="['/app/order-ledgers']">View Ledgers</button>
-        </div>
+        
     </div>
 
     <div class="container-fluid py-4">
