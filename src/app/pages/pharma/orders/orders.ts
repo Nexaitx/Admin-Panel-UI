@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ENDPOINTS, PHARMA_API_URL } from '../../../core/const';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-orders',
@@ -19,7 +20,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatTableModule,
     MatIconModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDialogModule
   ],
   templateUrl: './orders.html',
   styleUrl: './orders.scss',
@@ -30,7 +32,10 @@ export class Orders {
   selectedStatus: string = 'DELIVERED';
   private http = inject(HttpClient);
   orderStatuses: any;
-
+  private dialog = inject(MatDialog);
+  @ViewChild('termsDialog') termsDialog!: TemplateRef<any>;
+  selectedOrder: any;
+  
   ngOnInit() {
     this.fetchOrderStatuses();
     this.fetchBookings();
@@ -66,9 +71,15 @@ export class Orders {
   }
 
   viewOrder(element: any) {
-    console.log('View order', element);
-  }
+    const dialogRef = this.dialog.open(this.termsDialog, {
+      width: '600px',
+      maxHeight: '80vh',
+      disableClose: true,
+    });
 
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+    });
+  }
   printOrder() {
     // console.log('Print order', element);
     window.print()

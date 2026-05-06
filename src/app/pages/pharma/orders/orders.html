@@ -20,8 +20,8 @@
   </div>
 
   <!-- Table -->
-  <div class="mat-elevation-z1 rounded overflow-hidden">
-    <table mat-table [dataSource]="dataSource" class="w-100">
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
       <!-- Order ID -->
       <ng-container matColumnDef="orderId">
@@ -49,7 +49,7 @@
       <ng-container matColumnDef="distance">
         <th mat-header-cell *matHeaderCellDef> Distance in Km </th>
         <td mat-cell *matCellDef="let element">
-          {{element.distanceKm}}
+          {{element.distanceKm | number: '0.2'}}
         </td>
       </ng-container>
 
@@ -65,7 +65,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element">
-          {{element.bookingStatus}}
+          {{element.bookingStatus | titlecase}}
         </td>
       </ng-container>
 
@@ -74,8 +74,7 @@
         <th mat-header-cell *matHeaderCellDef>Actions</th>
 
         <td mat-cell *matCellDef="let element" class="text-end">
-
-            <button matButton="tonal" (click)="viewOrder(element)">
+            <button matButton="tonal" (click)="selectedOrder = element; viewOrder(element)">
               <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>
@@ -99,3 +98,20 @@
   </div>
 
 </div>
+
+<ng-template #termsDialog>
+  <h2 mat-dialog-title>Order Details</h2>
+
+    <mat-dialog-content>
+      <p><b>Order ID:</b> {{selectedOrder.bookingId}}</p>
+      <p><b>User Address:</b> {{selectedOrder.userAddressDetails}}</p>
+      <p><b>Admin Address:</b> {{selectedOrder.adminAddressDetails}}</p>
+      <p><b>Distance:</b> {{selectedOrder.distanceKm | number: '0.2'}}</p>
+      <p><b>Amount:</b> {{selectedOrder.finalAmount | currency:'INR'}}</p>
+      <p><b>Status:</b> {{selectedOrder.bookingStatus | titlecase}}</p>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+</ng-template>

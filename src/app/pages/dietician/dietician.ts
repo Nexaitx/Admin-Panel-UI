@@ -66,7 +66,7 @@ export class Dietician {
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
   permission: boolean = false;
-  displayedColumns: string[] = ['s_no', 'dieticianId', 'name', 'phone', 'email', 'address', 'city', 'verified', 'createdOn', 'actions'];
+  displayedColumns: string[] = ['s_no', 'id', 'name', 'email', 'actions'];
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;
   isEdit: boolean = false;
@@ -106,7 +106,7 @@ export class Dietician {
   ngOnInit(): void {
     this.getAccounts();
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
-      const dataStr = `${data.name} ${data.email}`.toLowerCase();
+      const dataStr = `${data.id} ${data.name} ${data.email}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
@@ -216,19 +216,17 @@ export class Dietician {
 
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: any[] = users.map(user => ({
-      user_id: user.id,
+      id: user.id,
       name: user.name,
       email: user.email,
-      phone: user.phone_number,
       contact: user.email,
       aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
-      address: user.address,
-      city: user.city,
       aadhaarUrl: user.aadhaar_card_attachment || null,
       originalUser: user
     }));
 
     this.dataSource.data = mappedUsers;
+    console.log('Mapped Users for Table:', mappedUsers);
 
     if (this.sort) {
       this.dataSource.sort = this.sort;
@@ -242,7 +240,7 @@ export class Dietician {
     console.log(this.toggleChecked);
 
     // --- 1. Safely retrieve adminId and check for null/undefined ---
-    const adminId = this.selectedUser?.admin_id;
+    const adminId = this.selectedUser?.id;
 
     if (!adminId) {
       // Re-enable the necessary safety check

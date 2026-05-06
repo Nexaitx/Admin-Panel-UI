@@ -39,7 +39,7 @@ export class UpComingBooking implements OnDestroy {
     [
       'serial_no', 'booking_no', 'shift_date', 'shift_start', 'shift_end',
       'user_name', 'user_phone', 'staff_name', 'staff_phone',
-      'subcategory', 'shift_total_price', 'payment_status', 'status', 'actions'
+      'subcategory', 'shift_total_price', 'payment_status', 'status'
     ];
   isLoading = false;
   private _pushSub: Subscription | any;

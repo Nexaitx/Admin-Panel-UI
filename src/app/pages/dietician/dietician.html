@@ -1,28 +1,12 @@
-<!-- <mat-tab-group>
-  <mat-tab label="Dieticians">
-    <app-dieticians-list></app-dieticians-list>
-  </mat-tab>
-  <mat-tab label="Diet Plans">
-    <app-diet-plan></app-diet-plan>
-  </mat-tab>
-
-  <mat-tab label="Subscription Plans">
-    <app-subscription-plan></app-subscription-plan>
-  </mat-tab>
-</mat-tab-group> -->
-
 <mat-drawer-container class="drawer-container">
     <mat-drawer class="w-75 p-3" #userDrawer mode="over" [(opened)]="isDrawerOpen" position="end">
-        <h2> {{ verification ? 'Pharmacist Verification' : 'Pharmacist Details' }}</h2>
+        <h2> {{ verification ? 'Dietician Verification' : 'Dietician Details' }}</h2>
         @if(selectedUser && !verification)
         {
         <div>
             <p><strong>Name:</strong> {{ selectedUser.name }}</p>
             <p><strong>Email:</strong> {{ selectedUser.email }}</p>
-            <p><strong>Phone:</strong> {{ selectedUser.phone }}</p>
             <p><strong>Contact (Email):</strong> {{ selectedUser.contact }}</p>
-            <p><strong>Address:</strong> {{ selectedUser.address }}</p>
-            <p><strong>City:</strong> {{ selectedUser.city }}</p>
             <p><strong>Verified:</strong> {{selectedUser.active ? 'Yes' : 'No'}} </p>
 
             <div *ngIf="selectedUser.aadhaarUrl">
@@ -41,10 +25,8 @@
             <div>
                 <p><strong>Name:</strong> {{ selectedUser.name }}</p>
                 <p><strong>Email:</strong> {{ selectedUser.email }}</p>
-                <p><strong>Phone:</strong> {{ selectedUser.phone }}</p>
                 <p><strong>Contact (Email):</strong> {{ selectedUser.contact }}</p>
-                <p><strong>Address:</strong> {{ selectedUser.address }}</p>
-                <p><strong>City:</strong> {{ selectedUser.city }}</p>
+               
 
                 <div *ngIf="selectedUser.aadhaarUrl">
                     <p><strong>Aadhaar Card Attachment:</strong></p>
@@ -163,9 +145,9 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="dieticianId">
+                <ng-container matColumnDef="id">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Dietician&nbsp;ID </th>
-                    <td mat-cell *matCellDef="let element"> {{element.dieticianId}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
@@ -173,25 +155,11 @@
                     <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="phone">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
-                    <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
-                </ng-container>
+                
 
                 <ng-container matColumnDef="email">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
                     <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-                </ng-container>
-
-
-                <ng-container matColumnDef="address">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
-                    <td mat-cell *matCellDef="let element"> {{element.address}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="city">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> City </th>
-                    <td mat-cell *matCellDef="let element"> {{element.city}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="verified">
@@ -203,10 +171,7 @@
                     <!-- <td mat-cell *matCellDef="let element"> {{element.verified ? 'Yes' : 'No'}} </td> -->
                 </ng-container>
 
-                <ng-container matColumnDef="createdOn">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Created&nbsp;On </th>
-                    <td mat-cell *matCellDef="let element"> {{element.createdOn | date:'medium'}} </td>
-                </ng-container>
+                
 
                 <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef> Actions </th>
@@ -225,11 +190,6 @@
                                 (click)="verification = true; selectedUser = element; openUserDrawer()">
                                 <mat-icon>verified_user</mat-icon>
                                 <span>Verification</span>
-                            </button>
-
-                            <button mat-menu-item (click)="selectedUser = element; openDialog(element)">
-                                <mat-icon>key</mat-icon>
-                                <span>Permission</span>
                             </button>
 
                             <button mat-menu-item
@@ -259,24 +219,6 @@
             </mat-paginator>
         </div>
     </div>
-
-    <ng-template #discountDialog>
-        <h2 mat-dialog-title>Permission to Add Medicine / Product</h2>
-        <mat-dialog-content>
-            <form>
-                <label>Do you want to restrict this pharmacist from adding medicines or products?</label>
-                <mat-radio-group aria-label="Select an option" [(ngModel)]="permission" name="permission">
-                    <mat-radio-button [value]="true">Yes</mat-radio-button>
-                    <mat-radio-button [value]="false">No</mat-radio-button>
-                </mat-radio-group>
-            </form>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button mat-button mat-dialog-close>Cancel</button>
-            <button mat-flat-button color="primary"
-                (click)="updateMedicinePermission(); dialog.closeAll()">Save</button>
-        </mat-dialog-actions>
-    </ng-template>
 
     <ng-template #verificationDialog>
         <h2 mat-dialog-title>Verification</h2>
