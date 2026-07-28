@@ -55,12 +55,8 @@ export class ClientIndividual {
   selectedUser: TableUser | null = null;
   displayedColumns: string[] = ['s_no', 'userId', 'userName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
   dataSource: MatTableDataSource<TableUser>;
-  cities: any[] = [
-    { value: 'chandigarh', viewValue: 'Chandigarh' },
-    { value: 'delhi', viewValue: 'Delhi' },
-    { value: 'jaipur', viewValue: 'Jaipur' },
-    { value: 'other', viewValue: 'Other' }
-  ];
+  cities: string[] = [];
+  selectedCity: string = '';
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -73,8 +69,11 @@ export class ClientIndividual {
     this.getUsers();
 
     this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
-      const dataStr = `${data.userId} ${data.userName} ${data.email} ${data.phoneNumber} ${data.aadhaar} ${data.address} ${data.city} ${data.signupDate}`.toLowerCase();
-      return dataStr.includes(filter.toLowerCase());
+      if (!filter) {
+        return true;
+      }
+
+      return data.city?.toLowerCase() === filter;
     };
   }
 
@@ -87,6 +86,14 @@ export class ClientIndividual {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  filterByCity() {
+    this.dataSource.filter = this.selectedCity.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
@@ -139,8 +146,17 @@ export class ClientIndividual {
   getUsers() {
     this.http.get(API_URL + ENDPOINTS.GET_USERS).subscribe({
       next: (res: any) => {
-        this.dataSource.data = res
         this.users = res.reverse();
+
+        // Generate unique city list
+        this.cities = [
+          ...new Set(
+            this.users
+              .map(user => user.city?.trim())
+              .filter(city => city)
+          )
+        ].sort();
+
         this.mapAndSetDataSource(this.users);
       },
       error: (err) => {

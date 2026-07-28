@@ -31,9 +31,22 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="col-md-3">
         <mat-label>Select City</mat-label>
-        <mat-select>
+        <mat-select
+          [(value)]="selectedCity"
+          (selectionChange)="filterByCity()">
+
+          <mat-option *ngIf="cities.length === 0" disabled>
+            No Cities Available
+          </mat-option>
+
+          <mat-option *ngIf="cities.length > 0" value="">
+            All Cities
+          </mat-option>
+
           @for (city of cities; track city) {
-          <mat-option [value]="city.value">{{city.viewValue}}</mat-option>
+            <mat-option [value]="city">
+              {{ city }}
+            </mat-option>
           }
         </mat-select>
       </mat-form-field>
