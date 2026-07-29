@@ -1,3 +1,4 @@
+//src\app\app.routes.ts
 import { Routes } from '@angular/router';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { authGuard, redirectIfAuthenticated } from './core/guards/auth-guard';
@@ -379,6 +380,18 @@ export const routes: Routes = [
                 path: 'account-settings',
                 loadComponent: () => import('./pages/pharma/account-settings/account-settings').then(m => m.AccountSettings),
                 canActivate: [authGuard]
+            },
+            {
+                path: 'riders',
+                loadComponent: () =>
+                    import('./pages/Riders/riders/riders').then(m => m.Riders),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'riders-owners',
+                loadComponent: () =>
+                    import('./pages/Riders/riders-owners/riders-owners').then(m => m.RidersOwners),
+                canActivate: [authGuard],
             },
 
         ]
