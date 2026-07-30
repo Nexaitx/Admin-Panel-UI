@@ -52,14 +52,14 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>ID</th>
+        <ng-container matColumnDef="id" sticky>
+          <th mat-header-cell *matHeaderCellDef>Rider ID</th>
           <td mat-cell *matCellDef="let element">
             {{ element.id }}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="name">
+        <ng-container matColumnDef="name" sticky>
           <th mat-header-cell *matHeaderCellDef>Name</th>
           <td mat-cell *matCellDef="let element">
             {{ element.name }}
@@ -132,9 +132,13 @@
         <ng-container matColumnDef="hasBankDetails">
           <th mat-header-cell *matHeaderCellDef>Bank Details</th>
           <td mat-cell *matCellDef="let element">
-            <span class="status-badge"
-                  [ngClass]="element.hasBankDetails ? 'status-success' : 'status-danger'">
+            <span
+              class="status-badge"
+              [ngClass]="element.hasBankDetails ? 'status-success clickable' : 'status-danger'"
+              (click)="element.hasBankDetails && openBankDialog(element.id)">
+
               {{ element.hasBankDetails ? 'Yes' : 'No' }}
+
             </span>
           </td>
         </ng-container>
@@ -143,9 +147,13 @@
         <ng-container matColumnDef="hasDocuments">
           <th mat-header-cell *matHeaderCellDef>Documents</th>
           <td mat-cell *matCellDef="let element">
-            <span class="status-badge"
-                  [ngClass]="element.hasDocuments ? 'status-success' : 'status-danger'">
+            <span
+              class="status-badge"
+              [ngClass]="element.hasDocuments ? 'status-success clickable' : 'status-danger'"
+              (click)="element.hasDocuments && openDocumentDialog(element.id)">
+
               {{ element.hasDocuments ? 'Yes' : 'No' }}
+
             </span>
           </td>
         </ng-container>
@@ -154,9 +162,13 @@
         <ng-container matColumnDef="hasPayment">
           <th mat-header-cell *matHeaderCellDef>Payment</th>
           <td mat-cell *matCellDef="let element">
-            <span class="status-badge"
-                  [ngClass]="element.hasPayment ? 'status-success' : 'status-danger'">
+            <span
+              class="status-badge"
+              [ngClass]="element.hasPayment ? 'status-success clickable' : 'status-danger'"
+              (click)="element.hasPayment && openPaymentDialog(element.id)">
+
               {{ element.hasPayment ? 'Yes' : 'No' }}
+
             </span>
           </td>
         </ng-container>
@@ -207,41 +219,188 @@
 </mat-drawer-container>
 
 
-<ng-template #vehicleDialog>
+<ng-template #detailsDialog>
 
-  <h2 mat-dialog-title>Vehicle Details</h2>
+  <h2 mat-dialog-title>{{ dialogTitle }}</h2>
 
-  <mat-dialog-content *ngIf="vehicleDetails">
+  <mat-dialog-content *ngIf="dialogData">
 
-    <p><strong>Vehicle Type:</strong> {{vehicleDetails.vehicleType}}</p>
+    <!-- Vehicle Details -->
+    <ng-container *ngIf="dialogType === 'vehicle'">
 
-    <p><strong>Vehicle Number:</strong> {{vehicleDetails.vehicleNumber}}</p>
+      <p><strong>Vehicle Type:</strong> {{ dialogData.vehicleType }}</p>
 
-    <p><strong>Model:</strong> {{vehicleDetails.modelName}}</p>
+      <p><strong>Vehicle Number:</strong> {{ dialogData.vehicleNumber }}</p>
 
-    <p><strong>Color:</strong> {{vehicleDetails.color}}</p>
+      <p><strong>Model:</strong> {{ dialogData.modelName }}</p>
 
-    <p><strong>Weight Capacity:</strong> {{vehicleDetails.weightCapacity}}</p>
+      <p><strong>Color:</strong> {{ dialogData.color }}</p>
 
-    <p><strong>Cold Chain:</strong>
-      {{vehicleDetails.coldChainSupported ? 'Yes' : 'No'}}
-    </p>
+      <p><strong>Weight Capacity:</strong> {{ dialogData.weightCapacity }}</p>
 
-    <p><strong>Self Driven:</strong>
-      {{vehicleDetails.isSelfDriven ? 'Yes' : 'No'}}
-    </p>
+      <p><strong>Cold Chain:</strong>
+        {{ dialogData.coldChainSupported ? 'Yes' : 'No' }}
+      </p>
 
-    <div *ngIf="vehicleDetails.vehicleFrontPhotoUrl">
-      <img
-        [src]="vehicleDetails.vehicleFrontPhotoUrl"
-        width="250">
-    </div>
+      <p><strong>Self Driven:</strong>
+        {{ dialogData.isSelfDriven ? 'Yes' : 'No' }}
+      </p>
 
-    <div *ngIf="vehicleDetails.vehicleBackPhotoUrl">
-      <img
-        [src]="vehicleDetails.vehicleBackPhotoUrl"
-        width="250">
-    </div>
+      <div *ngIf="dialogData.vehicleFrontPhotoUrl">
+        <img
+          [src]="dialogData.vehicleFrontPhotoUrl"
+          width="250"
+          style="cursor:pointer"
+          (click)="openImagePreview(dialogData.vehicleFrontPhotoUrl,'Vehicle Front')">
+      </div>
+
+      <div *ngIf="dialogData.vehicleBackPhotoUrl">
+        <img
+          [src]="dialogData.vehicleBackPhotoUrl"
+          width="250"
+          style="cursor:pointer"
+          (click)="openImagePreview(dialogData.vehicleBackPhotoUrl,'Vehicle Back')">
+      </div>
+
+    </ng-container>
+
+    <!-- Payment Details -->
+    <ng-container *ngIf="dialogType === 'payment'">
+
+      <p><strong>Driver Name:</strong> {{ dialogData.driverName }}</p>
+
+      <p><strong>Payment Status:</strong> {{ dialogData.paymentStatus }}</p>
+
+      <p><strong>Registration Fee Paid:</strong>
+        {{ dialogData.isRegistrationFeePaid ? 'Yes' : 'No' }}
+      </p>
+
+      <p><strong>Amount:</strong>
+        ₹{{ dialogData.amount }}
+      </p>
+
+      <p><strong>Payment Method:</strong>
+        {{ dialogData.paymentMethod }}
+      </p>
+
+      <p><strong>Payment Date:</strong>
+        {{ dialogData.paymentDate | date:'medium' }}
+      </p>
+
+      <p *ngIf="dialogData.failureReason">
+        <strong>Failure Reason:</strong>
+        {{ dialogData.failureReason }}
+      </p>
+
+    </ng-container>
+
+    <!-- Bank Details -->
+    <ng-container *ngIf="dialogType === 'bank'">
+
+      <p><strong>Driver Name:</strong> {{ dialogData.driverName }}</p>
+
+      <p><strong>Mobile:</strong> {{ dialogData.driverMobile }}</p>
+
+      <p><strong>Account Holder:</strong> {{ dialogData.accountHolderName }}</p>
+
+      <p><strong>Bank Name:</strong> {{ dialogData.bankName }}</p>
+
+      <p><strong>Branch:</strong> {{ dialogData.branchName }}</p>
+
+      <p><strong>Account Number:</strong> {{ dialogData.accountNumber }}</p>
+
+      <p><strong>IFSC:</strong> {{ dialogData.ifscCode }}</p>
+
+      <p><strong>Account Type:</strong> {{ dialogData.accountType }}</p>
+
+      <p><strong>UPI ID:</strong>
+        {{ dialogData.upiId || 'N/A' }}
+      </p>
+
+      <p><strong>Verification Status:</strong>
+        {{ dialogData.verificationStatus }}
+      </p>
+
+      <p><strong>Verified:</strong>
+        {{ dialogData.isVerified ? 'Yes' : 'No' }}
+      </p>
+
+      <p><strong>Verified By:</strong>
+        {{ dialogData.verifiedBy || 'N/A' }}
+      </p>
+
+      <p><strong>Verified At:</strong>
+        {{ dialogData.verifiedAt | date:'medium' }}
+      </p>
+
+      <p *ngIf="dialogData.rejectionReason">
+        <strong>Rejection Reason:</strong>
+        {{ dialogData.rejectionReason }}
+      </p>
+
+      <div *ngIf="dialogData.bankProofDocumentUrl">
+        <img
+          [src]="dialogData.bankProofDocumentUrl"
+          width="250"
+          style="cursor:pointer"
+          (click)="openImagePreview(dialogData.bankProofDocumentUrl,'Bank Proof')">
+      </div>
+
+    </ng-container>
+
+    <!-- Driver Documents -->
+    <ng-container *ngIf="dialogType === 'document'">
+
+      <p><strong>Driver Name:</strong> {{ dialogData.driverName }}</p>
+
+      <p><strong>Total Documents:</strong> {{ dialogData.totalDocuments }}</p>
+
+      <div *ngFor="let doc of dialogData.documents" class="mb-4">
+
+        <hr>
+
+        <p><strong>Document Type:</strong> {{ doc.documentType }}</p>
+
+        <p><strong>Document Number:</strong>
+          {{ doc.documentNumber || 'N/A' }}
+        </p>
+
+        <p><strong>Status:</strong>
+          {{ doc.verificationStatus }}
+        </p>
+
+        <p><strong>Uploaded At:</strong>
+          {{ doc.uploadedAt | date:'medium' }}
+        </p>
+
+        <p *ngIf="doc.verifiedBy">
+          <strong>Verified By:</strong>
+          {{ doc.verifiedBy }}
+        </p>
+
+        <p *ngIf="doc.verifiedAt">
+          <strong>Verified At:</strong>
+          {{ doc.verifiedAt | date:'medium' }}
+        </p>
+
+        <p *ngIf="doc.rejectionReason">
+          <strong>Rejection Reason:</strong>
+          {{ doc.rejectionReason }}
+        </p>
+
+        <div *ngIf="doc.documentUrl">
+
+          <img
+            [src]="doc.documentUrl"
+            width="250"
+            style="cursor:pointer"
+            (click)="openImagePreview(doc.documentUrl, doc.documentType)">
+
+        </div>
+
+      </div>
+
+    </ng-container>
 
   </mat-dialog-content>
 
@@ -252,5 +411,35 @@
     </button>
 
   </mat-dialog-actions>
+
+</ng-template>
+
+<ng-template #imagePreviewDialog>
+
+  <div class="d-flex justify-content-between align-items-center p-3">
+
+    <h2>{{ imagePreviewTitle }}</h2>
+
+    <button
+      mat-icon-button
+      mat-dialog-close>
+
+      <mat-icon>close</mat-icon>
+
+    </button>
+
+  </div>
+
+  <mat-dialog-content class="text-center">
+
+    <img
+      [src]="imagePreviewUrl"
+      style="
+        max-width:100%;
+        max-height:75vh;
+        object-fit:contain;
+      ">
+
+  </mat-dialog-content>
 
 </ng-template>

@@ -68,7 +68,11 @@ export class Riders {
   @Input() client: any;
   http = inject(HttpClient);
   dialog = inject(MatDialog);
-  vehicleDetails: any = null;
+  dialogTitle = '';
+  dialogType: 'vehicle' | 'payment' | 'bank' | 'document' = 'vehicle';
+  dialogData: any = null;
+  imagePreviewUrl = '';
+  imagePreviewTitle = '';
   users: any[] = [];
   isDrawerOpen: boolean = false;
   selectedUser: TableRider | null = null;
@@ -93,8 +97,11 @@ export class Riders {
   cities: string[] = [];
   selectedCity: string = '';
 
-  @ViewChild('vehicleDialog')
-  vehicleDialog!: TemplateRef<any>;
+  @ViewChild('detailsDialog')
+  detailsDialog!: TemplateRef<any>;
+
+  @ViewChild('imagePreviewDialog')
+  imagePreviewDialog!: TemplateRef<any>;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -206,19 +213,26 @@ export class Riders {
     }
   }
 
+  //<=--------------------------- DIALOGS ----------------------------->
+
+  //<=--------------------------- Vehicle ----------------------------->
   openVehicleDialog(driverId: number) {
 
+    this.dialogData = null;
+
     const url = `${ADMIN_PORTER}${
-        ENDPOINTS.GET_RIDER_BY_ID_VEHICLE.replace('{driverId}', driverId.toString())
+        ENDPOINTS.GET_DRIVER_BY_ID_VEHICLE.replace('{driverId}', driverId.toString())
     }`;
 
     this.http.get(url).subscribe({
 
       next: (res) => {
 
-        this.vehicleDetails = res;
+        this.dialogType = 'vehicle';
+        this.dialogTitle = 'Vehicle Details';
+        this.dialogData = res;
 
-        this.dialog.open(this.vehicleDialog, {
+        this.dialog.open(this.detailsDialog, {
           width: '600px'
         });
 
@@ -233,10 +247,124 @@ export class Riders {
     });
 
   }
+  //<=--------------------------- Payment ----------------------------->
+  openPaymentDialog(driverId: number) {
+
+    this.dialogData = null;
+
+    const url = `${ADMIN_PORTER}${
+      ENDPOINTS.GET_DRIVER_BY_ID_PAYMENT.replace(
+        '{driverId}',
+        driverId.toString()
+      )
+    }`;
+
+    this.http.get(url).subscribe({
+
+      next: (res) => {
+
+        this.dialogType = 'payment';
+        this.dialogTitle = 'Payment Details';
+        this.dialogData = res;
+
+        this.dialog.open(this.detailsDialog, {
+          width: '600px'
+        });
+
+      },
+
+      error: (err) => {
+        console.error(err);
+      }
+
+    });
+
+  }
+  //<=--------------------------- Bank ----------------------------->
+  openBankDialog(driverId: number) {
+
+    this.dialogData = null;
+
+    const url = `${ADMIN_PORTER}${
+      ENDPOINTS.GET_DRIVER_BY_ID_BANK.replace(
+        '{driverId}',
+        driverId.toString()
+      )
+    }`;
+
+    this.http.get(url).subscribe({
+
+      next: (res) => {
+
+        this.dialogType = 'bank';
+        this.dialogTitle = 'Bank Details';
+        this.dialogData = res;
+
+        this.dialog.open(this.detailsDialog, {
+          width: '600px'
+        });
+
+      },
+
+      error: (err) => {
+        console.error(err);
+      }
+
+    });
+
+  }
+  //<=--------------------------- Documents ----------------------------->
+  openDocumentDialog(driverId: number) {
+
+      this.dialogData = null;
+
+      const url = `${ADMIN_PORTER}${
+        ENDPOINTS.GET_DRIVER_BY_ID_DOC.replace(
+          '{driverId}',
+          driverId.toString()
+        )
+      }`;
+
+      this.http.get(url).subscribe({
+
+        next: (res) => {
+
+          this.dialogType = 'document';
+          this.dialogTitle = 'Driver Documents';
+          this.dialogData = res;
+
+          this.dialog.open(this.detailsDialog, {
+            width: '700px'
+          });
+
+        },
+
+        error: (err) => {
+          console.error(err);
+        }
+
+      });
+
+    }
+
+  openImagePreview(imageUrl: string, title: string = 'Preview') {
+
+    this.imagePreviewUrl = imageUrl;
+    this.imagePreviewTitle = title;
+
+    this.dialog.open(this.imagePreviewDialog, {
+      width: '90vw',
+      maxWidth: '95vw',
+      height: '90vh',
+      panelClass: 'image-preview-dialog'
+    });
+
+  }  
+
 
   getRiders() {
     this.http.get(
-  `${ADMIN_PORTER}${ENDPOINTS.GET_RIDERS}?page=${this.pageIndex}&size=${this.pageSize}&sortBy=createdAt&sortDirection=asc`
+  `${ADMIN_PORTER}${ENDPOINTS.GET_DRIVERS}?page=${this.pageIndex}&size=${this.pageSize}&sortBy=createdAt&sortDirection=asc`
 ).subscribe({
       next: (res: any) => {
         this.users = res.content;

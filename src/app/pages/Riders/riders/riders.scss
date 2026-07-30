@@ -1,3 +1,4 @@
+//status badge start
 .status-badge{
     display:inline-flex;
     align-items:center;
@@ -44,7 +45,9 @@
 
 }
 
+//status badge end
 
+//clickable start
 .clickable {
     cursor: pointer;
 }
@@ -52,3 +55,28 @@
 .clickable:hover {
     opacity: .85;
 }
+
+//clickable end
+
+//image preview dialog start
+.image-preview-dialog .mat-mdc-dialog-container {
+  padding: 0;
+}
+
+img {
+  border-radius: 8px;
+}
+
+img:hover {
+  opacity: .9;
+}
+//image preview dialog end
+
+//table scroll container start
+.tableScroll-container {
+    height: calc(100vh - 220px);
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+//table scroll container end

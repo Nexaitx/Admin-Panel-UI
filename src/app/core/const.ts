@@ -15,9 +15,12 @@ export const ENDPOINTS = {
     SIGNUP: '/signup',
     RESET_PASSWORD: '/forgot-password',
 
-    //Riders
-    GET_RIDERS: '/api/drivers',
-    GET_RIDER_BY_ID_VEHICLE: '/api/drivers/{driverId}/vehicle',
+    //drivers
+    GET_DRIVERS: '/api/drivers',
+    GET_DRIVER_BY_ID_VEHICLE: '/api/drivers/{driverId}/vehicle',
+    GET_DRIVER_BY_ID_PAYMENT: '/api/drivers/{driverId}/registration-fee-status',
+    GET_DRIVER_BY_ID_BANK: '/api/drivers/{driverId}/bank-details',
+    GET_DRIVER_BY_ID_DOC: '/api/drivers/driver/{driverId}',
 
     GET_BOOKINGS_STATISTICS: '/api/admin/bookings/statistics',
     // Users
