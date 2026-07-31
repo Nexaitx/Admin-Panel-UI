@@ -406,8 +406,35 @@
 
   <mat-dialog-actions align="end">
 
-    <button mat-button mat-dialog-close>
-      Close
+    <!-- Only show when Pending -->
+    <ng-container *ngIf="dialogType === 'bank' && dialogData?.verificationStatus === 'PENDING'">
+
+      <button
+        mat-raised-button
+        class="reject-btn"
+        (click)="openActionDialog('reject')">
+
+        Reject
+
+      </button>
+
+      <button
+        mat-raised-button
+        class="verify-btn"
+        (click)="openActionDialog('verify')">
+
+        Verify
+
+      </button>
+
+    </ng-container>
+
+    <button
+        mat-button
+        mat-dialog-close>
+
+        Close
+
     </button>
 
   </mat-dialog-actions>
@@ -441,5 +468,67 @@
       ">
 
   </mat-dialog-content>
+
+</ng-template>
+
+
+<ng-template #actionDialog>
+
+<h2 mat-dialog-title>
+
+{{ actionType=='verify'
+? 'Verify Bank Details'
+: 'Reject Bank Details' }}
+
+</h2>
+
+<mat-dialog-content class="pt-2">
+
+<mat-form-field
+appearance="outline"
+class="w-100">
+
+<mat-label>
+
+{{ actionType=='verify'
+? 'Remarks'
+: 'Rejection Reason' }}
+
+</mat-label>
+
+<textarea
+matInput
+rows="4"
+[(ngModel)]="actionValue">
+
+</textarea>
+
+</mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+<button
+mat-button
+mat-dialog-close>
+
+Cancel
+
+</button>
+
+<button
+mat-raised-button
+[class.verify-btn]="actionType=='verify'"
+[class.reject-btn]="actionType=='reject'"
+(click)="submitAction()">
+
+{{ actionType=='verify'
+? 'Verify'
+: 'Reject' }}
+
+</button>
+
+</mat-dialog-actions>
 
 </ng-template>

@@ -20,6 +20,8 @@ export const ENDPOINTS = {
     GET_DRIVER_BY_ID_VEHICLE: '/api/drivers/{driverId}/vehicle',
     GET_DRIVER_BY_ID_PAYMENT: '/api/drivers/{driverId}/registration-fee-status',
     GET_DRIVER_BY_ID_BANK: '/api/drivers/{driverId}/bank-details',
+    POST_DRIVER_BANK_REJECT: '/api/drivers/{driverId}/bank-details/reject',
+    POST_DRIVER_BANK_VERIFY: '/api/drivers/{driverId}/bank-details/verify',
     GET_DRIVER_BY_ID_DOC: '/api/drivers/driver/{driverId}',
 
     GET_BOOKINGS_STATISTICS: '/api/admin/bookings/statistics',

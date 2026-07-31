@@ -14,7 +14,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
 import { PageEvent } from '@angular/material/paginator';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
 
 interface TableRider {
   id: number;
@@ -55,6 +56,7 @@ interface TableRider {
     MatSidenavModule,
     MatSelectModule,
     MatDialogModule,
+    FormsModule,
     
   ],
   templateUrl: './riders.html', 
@@ -68,9 +70,13 @@ export class Riders {
   @Input() client: any;
   http = inject(HttpClient);
   dialog = inject(MatDialog);
+  actionDialogRef!: MatDialogRef<any>;
   dialogTitle = '';
-  dialogType: 'vehicle' | 'payment' | 'bank' | 'document' = 'vehicle';
+  dialogType: 'vehicle' | 'payment' | 'bank' | 'document' | 'verify' | 'reject' = 'vehicle';
   dialogData: any = null;
+  selectedDriverId!: number;
+  actionType: 'verify' | 'reject' = 'verify';
+  actionValue = '';
   imagePreviewUrl = '';
   imagePreviewTitle = '';
   users: any[] = [];
@@ -102,6 +108,16 @@ export class Riders {
 
   @ViewChild('imagePreviewDialog')
   imagePreviewDialog!: TemplateRef<any>;
+
+    @ViewChild('actionDialog')
+actionDialog!: TemplateRef<any>;
+
+
+  @ViewChild('verifyDialog')
+  verifyDialog!: TemplateRef<any>;
+
+  @ViewChild('rejectDialog')
+  rejectDialog!: TemplateRef<any>;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -283,6 +299,8 @@ export class Riders {
   //<=--------------------------- Bank ----------------------------->
   openBankDialog(driverId: number) {
 
+    this.selectedDriverId = driverId;
+
     this.dialogData = null;
 
     const url = `${ADMIN_PORTER}${
@@ -313,6 +331,20 @@ export class Riders {
     });
 
   }
+
+  //<=--------------------------- Verify/ Reject Bank ----------------------------->
+  openActionDialog(type: 'verify' | 'reject') {
+
+    this.actionType = type;
+    this.actionValue = '';
+
+    this.actionDialogRef = this.dialog.open(this.actionDialog, {
+      width: '500px',
+      maxHeight: '85vh'
+    });
+
+  }
+
   //<=--------------------------- Documents ----------------------------->
   openDocumentDialog(driverId: number) {
 
@@ -361,6 +393,105 @@ export class Riders {
 
   }  
 
+submitAction() {
+
+  if (this.actionType === 'verify') {
+
+    const url = `${ADMIN_PORTER}${
+      ENDPOINTS.POST_DRIVER_BANK_VERIFY.replace(
+        '{driverId}',
+        this.selectedDriverId.toString()
+      )
+    }`;
+
+    const body = {
+      verifiedBy: 'Admin',
+      remarks: this.actionValue
+    };
+
+    this.http.post(url, body).subscribe({
+
+      next: () => {
+
+        // Close ONLY Verify dialog
+        this.actionDialogRef.close();
+
+        // Refresh Bank Details dialog
+        this.refreshBankDetails();
+
+      },
+
+      error: (err) => {
+        console.error(err);
+      }
+
+    });
+
+  }
+
+  else {
+
+    const url = `${ADMIN_PORTER}${
+      ENDPOINTS.POST_DRIVER_BANK_REJECT.replace(
+        '{driverId}',
+        this.selectedDriverId.toString()
+      )
+    }`;
+
+    const body = {
+      rejectionReason: this.actionValue,
+      rejectedBy: 'Admin'
+    };
+
+    this.http.post(url, body).subscribe({
+
+      next: () => {
+
+        // Close ONLY Reject dialog
+        this.actionDialogRef.close();
+
+        // Refresh Bank Details dialog
+        this.refreshBankDetails();
+
+      },
+
+      error: (err) => {
+        console.error(err);
+      }
+
+    });
+
+  }
+
+}
+
+refreshBankDetails() {
+
+  const url = `${ADMIN_PORTER}${
+    ENDPOINTS.GET_DRIVER_BY_ID_BANK.replace(
+      '{driverId}',
+      this.selectedDriverId.toString()
+    )
+  }`;
+
+  this.http.get(url).subscribe({
+
+    next: (res: any) => {
+
+      this.dialogData = res;
+
+    },
+
+    error: (err) => {
+
+      console.error(err);
+
+    }
+
+  });
+
+}
+
 
   getRiders() {
     this.http.get(
@@ -378,4 +509,6 @@ export class Riders {
         }
     })
   }
+
+  
 }
