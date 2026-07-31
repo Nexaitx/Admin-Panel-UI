@@ -74,6 +74,18 @@ export const MENU_DATA: MenuItem[] = [
     ]
   },
 
+  // --- Riders and owners (Expansion Panel) ---
+  {
+    title: 'Manage Riders',
+    icon: 'groups',
+    permission: 'Manage Riders',
+    children: [
+      { title: 'Riders', icon: 'two_wheeler', route: '/app/riders' },
+      { title: 'Rider Owners', icon: 'person', route: '/app/riders-owners' },
+    ]
+  },
+
+
   // --- GPS & Staff Monitoring ---
   {
     title: 'Active Staffs',

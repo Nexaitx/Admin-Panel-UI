@@ -14,23 +14,19 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
 
-interface TableUser {
-  userId: number;
-  userName: string;
+interface TableOwner {
+  ownerId: number;
+  ownerName: string;
+  roleType: string;
   email: string;
   phoneNumber: string;
-  aadhaar: boolean;
-  address: string;
+  isVerified: boolean;
   city: string;
-  signupDate: string;
-  aadhaarUrl?: string;
   originalUser: any;
 }
-
 @Component({
-  selector: 'app-client-individual',
-  imports: [
-    MatCardModule,
+  selector:'app-riders-owners',
+  imports: [ MatCardModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -43,18 +39,18 @@ interface TableUser {
     MatSidenavModule,
     MatSelectModule
   ],
-  templateUrl: './client-individual.html',
-  styleUrl: './client-individual.scss',
+  templateUrl:'./riders-owners.html',
+  styleUrl:'./riders-owners.scss',
   providers: [DatePipe]
 })
-export class ClientIndividual {
-  http = inject(HttpClient);
+export class RidersOwners {
   @Input() client: any;
+  http = inject(HttpClient);
   users: any[] = [];
   isDrawerOpen: boolean = false;
-  selectedUser: TableUser | null = null;
-  displayedColumns: string[] = ['s_no', 'userId', 'userName', 'email', 'phoneNumber', 'address', 'city', 'signupDate', 'aadhaar', 'actions'];
-  dataSource: MatTableDataSource<TableUser>;
+  selectedUser: TableOwner | null = null;
+  displayedColumns: string[] = ['s_no', 'ownerId', 'ownerName', 'roleType', 'email',  'phoneNumber', 'isVerified','actions'];
+  dataSource: MatTableDataSource<TableOwner>;
   cities: string[] = [];
   selectedCity: string = '';
 
@@ -62,13 +58,12 @@ export class ClientIndividual {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private datePipe: DatePipe) {
-    this.dataSource = new MatTableDataSource<TableUser>([]);
+    this.dataSource = new MatTableDataSource<TableOwner>([]);
   }
 
   ngOnInit(): void {
-    this.getUsers();
-
-    this.dataSource.filterPredicate = (data: TableUser, filter: string): boolean => {
+    this.getOrganizations();
+    this.dataSource.filterPredicate = (data: TableOwner,filter: string): boolean => {
       if (!filter) {
         return true;
       }
@@ -78,9 +73,10 @@ export class ClientIndividual {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
     this.sort.sort({ id: 'addedDate', start: 'desc', disableClear: true });
+
   }
 
   applyFilter(event: Event) {
@@ -100,16 +96,16 @@ export class ClientIndividual {
     }
   }
 
-  editElement(element: TableUser) {
-    alert(`Editing: ${element.userName} (User ID: ${element.userId})`);
+  editElement(element: TableOwner) {
+    alert(`Editing: ${element.ownerName} (Owner ID: ${element.ownerId})`);
   }
 
-  deleteElement(element: TableUser) {
-    console.log(`Delete ${element.userName} (ID: ${element.userId})`);
-    alert(`Deleting: ${element.userName} (User ID: ${element.userId})`);
+  deleteElement(element: TableOwner) {
+    console.log(`Delete ${element.ownerName} (ID: ${element.ownerId})`);
+    alert(`Deleting: ${element.ownerName} (Owner ID: ${element.ownerId})`);
   }
 
-  openUserDrawer(element: TableUser) {
+  openUserDrawer(element: TableOwner) {
     this.selectedUser = element;
     this.isDrawerOpen = true;
   }
@@ -120,16 +116,14 @@ export class ClientIndividual {
   }
 
   mapAndSetDataSource(users: any[]): void {
-    const mappedUsers: TableUser[] = users.map(user => ({
-      userId: user.userId,
-      userName: user.userName,
+    const mappedUsers: TableOwner[] = users.map(user => ({
+      ownerId: user.ownerId,
+      ownerName: user.ownerName,
+      roleType: user.roleType,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      aadhaar: user.aadhaarVerified,
-      address: user.address,
+      isVerified: user.isVerified,
       city: user.city,
-      signupDate: this.datePipe.transform(user.signupDate, 'mediumDate') || '',
-      aadhaarUrl: user.aadhaar_card_attachment || null,
       originalUser: user
     }));
 
@@ -143,12 +137,11 @@ export class ClientIndividual {
     }
   }
 
-  getUsers() {
-    this.http.get(API_URL + ENDPOINTS.GET_USERS).subscribe({
+  getOrganizations() {
+    this.http.get(API_URL + ENDPOINTS.GET_ORGANIZATIONS).subscribe({
       next: (res: any) => {
-        this.users = res.reverse();
+        this.users = res;
 
-        // Generate unique city list
         this.cities = [
           ...new Set(
             this.users
@@ -159,9 +152,9 @@ export class ClientIndividual {
 
         this.mapAndSetDataSource(this.users);
       },
-      error: (err) => {
-        console.error('Error fetching users:', err);
-      }
-    });
+        error: (err) => {
+          console.error('Error fetching users:', err);
+        }
+    })
   }
 }

@@ -27,7 +27,7 @@ export class Permissions implements OnInit {
   });
 
   basePermissionsList: string[] = [
-    'Manage', 'Bookings', 'Booking Payments', 'Duty Assigned', 'Active Staff',
+    'Manage', 'Manage Riders', 'Bookings', 'Booking Payments', 'Duty Assigned', 'Active Staff',
     'GPS Monitoring', 'GPS Deviation', 'Bulk Assignment', 'Override Duties',
     'Cancel Booking', 'Re-Assigned Booking', 'Requested SubCategories',
     'SOS Staff', 'SOS Alerts', 'Devices & Addresses', 'Staff Wallet',

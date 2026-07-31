@@ -5,12 +5,22 @@ export const PHARMA_API_URL = 'https://pharmacyvitoxyzbackend.onrender.com/Backe
 export const googleMapsApiKey = 'AIzaSyBwkoBuGelQUiN2YSN-pqGhNv1KJE8CFNs';
 // export const API_URL = 'http://localhost:8081';
 
-export const ENDPOINTS = {
+export const ADMIN_PORTER = 'https://admin-porter.onrender.com';
+
+
+export const ENDPOINTS = { 
 
     // Authorization
     LOGIN: '/login',
     SIGNUP: '/signup',
     RESET_PASSWORD: '/forgot-password',
+
+    //drivers
+    GET_DRIVERS: '/api/drivers',
+    GET_DRIVER_BY_ID_VEHICLE: '/api/drivers/{driverId}/vehicle',
+    GET_DRIVER_BY_ID_PAYMENT: '/api/drivers/{driverId}/registration-fee-status',
+    GET_DRIVER_BY_ID_BANK: '/api/drivers/{driverId}/bank-details',
+    GET_DRIVER_BY_ID_DOC: '/api/drivers/driver/{driverId}',
 
     GET_BOOKINGS_STATISTICS: '/api/admin/bookings/statistics',
     // Users

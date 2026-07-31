@@ -1,0 +1,82 @@
+//status badge start
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:70px;
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.status-success{
+
+    background:#E8F5E9;
+
+    color:#2E7D32;
+
+    border:1px solid #A5D6A7;
+}
+
+.status-danger{
+
+    background:#FFEBEE;
+
+    color:#C62828;
+
+    border:1px solid #EF9A9A;
+}
+
+.status-badge:hover{
+
+    transform:scale(1.05);
+
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+
+}
+
+//status badge end
+
+//clickable start
+.clickable {
+    cursor: pointer;
+}
+
+.clickable:hover {
+    opacity: .85;
+}
+
+//clickable end
+
+//image preview dialog start
+.image-preview-dialog .mat-mdc-dialog-container {
+  padding: 0;
+}
+
+img {
+  border-radius: 8px;
+}
+
+img:hover {
+  opacity: .9;
+}
+//image preview dialog end
+
+//table scroll container start
+.tableScroll-container {
+    height: calc(100vh - 220px);
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+//table scroll container end

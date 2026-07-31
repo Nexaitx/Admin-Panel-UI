@@ -32,11 +32,25 @@
 
       <mat-form-field appearance="outline" class="col-md-3">
         <mat-label>Select City</mat-label>
-        <mat-select>
-          @for (city of cities; track city) {
-          <mat-option [value]="city.value">{{city.viewValue}}</mat-option>
-          }
-        </mat-select>
+          <mat-select
+            [(value)]="selectedCity"
+            (selectionChange)="filterByCity()">
+
+            @if (cities.length === 0) {
+              <mat-option disabled>
+                No Cities Available
+              </mat-option>
+            } @else {
+              <mat-option value="">All Cities</mat-option>
+
+              @for (city of cities; track city) {
+                <mat-option [value]="city">
+                  {{ city }}
+                </mat-option>
+              }
+            }
+
+          </mat-select>
       </mat-form-field>
       <div class="col-md-6 ms-auto">
         <mat-paginator [pageSizeOptions]="[10, 20, 100]" aria-label="Select page of clients">
