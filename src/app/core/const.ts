@@ -22,7 +22,9 @@ export const ENDPOINTS = {
     GET_DRIVER_BY_ID_BANK: '/api/drivers/{driverId}/bank-details',
     POST_DRIVER_BANK_REJECT: '/api/drivers/{driverId}/bank-details/reject',
     POST_DRIVER_BANK_VERIFY: '/api/drivers/{driverId}/bank-details/verify',
-    GET_DRIVER_BY_ID_DOC: '/api/drivers/driver/{driverId}',
+    TOGGLE_DRIVER_STATUS: '/api/drivers/{driverId}/toggle',
+    GET_DRIVER_BY_ID_DOC: '/api/drivers/document/{driverId}',
+    GET_DRIVER_BY_ID_OWNER: '/api/drivers/{driverId}/owner',
 
     GET_BOOKINGS_STATISTICS: '/api/admin/bookings/statistics',
     // Users

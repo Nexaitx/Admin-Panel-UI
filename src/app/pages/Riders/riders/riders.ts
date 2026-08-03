@@ -72,10 +72,12 @@ export class Riders {
   dialog = inject(MatDialog);
   actionDialogRef!: MatDialogRef<any>;
   dialogTitle = '';
-  dialogType: 'vehicle' | 'payment' | 'bank' | 'document' | 'verify' | 'reject' = 'vehicle';
+  dialogType: 'vehicle' | 'payment' | 'bank' | 'document' | 'owner' | 'verify' | 'reject' = 'vehicle';
   dialogData: any = null;
   selectedDriverId!: number;
   actionType: 'verify' | 'reject' = 'verify';
+  confirmAction: 'activate' | 'deactivate' = 'activate';
+  selectedRider: TableRider | null = null;
   actionValue = '';
   imagePreviewUrl = '';
   imagePreviewTitle = '';
@@ -109,8 +111,11 @@ export class Riders {
   @ViewChild('imagePreviewDialog')
   imagePreviewDialog!: TemplateRef<any>;
 
+  @ViewChild('confirmDialog')
+confirmDialog!: TemplateRef<any>;
+
     @ViewChild('actionDialog')
-actionDialog!: TemplateRef<any>;
+    actionDialog!: TemplateRef<any>;
 
 
   @ViewChild('verifyDialog')
@@ -379,6 +384,41 @@ actionDialog!: TemplateRef<any>;
 
     }
 
+  //<=--------------------------- Owner ----------------------------->
+  // <=--------------------------- Owner Details ----------------------------->
+openOwnerDialog(driverId: number) {
+
+  this.dialogData = null;
+
+  const url = `${ADMIN_PORTER}${
+    ENDPOINTS.GET_DRIVER_BY_ID_OWNER.replace(
+      '{driverId}',
+      driverId.toString()
+    )
+  }`;
+
+  this.http.get(url).subscribe({
+
+    next: (res) => {
+
+      this.dialogType = 'owner';
+      this.dialogTitle = 'Rider Owner Details';
+      this.dialogData = res;
+
+      this.dialog.open(this.detailsDialog, {
+        width: '600px'
+      });
+
+    },
+
+    error: (err) => {
+      console.error('Error fetching owner details:', err);
+    }
+
+  });
+
+}
+
   openImagePreview(imageUrl: string, title: string = 'Preview') {
 
     this.imagePreviewUrl = imageUrl;
@@ -509,6 +549,64 @@ refreshBankDetails() {
         }
     })
   }
+
+toggleDriverStatus(element: TableRider) {
+
+  this.selectedRider = element;
+  this.confirmAction = element.active ? 'deactivate' : 'activate';
+
+  this.dialog.open(this.confirmDialog, {
+    width: '400px',
+    disableClose: true
+  });
+}
+
+confirmToggleDriverStatus() {
+
+  if (!this.selectedRider) {
+    return;
+  }
+
+  const driverId = this.selectedRider.id;
+
+  const url = `${ADMIN_PORTER}${
+    ENDPOINTS.TOGGLE_DRIVER_STATUS.replace(
+      '{driverId}',
+      driverId.toString()
+    )
+  }`;
+
+  this.http.post(url, {}).subscribe({
+
+    next: (res: any) => {
+
+      console.log('Driver status updated:', res);
+
+      this.selectedRider!.active = res.active;
+
+      this.dialog.closeAll();
+
+      this.getRiders();
+
+      this.selectedRider = null;
+    },
+
+    error: (err) => {
+
+      console.error('Error updating driver status:', err);
+
+      this.dialog.closeAll();
+
+      alert(
+        err?.error?.message ||
+        'Failed to update rider status.'
+      );
+
+      this.selectedRider = null;
+    }
+
+  });
+}
 
   
 }

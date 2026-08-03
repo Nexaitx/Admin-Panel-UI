@@ -96,3 +96,17 @@ img:hover {
     color:white !important;
 
 }
+
+
+.deactivated-row {
+  opacity: 0.55;
+  background-color: #f3f3f3;
+}
+
+.deactivated-row td {
+  color: #777;
+}
+
+.deactivated-row .status-badge {
+  opacity: 0.8;
+}

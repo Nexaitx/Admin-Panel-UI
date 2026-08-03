@@ -176,11 +176,18 @@
         
         <ng-container matColumnDef="hasOwner">
           <th mat-header-cell *matHeaderCellDef>Owner</th>
+
           <td mat-cell *matCellDef="let element">
-            <span class="status-badge"
-                  [ngClass]="element.hasOwner ? 'status-success' : 'status-danger'">
+
+            <span
+              class="status-badge"
+              [ngClass]="element.hasOwner ? 'status-success clickable' : 'status-danger'"
+              (click)="element.hasOwner && openOwnerDialog(element.id)">
+
               {{ element.hasOwner ? 'Yes' : 'No' }}
+
             </span>
+
           </td>
         </ng-container>
 
@@ -191,23 +198,45 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #actionMenu="matMenu">
+
                 <button mat-menu-item (click)="editElement(element)">
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
                 </button>
+
                 <button mat-menu-item (click)="openUserDrawer(element)">
                   <mat-icon>remove_red_eye</mat-icon>
                   <span>View</span>
                 </button>
+
                 <button mat-menu-item>
                   <mat-icon>download</mat-icon>
                   <span>Download</span>
                 </button>
+
+                <button
+                  mat-menu-item
+                  (click)="toggleDriverStatus(element)">
+
+                  <mat-icon>
+                    {{ element.active ? 'block' : 'check_circle' }}
+                  </mat-icon>
+
+                  <span>
+                    {{ element.active ? 'Deactivate' : 'Activate' }}
+                  </span>
+
+                </button>
+
               </mat-menu>
             </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns;"
+            [class.deactivated-row]="!row.active">
+          </tr>
 
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data matching the filter
@@ -402,6 +431,67 @@
 
     </ng-container>
 
+    <!-- Owner Details -->
+    <ng-container *ngIf="dialogType === 'owner'">
+
+      <p>
+        <strong>Rider Name:</strong>
+        {{ dialogData.name }}
+      </p>
+
+      <p>
+        <strong>Mobile:</strong>
+        {{ dialogData.mobile }}
+      </p>
+
+      <p>
+        <strong>Email:</strong>
+        {{ dialogData.email }}
+      </p>
+
+      <p>
+        <strong>Current Address:</strong>
+        {{ dialogData.currentAddress || 'N/A' }}
+      </p>
+
+      <p>
+        <strong>Permanent Address:</strong>
+        {{ dialogData.permanentAddress || 'N/A' }}
+      </p>
+
+      <p>
+        <strong>Verified:</strong>
+        {{ dialogData.isverified === true ? 'Yes' :
+          dialogData.isverified === false ? 'No' : 'N/A' }}
+      </p>
+
+      <p>
+        <strong>Active:</strong>
+        {{ dialogData.active ? 'Yes' : 'No' }}
+      </p>
+
+      <p>
+        <strong>Role Type:</strong>
+        {{ dialogData.roleType }}
+      </p>
+
+      <p>
+        <strong>Rider ID:</strong>
+        {{ dialogData.riderId }}
+      </p>
+
+      <p>
+        <strong>Driver ID:</strong>
+        {{ dialogData.driverId }}
+      </p>
+
+      <p>
+        <strong>Driver Name:</strong>
+        {{ dialogData.driverName }}
+      </p>
+
+    </ng-container>
+
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
@@ -530,5 +620,50 @@ mat-raised-button
 </button>
 
 </mat-dialog-actions>
+
+</ng-template>
+
+
+<ng-template #confirmDialog>
+
+  <h2 mat-dialog-title>
+    {{ confirmAction === 'activate'
+      ? 'Activate Rider'
+      : 'Deactivate Rider' }}
+  </h2>
+
+  <mat-dialog-content>
+
+    <p>
+      Are you sure you want to  
+      <strong>{{ confirmAction }}</strong>      
+      : 
+      <strong>{{ selectedRider?.name }}</strong>?
+    </p>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+
+    <button
+      mat-button
+      mat-dialog-close
+      (click)="selectedRider = null">
+      Cancel
+    </button>
+
+    <button
+      mat-raised-button
+      [class.verify-btn]="confirmAction === 'activate'"
+      [class.reject-btn]="confirmAction === 'deactivate'"
+      (click)="confirmToggleDriverStatus()">
+
+      {{ confirmAction === 'activate'
+        ? 'Activate'
+        : 'Deactivate' }}
+
+    </button>
+
+  </mat-dialog-actions>
 
 </ng-template>
