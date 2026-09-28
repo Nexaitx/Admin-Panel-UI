@@ -1,0 +1,597 @@
+<div class="medicine-page">
+
+  <div class="row mt-2 align-items-center">
+
+    <mat-form-field appearance="outline" class="col-md-3">
+      <mat-label>Search Medicine</mat-label>
+
+      <input
+        matInput
+        placeholder="Search..."
+        (keyup)="applyFilter($event)">
+    </mat-form-field>
+
+    <div class="col-md-6 ms-auto">
+      <mat-paginator
+        [length]="totalItems"
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[5, 10, 20, 50, 100]"
+        (page)="onPageChange($event)">
+      </mat-paginator>
+    </div>
+
+  </div>
+
+
+  <section class="tableScroll-container w-100" tabindex="0">
+
+    <table
+      mat-table
+      [dataSource]="dataSource">
+
+
+      <!-- S.No -->
+      <ng-container matColumnDef="s_no">
+
+        <th mat-header-cell *matHeaderCellDef>
+          S.No
+        </th>
+
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ (pageIndex * pageSize) + i + 1 }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Product ID -->
+      <ng-container matColumnDef="productId">
+
+        <th mat-header-cell *matHeaderCellDef>
+            Product ID
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+
+            <span
+            class="product-id-link"
+            (click)="openMedicineDetails(element.productId)">
+
+            {{ element.productId }}
+
+            </span>
+
+        </td>
+
+        </ng-container>
+
+
+      <!-- Product Name -->
+      <ng-container matColumnDef="productName">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Medicine Name
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.productName }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Product Type -->
+      <ng-container matColumnDef="productType">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Type
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.productType }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Original Price -->
+      <ng-container matColumnDef="originalPrice">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Original Price
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          ₹{{ element.originalPrice }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Discount Price -->
+      <ng-container matColumnDef="discountPrice">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Discount Price
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          ₹{{ element.discountPrice }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Discount Percentage -->
+      <ng-container matColumnDef="discountPercentage">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Discount
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.discountPercentage }}%
+        </td>
+
+      </ng-container>
+
+
+      <!-- Available -->
+      <ng-container matColumnDef="isAvailable">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Available
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+
+          <span
+            class="status-badge"
+            [ngClass]="
+              element.isAvailable
+                ? 'status-success'
+                : 'status-danger'
+            ">
+
+            {{ element.isAvailable ? 'Yes' : 'No' }}
+
+          </span>
+
+        </td>
+
+      </ng-container>
+
+
+      <!-- Active -->
+      <ng-container matColumnDef="isActive">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Active
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+
+          <span
+            class="status-badge"
+            [ngClass]="
+              element.isActive
+                ? 'status-success'
+                : 'status-danger'
+            ">
+
+            {{ element.isActive ? 'Yes' : 'No' }}
+
+          </span>
+
+        </td>
+
+      </ng-container>
+
+
+      <!-- Admin Name -->
+      <ng-container matColumnDef="adminName">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Pharmacist
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.adminName }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Admin Email -->
+      <ng-container matColumnDef="adminEmail">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Email
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.adminEmail }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Admin Phone -->
+      <ng-container matColumnDef="adminPhoneNumber">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Phone
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.adminPhoneNumber }}
+        </td>
+
+      </ng-container>
+
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns; sticky: true">
+      </tr>
+
+
+      <tr
+        mat-row
+        *matRowDef="
+          let row;
+          columns: displayedColumns;
+        ">
+      </tr>
+
+
+      <tr
+        class="mat-row"
+        *matNoDataRow>
+
+        <td
+          class="mat-cell"
+          [attr.colspan]="displayedColumns.length">
+
+          No medicines found.
+
+        </td>
+
+      </tr>
+
+    </table>
+
+  </section>
+
+</div>
+
+<!-- Medicine Details Dialog -->
+<ng-template #detailsDialog>
+
+  <h2 mat-dialog-title>
+    Medicine Details
+  </h2>
+
+  <mat-dialog-content>
+
+    <!-- Loading -->
+    <div
+      *ngIf="isMedicineLoading"
+      class="medicine-loading">
+
+      Loading medicine details...
+
+    </div>
+
+
+    <!-- Medicine Details -->
+    <div *ngIf="selectedMedicine && !isMedicineLoading">
+
+      <div class="details-grid">
+
+        <div>
+          <strong>Product ID</strong>
+          <p>{{ selectedMedicine.productId || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Product Name</strong>
+          <p>{{ selectedMedicine.productName || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Marketer</strong>
+          <p>{{ selectedMedicine.marketer || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Salt Composition</strong>
+          <p>{{ selectedMedicine.saltComposition || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Medicine Type</strong>
+          <p>{{ selectedMedicine.medicineType || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Product Form</strong>
+          <p>{{ selectedMedicine.productForm || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Packaging Detail</strong>
+          <p>{{ selectedMedicine.packagingDetail || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Package Info</strong>
+          <p>{{ selectedMedicine.packageInfo || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Quantity</strong>
+          <p>{{ selectedMedicine.qty || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>MRP</strong>
+          <p>₹{{ selectedMedicine.mrp || selectedMedicine.originalPrice || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Prescription</strong>
+          <p>{{ selectedMedicine.prescriptionRequired || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Primary Use</strong>
+          <p>{{ selectedMedicine.primaryUse || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Use Of</strong>
+          <p>{{ selectedMedicine.useOf || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Storage</strong>
+          <p>{{ selectedMedicine.storage || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Manufacturer Address</strong>
+          <p>{{ selectedMedicine.manufacturerAddress || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Country Of Origin</strong>
+          <p>{{ selectedMedicine.countryOfOrigin || 'N/A' }}</p>
+        </div>
+
+        <div>
+          <strong>Discount</strong>
+          <p>
+            {{ selectedMedicine.discountPercentage ?? 0 }}%
+          </p>
+        </div>
+
+        <div>
+          <strong>Discount Price</strong>
+          <p>
+            ₹{{ selectedMedicine.discountPrice ?? 'N/A' }}
+          </p>
+        </div>
+
+        <div>
+          <strong>Has Discount</strong>
+          <p>
+            {{ selectedMedicine.hasDiscount ? 'Yes' : 'No' }}
+          </p>
+        </div>
+
+        <div>
+          <strong>Savings Amount</strong>
+          <p>
+            ₹{{ selectedMedicine.savingsAmount ?? 'N/A' }}
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- Introduction -->
+      <div class="detail-section">
+        <h3>Introduction</h3>
+        <p>
+          {{ selectedMedicine.introduction || 'N/A' }}
+        </p>
+      </div>
+
+
+      <!-- Benefits -->
+      <div class="detail-section">
+        <h3>Benefits</h3>
+        <p>
+          {{ selectedMedicine.benefits || 'N/A' }}
+        </p>
+      </div>
+
+
+      <!-- Description -->
+      <div class="detail-section">
+        <h3>Description</h3>
+        <p>
+          {{ selectedMedicine.description || 'N/A' }}
+        </p>
+      </div>
+
+
+      <!-- How To Use -->
+      <div class="detail-section">
+        <h3>How To Use</h3>
+        <p>
+          {{ selectedMedicine.howToUse || 'N/A' }}
+        </p>
+      </div>
+
+
+      <!-- How It Works -->
+      <div class="detail-section">
+        <h3>How It Works</h3>
+        <p>
+          {{ selectedMedicine.howItWorks || 'N/A' }}
+        </p>
+      </div>
+
+
+      <!-- Safety Advice -->
+      <div class="detail-section">
+
+        <h3>Safety Advice</h3>
+
+        <div
+          [innerHTML]="selectedMedicine.safetyAdvise || 'N/A'">
+        </div>
+
+      </div>
+
+
+      <!-- Common Side Effects -->
+      <div class="detail-section">
+
+        <h3>Common Side Effects</h3>
+
+        <p>
+          {{ selectedMedicine.commonSideEffect || 'N/A' }}
+        </p>
+
+      </div>
+
+
+      <!-- Interactions -->
+      <div class="details-grid">
+
+        <div>
+          <strong>Alcohol Interaction</strong>
+          <p>
+            {{ selectedMedicine.alcoholInteraction || 'N/A' }}
+          </p>
+        </div>
+
+        <div>
+          <strong>Pregnancy Interaction</strong>
+          <p>
+            {{ selectedMedicine.pregnancyInteraction || 'N/A' }}
+          </p>
+        </div>
+
+        <div>
+          <strong>Lactation Interaction</strong>
+          <p>
+            {{ selectedMedicine.lactationInteraction || 'N/A' }}
+          </p>
+        </div>
+
+        <div>
+          <strong>Driving Interaction</strong>
+          <p>
+            {{ selectedMedicine.drivingInteraction || 'N/A' }}
+          </p>
+        </div>
+
+        <div>
+          <strong>Kidney Interaction</strong>
+          <p>
+            {{ selectedMedicine.kidneyInteraction || 'N/A' }}
+          </p>
+        </div>
+
+        <div>
+          <strong>Liver Interaction</strong>
+          <p>
+            {{ selectedMedicine.liverInteraction || 'N/A' }}
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- Fact Box -->
+      <div class="detail-section">
+
+        <h3>Fact Box</h3>
+
+        <p>
+          {{ selectedMedicine.factBox || 'N/A' }}
+        </p>
+
+      </div>
+
+
+      <!-- Marketer Details -->
+      <div class="detail-section">
+
+        <h3>Marketer Details</h3>
+
+        <p>
+          {{ selectedMedicine.marketerDetails || 'N/A' }}
+        </p>
+
+      </div>
+
+
+      <!-- Manufacturer Details -->
+      <div class="detail-section">
+
+        <h3>Manufacturer Details</h3>
+
+        <p>
+          {{ selectedMedicine.manufacturerDetails || 'N/A' }}
+        </p>
+
+      </div>
+
+
+      <!-- Reference -->
+      <div class="detail-section">
+
+        <h3>Reference</h3>
+
+        <p>
+          {{ selectedMedicine.reference || 'N/A' }}
+        </p>
+
+      </div>
+
+
+      <!-- Q&A -->
+      <div class="detail-section">
+
+        <h3>Questions & Answers</h3>
+
+        <p>
+          {{ selectedMedicine.qa || 'N/A' }}
+        </p>
+
+      </div>
+
+    </div>
+
+  </mat-dialog-content>
+
+
+  <mat-dialog-actions align="end">
+
+    <button
+      mat-button
+      mat-dialog-close>
+
+      Close
+
+    </button>
+
+  </mat-dialog-actions>
+
+</ng-template>

@@ -1,0 +1,625 @@
+Folder PATH listing for volume Window 
+Volume serial number is 000001C6 12F1:A044
+X:\VITOXYZ-PROJECTS\ADMIN-PANEL-UI\SRC\APP
+|   app.config.ts
+|   app.css
+|   app.html
+|   app.routes.ts
+|   app.spec.ts
+|   app.ts
+|   auth-guard.ts
+|   
++---core
+|   |   const.ts
+|   |   
+|   +---guards
+|   |       auth-guard.spec.ts
+|   |       auth-guard.ts
+|   |       
+|   \---services
+|           auth.spec.ts
+|           auth.ts
+|           export-records.ts
+|           fcm-listener.service.ts
+|           firebase.service.ts
+|           push-notification.ts
+|           
++---interceptors
+|       loader-interceptor.ts
+|       
++---layouts
+|   +---auth-layout
+|   |       auth-layout.html
+|   |       auth-layout.scss
+|   |       auth-layout.spec.ts
+|   |       auth-layout.ts
+|   |       
+|   +---complete-verification
+|   |       complete-verification.html
+|   |       complete-verification.scss
+|   |       complete-verification.spec.ts
+|   |       complete-verification.ts
+|   |       
+|   +---kyc-under-process
+|   |       kyc-under-process.html
+|   |       kyc-under-process.scss
+|   |       kyc-under-process.spec.ts
+|   |       kyc-under-process.ts
+|   |       
+|   +---main-layout
+|   |   |   main-layout.html
+|   |   |   main-layout.scss
+|   |   |   main-layout.spec.ts
+|   |   |   main-layout.ts
+|   |   |   
+|   |   \---sidebar
+|   |           menu-config.ts
+|   |           sidebar.html
+|   |           sidebar.scss
+|   |           sidebar.spec.ts
+|   |           sidebar.ts
+|   |           
+|   \---main-ui
+|           main-ui.html
+|           main-ui.scss
+|           main-ui.ts
+|           
++---loader
+|       loader.html
+|       loader.scss
+|       loader.spec.ts
+|       loader.ts
+|       
++---pages
+|   +---accounts-address
+|   |       accounts-address.html
+|   |       accounts-address.scss
+|   |       accounts-address.spec.ts
+|   |       accounts-address.ts
+|   |       
+|   +---active-staffs
+|   |       active-staffs.html
+|   |       active-staffs.scss
+|   |       active-staffs.spec.ts
+|   |       active-staffs.ts
+|   |       
+|   +---ai-logs
+|   |       ai-logs.html
+|   |       ai-logs.scss
+|   |       ai-logs.spec.ts
+|   |       ai-logs.ts
+|   |       
+|   +---all-pharma-available-products
+|   |       all-pharma-available-products.html
+|   |       all-pharma-available-products.scss
+|   |       all-pharma-available-products.spec.ts
+|   |       all-pharma-available-products.ts
+|   |       
+|   +---blogs
+|   |   +---blogs-creation
+|   |   |       blogs-creation.html
+|   |   |       blogs-creation.scss
+|   |   |       blogs-creation.spec.ts
+|   |   |       blogs-creation.ts
+|   |   |       
+|   |   \---blogs-list
+|   |           blogs-list.html
+|   |           blogs-list.scss
+|   |           blogs-list.spec.ts
+|   |           blogs-list.ts
+|   |           
+|   +---booking
+|   |   |   booking.html
+|   |   |   booking.scss
+|   |   |   booking.ts
+|   |   |   
+|   |   +---on-going-booking
+|   |   |       on-going-booking.html
+|   |   |       on-going-booking.scss
+|   |   |       on-going-booking.spec.ts
+|   |   |       on-going-booking.ts
+|   |   |       
+|   |   +---previous
+|   |   |       previous.html
+|   |   |       previous.scss
+|   |   |       previous.spec.ts
+|   |   |       previous.ts
+|   |   |       
+|   |   \---up-coming-booking
+|   |           up-coming-booking.html
+|   |           up-coming-booking.scss
+|   |           up-coming-booking.spec.ts
+|   |           up-coming-booking.ts
+|   |           
+|   +---booking-payments
+|   |       booking-payments.html
+|   |       booking-payments.scss
+|   |       booking-payments.ts
+|   |       
+|   +---bulk-assignment
+|   |       bulk-assignment.html
+|   |       bulk-assignment.scss
+|   |       bulk-assignment.spec.ts
+|   |       bulk-assignment.ts
+|   |       
+|   +---cancel-booking
+|   |       cancel-booking.html
+|   |       cancel-booking.scss
+|   |       cancel-booking.ts
+|   |       
+|   +---client
+|   |   |   client.css
+|   |   |   client.html
+|   |   |   client.spec.ts
+|   |   |   client.ts
+|   |   |   
+|   |   +---client-individual
+|   |   |       client-individual.html
+|   |   |       client-individual.scss
+|   |   |       client-individual.spec.ts
+|   |   |       client-individual.ts
+|   |   |       
+|   |   \---client-organization
+|   |           client-organization.html
+|   |           client-organization.scss
+|   |           client-organization.spec.ts
+|   |           client-organization.ts
+|   |           
+|   +---complaint
+|   |       complaint.html
+|   |       complaint.scss
+|   |       complaint.spec.ts
+|   |       complaint.ts
+|   |       
+|   +---confirmation-dialog
+|   |       confirmation-dialog.html
+|   |       confirmation-dialog.scss
+|   |       confirmation-dialog.spec.ts
+|   |       confirmation-dialog.ts
+|   |       
+|   +---dashboards
+|   |   +---admin-dashboard
+|   |   |       admin-dashboard.html
+|   |   |       admin-dashboard.scss
+|   |   |       admin-dashboard.ts
+|   |   |       
+|   |   +---default-dashboard
+|   |   |       default-dashboard.html
+|   |   |       default-dashboard.scss
+|   |   |       default-dashboard.ts
+|   |   |       
+|   |   +---dietician-dashboard
+|   |   |       dietician-dashboard.html
+|   |   |       dietician-dashboard.scss
+|   |   |       dietician-dashboard.spec.ts
+|   |   |       dietician-dashboard.ts
+|   |   |       
+|   |   +---doctor-dashboard
+|   |   |       doctor-dashboard.html
+|   |   |       doctor-dashboard.scss
+|   |   |       doctor-dashboard.spec.ts
+|   |   |       doctor-dashboard.ts
+|   |   |       
+|   |   +---pharma-dashboard
+|   |   |       pharma-dashboard.html
+|   |   |       pharma-dashboard.scss
+|   |   |       pharma-dashboard.spec.ts
+|   |   |       pharma-dashboard.ts
+|   |   |       
+|   |   \---pharmacist-dashboard
+|   |           pharmacist-dashboard.html
+|   |           pharmacist-dashboard.scss
+|   |           pharmacist-dashboard.spec.ts
+|   |           pharmacist-dashboard.ts
+|   |           
+|   +---devices-and-addresses
+|   |       devices-and-addresses.html
+|   |       devices-and-addresses.scss
+|   |       devices-and-addresses.spec.ts
+|   |       devices-and-addresses.ts
+|   |       
+|   +---diet-bookings
+|   |       diet-bookings.html
+|   |       diet-bookings.scss
+|   |       diet-bookings.spec.ts
+|   |       diet-bookings.ts
+|   |       
+|   +---diet-onboard-users
+|   |       diet-onboard-users.html
+|   |       diet-onboard-users.scss
+|   |       diet-onboard-users.spec.ts
+|   |       diet-onboard-users.ts
+|   |       
+|   +---dietician
+|   |   |   dietician.html
+|   |   |   dietician.scss
+|   |   |   dietician.spec.ts
+|   |   |   dietician.ts
+|   |   |   
+|   |   +---diet-plan
+|   |   |       diet-plan.html
+|   |   |       diet-plan.scss
+|   |   |       diet-plan.spec.ts
+|   |   |       diet-plan.ts
+|   |   |       
+|   |   +---dieticians-list
+|   |   |       dieticians-list.html
+|   |   |       dieticians-list.scss
+|   |   |       dieticians-list.spec.ts
+|   |   |       dieticians-list.ts
+|   |   |       
+|   |   \---subscription-plan
+|   |           subscription-plan.html
+|   |           subscription-plan.scss
+|   |           subscription-plan.spec.ts
+|   |           subscription-plan.ts
+|   |           
+|   +---dietician-appointments
+|   |       dietician-appointments.html
+|   |       dietician-appointments.scss
+|   |       dietician-appointments.spec.ts
+|   |       dietician-appointments.ts
+|   |       
+|   +---dietician-reports
+|   |       dietician-reports.html
+|   |       dietician-reports.scss
+|   |       dietician-reports.spec.ts
+|   |       dietician-reports.ts
+|   |       
+|   +---doctor
+|   |       doctor.html
+|   |       doctor.scss
+|   |       doctor.spec.ts
+|   |       doctor.ts
+|   |       
+|   +---documents
+|   |       documents.html
+|   |       documents.scss
+|   |       documents.spec.ts
+|   |       documents.ts
+|   |       
+|   +---duty-logs
+|   |       duty-logs.html
+|   |       duty-logs.scss
+|   |       duty-logs.spec.ts
+|   |       duty-logs.ts
+|   |       
+|   +---gps-live-deviatian
+|   |       gps-live-deviatian.html
+|   |       gps-live-deviatian.scss
+|   |       gps-live-deviatian.spec.ts
+|   |       gps-live-deviatian.ts
+|   |       
+|   +---gps-live-monitoring
+|   |       gps-live-monitoring.html
+|   |       gps-live-monitoring.scss
+|   |       gps-live-monitoring.ts
+|   |       
+|   +---ledgers
+|   |       ledgers.html
+|   |       ledgers.scss
+|   |       ledgers.spec.ts
+|   |       ledgers.ts
+|   |       
+|   +---login
+|   |   |   login.html
+|   |   |   login.scss
+|   |   |   login.spec.ts
+|   |   |   login.ts
+|   |   |   
+|   |   \---reset-password
+|   |           reset-password.html
+|   |           reset-password.scss
+|   |           reset-password.spec.ts
+|   |           reset-password.ts
+|   |           
+|   +---manage-accounts
+|   |   +---dieticians
+|   |   |       dieticians.html
+|   |   |       dieticians.scss
+|   |   |       dieticians.spec.ts
+|   |   |       dieticians.ts
+|   |   |       
+|   |   +---doctors
+|   |   |       doctors.html
+|   |   |       doctors.scss
+|   |   |       doctors.spec.ts
+|   |   |       doctors.ts
+|   |   |       
+|   |   +---pharmacists
+|   |   |       pharmacists.html
+|   |   |       pharmacists.scss
+|   |   |       pharmacists.spec.ts
+|   |   |       pharmacists.ts
+|   |   |       
+|   |   +---role-accounts
+|   |   |       role-accounts.html
+|   |   |       role-accounts.scss
+|   |   |       role-accounts.ts
+|   |   |       
+|   |   \---subrole-accounts
+|   |           subrole-accounts.html
+|   |           subrole-accounts.scss
+|   |           subrole-accounts.ts
+|   |           
+|   +---marketing
+|   |       marketing.html
+|   |       marketing.scss
+|   |       marketing.spec.ts
+|   |       marketing.ts
+|   |       
+|   +---my-available-products
+|   |       my-available-products.html
+|   |       my-available-products.scss
+|   |       my-available-products.ts
+|   |       
+|   +---other-pharma-available-products
+|   |       other-pharma-available-products.html
+|   |       other-pharma-available-products.scss
+|   |       other-pharma-available-products.spec.ts
+|   |       other-pharma-available-products.ts
+|   |       
+|   +---override-duties
+|   |       override-duties.html
+|   |       override-duties.scss
+|   |       override-duties.spec.ts
+|   |       override-duties.ts
+|   |       
+|   +---payout
+|   |       payout.html
+|   |       payout.scss
+|   |       payout.spec.ts
+|   |       payout.ts
+|   |       
+|   +---permissions
+|   |       permissions.html
+|   |       permissions.scss
+|   |       permissions.spec.ts
+|   |       permissions.ts
+|   |       
+|   +---pharma
+|   |   +---account-details
+|   |   |       account-details.html
+|   |   |       account-details.scss
+|   |   |       account-details.spec.ts
+|   |   |       account-details.ts
+|   |   |       
+|   |   +---account-settings
+|   |   |       account-settings.html
+|   |   |       account-settings.scss
+|   |   |       account-settings.spec.ts
+|   |   |       account-settings.ts
+|   |   |       
+|   |   +---bank-details
+|   |   |       bank-details.html
+|   |   |       bank-details.scss
+|   |   |       bank-details.spec.ts
+|   |   |       bank-details.ts
+|   |   |       
+|   |   +---edit-order
+|   |   |       edit-order.html
+|   |   |       edit-order.scss
+|   |   |       edit-order.spec.ts
+|   |   |       edit-order.ts
+|   |   |       
+|   |   +---handover-order
+|   |   |       handover-order.html
+|   |   |       handover-order.scss
+|   |   |       handover-order.spec.ts
+|   |   |       handover-order.ts
+|   |   |       
+|   |   +---new-order-accept-reject
+|   |   |       new-order-accept-reject.html
+|   |   |       new-order-accept-reject.scss
+|   |   |       new-order-accept-reject.spec.ts
+|   |   |       new-order-accept-reject.ts
+|   |   |       
+|   |   +---new-order-view
+|   |   |       new-order-view.html
+|   |   |       new-order-view.scss
+|   |   |       new-order-view.spec.ts
+|   |   |       new-order-view.ts
+|   |   |       
+|   |   +---ongoing-orders
+|   |   |       ongoing-orders.html
+|   |   |       ongoing-orders.scss
+|   |   |       ongoing-orders.spec.ts
+|   |   |       ongoing-orders.ts
+|   |   |       
+|   |   +---order-ledgers
+|   |   |       order-ledgers.html
+|   |   |       order-ledgers.scss
+|   |   |       order-ledgers.spec.ts
+|   |   |       order-ledgers.ts
+|   |   |       
+|   |   +---order-reports
+|   |   |       order-reports.html
+|   |   |       order-reports.scss
+|   |   |       order-reports.spec.ts
+|   |   |       order-reports.ts
+|   |   |       
+|   |   +---orders
+|   |   |       orders.html
+|   |   |       orders.scss
+|   |   |       orders.spec.ts
+|   |   |       orders.ts
+|   |   |       
+|   |   +---pharmacy-detail
+|   |   |       pharmacy-detail.html
+|   |   |       pharmacy-detail.scss
+|   |   |       pharmacy-detail.spec.ts
+|   |   |       pharmacy-detail.ts
+|   |   |       
+|   |   +---view-order
+|   |   |       view-order.html
+|   |   |       view-order.scss
+|   |   |       view-order.spec.ts
+|   |   |       view-order.ts
+|   |   |       
+|   |   \---wallet
+|   |       +---my-wallet
+|   |       |       my-wallet.html
+|   |       |       my-wallet.scss
+|   |       |       my-wallet.spec.ts
+|   |       |       my-wallet.ts
+|   |       |       
+|   |       +---wallet-transactions
+|   |       |       wallet-transactions.html
+|   |       |       wallet-transactions.scss
+|   |       |       wallet-transactions.spec.ts
+|   |       |       wallet-transactions.ts
+|   |       |       
+|   |       \---wallet-withdrawal-request
+|   |               wallet-withdrawal-request.html
+|   |               wallet-withdrawal-request.scss
+|   |               wallet-withdrawal-request.spec.ts
+|   |               wallet-withdrawal-request.ts
+|   |               
+|   +---pharma-medicines
+|   |       pharma-medicines.html
+|   |       pharma-medicines.scss
+|   |       pharma-medicines.spec.ts
+|   |       pharma-medicines.ts
+|   |       
+|   +---pharmaceuticals
+|   |       pharmaceuticals.html
+|   |       pharmaceuticals.scss
+|   |       pharmaceuticals.spec.ts
+|   |       pharmaceuticals.ts
+|   |       
+|   +---pharmacist
+|   |       pharmacist.html
+|   |       pharmacist.scss
+|   |       pharmacist.spec.ts
+|   |       pharmacist.ts
+|   |       
+|   +---prescription
+|   |       prescription.html
+|   |       prescription.scss
+|   |       prescription.ts
+|   |       
+|   +---reassigned-bookings
+|   |       reassigned-bookings.html
+|   |       reassigned-bookings.scss
+|   |       reassigned-bookings.ts
+|   |       
+|   +---refund-handling
+|   |       refund-handling.html
+|   |       refund-handling.scss
+|   |       refund-handling.spec.ts
+|   |       refund-handling.ts
+|   |       
+|   +---requested-sub-categories
+|   |       requested-sub-categories.html
+|   |       requested-sub-categories.scss
+|   |       requested-sub-categories.ts
+|   |       
+|   +---Riders
+|   |   |   Riders.css
+|   |   |   Riders.html
+|   |   |   Riders.spec.ts
+|   |   |   Riders.ts
+|   |   |   
+|   |   +---riders
+|   |   |       riders.html
+|   |   |       riders.scss
+|   |   |       riders.spec.ts
+|   |   |       riders.ts
+|   |   |       
+|   |   \---riders-owners
+|   |           riders-owners.html
+|   |           riders-owners.scss
+|   |           riders-owners.spec.ts
+|   |           riders-owners.ts
+|   |           
+|   +---roles
+|   |       roles.html
+|   |       roles.scss
+|   |       roles.spec.ts
+|   |       roles.ts
+|   |       
+|   +---settings
+|   |       settings.html
+|   |       settings.scss
+|   |       settings.spec.ts
+|   |       settings.ts
+|   |       
+|   +---signup
+|   |       signup.html
+|   |       signup.scss
+|   |       signup.spec.ts
+|   |       signup.ts
+|   |       
+|   +---sos-alerts
+|   |       sos-alerts.html
+|   |       sos-alerts.scss
+|   |       sos-alerts.spec.ts
+|   |       sos-alerts.ts
+|   |       
+|   +---SOS-Staff
+|   |       SOS-Staff.html
+|   |       SOS-Staff.scss
+|   |       SOS-Staff.ts
+|   |       
+|   +---staff
+|   |   |   staff.html
+|   |   |   staff.scss
+|   |   |   staff.spec.ts
+|   |   |   staff.ts
+|   |   |   
+|   |   +---staff-individual
+|   |   |       staff-individual.html
+|   |   |       staff-individual.scss
+|   |   |       staff-individual.spec.ts
+|   |   |       staff-individual.ts
+|   |   |       
+|   |   \---staff-organization
+|   |           staff-organization.html
+|   |           staff-organization.scss
+|   |           staff-organization.spec.ts
+|   |           staff-organization.ts
+|   |           
+|   +---staff-wallet
+|   |       staff-wallet.html
+|   |       staff-wallet.scss
+|   |       staff-wallet.spec.ts
+|   |       staff-wallet.ts
+|   |       
+|   +---support
+|   |       support.html
+|   |       support.scss
+|   |       support.spec.ts
+|   |       support.ts
+|   |       
+|   +---tools
+|   |       tools.html
+|   |       tools.scss
+|   |       tools.spec.ts
+|   |       tools.ts
+|   |       
+|   +---top-discounted-medicines
+|   |       top-discounted-medicines.html
+|   |       top-discounted-medicines.scss
+|   |       top-discounted-medicines.spec.ts
+|   |       top-discounted-medicines.ts
+|   |       
+|   \---vitoxyz-available-products
+|           vitoxyz-available-products.html
+|           vitoxyz-available-products.scss
+|           vitoxyz-available-products.spec.ts
+|           vitoxyz-available-products.ts
+|           
++---shared
+|   +---common-table
+|   |       common-table.component.html
+|   |       common-table.component.scss
+|   |       common-table.component.ts
+|   |       
+|   \---google-map
+|           google-map.html
+|           google-map.scss
+|           google-map.ts
+|           
+\---types
+        notification.types.ts
+        

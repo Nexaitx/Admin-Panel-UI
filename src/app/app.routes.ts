@@ -36,6 +36,18 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+                path: 'riders',
+                loadComponent: () =>
+                    import('./pages/Riders/riders/riders').then(m => m.Riders),
+                canActivate: [authGuard],
+            },
+            {
+                path: 'riders-owners',
+                loadComponent: () =>
+                    import('./pages/Riders/riders-owners/riders-owners').then(m => m.RidersOwners),
+                canActivate: [authGuard],
+            },
+            {
                 path: 'pharmacist-dashboard',
                 loadComponent: () => import('./pages/dashboards/pharma-dashboard/pharma-dashboard').then(m => m.PharmaDashboard),
                 canActivate: [authGuard],
@@ -89,6 +101,13 @@ export const routes: Routes = [
                 path: 'pharmaceutical/medicines',
                 loadComponent: () => import('./pages/pharma-medicines/pharma-medicines').then(m => m.PharmaMedicines),
                 canActivate: [authGuard],
+            },
+            {
+                path: 'pharmaceutical/all-medicine',
+                loadComponent: () =>
+                    import('./pages/pharma/all-medicine/all-medicine')
+                    .then(m => m.AllMedicine),
+                canActivate: [authGuard]
             },
             {
                 path: 'pharmaceutical/my-available-medicine',
@@ -381,18 +400,7 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/pharma/account-settings/account-settings').then(m => m.AccountSettings),
                 canActivate: [authGuard]
             },
-            {
-                path: 'riders',
-                loadComponent: () =>
-                    import('./pages/Riders/riders/riders').then(m => m.Riders),
-                canActivate: [authGuard],
-            },
-            {
-                path: 'riders-owners',
-                loadComponent: () =>
-                    import('./pages/Riders/riders-owners/riders-owners').then(m => m.RidersOwners),
-                canActivate: [authGuard],
-            },
+
 
         ]
     }

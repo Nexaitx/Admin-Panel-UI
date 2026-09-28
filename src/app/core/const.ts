@@ -151,6 +151,9 @@ export const ENDPOINTS = {
     GET_OTC_MEDICINES: '/api/products', // otc medicines
     GET_PRESCRIBED_MEDICINES: '/api/medicines/getMedicine', // prescribed/drug
     GET_MY_MEDICINES: '/api/medicines/my-medicines', // manually added medicines by pharma admin
+    // All medicines - Super Admin
+    GET_ALL_MEDICINES_BY_AVAILABILITY: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
+    GET_MEDICINE_DETAILS_BY_ID: '/api/medicines/allmedicinemix/products/', 
     CREATE_MEDICINE: '/api/medicines/add-with-images', // create medicine by pharmacist with images
     CREATE_MEDICINE_NO_IMAGE: '/api/medicines/add', // create medicine by pharmacist without image
     UPDATE_MEDICINE: '/api/medicines',
