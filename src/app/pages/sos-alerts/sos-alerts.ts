@@ -31,7 +31,9 @@ export class SosAlerts {
     { key: 'resolvedAt', header: 'Resolved&nbsp;At', sortable: true, type: 'date' },
     { key: 'resolvedBy', header: 'Resolved&nbsp;By', sortable: true },
     { key: 'location', header: 'Location', sortable: true },
-    { key: 'resolved', header: 'Status', sortable: true },
+    { key: 'resolved', header: 'Status', sortable: true },        //  boolean rahega
+    { key: 'resolve', header: 'Action', type: 'actionResolveSOS' } //  NEW
+    
   ];
 
   ngOnInit() {
@@ -39,7 +41,7 @@ export class SosAlerts {
     try {
       this._pushSub = pushMessages$.subscribe((msg: any) => {
         const payload = msg && msg.payload ? msg.payload : msg;
-        console.log(payload)
+        console.log(payload);
         alert(`New App Message: ${payload.notification.title}`);
         const title = payload?.notification?.title || payload?.data?.title || payload?.title;
         if (title === 'SOS' || title === 'SOS alert') {
@@ -60,28 +62,36 @@ export class SosAlerts {
   }
 
   fetchData(status?: string) {
-  // Update the property if a new status is passed, otherwise use current
-  if (status) {
-    this.selectedStatus = status;
+    if (status) {
+      this.selectedStatus = status;
+    }
+
+    let endpoint = '';
+    if (this.selectedStatus === 'all') {
+      endpoint = API_URL + ENDPOINTS.GET_SOS;
+    } else if (this.selectedStatus === 'pending') {
+      endpoint = API_URL + ENDPOINTS.GET_SOS_PENDING;
+    } else if (this.selectedStatus === 'resolved') {
+      endpoint = API_URL + ENDPOINTS.GET_SOS_RESOLVED;
+    }
+
+    this.http.get(endpoint).subscribe((res: any) => {
+      // 👇 resolved ko boolean hi rakho — Status column me Yes/No dikhega
+      this.dataSource.data = res;
+    });
   }
 
-  let endpoint = '';
-  
-  // 1. Determine the endpoint
-  if (this.selectedStatus === 'all') {
-    endpoint = API_URL + ENDPOINTS.GET_SOS;
-  } else if (this.selectedStatus === 'pending') {
-    endpoint = API_URL + ENDPOINTS.GET_SOS_PENDING;
-  } else if (this.selectedStatus === 'resolved') {
-    endpoint = API_URL + ENDPOINTS.GET_SOS_RESOLVED;
-  }
+  // 👇 NEW: resolve handler
+  onResolve(row: any) {
+    const alertId = row.alertId ?? row.id;
+    if (!alertId) { return; }
 
-  // 2. Execute request and format data
-  this.http.get(endpoint).subscribe((res: any) => {
-    this.dataSource.data = res.map((item: any) => ({
-      ...item,
-      resolved: item.resolved ? 'Resolved' : 'Pending'
-    }));
-  });
-}
+    const url = `${API_URL}${ENDPOINTS.RESOLVE_SOS}/${alertId}`;
+    const params = { resolvedBy: 'admin' };
+
+    this.http.put(url, null, { params }).subscribe({
+      next: () => this.fetchData(),
+      error: (err) => console.error('Resolve SOS failed', err)
+    });
+  }
 }

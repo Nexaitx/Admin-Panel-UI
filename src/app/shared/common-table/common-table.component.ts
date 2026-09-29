@@ -19,11 +19,12 @@ export interface ColumnDef {
   header: string;         // header label
   sortable?: boolean;     // enable sorting
   editable?: boolean;     // allow editing in dialog
-  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'password' | 'confirmPassword' | 'action' | 'actionReAssign' | 'actionApproveReject' | 'actionUser' | 'actionStaff'; // data type
+  type?: 'text' | 'number' | 'date' | 'time' | 'select' | 'boolean' | 'password' | 'confirmPassword' | 'action' | 'actionReAssign' | 'actionApproveReject' | 'actionUser' | 'actionStaff' | 'actionResolveSOS'; // data type
   options?: Array<{ value: any, label: string }>; // for select
   width?: string;
   disabled?: boolean;     // disable field in edit mode
   disabledInEdit?: boolean; // disable field specifically in edit mode
+  
 }
 
 export interface PaginationEvent {
@@ -72,6 +73,7 @@ export class CommonTableComponent implements OnInit, OnChanges {
   @Output() create = new EventEmitter<any>();
   @Output() save = new EventEmitter<{ row: any, isNew: boolean }>();
   @Output() pageChange = new EventEmitter<PaginationEvent>();
+  @Output() resolve = new EventEmitter<any>();
 
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [];
@@ -246,4 +248,12 @@ export class CommonTableComponent implements OnInit, OnChanges {
     this.dialog.closeAll();
     this.editing = false;
   }
+
+ handleResolve(row: any) {
+  // 👇 seedha emit — parent me API call hogi (resolvedBy = admin)
+  this.resolve.emit(row);
+}
+
+
+
 }

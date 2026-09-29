@@ -221,11 +221,13 @@ export const ENDPOINTS = {
     GET_REASSIGN_DUTY: '/api/bookings/',
     REASSIGNED_BOOKINGS: '/api/reassignments/all',
 
-    // SOS
+    // SOS update
     GET_SOS_FROM_STAFF: '/api/sos/staff-with-contacts',
     GET_SOS: '/api/sos/all',
     GET_SOS_PENDING: '/api/sos/pending',
     GET_SOS_RESOLVED: '/api/sos/resolved',
+    RESOLVE_SOS: '/api/sos/resolve', // append /{alertId}
+
 
     // Other Subcategory
     GET_OTHER_SUBCATEGORY: '/api/other-sub-category/status/',
