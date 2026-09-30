@@ -2,6 +2,21 @@
 
   <div class="row mt-2 align-items-center">
 
+      <!--  NEW: Availability Filter -->
+  <mat-form-field appearance="outline" class="col-md-2">
+    <mat-label>Pharma_Availability</mat-label>
+
+    <mat-select
+      [(value)]="availabilityFilter"
+      (selectionChange)="onAvailabilityChange($event.value)">
+
+      <mat-option value="all">All</mat-option>
+      <mat-option value="true">Available</mat-option>
+      <mat-option value="false">Not Available</mat-option>
+
+    </mat-select>
+  </mat-form-field>
+
     <mat-form-field appearance="outline" class="col-md-3">
       <mat-label>Search Medicine</mat-label>
 
