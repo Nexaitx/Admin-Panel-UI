@@ -20,7 +20,11 @@ export const ENDPOINTS = {
     GET_DRIVER_BY_ID_VEHICLE: '/api/drivers/{driverId}/vehicle',
     GET_DRIVER_BY_ID_PAYMENT: '/api/drivers/{driverId}/registration-fee-status',
     GET_DRIVER_BY_ID_BANK: '/api/drivers/{driverId}/bank-details',
-    GET_DRIVER_BY_ID_DOC: '/api/drivers/driver/{driverId}',
+    POST_DRIVER_BANK_REJECT: '/api/drivers/{driverId}/bank-details/reject',
+    POST_DRIVER_BANK_VERIFY: '/api/drivers/{driverId}/bank-details/verify',
+    TOGGLE_DRIVER_STATUS: '/api/drivers/{driverId}/toggle',
+    GET_DRIVER_BY_ID_DOC: '/api/drivers/document/{driverId}',
+    GET_DRIVER_BY_ID_OWNER: '/api/drivers/{driverId}/owner',
 
     GET_BOOKINGS_STATISTICS: '/api/admin/bookings/statistics',
     // Users
@@ -147,6 +151,9 @@ export const ENDPOINTS = {
     GET_OTC_MEDICINES: '/api/products', // otc medicines
     GET_PRESCRIBED_MEDICINES: '/api/medicines/getMedicine', // prescribed/drug
     GET_MY_MEDICINES: '/api/medicines/my-medicines', // manually added medicines by pharma admin
+    // All medicines - Super Admin
+    GET_ALL_MEDICINES_BY_AVAILABILITY: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
+    GET_MEDICINE_DETAILS_BY_ID: '/api/medicines/allmedicinemix/products/', 
     CREATE_MEDICINE: '/api/medicines/add-with-images', // create medicine by pharmacist with images
     CREATE_MEDICINE_NO_IMAGE: '/api/medicines/add', // create medicine by pharmacist without image
     UPDATE_MEDICINE: '/api/medicines',
@@ -179,6 +186,7 @@ export const ENDPOINTS = {
     GET_OTHER_PHARMACIST_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/otherpharmacist/highest-discount',
     UPDATE_BULK_AVAILABILITY_DISCOUNT: '/api/pharmacists/medicines/bulk/disscountandisavailable',
     GET_AVAILABLE_TOGGLE: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
+    GET_MEDICINES_BY_PHARMACIST_AVAILABILITY:'/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
 
     ALL_AVAILABLE_MEDICINE: '/api/medicines/allmedicine/pharmacistdiscountadded',
     DISABLE_MEDICINE_PERMANENTLY: '/api/medicines/disable/anymedicine',
@@ -214,11 +222,13 @@ export const ENDPOINTS = {
     GET_REASSIGN_DUTY: '/api/bookings/',
     REASSIGNED_BOOKINGS: '/api/reassignments/all',
 
-    // SOS
+    // SOS update
     GET_SOS_FROM_STAFF: '/api/sos/staff-with-contacts',
     GET_SOS: '/api/sos/all',
     GET_SOS_PENDING: '/api/sos/pending',
     GET_SOS_RESOLVED: '/api/sos/resolved',
+    RESOLVE_SOS: '/api/sos/resolve', // append /{alertId}
+
 
     // Other Subcategory
     GET_OTHER_SUBCATEGORY: '/api/other-sub-category/status/',

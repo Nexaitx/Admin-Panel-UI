@@ -7,5 +7,9 @@
     </mat-select>
 </mat-form-field>
 
-<app-common-table [columns]="columns" [data]="dataSource.data" [showActions]="false">
+<app-common-table
+  [columns]="columns"
+  [data]="dataSource.data"
+  [showActions]="false"
+  (resolve)="onResolve($event)">
 </app-common-table>

@@ -18,25 +18,29 @@ export class SOSStaff {
     { key: 'staffPhoneNumber', header: 'Staff&nbsp;Phone&nbsp;Number', sortable: true },
     { key: 'staffEmail', header: 'Staff&nbsp;Email', sortable: true },
     { key: 'sosContact1', header: 'Contact&nbsp;Person&nbsp;1', sortable: true },
-    { key: 'sosContact2', header: 'Contact&nbsp;Person&nbsp;2', sortable: true }
+    { key: 'sosContact2', header: 'Contact&nbsp;Person&nbsp;2', sortable: true },
+    { key: 'resolve', header: 'Action', type: 'actionResolveSOS' }   //  NEW
   ];
+
   dataSource = new MatTableDataSource<any>();
   http = inject(HttpClient);
   private _pushSub: any;
 
+  currentAdminId = 'admin';   //  always admin
+
   ngOnInit() {
     this.fetchData();
     try {
-          this._pushSub = pushMessages$.subscribe((msg: any) => {
-            const payload = msg && msg.payload ? msg.payload : msg;
-            const title = payload?.notification?.title || payload?.data?.title || payload?.title;
-            if (title === 'SOS' || title === 'SOS alert') {
-              this.fetchData();
-            }
-          });
-        } catch (e) {
-          console.warn('Failed to subscribe to push messages', e);
+      this._pushSub = pushMessages$.subscribe((msg: any) => {
+        const payload = msg && msg.payload ? msg.payload : msg;
+        const title = payload?.notification?.title || payload?.data?.title || payload?.title;
+        if (title === 'SOS' || title === 'SOS alert') {
+          this.fetchData();
         }
+      });
+    } catch (e) {
+      console.warn('Failed to subscribe to push messages', e);
+    }
   }
 
   ngOnDestroy() {
@@ -44,12 +48,26 @@ export class SOSStaff {
       if (this._pushSub && typeof this._pushSub.unsubscribe === 'function') {
         this._pushSub.unsubscribe();
       }
-    } catch (e) { }
+    } catch (e) {}
   }
 
   fetchData() {
     this.http.get(API_URL + ENDPOINTS.GET_SOS_FROM_STAFF).subscribe((res: any) => {
       this.dataSource.data = res.data.reverse();
-    })
+    });
   }
+
+  //  NEW: CommonTableComponent se emit hoga
+  onResolve(row: any) {
+  const alertId = row.alertId ?? row.id;
+  if (!alertId) { return; }
+
+  const url = `${API_URL}${ENDPOINTS.RESOLVE_SOS}/${alertId}`;
+  const params = { resolvedBy: 'admin' };   //  hardcoded admin
+
+  this.http.put(url, null, { params }).subscribe({
+    next: () => this.fetchData(),
+    error: (err) => console.error('Resolve SOS failed', err)
+  });
+}
 }

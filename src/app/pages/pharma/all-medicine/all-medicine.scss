@@ -1,0 +1,106 @@
+.medicine-page {
+  width: 100%;
+}
+
+.tableScroll-container {
+  overflow-x: auto;
+  max-height: calc(100vh - 220px);
+}
+
+table {
+  width: 100%;
+  min-width: 1400px;
+}
+
+th {
+  white-space: nowrap;
+}
+
+td {
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-success {
+  background: #dff7e9;
+  color: #16834d;
+}
+
+.status-danger {
+  background: #fde2e2;
+  color: #c62828;
+}
+
+
+.product-id-link {
+  color: #1976d2;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.product-id-link:hover {
+  opacity: 0.8;
+}
+
+.medicine-loading {
+  padding: 40px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.details-grid > div {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.details-grid strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #555;
+}
+
+.details-grid p {
+  margin: 0;
+  word-break: break-word;
+}
+
+.detail-section {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.detail-section h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+
+.detail-section p {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -80,3 +80,33 @@ img:hover {
 }
 
 //table scroll container end
+
+//verify & reject 
+
+.verify-btn{
+
+    background:#28a745 !important;
+    color:white !important;
+
+}
+
+.reject-btn{
+
+    background:#dc3545 !important;
+    color:white !important;
+
+}
+
+
+.deactivated-row {
+  opacity: 0.55;
+  background-color: #f3f3f3;
+}
+
+.deactivated-row td {
+  color: #777;
+}
+
+.deactivated-row .status-badge {
+  opacity: 0.8;
+}

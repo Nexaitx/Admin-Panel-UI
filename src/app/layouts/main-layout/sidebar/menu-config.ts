@@ -1,3 +1,4 @@
+// src\app\layouts\main-layout\sidebar\menu-config.ts
 export interface MenuItem {
   title: string;
   icon: string;
@@ -173,13 +174,14 @@ export const MENU_DATA: MenuItem[] = [
     icon: 'apps',
     permission: 'Pharma',
     allowedRoles: ['Admin'], // Restricts this specific block to Admins
-    // children: [
-    //   { title: 'Pharma Bookings', icon: 'account_circle', route: '/app/pharmaceutical/bookings' },
-    //   { title: 'Vitoxyz Medicines', icon: 'healing', route: '/app/pharmaceutical/medicines' },
-    //   { title: 'Pharmacists Products', icon: 'align_vertical_bottom', route: '/app/pharmaceutical/all-pharmacists-available-products' },
-    //   { title: 'Top Discounts', icon: 'leaderboard', route: '/app/pharmaceutical/top-discounts' },
-    //   { title: 'Available Products', icon: 'addchart', route: '/app/pharmaceutical/vitoxyz-available-products' },
-    // ]
+    children: [
+      {
+        title: 'All Medicine',
+        icon: 'medication',
+        route: '/app/pharmaceutical/all-medicine',
+        permission: 'Pharma'
+      }
+    ]
   },
 
   // --- Pharma (Pharmacist View - Flat Links) ---
@@ -285,6 +287,7 @@ export const MENU_DATA: MenuItem[] = [
       { title: 'All Blogs', icon: 'access_time', route: '/app/blogs' }
     ]
   },
+
 
   // new Pharma Integration
   {
