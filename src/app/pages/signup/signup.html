@@ -48,7 +48,7 @@
                 </option>
                 }
               </select>
-              @if(signupForm.get('roleType')?.invalid && (signupForm.get('roleType')?.dirty || signupForm.get('roleType')?.touched)) {
+              @if(signupForm.get('role')?.invalid && (signupForm.get('role')?.dirty || signupForm.get('role')?.touched)) {
               <div class="text-danger small mt-1">
                 Please select a role.
               </div>

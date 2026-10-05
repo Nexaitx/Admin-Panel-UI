@@ -180,6 +180,12 @@ export const MENU_DATA: MenuItem[] = [
         icon: 'medication',
         route: '/app/pharmaceutical/all-medicine',
         permission: 'Pharma'
+      },
+      {
+        title: 'New Medicine',
+        icon: 'add_circle',
+        route: '/app/pharmaceutical/new-medicine',
+        permission: 'Pharma'
       }
     ]
   },

@@ -110,6 +110,13 @@ export const routes: Routes = [
                 canActivate: [authGuard]
             },
             {
+                path: 'pharmaceutical/new-medicine',
+                loadComponent: () =>
+                    import('./pages/pharma/new-medicine/new-medicine')
+                    .then(m => m.NewMedicine),
+                canActivate: [authGuard]
+            },
+            {
                 path: 'pharmaceutical/my-available-medicine',
                 loadComponent: () => import('./pages/my-available-products/my-available-products').then(m => m.MyAvailableProducts),
                 canActivate: [authGuard],

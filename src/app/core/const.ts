@@ -154,6 +154,11 @@ export const ENDPOINTS = {
     // All medicines - Super Admin
     GET_ALL_MEDICINES_BY_AVAILABILITY: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
     GET_MEDICINE_DETAILS_BY_ID: '/api/medicines/allmedicinemix/products/', 
+    GET_NEW_MEDICINE: '/api/medicines/filter',
+    GET_NEW_MEDICINE_DETAILS: '/api/medicines/added',
+    UPDATE_NEW_MEDICINE_DETAILS: '/api/medicines/',
+    DELETE_NEW_MEDICINE_MEDICINE: '/api/medicines/',
+    UPDATE_MEDICINE_STATUS: '/api/medicines/',
     CREATE_MEDICINE: '/api/medicines/add-with-images', // create medicine by pharmacist with images
     CREATE_MEDICINE_NO_IMAGE: '/api/medicines/add', // create medicine by pharmacist without image
     UPDATE_MEDICINE: '/api/medicines',

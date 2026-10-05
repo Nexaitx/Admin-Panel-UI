@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -77,7 +77,7 @@ export class Signup {
       }
     );
   }
-
+@Output() changeAuthUI = new EventEmitter<'login' | 'signup' | 'reset-password'>();
   onKeyPress(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -98,38 +98,75 @@ export class Signup {
     });
   }
 
+
   onSignupSubmit(): void {
     if (this.signupForm.invalid) {
       this.signupForm.markAllAsTouched();
+
       this._snackBar.open('Please correct the form errors.', 'Error', {
         horizontalPosition: 'end',
         verticalPosition: 'top',
         duration: 3000,
         panelClass: ['snackbar-error']
       });
+
       return;
     }
 
-    this.http.post(API_URL + ENDPOINTS.SIGNUP, this.signupForm.value).subscribe(
-      (res: any) => {
-        this._snackBar.open('Company Created Successful!', 'Successfully', {
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          duration: 3000,
-          panelClass: ['snackbar-success'],
-        });
-        this.router.navigate(['/login']);
+    this.http.post(API_URL + ENDPOINTS.SIGNUP, this.signupForm.value).subscribe({
+      next: (res: any) => {
+        this._snackBar.open(
+          'Account created successfully. Please login.',
+          'Success',
+          {
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            duration: 2500,
+            panelClass: ['snackbar-success']
+          }
+        );
+
+        // Switch to Login screen after successful signup
+        setTimeout(() => {
+          this.changeAuthUI.emit('login');
+        }, 500);
       },
-      (error) => {
-        this._snackBar.open('Unable to create Account', 'Error', {
+
+      error: (error) => {
+        console.error('Signup failed:', error);
+
+        // Get the actual error message returned by backend
+        const backendMessage =
+          error?.error?.message ||
+          error?.error?.error ||
+          error?.message;
+
+        let message = 'Unable to create account. Please try again.';
+
+        if (backendMessage) {
+          const lowerMessage = backendMessage.toLowerCase();
+
+          if (
+            lowerMessage.includes('phone') ||
+            lowerMessage.includes('mobile') ||
+            lowerMessage.includes('number')
+          ) {
+            message = 'This phone number is already registered.';
+          } else if (lowerMessage.includes('email')) {
+            message = 'This email address is already registered.';
+          } else {
+            message = backendMessage;
+          }
+        }
+
+        this._snackBar.open(message, 'Error', {
           horizontalPosition: 'end',
           verticalPosition: 'top',
-          duration: 3000,
-          panelClass: ['snackbar-error'],
+          duration: 4000,
+          panelClass: ['snackbar-error']
         });
-        console.error('Signup failed:', error.message);
       }
-    );
+    });
   }
 
   navigateToLogin(): void {
