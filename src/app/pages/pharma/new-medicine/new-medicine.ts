@@ -57,6 +57,8 @@ selectedMedicineImageName = '';
   isEditMedicineLoading = false;
   isSavingMedicine = false;
   hasEditChanges = false;
+  selectedMedicineImageId: number | null = null;
+  deleteType: 'medicine' | 'image' = 'medicine';
 
   @ViewChild('editMedicineDialog')
   editMedicineDialog!: TemplateRef<any>;
@@ -251,19 +253,44 @@ applyFilter(event: Event): void {
   });
 }
 
-openMedicineImage(imageUrl: string, medicineName: string): void {
+openMedicineImage(
+  imageUrl: string,
+  medicineName: string,
+  medicineId: number
+): void {
+  if (!imageUrl) return;
 
-  if (!imageUrl) {
-    return;
-  }
-
-  this.selectedMedicineImage = imageUrl;
+ this.selectedMedicineImage = imageUrl;
   this.selectedMedicineImageName = medicineName || 'Medicine Image';
+  this.selectedMedicineImageId = null;
 
-  this.dialog.open(this.medicineImageDialog, {
-    width: '600px',
-    maxWidth: '95vw',
-    maxHeight: '90vh'
+  this.selectedMedicine = {
+    ...this.selectedMedicine,
+    medicineId: medicineId
+  };
+
+  const url =
+    `${API_URL}${ENDPOINTS.GET_NEW_MEDICINE_DETAILS}${medicineId}`;
+
+  this.http.get<any>(url).subscribe({
+    next: (res) => {
+      const image = res?.images?.find(
+        (img: any) => img.imageUrl === imageUrl
+      );
+
+      this.selectedMedicineImageId = image?.id ?? null;
+
+      this.dialog.open(this.medicineImageDialog, {
+        width: '800px',
+        maxWidth: '95vw'
+      });
+    },
+    error: () => {
+      this.dialog.open(this.medicineImageDialog, {
+        width: '800px',
+        maxWidth: '95vw'
+      });
+    }
   });
 }
   openEditMedicine(medicineId: number): void {
@@ -316,7 +343,7 @@ openMedicineImage(imageUrl: string, medicineName: string): void {
 
     openDeleteMedicine(medicineId: number): void {
 
-    console.log('Medicine ID received for delete:', medicineId);
+      this.deleteType = 'medicine';
 
     this.selectedMedicineForDelete = {
       medicineId: medicineId
@@ -332,7 +359,57 @@ openMedicineImage(imageUrl: string, medicineName: string): void {
     );
   }
 
+
+  openDeleteImage(): void {
+  if (!this.selectedMedicineImageId) return;
+
+  this.deleteType = 'image';
+
+  this.selectedMedicineForDelete = {
+    medicineId: this.selectedMedicine?.medicineId,
+    imageId: this.selectedMedicineImageId
+  };
+
+  this.deleteDialogRef = this.dialog.open(this.deleteMedicineDialog, {
+    width: '450px',
+    maxWidth: '95vw',
+    disableClose: true
+  });
+}
+
     confirmDeleteMedicine(): void {
+
+      if (this.deleteType === 'image') {
+  const medicineId = this.selectedMedicineForDelete?.medicineId;
+  const imageId = this.selectedMedicineForDelete?.imageId;
+
+  if (!medicineId || !imageId) return;
+
+  this.isDeletingMedicine = true;
+
+  const url =
+    `${API_URL}${ENDPOINTS.DELETE_MEDICINE_IMAGE}${medicineId}/image/${imageId}`;
+
+  this.http.delete<any>(url).subscribe({
+    next: () => {
+      this.deleteDialogRef?.close();
+      this.dialog.closeAll();
+
+      this.selectedMedicineImage = null;
+      this.selectedMedicineImageId = null;
+      this.selectedMedicineForDelete = null;
+      this.isDeletingMedicine = false;
+
+      this.fetchData();
+    },
+    error: (error) => {
+      console.error('Error deleting medicine image:', error);
+      this.isDeletingMedicine = false;
+    }
+  });
+
+  return;
+}
 
     if (
       !this.selectedMedicineForDelete?.medicineId ||
