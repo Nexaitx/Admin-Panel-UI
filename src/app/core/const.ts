@@ -192,6 +192,7 @@ export const ENDPOINTS = {
     GET_OTHER_PHARMACIST_AVAILABLE_MEDICINES: '/api/pharmacists/medicines/otherpharmacist/highest-discount',
     UPDATE_BULK_AVAILABILITY_DISCOUNT: '/api/pharmacists/medicines/bulk/disscountandisavailable',
     GET_AVAILABLE_TOGGLE: '/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
+    GET_MEDICINES_BY_PHARMACIST_AVAILABILITY:'/api/medicines/checkmedicineavailibility/bypharmacistmedicine',
 
     ALL_AVAILABLE_MEDICINE: '/api/medicines/allmedicine/pharmacistdiscountadded',
     DISABLE_MEDICINE_PERMANENTLY: '/api/medicines/disable/anymedicine',
@@ -227,11 +228,13 @@ export const ENDPOINTS = {
     GET_REASSIGN_DUTY: '/api/bookings/',
     REASSIGNED_BOOKINGS: '/api/reassignments/all',
 
-    // SOS
+    // SOS update
     GET_SOS_FROM_STAFF: '/api/sos/staff-with-contacts',
     GET_SOS: '/api/sos/all',
     GET_SOS_PENDING: '/api/sos/pending',
     GET_SOS_RESOLVED: '/api/sos/resolved',
+    RESOLVE_SOS: '/api/sos/resolve', // append /{alertId}
+
 
     // Other Subcategory
     GET_OTHER_SUBCATEGORY: '/api/other-sub-category/status/',

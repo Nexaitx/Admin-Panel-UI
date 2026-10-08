@@ -51,6 +51,17 @@
             <button *ngSwitchCase="'actionStaff'" matButton color="primary" matTooltip="View"
               (click)="onView(element, col)"><mat-icon>visibility</mat-icon>View</button>
 
+              <!-- Resolve SOS button -->
+
+              <ng-container *ngSwitchCase="'actionResolveSOS'">
+  <button *ngIf="element.resolved === false"
+    matButton color="primary" matTooltip="Resolve"
+    (click)="handleResolve(element)">
+    <mat-icon>check_circle</mat-icon>Resolve
+  </button>
+  <span *ngIf="element.resolved === true" class="resolved-text">Resolved</span>
+</ng-container>
+
             <span *ngSwitchCase="'date'">{{element[col.key] | date: 'mediumDate'}}</span>
             <span *ngSwitchCase="'time'">{{element[col.key] | date: 'shortTime'}}</span>
             <span *ngSwitchCase="'boolean'">{{element[col.key] ? 'Yes' : 'No'}}</span>

@@ -5,8 +5,9 @@ import {
   MatDialog,
   MatDialogModule
 } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule, } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -44,7 +45,8 @@ interface Medicine {
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule   
   ],
   templateUrl: './all-medicine.html',
   styleUrl: './all-medicine.scss'
@@ -74,15 +76,18 @@ export class AllMedicine {
   pageSize = 10;
   totalItems = 0;
 
+  // ✅ NEW: availability filter — 'all' | 'true' | 'false'
+  availabilityFilter: 'all' | 'true' | 'false' = 'true';
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   dialog = inject(MatDialog);
 
-    selectedMedicine: any = null;
-    isMedicineLoading = false;
+  selectedMedicine: any = null;
+  isMedicineLoading = false;
 
-    @ViewChild('detailsDialog')
-    detailsDialog!: TemplateRef<any>;
+  @ViewChild('detailsDialog')
+  detailsDialog!: TemplateRef<any>;
 
   ngOnInit(): void {
     this.getAllMedicines();
@@ -100,79 +105,100 @@ export class AllMedicine {
     };
   }
 
-  getAllMedicines(): void {
+  /**
+   * ✅ Updated API call using new endpoint
+   * GET /api/medicines/checkmedicineavailibility/bypharmacistmedicine
+   *     ?isAvailable=true|false&page=0&size=10
+   */
+ getAllMedicines(): void {
 
-    const url =
-      `${API_URL}${ENDPOINTS.GET_ALL_MEDICINES_BY_AVAILABILITY}` +
-      `?page=${this.pageIndex}&size=${this.pageSize}`;
+  let url =
+    `${API_URL}${ENDPOINTS.GET_MEDICINES_BY_PHARMACIST_AVAILABILITY}`;
 
-    this.http.get<any>(url).subscribe({
-
-      next: (res) => {
-
-        if (res?.success) {
-          this.dataSource.data = res.discountRecords || [];
-          this.totalItems = res.totalRecords || 0;
-        } else {
-          this.dataSource.data = [];
-          this.totalItems = 0;
-        }
-
-      },
-
-      error: (err) => {
-        console.error('Error fetching all medicines:', err);
-        this.dataSource.data = [];
-        this.totalItems = 0;
-      }
-
-    });
+  // Only send isAvailable when filter is true or false
+  if (this.availabilityFilter !== 'all') {
+    url += `?isAvailable=${this.availabilityFilter}`;
+    url += `&page=${this.pageIndex}`;
+    url += `&size=${this.pageSize}`;
+  } else {
+    // For "all", don't send isAvailable
+    url += `?page=${this.pageIndex}`;
+    url += `&size=${this.pageSize}`;
   }
 
-  openMedicineDetails(productId: string): void {
-
-  this.selectedMedicine = null;
-  this.isMedicineLoading = true;
-
-  this.dialog.open(this.detailsDialog, {
-    width: '900px',
-    maxWidth: '95vw',
-    maxHeight: '90vh'
-  });
-
-  const url =
-    `${API_URL}${ENDPOINTS.GET_MEDICINE_DETAILS_BY_ID}${productId}`;
+  console.log('Medicine API URL:', url);
 
   this.http.get<any>(url).subscribe({
 
     next: (res) => {
-      this.selectedMedicine = res;
-      this.isMedicineLoading = false;
+      console.log('Medicine API Response:', res);
+
+      if (res?.success) {
+        this.dataSource.data = res.discountRecords || [];
+        this.totalItems =
+          res.totalRecords ||
+          res.discountRecords?.length ||
+          0;
+      } else {
+        this.dataSource.data = [];
+        this.totalItems = 0;
+      }
     },
 
     error: (err) => {
-      console.error('Error fetching medicine details:', err);
-      this.isMedicineLoading = false;
-      this.selectedMedicine = null;
+      console.error('Error fetching medicines:', err);
+      this.dataSource.data = [];
+      this.totalItems = 0;
     }
 
   });
 }
 
+  /** ✅ NEW: availability change handler */
+  onAvailabilityChange(value: 'all' | 'true' | 'false'): void {
+    this.availabilityFilter = value;
+    this.pageIndex = 0;                 // reset to first page
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;     // keep paginator in sync
+    }
+    this.dataSource.filter = '';        // optional: clear local search
+    this.getAllMedicines();
+  }
+
+  openMedicineDetails(productId: string): void {
+    this.selectedMedicine = null;
+    this.isMedicineLoading = true;
+
+    this.dialog.open(this.detailsDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '90vh'
+    });
+
+    const url =
+      `${API_URL}${ENDPOINTS.GET_MEDICINE_DETAILS_BY_ID}${productId}`;
+
+    this.http.get<any>(url).subscribe({
+      next: (res) => {
+        this.selectedMedicine = res;
+        this.isMedicineLoading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching medicine details:', err);
+        this.isMedicineLoading = false;
+        this.selectedMedicine = null;
+      }
+    });
+  }
+
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-
     this.getAllMedicines();
   }
 
   applyFilter(event: Event): void {
-
-    const filterValue =
-      (event.target as HTMLInputElement).value;
-
-    this.dataSource.filter =
-      filterValue.trim().toLowerCase();
-
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
