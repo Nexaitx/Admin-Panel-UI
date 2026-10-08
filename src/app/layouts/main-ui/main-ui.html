@@ -36,7 +36,7 @@
                 @if(authUI === 'login'){
                 <app-login (changeAuthUI)="setAuthUI($event)"></app-login>}
                 @if(authUI === 'signup'){
-                <app-signup></app-signup>
+                <app-signup (changeAuthUI)="setAuthUI($event)"></app-signup>
                 }
                 @if(authUI === 'reset-password'){
                 <app-reset-password (changeAuthUI)="setAuthUI($event)"></app-reset-password>

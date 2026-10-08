@@ -40,6 +40,17 @@ export class SosAlerts {
     this.fetchData();
     try {
       this._pushSub = pushMessages$.subscribe((msg: any) => {
+        const payload = msg?.payload || msg;
+
+        console.log('Push Payload:', payload);
+
+        const title =
+          payload?.notification?.title ||
+          payload?.data?.title ||
+          payload?.title;
+
+        alert(`New App Message: ${title || 'New message'}`);
+
         const payload = msg && msg.payload ? msg.payload : msg;
         console.log(payload);
         alert(`New App Message: ${payload.notification.title}`);
@@ -67,6 +78,39 @@ export class SosAlerts {
     }
 
     let endpoint = '';
+
+    if (this.selectedStatus === 'all') {
+      endpoint = API_URL + ENDPOINTS.GET_SOS;
+    } else if (this.selectedStatus === 'pending') {
+      endpoint = API_URL + ENDPOINTS.GET_SOS_PENDING;
+    } else if (this.selectedStatus === 'resolved') {
+      endpoint = API_URL + ENDPOINTS.GET_SOS_RESOLVED;
+    }
+
+    this.http.get(endpoint).subscribe({
+      next: (res: any) => {
+        console.log('SOS API Response:', res);
+
+        // Handle array or wrapped API response
+        const data = Array.isArray(res)
+          ? res
+          : res?.data || res?.content || res?.results || res?.alerts || [];
+
+        console.log('SOS Table Data:', data);
+
+        this.dataSource.data = data.map((item: any) => ({
+          ...item,
+          resolved: item.resolved ? 'Resolved' : 'Pending'
+        }));
+      },
+      error: (error) => {
+        console.error('SOS API Error:', error);
+        this.dataSource.data = [];
+      }
+    });
+  }
+
+}
     if (this.selectedStatus === 'all') {
       endpoint = API_URL + ENDPOINTS.GET_SOS;
     } else if (this.selectedStatus === 'pending') {

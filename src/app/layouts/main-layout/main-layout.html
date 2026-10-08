@@ -4,26 +4,128 @@
     </button>
      
     <div class="notification-bell">
-        <button mat-icon-button class="ms-auto" [matMenuTriggerFor]="notificationMenu" matTooltip="Notifications" matTooltipPosition="below">
-            <mat-icon [matBadge]="notificationCount" matBadgeColor="warn" [matBadgeHidden]="notificationCount === 0">notifications_active</mat-icon>
+        <button
+            mat-icon-button
+            class="notification-trigger"
+            [matMenuTriggerFor]="notificationMenu"
+            matTooltip="Notifications"
+            matTooltipPosition="below">
+
+            <mat-icon
+                [matBadge]="notificationCount"
+                matBadgeColor="warn"
+                [matBadgeHidden]="notificationCount === 0">
+                notifications_active
+            </mat-icon>
         </button>
-        <mat-menu #notificationMenu="matMenu" class="notification-menu">
-            <div *ngIf="notifications.length > 0" class="notification-list">
-                <div *ngFor="let notification of notifications" class="notification-item" [class.unread]="!notification.read" (click)="markAsRead(notification)">
-                    <div class="notification-content">
-                        <strong>{{ notification.title }}</strong>
-                        <p>{{ notification.message }}</p>
-                        <small>{{ notification.timestamp | date: 'short' }}</small>
+
+        <mat-menu
+            #notificationMenu="matMenu"
+            class="notification-menu">
+
+            <!-- Notification Header -->
+            <div class="notification-header" (click)="$event.stopPropagation()">
+                <div class="notification-header-content">
+                    <div class="notification-header-icon">
+                        <mat-icon>notifications</mat-icon>
+                    </div>
+
+                    <div>
+                        <h3>Notifications</h3>
+
+                        <span *ngIf="notificationCount > 0">
+                            {{ notificationCount }}
+                            {{ notificationCount === 1 ? 'unread notification' : 'unread notifications' }}
+                        </span>
+
+                        <span *ngIf="notificationCount === 0">
+                            You're all caught up
+                        </span>
                     </div>
                 </div>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="clearNotifications()" class="clear-btn">
+            </div>
+
+
+            <!-- Notifications Available -->
+            <div
+                *ngIf="notifications.length > 0"
+                class="notification-list">
+
+                <div
+                    *ngFor="let notification of notifications"
+                    class="notification-item"
+                    [class.unread]="!notification.read"
+                    (click)="markAsRead(notification)">
+
+                    <!-- Notification Icon -->
+                    <div class="notification-item-icon">
+                        <mat-icon>
+                            {{ notification.read ? 'notifications_none' : 'notifications_active' }}
+                        </mat-icon>
+                    </div>
+
+                    <!-- Notification Content -->
+                    <div class="notification-content">
+
+                        <div class="notification-title-row">
+                            <strong>{{ notification.title }}</strong>
+
+                            <span
+                                *ngIf="!notification.read"
+                                class="unread-dot">
+                            </span>
+                        </div>
+
+                        <p>{{ notification.message }}</p>
+
+                        <div class="notification-time">
+                            <mat-icon>schedule</mat-icon>
+                            <span>{{ notification.timestamp | date: 'short' }}</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- No Notifications -->
+            <div
+                *ngIf="notifications.length === 0"
+                class="no-notifications"
+                (click)="$event.stopPropagation()">
+
+                <div class="empty-notification-icon">
+                    <mat-icon>notifications_none</mat-icon>
+                </div>
+
+                <h4>No notifications</h4>
+
+                <p>
+                    You're all caught up!
+                    <br>
+                    We'll notify you when something new arrives.
+                </p>
+            </div>
+
+
+            <!-- Footer -->
+            <div
+                *ngIf="notifications.length > 0"
+                class="notification-footer"
+                (click)="$event.stopPropagation()">
+
+                <button
+                    mat-button
+                    class="clear-btn"
+                    (click)="clearNotifications()">
+
+                    <mat-icon>done_all</mat-icon>
                     Clear All
                 </button>
+
             </div>
-            <div *ngIf="notifications.length === 0" class="no-notifications">
-                <p>No notifications</p>
-            </div>
+
         </mat-menu>
     </div>
  

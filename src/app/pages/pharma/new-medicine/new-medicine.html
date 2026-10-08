@@ -1,0 +1,1324 @@
+<div class="medicine-page">
+
+  <div class="medicine-toolbar">
+
+  <mat-form-field
+    appearance="outline"
+    class="medicine-search">
+
+    <mat-label>Search Medicine</mat-label>
+
+    <input
+      matInput
+      placeholder="Search by medicine name or ID"
+      (keyup)="applyFilter($event)">
+
+    <mat-icon matSuffix>search</mat-icon>
+
+  </mat-form-field>
+
+
+  <div class="medicine-paginator">
+
+    <mat-paginator
+      [length]="totalItems"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20, 50, 100]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+
+  </div>
+
+</div>
+
+
+  <section class="tableScroll-container w-100">
+
+    <table mat-table [dataSource]="dataSource">
+
+
+      <!-- S.No -->
+      <ng-container matColumnDef="s_no">
+
+        <th mat-header-cell *matHeaderCellDef>
+          S.No
+        </th>
+
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ (pageIndex * pageSize) + i + 1 }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Medicine ID -->
+      <ng-container matColumnDef="medicineId">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Medicine ID
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+
+          <span
+            class="medicine-id-link"
+            (click)="openMedicineDetails(element.medicineId)">
+
+            {{ element.medicineId }}
+
+          </span>
+
+        </td>
+
+      </ng-container>
+
+      <!-- Image -->
+      <ng-container matColumnDef="image">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Image
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+
+          <div class="medicine-image-wrapper">
+
+            <!-- Image Available -->
+            <button
+              *ngIf="element.primaryImageUrl"
+              type="button"
+              class="medicine-image-button"
+              (click)="
+                openMedicineImage(
+                  element.primaryImageUrl,
+                  element.name,
+                  element.medicineId
+                )
+              "
+              title="View medicine image">
+
+              <img
+                [src]="element.primaryImageUrl"
+                [alt]="element.name || 'Medicine'"
+                class="medicine-table-image">
+
+              <span class="image-preview-icon">
+                <mat-icon>zoom_in</mat-icon>
+              </span>
+
+            </button>
+
+
+            <!-- No Image -->
+            <div
+              *ngIf="!element.primaryImageUrl"
+              class="no-medicine-image"
+              title="No image available">
+
+              <mat-icon>image_not_supported</mat-icon>
+
+            </div>
+
+          </div>
+
+        </td>
+
+      </ng-container>
+
+
+      <!-- Medicine Name -->
+      <ng-container matColumnDef="name">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Medicine Name
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.name || 'N/A' }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Category -->
+      <ng-container matColumnDef="category">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Category
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.category || 'N/A' }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Manufacturer -->
+      <ng-container matColumnDef="manufacturer">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Manufacturer
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.manufacturer || 'N/A' }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Price -->
+      <ng-container matColumnDef="price">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Price
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          ₹{{ element.price ?? 'N/A' }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Stock -->
+      <ng-container matColumnDef="quantityInStock">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Stock
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.quantityInStock ?? 0 }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Added By -->
+      <ng-container matColumnDef="addedByPharmacistName">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Added By
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.addedByPharmacistName || 'N/A' }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Added Date -->
+      <ng-container matColumnDef="addedDate">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Added Date
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.addedDate || 'N/A' }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Status -->
+      <ng-container matColumnDef="active">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Status
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+
+          <span
+            class="status-badge"
+            [ngClass]="element.active
+              ? 'status-success'
+              : 'status-danger'">
+
+            {{ element.active ? 'Active' : 'Inactive' }}
+
+          </span>
+
+        </td>
+
+      </ng-container>
+
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns; sticky: true">
+      </tr>
+
+      <tr
+        mat-row
+        *matRowDef="
+          let row;
+          columns: displayedColumns;
+        ">
+      </tr>
+
+      <tr
+        class="mat-row"
+        *matNoDataRow>
+
+        <td
+          class="mat-cell"
+          [attr.colspan]="displayedColumns.length">
+
+          No medicines found.
+
+        </td>
+
+      </tr>
+
+    </table>
+
+  </section>
+
+</div>
+
+
+<!-- Medicine Details Dialog -->
+<!-- Medicine Details Dialog -->
+<ng-template #detailsDialog>
+
+  <div class="medicine-dialog">
+
+    <!-- Header -->
+    <div class="medicine-dialog-header">
+
+      <div class="header-content">
+        <div class="medicine-icon">
+          <mat-icon>medication</mat-icon>
+        </div>
+
+        <div>
+          <h2>Medicine Details</h2>
+          <p>
+            Medicine ID:
+            <strong>{{ selectedMedicine?.medicineId || 'N/A' }}</strong>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <mat-dialog-content>
+
+      <!-- Loading -->
+      <div
+        *ngIf="isMedicineLoading"
+        class="medicine-loading">
+
+        <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+
+        <p>Loading medicine details...</p>
+
+      </div>
+
+
+      <!-- Details -->
+      <div
+        *ngIf="selectedMedicine && !isMedicineLoading"
+        class="medicine-details">
+
+
+        <!-- Basic Information -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>info</mat-icon>
+            <h3>Basic Information</h3>
+          </div>
+
+          <div class="details-grid">
+
+            <div class="detail-item">
+              <span>Medicine ID</span>
+              <strong>{{ selectedMedicine.medicineId || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Medicine Name</span>
+              <strong>{{ selectedMedicine.name || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Category</span>
+              <strong>{{ selectedMedicine.category || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Manufacturer</span>
+              <strong>{{ selectedMedicine.manufacturer || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Brand Name</span>
+              <strong>{{ selectedMedicine.brandName || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Medicine Type</span>
+              <strong>{{ selectedMedicine.medicine_type || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Product Form</span>
+              <strong>{{ selectedMedicine.product_form || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Dosage</span>
+              <strong>{{ selectedMedicine.dosage || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Salt Composition</span>
+              <strong>{{ selectedMedicine.salt_composition || 'N/A' }}</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Pricing & Stock -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>payments</mat-icon>
+            <h3>Pricing & Stock</h3>
+          </div>
+
+          <div class="details-grid">
+
+            <div class="detail-item">
+              <span>Price</span>
+              <strong>₹{{ selectedMedicine.price ?? 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>MRP</span>
+              <strong>₹{{ selectedMedicine.mrp ?? 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Discount</span>
+              <strong>{{ selectedMedicine.discountPercentage ?? 0 }}%</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Available Stock</span>
+              <strong>{{ selectedMedicine.quantityInStock ?? 0 }}</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Medicine Information -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>health_and_safety</mat-icon>
+            <h3>Medicine Information</h3>
+          </div>
+
+          <div class="details-grid">
+
+            <div class="detail-item">
+              <span>Prescription Required</span>
+              <strong>
+                {{ selectedMedicine.prescription_required ? 'Yes' : 'No' }}
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Gender Restriction</span>
+              <strong>
+                {{ selectedMedicine.genderRestriction || 'None' }}
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Minimum Age</span>
+              <strong>{{ selectedMedicine.minAge ?? 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Maximum Age</span>
+              <strong>{{ selectedMedicine.maxAge ?? 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Expiry Date</span>
+              <strong>{{ selectedMedicine.expiryDate || 'N/A' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Show In App</span>
+              <strong>
+                {{ selectedMedicine.showInApp ? 'Yes' : 'No' }}
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Status</span>
+
+              <span
+                class="status-badge"
+                [ngClass]="
+                  selectedMedicine.active
+                    ? 'status-success'
+                    : 'status-danger'
+                ">
+
+                {{ selectedMedicine.active ? 'Active' : 'Inactive' }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Description -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>description</mat-icon>
+            <h3>Description</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.description || 'No description available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- Uses -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>medical_services</mat-icon>
+            <h3>Uses</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.uses || 'No information available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- How To Use -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>help_outline</mat-icon>
+            <h3>How To Use</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.how_to_use || 'No information available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- How It Works -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>science</mat-icon>
+            <h3>How It Works</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.how_it_works || 'No information available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- Precautions -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>warning</mat-icon>
+            <h3>Precautions</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.precautions || 'No information available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- Side Effects -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>report_problem</mat-icon>
+            <h3>Side Effects</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.sideEffects || 'No information available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- Safety Advice -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>verified_user</mat-icon>
+            <h3>Safety Advice</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.safety_advise || 'No information available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- Storage -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>inventory_2</mat-icon>
+            <h3>Storage</h3>
+          </div>
+
+          <p class="description-text">
+            {{ selectedMedicine.storage || 'No information available.' }}
+          </p>
+
+        </div>
+
+
+        <!-- Pharmacist -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>person</mat-icon>
+            <h3>Added By</h3>
+          </div>
+
+          <div class="details-grid">
+
+            <div class="detail-item">
+              <span>Pharmacist</span>
+              <strong>
+                {{ selectedMedicine.addedByPharmacistName || 'N/A' }}
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Added Date</span>
+              <strong>
+                {{ selectedMedicine.addedDate || 'N/A' }}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </mat-dialog-content>
+
+
+    <!-- Footer Actions -->
+    <mat-dialog-actions class="medicine-dialog-actions">
+
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="openEditMedicine(selectedMedicine.medicineId)">
+
+        <mat-icon>edit</mat-icon>
+        Edit
+
+      </button>
+
+      <button
+      mat-stroked-button
+      color="warn"
+      (click)="openDeleteMedicine(selectedMedicine.medicineId)">
+
+      <mat-icon>delete</mat-icon>
+      Delete
+
+    </button>
+
+      <button
+      mat-flat-button
+      color="accent"
+      type="button"
+      [disabled]="isUpdatingMedicineStatus"
+      (click)="toggleMedicineStatus()">
+
+  <mat-icon>
+      {{
+        isUpdatingMedicineStatus
+          ? 'hourglass_empty'
+          : (selectedMedicine?.active ? 'block' : 'check_circle')
+      }}
+    </mat-icon>
+
+    {{
+      isUpdatingMedicineStatus
+        ? 'Updating...'
+        : (selectedMedicine?.active ? 'Deactivate' : 'Activate')
+    }}
+
+  </button>
+
+      <button
+        mat-button
+        mat-dialog-close>
+
+        Close
+
+      </button>
+
+    </mat-dialog-actions>
+
+  </div>
+
+</ng-template>
+<!-- Edit Medicine Dialog -->
+<ng-template #editMedicineDialog>
+
+  <div class="medicine-dialog edit-medicine-dialog">
+
+    <!-- Header -->
+    <div class="medicine-dialog-header">
+
+      <div class="header-content">
+
+        <div class="medicine-icon">
+          <mat-icon>edit</mat-icon>
+        </div>
+
+        <div>
+          <h2>Edit Medicine</h2>
+
+          <p>
+            Medicine ID:
+            <strong>
+              {{ selectedMedicineForEdit?.medicineId || 'N/A' }}
+            </strong>
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Content -->
+    <mat-dialog-content>
+
+      <!-- Loading -->
+      <div
+        *ngIf="isEditMedicineLoading"
+        class="medicine-loading">
+
+        <mat-icon class="loading-icon">
+          hourglass_empty
+        </mat-icon>
+
+        <p>Loading medicine details...</p>
+
+      </div>
+
+
+      <!-- Edit Form -->
+      <div
+        *ngIf="
+          selectedMedicineForEdit &&
+          !isEditMedicineLoading
+        "
+        class="medicine-details">
+
+
+        <!-- Basic Information -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>info</mat-icon>
+            <h3>Basic Information</h3>
+          </div>
+
+          <div class="edit-grid">
+
+            <div class="edit-field">
+              <label>Medicine Name</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.name"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Category</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.category"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Manufacturer</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.manufacturer"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Brand Name</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.brandName"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Medicine Type</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.medicine_type"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Product Form</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.product_form"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Dosage</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.dosage"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Salt Composition</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.salt_composition"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Pricing & Stock -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>payments</mat-icon>
+            <h3>Pricing & Stock</h3>
+          </div>
+
+          <div class="edit-grid">
+
+            <div class="edit-field">
+              <label>Price</label>
+              <input
+                type="number"
+                [(ngModel)]="editMedicineForm.price"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Available Stock</label>
+              <input
+                type="number"
+                [(ngModel)]="editMedicineForm.quantityInStock"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Medicine Information -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>health_and_safety</mat-icon>
+            <h3>Medicine Information</h3>
+          </div>
+
+          <div class="edit-grid">
+
+            <div class="edit-field">
+              <label>Gender Restriction</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.genderRestriction"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Minimum Age</label>
+              <input
+                type="number"
+                [(ngModel)]="editMedicineForm.minAge"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Maximum Age</label>
+              <input
+                type="number"
+                [(ngModel)]="editMedicineForm.maxAge"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Expiry Date</label>
+              <input
+                type="datetime-local"
+                [(ngModel)]="editMedicineForm.expiryDate"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field toggle-field">
+
+              <label>Show In App</label>
+
+              <input
+                type="checkbox"
+                [(ngModel)]="editMedicineForm.showInApp"
+                (ngModelChange)="onEditFieldChange()">
+
+            </div>
+
+
+            <div class="edit-field toggle-field">
+
+              <label>Prescription Required</label>
+
+              <input
+                type="checkbox"
+                [(ngModel)]="
+                  editMedicineForm.prescription_required
+                "
+                (ngModelChange)="onEditFieldChange()">
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Description -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>description</mat-icon>
+            <h3>Description</h3>
+          </div>
+
+          <textarea
+            [(ngModel)]="editMedicineForm.description"
+            (ngModelChange)="onEditFieldChange()"
+            rows="4"
+            placeholder="Enter medicine description">
+          </textarea>
+
+        </div>
+
+
+        <!-- Uses -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>medical_services</mat-icon>
+            <h3>Uses</h3>
+          </div>
+
+          <textarea
+            [(ngModel)]="editMedicineForm.uses"
+            (ngModelChange)="onEditFieldChange()"
+            rows="4"
+            placeholder="Enter medicine uses">
+          </textarea>
+
+        </div>
+
+
+        <!-- How To Use -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>help_outline</mat-icon>
+            <h3>How To Use</h3>
+          </div>
+
+          <textarea
+            [(ngModel)]="editMedicineForm.how_to_use"
+            (ngModelChange)="onEditFieldChange()"
+            rows="4"
+            placeholder="Enter instructions">
+          </textarea>
+
+        </div>
+
+
+        <!-- How It Works -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>science</mat-icon>
+            <h3>How It Works</h3>
+          </div>
+
+          <textarea
+            [(ngModel)]="editMedicineForm.how_it_works"
+            (ngModelChange)="onEditFieldChange()"
+            rows="4"
+            placeholder="Enter how the medicine works">
+          </textarea>
+
+        </div>
+
+
+        <!-- Precautions -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>warning</mat-icon>
+            <h3>Precautions</h3>
+          </div>
+
+          <textarea
+            [(ngModel)]="editMedicineForm.precautions"
+            (ngModelChange)="onEditFieldChange()"
+            rows="4"
+            placeholder="Enter precautions">
+          </textarea>
+
+        </div>
+
+
+        <!-- Side Effects -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>report_problem</mat-icon>
+            <h3>Side Effects</h3>
+          </div>
+
+          <textarea
+            [(ngModel)]="editMedicineForm.sideEffects"
+            (ngModelChange)="onEditFieldChange()"
+            rows="4"
+            placeholder="Enter side effects">
+          </textarea>
+
+        </div>
+
+
+        <!-- Safety Advice -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>verified_user</mat-icon>
+            <h3>Safety Advice</h3>
+          </div>
+
+          <textarea
+            [(ngModel)]="editMedicineForm.safety_advise"
+            (ngModelChange)="onEditFieldChange()"
+            rows="4"
+            placeholder="Enter safety advice">
+          </textarea>
+
+        </div>
+
+
+        <!-- Additional Information -->
+        <div class="detail-section">
+
+          <div class="section-title">
+            <mat-icon>more_horiz</mat-icon>
+            <h3>Additional Information</h3>
+          </div>
+
+          <div class="edit-grid">
+
+            <div class="edit-field">
+              <label>Common Side Effects</label>
+              <input
+                type="text"
+                [(ngModel)]="editMedicineForm.common_side_effec"
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field">
+              <label>Pregnancy Interaction</label>
+              <input
+                type="text"
+                [(ngModel)]="
+                  editMedicineForm.pregnancy_interaction
+                "
+                (ngModelChange)="onEditFieldChange()">
+            </div>
+
+
+            <div class="edit-field full-width">
+              <label>Storage Instructions</label>
+
+              <textarea
+                [(ngModel)]="editMedicineForm.storage"
+                (ngModelChange)="onEditFieldChange()"
+                rows="3">
+              </textarea>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </mat-dialog-content>
+
+
+    <!-- Edit Footer -->
+    <mat-dialog-actions class="medicine-dialog-actions edit-actions">
+
+      <button
+        mat-button
+        type="button"
+        [disabled]="isSavingMedicine"
+        (click)="discardMedicineChanges()">
+
+        Discard
+
+      </button>
+
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        [disabled]="
+          !hasEditChanges ||
+          isSavingMedicine ||
+          isEditMedicineLoading
+        "
+        (click)="saveMedicineChanges()">
+
+        <mat-icon *ngIf="!isSavingMedicine">
+          save
+        </mat-icon>
+
+        <mat-icon *ngIf="isSavingMedicine">
+          hourglass_empty
+        </mat-icon>
+
+        {{ isSavingMedicine ? 'Saving...' : 'Save' }}
+
+      </button>
+
+    </mat-dialog-actions>
+
+  </div>
+
+</ng-template>
+
+<!-- Delete Medicine Confirmation Dialog -->
+<ng-template #deleteMedicineDialog>
+
+  <div class="delete-medicine-dialog">
+
+    <!-- Header -->
+    <div class="delete-dialog-header">
+
+      <div class="delete-icon-wrapper">
+        <mat-icon>delete_outline</mat-icon>
+      </div>
+
+      <div>
+        <h2>
+          {{ deleteType === 'image' ? 'Delete Image' : 'Delete Medicine' }}
+        </h2>
+        <p>
+          {{ deleteType === 'image'
+              ? 'Confirm image deletion'
+              : 'Confirm medicine deletion' }}
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Content -->
+    <div class="delete-dialog-content">
+
+      <p class="delete-message">
+        {{
+          deleteType === 'image'
+            ? 'Are you sure you want to delete this image?'
+            : 'Are you sure you want to delete this medicine?'
+        }}
+      </p>
+
+      <div class="medicine-id-box">
+
+        <span>Medicine ID</span>
+
+        <strong>
+          {{ selectedMedicineForDelete?.medicineId || 'N/A' }}
+        </strong>
+
+      </div>
+
+      <p class="delete-warning">
+        This action cannot be undone.
+      </p>
+
+    </div>
+
+
+    <!-- Footer -->
+    <div class="delete-dialog-actions">
+
+      <button
+        mat-stroked-button
+        type="button"
+        [disabled]="isDeletingMedicine"
+        (click)="cancelDeleteMedicine()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        mat-flat-button
+        color="warn"
+        type="button"
+        [disabled]="isDeletingMedicine"
+        (click)="confirmDeleteMedicine()">
+
+        <mat-icon *ngIf="!isDeletingMedicine">
+          delete
+        </mat-icon>
+
+        <mat-icon *ngIf="isDeletingMedicine">
+          hourglass_empty
+        </mat-icon>
+
+        {{ isDeletingMedicine ? 'Deleting...' : 'Delete' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</ng-template>
+<!-- Medicine Image Preview Dialog -->
+<ng-template #medicineImageDialog>
+
+  <div class="medicine-image-dialog">
+
+    <!-- Header -->
+    <div class="medicine-image-dialog-header">
+
+      <div>
+        <h2>{{ selectedMedicineImageName }}</h2>
+        <p>Medicine Image Preview</p>
+      </div>
+
+      <button
+        mat-icon-button
+        mat-dialog-close
+        type="button"
+        aria-label="Close">
+
+        <mat-icon>close</mat-icon>
+
+      </button>
+
+    </div>
+
+
+    <!-- Image -->
+    <mat-dialog-content class="medicine-image-dialog-content">
+
+      <img
+        [src]="selectedMedicineImage"
+        [alt]="selectedMedicineImageName"
+        class="medicine-preview-image">
+
+    </mat-dialog-content>
+
+
+    <!-- Footer -->
+    <mat-dialog-actions align="end">
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        [disabled]="!selectedMedicineImageId"
+        (click)="openDeleteImage()">
+        <mat-icon>delete</mat-icon>
+        Image
+      </button>
+
+      <button mat-button mat-dialog-close type="button">
+        Close
+      </button>
+    </mat-dialog-actions>
+
+  </div>
+
+</ng-template>
