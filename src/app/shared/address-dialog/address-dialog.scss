@@ -1,0 +1,14 @@
+.address-text {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  word-break: break-word;
+}
+
+h2[mat-dialog-title] {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { ColumnDef, CommonTableComponent } from '../../shared/common-table/common-table.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
@@ -6,22 +6,20 @@ import { API_URL, ENDPOINTS } from '../../core/const';
 import { pushMessages$ } from '../../core/services/push-notification';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sos-alerts',
-  imports: [
-    CommonTableComponent,
-    MatFormFieldModule,
-    MatSelectModule
-  ],
+  imports: [CommonTableComponent, MatFormFieldModule, MatSelectModule],
   templateUrl: './sos-alerts.html',
   styleUrl: './sos-alerts.scss',
 })
-export class SosAlerts {
+export class SosAlerts implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<any>();
   http = inject(HttpClient);
-  private _pushSub: any;
-  selectedStatus: string = 'all';
+
+  private _pushSub?: Subscription;
+  selectedStatus = 'all';
 
   columns: ColumnDef[] = [
     { key: 'alertId', header: 'Alert&nbsp;Id', sortable: true },
@@ -31,111 +29,81 @@ export class SosAlerts {
     { key: 'resolvedAt', header: 'Resolved&nbsp;At', sortable: true, type: 'date' },
     { key: 'resolvedBy', header: 'Resolved&nbsp;By', sortable: true },
     { key: 'location', header: 'Location', sortable: true },
-    { key: 'resolved', header: 'Status', sortable: true },        //  boolean rahega
-    { key: 'resolve', header: 'Action', type: 'actionResolveSOS' } //  NEW
-    
+    { key: 'resolved', header: 'Status', sortable: true },
+    { key: 'resolve', header: 'Action', type: 'actionResolveSOS' }
   ];
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.fetchData();
-    try {
-      this._pushSub = pushMessages$.subscribe((msg: any) => {
-        const payload = msg?.payload || msg;
 
-        console.log('Push Payload:', payload);
-
+    this._pushSub = pushMessages$.subscribe({
+      next: (msg: any) => {
+        const payload = msg?.payload ?? msg;
         const title =
-          payload?.notification?.title ||
-          payload?.data?.title ||
-          payload?.title;
+          payload?.notification?.title ?? payload?.data?.title ?? payload?.title;
 
-        alert(`New App Message: ${title || 'New message'}`);
-
-        const payload = msg && msg.payload ? msg.payload : msg;
-        console.log(payload);
-        alert(`New App Message: ${payload.notification.title}`);
-        const title = payload?.notification?.title || payload?.data?.title || payload?.title;
         if (title === 'SOS' || title === 'SOS alert') {
           this.fetchData();
         }
-      });
-    } catch (e) {
-      console.warn('Failed to subscribe to push messages', e);
-    }
-  }
-
-  ngOnDestroy() {
-    try {
-      if (this._pushSub && typeof this._pushSub.unsubscribe === 'function') {
-        this._pushSub.unsubscribe();
-      }
-    } catch (e) { }
-  }
-
-  fetchData(status?: string) {
-    if (status) {
-      this.selectedStatus = status;
-    }
-
-    let endpoint = '';
-
-    if (this.selectedStatus === 'all') {
-      endpoint = API_URL + ENDPOINTS.GET_SOS;
-    } else if (this.selectedStatus === 'pending') {
-      endpoint = API_URL + ENDPOINTS.GET_SOS_PENDING;
-    } else if (this.selectedStatus === 'resolved') {
-      endpoint = API_URL + ENDPOINTS.GET_SOS_RESOLVED;
-    }
-
-    this.http.get(endpoint).subscribe({
-      next: (res: any) => {
-        console.log('SOS API Response:', res);
-
-        // Handle array or wrapped API response
-        const data = Array.isArray(res)
-          ? res
-          : res?.data || res?.content || res?.results || res?.alerts || [];
-
-        console.log('SOS Table Data:', data);
-
-        this.dataSource.data = data.map((item: any) => ({
-          ...item,
-          resolved: item.resolved ? 'Resolved' : 'Pending'
-        }));
       },
-      error: (error) => {
-        console.error('SOS API Error:', error);
-        this.dataSource.data = [];
-      }
+      error: (err: any) => console.warn('Push notification error:', err)
     });
   }
 
-}
-    if (this.selectedStatus === 'all') {
-      endpoint = API_URL + ENDPOINTS.GET_SOS;
-    } else if (this.selectedStatus === 'pending') {
-      endpoint = API_URL + ENDPOINTS.GET_SOS_PENDING;
-    } else if (this.selectedStatus === 'resolved') {
-      endpoint = API_URL + ENDPOINTS.GET_SOS_RESOLVED;
+  ngOnDestroy(): void {
+    this._pushSub?.unsubscribe();
+  }
+
+  fetchData(status?: string): void {
+  if (status) this.selectedStatus = status;
+
+  let endpoint: string;
+  if (this.selectedStatus === 'all') endpoint = API_URL + ENDPOINTS.GET_SOS;
+  else if (this.selectedStatus === 'pending') endpoint = API_URL + ENDPOINTS.GET_SOS_PENDING;
+  else endpoint = API_URL + ENDPOINTS.GET_SOS_RESOLVED;
+
+  this.http.get<any>(endpoint).subscribe({
+    next: (res: any) => {
+      const data = Array.isArray(res)
+        ? res
+        : res?.data ?? res?.content ?? res?.results ?? res?.alerts ?? [];
+
+      //  keep `resolved` as boolean — CommonTable isi pe toggle chalata hai
+      this.dataSource.data = data.map((item: any) => ({
+        ...item,
+        resolved: item.resolved === true || item.resolved === 'Resolved' || item.resolved === 1
+      }));
+    },
+    error: (error: any) => {
+      console.error('SOS API Error:', error);
+      this.dataSource.data = [];
     }
+  });
+}
 
-    this.http.get(endpoint).subscribe((res: any) => {
-      // 👇 resolved ko boolean hi rakho — Status column me Yes/No dikhega
-      this.dataSource.data = res;
-    });
+onResolve(row: any): void {
+  const alertId = row.alertId ?? row.id;
+
+  if (alertId == null) {
+    console.error('SOS alert ID is missing:', row);
+    return;
   }
 
-  // 👇 NEW: resolve handler
-  onResolve(row: any) {
-    const alertId = row.alertId ?? row.id;
-    if (!alertId) { return; }
+  const url = `${API_URL}${ENDPOINTS.RESOLVE_SOS}/${alertId}`;
+  const params = { resolvedBy: 'admin' };  //  query param as per API doc
 
-    const url = `${API_URL}${ENDPOINTS.RESOLVE_SOS}/${alertId}`;
-    const params = { resolvedBy: 'admin' };
+  this.http.put(url, null, { params }).subscribe({
+    next: () => {
+      //  Toggle button instantly — no popup, no refresh needed
+      row.resolved = true;
+      row.resolvedBy = 'admin';
+      row.resolvedAt = new Date();
 
-    this.http.put(url, null, { params }).subscribe({
-      next: () => this.fetchData(),
-      error: (err) => console.error('Resolve SOS failed', err)
-    });
-  }
+      this.fetchData();  //  refresh from server (optional but recommended)
+    },
+    error: (err: any) => {
+      console.error('Resolve SOS failed:', err);
+    }
+  });
+}
 }
