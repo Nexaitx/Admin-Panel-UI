@@ -33,6 +33,8 @@ export const ENDPOINTS = {
 
     // Staffs
     GET_STAFFS: '/getAllStaff',
+    GET_STAFFS_PAGINATED: '/api/staff/allstaff/pagination',  //  new
+
     GET_DUTY_LOGS: '/getDutyLog',
     GET_STAFF_FILTER: '/api/staff/filter/advanced',
     GET_SUB_CATEGORIES: '/api/staff/subcategories',
@@ -85,6 +87,9 @@ export const ENDPOINTS = {
     UPDATE_ACCOUNT: '/updateAccount',
     DELETE_ACCOUNT: '/deleteAdminAccount/',
     GET_ACCOUNT_BY_ROLE: '/getAccountByRole',
+    GET_ACCOUNT_BY_ROLE_PAGINATED: '/getAccountByRolePaginated',         //  new
+    GET_ADMIN_FULL_DETAILS: '/getAdminFullDetails',
+    DOCUMENT_VERIFICATION_BULK: '/documentverification/bulk-update',
     GET_LOGGED_IN_USER_DETAILS: '/profile',
 
     // Sub Role Accounts

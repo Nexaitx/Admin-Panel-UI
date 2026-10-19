@@ -1,8 +1,8 @@
-import { Component, inject, TemplateRef, viewChild, ViewChild } from '@angular/core';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,11 +19,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AddressDialogComponent } from '../../shared/address-dialog/address-dialog';
 
 export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
   const password = control.get('password');
   const confirmPassword = control.get('confirmPassword');
-
   if (password && confirmPassword && password.value !== confirmPassword.value) {
     return { 'passwordMismatch': true };
   }
@@ -32,25 +33,13 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
 
 @Component({
   selector: 'app-pharmacist',
-  imports: [MatCardModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-    CommonModule,
-    MatMenuModule,
-    MatSidenavModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    MatSlideToggleModule,
-    FormsModule,
-    MatProgressSpinnerModule,
-    MatDialogModule,
-    MatRadioModule,
-    FormsModule
+  imports: [
+    MatCardModule, MatTableModule, MatSortModule, MatPaginatorModule,
+    MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule,
+    CommonModule, MatMenuModule, MatSidenavModule, MatSelectModule,
+    ReactiveFormsModule, MatSlideToggleModule, FormsModule,
+    MatProgressSpinnerModule, MatDialogModule, MatRadioModule,
+    MatTabsModule
   ],
   templateUrl: './pharmacist.html',
   styleUrl: './pharmacist.scss'
@@ -64,8 +53,14 @@ export class Pharmacist {
   view: boolean = false;
   isDrawerOpen: boolean = false;
   selectedUser: any | null = null;
+  fullDetails: any = null;              //  full details for view mode
+  loadingFullDetails = false;
   permission: boolean = false;
-  displayedColumns: string[] = ['s_no', 'pharmaId', 'pharmacyName', 'name', 'phone', 'email', 'address', 'city', 'rating', 'verified', 'createdOn', 'actions'];
+
+  displayedColumns: string[] = [
+    's_no', 'pharmaId', 'pharmacyName', 'name', 'phone', 'email',
+    'address', 'city', 'rating', 'verified', 'createdOn', 'actions'
+  ];
 
   dataSource: MatTableDataSource<any>;
   userForm: FormGroup;
@@ -74,10 +69,17 @@ export class Pharmacist {
   toggleChecked: any = '';
   verification: boolean = false;
   dialog = inject(MatDialog);
+
   @ViewChild('discountDialog') discountDialog!: TemplateRef<any>;
   @ViewChild('verificationDialog') verificationDialog!: TemplateRef<any>;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  totalElements = 0;
+  pageSize = 10;
+  pageIndex = 0;
+  sortBy = 'name';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor() {
     this.dataSource = new MatTableDataSource<any>([]);
@@ -94,104 +96,163 @@ export class Pharmacist {
   onKeyPress(event: KeyboardEvent): void {
     const charCode = event.which ? event.which : event.keyCode;
     const phoneNumberControl = this.userForm.get('phoneNumber');
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-      event.preventDefault();
-    }
-    if (phoneNumberControl && phoneNumberControl.value && phoneNumberControl.value.length >= 10 && charCode > 31) {
-      event.preventDefault();
-    }
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) event.preventDefault();
+    if (phoneNumberControl?.value?.length >= 10 && charCode > 31) event.preventDefault();
   }
 
   ngOnInit(): void {
     this.getAccounts();
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
-      const dataStr = `${data.name} ${data.email}`.toLowerCase();
+      const dataStr = `${data.name} ${data.email} ${data.phone}`.toLowerCase();
       return dataStr.includes(filter.toLowerCase());
     };
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    this.sort.sortChange.subscribe((s: any) => {
+      this.sortBy = s.active || 'name';
+      this.sortDirection = (s.direction || 'asc') as 'asc' | 'desc';
+      this.pageIndex = 0;
+      if (this.paginator) this.paginator.firstPage();
+      this.getAccounts();
+    });
+
+    this.paginator.page.subscribe((page: PageEvent) => {
+      this.pageIndex = page.pageIndex;
+      this.pageSize = page.pageSize;
+      this.getAccounts();
+    });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
-  getAccounts() {
-    this.http.get(API_URL + ENDPOINTS.GET_ACCOUNT_BY_ROLE + '/pharmacist').subscribe((res: any) => {
-      this.accounts = res;
-      this.mapAndSetDataSource(this.accounts);
-    })
+  getAccounts(): void {
+    const params = new HttpParams()
+      .set('page', String(this.pageIndex))
+      .set('size', String(this.pageSize))
+      .set('sortBy', this.sortBy)
+      .set('direction', this.sortDirection);
+
+    const url = `${API_URL}${ENDPOINTS.GET_ACCOUNT_BY_ROLE_PAGINATED}/pharmacist`;
+
+    this.http.get<any>(url, { params }).subscribe({
+      next: (res: any) => {
+        const admins = res?.admins ?? res?.content ?? res?.data ?? [];
+        const total = res?.totalElements ?? res?.total ?? res?.totalCount ?? admins.length;
+        this.accounts = admins;
+        this.mapAndSetDataSource(admins);
+        this.totalElements = total;
+        if (this.paginator) {
+          this.paginator.length = total;
+          this.paginator.pageIndex = this.pageIndex;
+          this.paginator.pageSize = this.pageSize;
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching pharmacists:', err);
+        this.dataSource.data = [];
+        this.totalElements = 0;
+      }
+    });
+  }
+
+  /**
+   *  Fetch full details for View / Verification mode
+   * GET /getAdminFullDetails/{adminId}
+   */
+  getAdminFullDetails(adminId: number): void {
+    if (!adminId) return;
+    this.loadingFullDetails = true;
+
+    this.http.get<any>(`${API_URL}${ENDPOINTS.GET_ADMIN_FULL_DETAILS}/${adminId}`).subscribe({
+      next: (res: any) => {
+        this.fullDetails = res;
+        this.selectedUser = res;    // drawar bindings ke liye
+        this.toggleChecked = res?.documentVerification ?? 'PENDING';
+        this.loadingFullDetails = false;
+      },
+      error: (err) => {
+        this.loadingFullDetails = false;
+        console.error('Error fetching full details:', err);
+        this.snackBar.open('Failed to load full details', 'Close',
+          { duration: 3000, panelClass: ['snackbar-error'] });
+      }
+    });
   }
 
   onSubmit(): void {
     if (this.userForm.valid) {
-      // Create a temporary object without confirmPassword for the API call
       const formData = { ...this.userForm.value };
       delete formData.confirmPassword;
+
       if (this.isEdit) {
         this.http.put(`${API_URL}${ENDPOINTS.UPDATE_ACCOUNT}/${this.selectedUser.admin_id}`, formData).subscribe({
-          next: (res: any) => {
-            this.snackBar.open('Update successful!', 'Close', {
-              duration: 3000,
-              horizontalPosition: 'right',
-              verticalPosition: 'top'
-            });
-            console.log('API Response:', res);
+          next: () => {
+            this.snackBar.open('Update successful!', 'Close',
+              { duration: 3000, horizontalPosition: 'right', verticalPosition: 'top' });
+            this.getAccounts();
           },
-          error: (error: any) => {
-            this.snackBar.open('Update failed. Please try again.', 'Close', {
-              duration: 3000,
-              horizontalPosition: 'right',
-              verticalPosition: 'top'
-            });
-            console.error('API Error:', error);
+          error: () => {
+            this.snackBar.open('Update failed. Please try again.', 'Close',
+              { duration: 3000, horizontalPosition: 'right', verticalPosition: 'top' });
           }
         });
       } else {
         this.http.post(API_URL + ENDPOINTS.SIGNUP, formData).subscribe({
-          next: (res: any) => {
-            this.snackBar.open('Registration successful!', 'Close', {
-              duration: 3000,
-              horizontalPosition: 'right',
-              verticalPosition: 'top'
-            });
+          next: () => {
+            this.snackBar.open('Registration successful!', 'Close',
+              { duration: 3000, horizontalPosition: 'right', verticalPosition: 'top' });
+            this.getAccounts();
           },
-          error: (error: any) => {
-            this.snackBar.open('Registration failed. Please try again.', 'Close', {
-              duration: 3000,
-              horizontalPosition: 'right',
-              verticalPosition: 'top'
-            });
-            console.error('API Error:', error);
+          error: () => {
+            this.snackBar.open('Registration failed. Please try again.', 'Close',
+              { duration: 3000, horizontalPosition: 'right', verticalPosition: 'top' });
           }
         });
       }
     }
   }
+
   deleteElement(element: any) {
-    console.log(`Delete ${element.name} (ID: ${element.user_id})`);
     alert(`Deleting: ${element.name} (User ID: ${element.user_id})`);
   }
 
+  /**
+   *  Open drawer. If `view` OR `verification` → fetch full details.
+   */
   openUserDrawer() {
-    console.log(this.selectedUser);
     if (this.isEdit || this.view || this.verification) {
-      this.http.get(`${API_URL}${ENDPOINTS.GET_ADMIN_BY_ID}${this.selectedUser?.user_id}`).subscribe((res: any) => {
-        this.selectedUser = res;
-        this.userForm.patchValue(this.selectedUser);
-        this.toggleChecked = res.active
-      });
-    }
-    else {
+      const adminId = this.selectedUser?.user_id ?? this.selectedUser?.id;
+      if (!adminId) {
+        this.snackBar.open('Admin ID missing', 'Close', { duration: 3000 });
+        return;
+      }
+
+      if (this.view || this.verification) {
+        //  Use full-details API for view & verification
+        this.getAdminFullDetails(adminId);
+
+        //  Also patch form for edit-mode safety
+        this.userForm.patchValue({
+          name: this.selectedUser?.name,
+          email: this.selectedUser?.email,
+          phoneNumber: this.selectedUser?.phone
+        });
+      } else {
+        //  Edit mode → keep existing getAdminById
+        this.http.get(`${API_URL}${ENDPOINTS.GET_ADMIN_BY_ID}${adminId}`).subscribe((res: any) => {
+          this.selectedUser = res;
+          this.userForm.patchValue(this.selectedUser);
+          this.toggleChecked = res.active;
+        });
+      }
+    } else {
       this.userForm.reset();
+      this.fullDetails = null;
     }
     this.isDrawerOpen = true;
   }
@@ -199,16 +260,24 @@ export class Pharmacist {
   closeUserDrawer() {
     this.isDrawerOpen = false;
     this.selectedUser = null;
-    this.verification = false
+    this.fullDetails = null;
+    this.verification = false;
+    this.view = false;
   }
 
   mapAndSetDataSource(users: any[]): void {
     const mappedUsers: any[] = users.map(user => ({
       user_id: user.id,
+      admin_id: user.id,
+      pharmaId: user.pharmaId ?? user.id,
       name: user.name,
       email: user.email,
-      phone: user.phone_number,
+      phone: user.phoneNumber ?? user.phone_number,
       contact: user.email,
+      pharmacyName: user.pharmacyName ?? null,
+      rating: user.rating ?? null,
+      verified: user.verified ?? false,
+      createdOn: user.createdOn ?? user.created_on ?? null,
       aadhaar: user.aadhaar_verified ? 'Verified' : 'Not Verified',
       address: user.address,
       city: user.city,
@@ -217,125 +286,114 @@ export class Pharmacist {
     }));
 
     this.dataSource.data = mappedUsers;
-
-    if (this.sort) {
-      this.dataSource.sort = this.sort;
-    }
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
   }
 
-  submitVerification() {
-    console.log(this.toggleChecked);
+ /**
+ *  Bulk-update document verification
+ * PUT /documentverification/bulk-update?adminIds={id}&status={status}
+ */
+submitVerification(): void {
+  const adminId = this.selectedUser?.admin_id ?? this.selectedUser?.id;
 
-    // --- 1. Safely retrieve adminId and check for null/undefined ---
-    const adminId = this.selectedUser?.admin_id;
-
-    if (!adminId) {
-      // Re-enable the necessary safety check
-      this.snackBar.open('Admin ID is missing. Cannot proceed with update.', 'Close', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
-      });
-      return;
-    }
-
-    const newStatus = this.toggleChecked; // e.g., 'PENDING', 'VERIFIED', etc.
-
-    // --- 2. Define HttpHeaders (Crucial for Authorization) ---
-    const token = localStorage.getItem('token');
-    let headers = new HttpHeaders();
-    if (token) {
-      // Assuming your backend expects a Bearer token
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    } else {
-      // If token is required but missing, stop and inform the user/console.
-      console.error('Authorization token is missing.');
-      this.snackBar.open('Authentication error. Please log in again.', 'Close', { duration: 3000, panelClass: ['snackbar-error'] });
-      return;
-    }
-
-    // --- 3. Define the query parameters using HttpParams (Already correct) ---
-    let params = new HttpParams().set('status', newStatus);
-
-    // --- 4. Define the base URL (Already correct) ---
-    const url = `${API_URL}${ENDPOINTS.UPDATE_VERIFICATION_ACCESS}/${adminId}/update-status`;
-
-    this.submittingVerification = true;
-
-    // --- 5. Make the API call including both headers and parameters ---
-    this.http.put(url, null, { headers, params }).subscribe({
-      next: (res: any) => {
-        this.submittingVerification = false;
-
-        // Adjusting success message logic to be clearer
-        if (newStatus === 'VERIFIED' || res.active === true) {
-          this.snackBar.open(`${this.selectedUser.name} Verified successfully.`, 'Close', {
-            duration: 3000,
-            panelClass: ['snackbar-success']
-          });
-        } else {
-          this.snackBar.open(`${this.selectedUser.name} status set to ${newStatus}.`, 'Close', {
-            duration: 3000,
-            panelClass: ['snackbar-success']
-          });
-        }
-        // Optionally reload user list or table here
-      },
-      error: (err: any) => {
-        console.error('API Error:', err);
-        this.submittingVerification = false;
-
-        // Provide more detail on the error if possible (e.g., from error.message or error.status)
-        const errorMessage = err.error?.message || 'Failed to update verification status. Try again later.';
-
-        this.snackBar.open(errorMessage, 'Close', {
-          duration: 5000,
-          panelClass: ['snackbar-error']
-        });
-      }
-    });
+  if (!adminId) {
+    this.snackBar.open('Admin ID is missing. Cannot proceed.', 'Close',
+      { duration: 3000, panelClass: ['snackbar-error'] });
+    return;
   }
 
+  const newStatus = this.toggleChecked;
+  if (!newStatus) {
+    this.snackBar.open('Please select a verification status.', 'Close',
+      { duration: 3000, panelClass: ['snackbar-error'] });
+    return;
+  }
 
+  const token = localStorage.getItem('token');
+  let headers = new HttpHeaders();
+  if (token) {
+    headers = headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const params = new HttpParams()
+    .set('adminIds', String(adminId))
+    .set('status', newStatus);
+
+  const url = `${API_URL}${ENDPOINTS.DOCUMENT_VERIFICATION_BULK}`;
+
+  this.submittingVerification = true;
+
+  this.http.put(url, null, { headers, params }).subscribe({
+    next: (res: any) => {
+      this.submittingVerification = false;
+      this.snackBar.open(
+        `${this.selectedUser?.name || 'Pharmacist'} status updated to ${newStatus}.`,
+        'Close',
+        { duration: 3000, panelClass: ['snackbar-success'] }
+      );
+
+      //  Refresh list + refresh drawer details
+      this.getAccounts();
+      this.getAdminFullDetails(adminId);
+    },
+    error: (err: any) => {
+      this.submittingVerification = false;
+      const errorMessage = err?.error?.message
+        || err?.message
+        || 'Failed to update verification status. Try again later.';
+      this.snackBar.open(errorMessage, 'Close',
+        { duration: 5000, panelClass: ['snackbar-error'] });
+    }
+  });
+}
   openDialog(m: any) {
     this.http.get(`${API_URL}${ENDPOINTS.GET_ADMIN_BY_ID}${this.selectedUser?.user_id}`).subscribe((res: any) => {
-      this.permission = res.canAddMedicine
+      this.permission = res.canAddMedicine;
     });
-    const dialogRef = this.dialog.open(this.discountDialog, {
-      width: '400px',
-      data: {}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-    });
+    this.dialog.open(this.discountDialog, { width: '400px', data: {} });
   }
 
   openVerificationDialog(m: any) {
-    const dialogRef = this.dialog.open(this.verificationDialog, {
-      width: '800px',
-      minWidth: '800px',
-      data: {}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
+    this.dialog.open(this.verificationDialog, {
+      width: '800px', minWidth: '800px', data: {}
     });
   }
 
   updateMedicinePermission() {
-    let url = `${API_URL}${ENDPOINTS.UPDATE_MEDICINE_PERMISSION}${this.selectedUser.user_id}/toggle-medicine-permission`;
-    this.http.put(url, null).subscribe((res: any) => {
-      if (res.canAddMedicine === true) {
-        this.snackBar.open('Permission Granted', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+    const url = `${API_URL}${ENDPOINTS.UPDATE_MEDICINE_PERMISSION}${this.selectedUser.user_id}/toggle-medicine-permission`;
+    this.http.put(url, null).subscribe({
+      next: (res: any) => {
+        this.snackBar.open(
+          res.canAddMedicine === true ? 'Permission Granted' : 'Permission Denied',
+          'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+      },
+      error: () => {
+        this.snackBar.open('Failed to give permission. Try again later.', 'Close',
+          { duration: 4000, panelClass: ['snackbar-error'] });
       }
-      else {
-        this.snackBar.open('Permission Denied', 'Close', { duration: 3000, panelClass: ['snackbar-success'] });
+    });
+  }
+
+  openAddressDialog(element: any): void {
+    this.dialog.open(AddressDialogComponent, {
+      width: '500px',
+      maxWidth: '90vw',
+      data: {
+        name: element?.name || 'Pharmacist',
+        address: element?.address || 'No address available'
       }
-    },
-      (err: any) => {
-        console.error(err);
-        this.snackBar.open('Failed to give permission. Try again later.', 'Close', { duration: 4000, panelClass: ['snackbar-error'] });
-      })
+    });
+  }
+
+  /**  helper: status chip color */
+  statusColor(status: string): string {
+    switch ((status || '').toUpperCase()) {
+      case 'APPROVED':
+      case 'VERIFIED': return 'status-approved';
+      case 'PENDING': return 'status-pending';
+      case 'REJECTED':
+      case 'CANCELLED': return 'status-rejected';
+      case 'UNDER_REVIEW': return 'status-review';
+      default: return 'status-pending';
+    }
   }
 }

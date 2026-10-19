@@ -89,8 +89,14 @@
           <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #inputAllStaffs>
         </mat-form-field>
 
-        <mat-paginator class="small-select" [pageSizeOptions]="[10, 20, 100]" aria-label="Select page of staff">
-        </mat-paginator>
+       <mat-paginator
+  class="small-select"
+  [length]="totalElements"
+  [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  [pageSizeOptions]="[10, 20, 100]"
+  aria-label="Select page of staff">
+</mat-paginator>
       </div>
     </div>
 
