@@ -1,0 +1,134 @@
+
+.my-medicine-container {
+  width: 100%;
+  padding: 0 12px;
+  color: #222;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 380px;
+}
+
+.total-count {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.table-container {
+  width: 100%;
+  position: relative;
+  background: #fff;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow: auto;
+  max-height: 65vh;
+  border-radius: 4px;
+}
+
+table {
+  width: 100%;
+  min-width: 1150px;
+}
+
+th.mat-mdc-header-cell {
+  background-color: #e5f9fa;
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+td.mat-mdc-cell {
+  padding: 14px 16px;
+  border-bottom: 1px solid #d7dddd;
+  white-space: nowrap;
+}
+
+.medicine-name {
+  min-width: 220px;
+  font-weight: 500;
+  white-space: normal;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.available {
+  background-color: #e4f7ec;
+  color: #168348;
+}
+
+.status-badge.unavailable {
+  background-color: #fdeaea;
+  color: #c62828;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 12px;
+}
+
+.loading-container p {
+  margin: 0;
+  color: #666;
+}
+
+.error-message {
+  padding: 24px;
+  color: #c62828;
+  text-align: center;
+}
+
+.error-message button {
+  margin-left: 12px;
+  padding: 6px 12px;
+  border: 1px solid #c62828;
+  border-radius: 4px;
+  background: #fff;
+  color: #c62828;
+  cursor: pointer;
+}
+
+.no-data {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+}
+
+mat-paginator {
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+}
+
+@media (max-width: 768px) {
+  .my-medicine-container {
+    padding: 0 6px;
+  }
+
+  .search-field {
+    max-width: 100%;
+  }
+
+  .total-count {
+    margin-bottom: 12px;
+  }
+
+  .table-scroll {
+    max-height: 60vh;
+  }
+}

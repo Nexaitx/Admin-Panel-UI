@@ -33,7 +33,8 @@ export class Permissions implements OnInit {
     'SOS Staff', 'SOS Alerts', 'Devices & Addresses', 'Staff Wallet',
     'Roles', 'Pharma', 'Account', 'Prescriptions', 'Permissions',
     'Diet Plans', 'Diet Subscription Plans', 'Ledgers', 'Diet Bookings',
-    'Dietician Reports', 'Diet Subscription', 'Blogs', 'Order Ledgers', 'Reports', 'Orders', 'Pharmacy', 'Bank Details', 'Account Settings' ,'Settings'
+    'Dietician Reports', 'Diet Subscription', 'Blogs', 'Order Ledgers', 'Reports', 'Orders', 'Pharmacy', 'Bank Details', 'Account Settings' ,'Settings',
+    'My Medicine'
   ];
 
   ngOnInit() {

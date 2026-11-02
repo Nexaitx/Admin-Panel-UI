@@ -1,0 +1,177 @@
+
+<div class="my-medicine-container">
+
+  <div class="row mt-3 align-items-center">
+    <div class="col-md-4">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search My Medicine</mat-label>
+        <input
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Search by name, product ID..."
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-8 text-md-end">
+      <span class="total-count">
+        Total Medicines: {{ totalElements }}
+      </span>
+    </div>
+  </div>
+
+  <div class="table-container">
+
+    <div class="loading-container" *ngIf="isLoading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading medicines...</p>
+    </div>
+
+    <div class="error-message" *ngIf="!isLoading && errorMessage">
+      {{ errorMessage }}
+      <button type="button" (click)="getMyMedicines()">
+        Retry
+      </button>
+    </div>
+
+    <div class="table-scroll" *ngIf="!isLoading && !errorMessage">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        [matSortActive]="sortBy"
+        [matSortDirection]="direction"
+        (matSortChange)="onSortChange($event)"
+      >
+
+        <ng-container matColumnDef="productId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Product ID
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.productId || '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Medicine Name
+          </th>
+          <td mat-cell *matCellDef="let medicine" class="medicine-name">
+            {{ medicine.productName || '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Type
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.productType || '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productForm">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Form
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.productForm || '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packaging">
+          <th mat-header-cell *matHeaderCellDef>
+            Packaging
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.packaging || '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="originalPrice">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Original Price
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.originalPrice | currency:'INR':'symbol':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="discountPrice">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Discount Price
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.discountPrice | currency:'INR':'symbol':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="discountPercentage">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Discount
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.discountPercentage }}%
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="isAvailable">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Availability
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            <span
+              class="status-badge"
+              [class.available]="medicine.isAvailable"
+              [class.unavailable]="!medicine.isAvailable"
+            >
+              {{ medicine.isAvailable ? 'Available' : 'Unavailable' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Added Date
+          </th>
+          <td mat-cell *matCellDef="let medicine">
+            {{ medicine.createdAt ? (medicine.createdAt | date:'mediumDate') : '-' }}
+          </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></tr>
+
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns; trackBy: trackByMedicineId"
+        ></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td
+            class="mat-cell no-data"
+            [attr.colspan]="displayedColumns.length"
+          >
+            No medicines found.
+          </td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+
+  <mat-paginator
+    [length]="totalElements"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20, 50, 100]"
+    [disabled]="isLoading"
+    (page)="onPageChange($event)"
+    aria-label="Select medicine page"
+  ></mat-paginator>
+
+</div>

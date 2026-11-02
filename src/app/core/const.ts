@@ -112,10 +112,13 @@ export const ENDPOINTS = {
     GET_USER_DEVICES_ADDRESS: '/getAllUserIpOrDeviceName',
     GET_STAFF_DEVICES_ADDRESS: '/allAllStaffIpDeviceName',
 
+    GET_MY_MANAGED_MEDICINES:
+  '/api/pharmacists/medicines/pharmacists/withpagination/my-managed',
+
     // Get complaints
     GET_COMPLAINTS: '/getAllComplain',
 
-    // get details of admin dashboards
+    // get details of admin dashboards 
     GET_ROLES_COUNT: '/getRoleCount',
     GET_ACCOUNTS_COUNT: '/staffCategoryOrSubcategory',
     GET_ACTIVE_DIET_PLANS: '/getAllActiveDietPlan',

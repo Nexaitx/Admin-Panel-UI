@@ -122,6 +122,13 @@ export const routes: Routes = [
                 canActivate: [authGuard],
             },
             {
+            path: 'pharmaceutical/my-medicine',
+            loadComponent: () =>
+                import('./pages/my-medicine/my-medicine')
+                .then(m => m.MyMedicine),
+            canActivate: [authGuard],
+            },
+            {
                 path: 'pharmaceutical/other-pharmacists-available-products',
                 loadComponent: () => import('./pages/other-pharma-available-products/other-pharma-available-products').then(m => m.OtherPharmaAvailableProducts),
                 canActivate: [authGuard],

@@ -344,10 +344,18 @@ export const MENU_DATA: MenuItem[] = [
     route: '/app/account',
     permission: 'Account'
   },
+  // --- My Medicine ---
+{
+  title: 'My Medicine',
+  icon: 'medication',
+  route: '/app/pharmaceutical/my-medicine',
+  permission: 'Pharma',
+  allowedRoles: ['Pharmacist']
+},
   // --- Settings (Expansion Panel) ---
   {
     title: 'Settings',
-    icon: 'settings',
+    icon: 'settings', 
     permission: 'Settings',
     children: [
       { title: 'Complaints', icon: 'report_problem', route: '/app/complaint' },
