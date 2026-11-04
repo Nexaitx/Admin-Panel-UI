@@ -26,7 +26,7 @@ export const MENU_DATA: MenuItem[] = [
     title: 'Dashboard',
     icon: 'widgets',
     route: '/app/pharmacist-dashboard',
-    permission: 'Pharmacist Dashboard'
+    permission: 'PHARMACIST Dashboard'
   },
   {
     title: 'Dashboard',
