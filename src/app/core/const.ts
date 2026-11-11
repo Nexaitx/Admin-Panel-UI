@@ -1,9 +1,9 @@
-export const API_URL = 'https://vitoxyzcrm-bosc.onrender.com';
+// export const API_URL = 'https://vitoxyzcrm-bosc.onrender.com';
 
 export const PHARMA_API_URL = 'https://pharmacyvitoxyzbackend.onrender.com/Backend/';
 
 export const googleMapsApiKey = 'AIzaSyBwkoBuGelQUiN2YSN-pqGhNv1KJE8CFNs';
-// export const API_URL = 'http://localhost:8081';
+export const API_URL = 'http://localhost:8081';
 
 export const ADMIN_PORTER = 'https://admin-porter.onrender.com';
 
@@ -30,6 +30,7 @@ export const ENDPOINTS = {
     // Users
     GET_USERS: '/getAllUser',
     GET_ORGANIZATIONS: '/getAllOrganizations',
+    USER_LOGIN_ACTIVITY: '/user-login-activity/',
 
     // Staffs
     GET_STAFFS: '/getAllStaff',
